@@ -1947,7 +1947,7 @@
 #define ITM_INP_DEF_LI              1891
 #define ITM_SI_P                    1892
 #define KEY_fg                      1893
-#define MNU_1894                    1894
+#define MNU_TAMCMPALPHA             1894
 #define ITM_USER_C43ALTB            1895
 #define ITM_USER_C43ALTA            1896
 #define ITM_ASNVIEWER               1897
@@ -1966,7 +1966,7 @@
 #define ITM_msTo                    1910
 #define ITM_INP_DEF_43S             1911
 #define ITM_XXEQ                    1912
-#define MNU_1913                    1913
+#define MNU_TAMALPHA                1913
 #define ITM_USER_COPY               1914
 #define ITM_USER_WP43S              1915
 #define ITM_USER_DM42               1916

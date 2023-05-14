@@ -333,6 +333,8 @@
           clearSystemFlag(FLAG_ALPHA);
           calcModeTamGui();
         switch(softmenu[softmenuStack[0].softmenuId].menuItem) {
+          case -MNU_TAMCMPALPHA: popSoftmenu(); break;
+          case -MNU_TAMALPHA   : popSoftmenu(); break;
           case -MNU_TAMLBLALPHA: popSoftmenu(); break;
           case -MNU_TAMSRALPHA : popSoftmenu(); break;
           default: break;
@@ -440,7 +442,9 @@
           alphaCase = AC_LOWER;
         }
         switch(softmenu[softmenuStack[0].softmenuId].menuItem) {
+          case -MNU_TAMCMP    : showSoftmenu(-MNU_TAMCMPALPHA); break;
           case -MNU_TAMLABEL  : showSoftmenu(-MNU_TAMLBLALPHA); break;
+          case -MNU_TAM       : showSoftmenu(-MNU_TAMALPHA); break;
           case -MNU_TAMSTORCL : showSoftmenu(-MNU_TAMSRALPHA); break;
           default: break;
         }
