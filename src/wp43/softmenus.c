@@ -1834,7 +1834,11 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
                     break;
                   }
                   case MNU_MyMenu: {
-                    changeSoftKey(softmenu[m].menuItem, itemNr, itemName, &vm, &showCb, &showValue, showText);
+                    if(userMenuItems[x + 6*y].item < 0) {
+                      vm = vmReverse;
+                    } else {
+                      changeSoftKey(softmenu[m].menuItem, itemNr, itemName, &vm, &showCb, &showValue, showText);
+                    }
                     break;
                   }
                   case MNU_MyAlpha: {
