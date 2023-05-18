@@ -1875,7 +1875,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         }
 
         if(lastErrorCode == 0) {
-          showFunctionName(item, 1000); // 1000ms = 1s
+          showFunctionName(item, 1000, "SF:Q"); // 1000ms = 1s
         }
       }
     }

@@ -556,7 +556,7 @@ void _assignItem(userMenuItem_t *menuItem) {
   else if(itemToBeAssigned <= ASSIGN_USER_MENU) {
     lblPtr                    = (uint8_t *)userMenus[-(itemToBeAssigned - ASSIGN_USER_MENU)].menuName;
     menuItem->item            = -MNU_DYNAMIC;
-    xcopy(menuItem->argumentName, (char *)lblPtr, stringByteLength((char *)lblPtr));
+    xcopy(menuItem->argumentName, (char *)lblPtr, stringByteLength((char *)lblPtr) + 1);
     lblPtr                    = NULL;
   }
   else {
@@ -949,7 +949,7 @@ void createMenu(const char *name) {
         userMenus = reallocWp43(userMenus, TO_BLOCKS(sizeof(userMenu_t)) * numberOfUserMenus, TO_BLOCKS(sizeof(userMenu_t)) * (numberOfUserMenus + 1));
       }
       memset(userMenus + numberOfUserMenus, 0, sizeof(userMenu_t));
-      xcopy(userMenus[numberOfUserMenus].menuName, name, stringByteLength(name));
+      xcopy(userMenus[numberOfUserMenus].menuName, name, stringByteLength(name) + 1);
       ++numberOfUserMenus;
     }
     else {

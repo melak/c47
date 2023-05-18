@@ -630,7 +630,7 @@
       if(showFunctionNameCounter <= 0) {
         hideFunctionName();
         tmpString[0] = 0;
-        showFunctionName(ITM_NOP, 0);
+        showFunctionName(ITM_NOP, 0, "SF:R");
       }
     }
 
@@ -685,7 +685,7 @@
       if(showFunctionNameCounter <= 0) {
         hideFunctionName();
         tmpString[0] = 0;
-        showFunctionName(ITM_NOP, 0);
+        showFunctionName(ITM_NOP, 0, "SF:R");
       }
     }
 
@@ -841,7 +841,12 @@ void FN_handler_StepToF(uint32_t time) {
         shiftF = true;        //S_shF();                  //   New shift state
         showShiftState();
         refreshRegisterLine(REGISTER_T); //clearRegisterLine(Y_POSITION_OF_REGISTER_T_LINE - 4, REGISTER_LINE_HEIGHT); //JM FN clear the previous shift function name
-        showFunctionName(nameFunction(FN_key_pressed-37,6),0);
+        char *varCatalogItem = "";
+        int16_t Dyn = nameFunction(FN_key_pressed-37,6);
+        if(dynamicMenuItem > -1) {
+          varCatalogItem = dynmenuGetLabel(dynamicMenuItem);
+        }
+        showFunctionName(Dyn,0,varCatalogItem); //"SF:F");
         FN_timed_out_to_RELEASE_EXEC = true;
         underline_softkey(FN_key_pressed-38,1, false);
         fnTimerStart(TO_FN_LONG, TO_FN_LONG, time);          //dr
@@ -852,7 +857,12 @@ void FN_handler_StepToG(uint32_t time) {
         shiftF = false;
         showShiftState();
         refreshRegisterLine(REGISTER_T); //clearRegisterLine(Y_POSITION_OF_REGISTER_T_LINE - 4, REGISTER_LINE_HEIGHT); //JM FN clear the previous shift function name
-        showFunctionName(nameFunction(FN_key_pressed-37,12),0);
+        char *varCatalogItem = "";
+        int16_t Dyn = nameFunction(FN_key_pressed-37,12);
+        if(dynamicMenuItem > -1) {
+          varCatalogItem = dynmenuGetLabel(dynamicMenuItem);
+        }
+        showFunctionName(Dyn,0,varCatalogItem); //"SF:G");
         FN_timed_out_to_RELEASE_EXEC = true;
         underline_softkey(FN_key_pressed-38,2, false);
         fnTimerStart(TO_FN_LONG, TO_FN_LONG, time);          //dr 
@@ -860,7 +870,7 @@ void FN_handler_StepToG(uint32_t time) {
 
 void FN_handler_StepToNOP(void) {
         refreshRegisterLine(REGISTER_T); //clearRegisterLine(Y_POSITION_OF_REGISTER_T_LINE - 4, REGISTER_LINE_HEIGHT); //JM FN clear the previous shift function name
-        showFunctionName(ITM_NOP, 0);
+        showFunctionName(ITM_NOP, 0, "SF:N");
         FN_timed_out_to_NOP = true;
         underline_softkey(FN_key_pressed-38,3, false);   //  Purposely select row 3 which does not exist, just to activate the 'clear previous line'
         FN_timeouts_in_progress = false;
@@ -958,7 +968,7 @@ void Shft_handler() {                        //JM SHIFT NEW vv
 void LongpressKey_handler() {
   if(fnTimerGetStatus(TO_CL_LONG) == TMR_COMPLETED) {
     if(JM_auto_longpress_enabled != 0) {
-      showFunctionName(JM_auto_longpress_enabled, JM_TO_CL_LONG + 50);     //Add a marginal amout of time to prevent racing of end conditions. 
+      showFunctionName(JM_auto_longpress_enabled, JM_TO_CL_LONG + 50, "SF:LL");     //Add a marginal amout of time to prevent racing of end conditions. 
       JM_auto_longpress_enabled = 0;                                       //showFunctionName must not time out longer than the timer that is started below
 
       //Setup up next long press activation possibility
@@ -1733,25 +1743,44 @@ void printHalfSecUpdate_Integer(uint8_t mode, char *txt, int loop) {
   }
 
 
+
+/* comment: original WP43 line to sync diff start on the correct place
   void showFunctionName(int16_t item, int16_t delayInMs) {
+*/
+
+  void showFunctionName(int16_t item, int16_t delayInMs, const char *arg) {
     uint32_t fcol, frow, gcol, grow;
-    const char *functionName;
+    char functionName[16];
     char padding[20];                                          //JM
+    functionName[0] = 0;
 
 //FIX //REMOVE DISPLAYING TEMP STRING as in C43 the tmpstring does NOT show the last keystroke or whatever this tempstr is needed for. It gets executed from timers
 //    if(tmpString[0] != 0) {
-//      functionName = tmpString;
+//      strcpy(functionName,tmpString);
 //    }
 //    else 
-      if(item != MNU_DYNAMIC) {
-        if(item >= CST_01 && item <= CST_79) {
-          functionName = indexOfItems[abs(item)].itemSoftmenuName;
-        } else {
-          functionName = indexOfItems[abs(item)].itemCatalogName;
-        }
+
+    if(item == ITM_XEQ) {
+      strcpy(functionName,arg);
+    } else 
+
+    if(item == ITM_RCL) {
+      strcpy(functionName,arg);
+    } else 
+
+    if(item >= ITM_X_P1 && item <= ITM_X_g6) {
+      strcpy(functionName, indexOfItemsXEQM + 8*(item-fnXEQMENUpos));
+    } else
+
+    if(item >= CST_01 && item <= CST_79) {
+      strcpy(functionName,indexOfItems[abs(item)].itemSoftmenuName);
+    } else
+
+    if(item != MNU_DYNAMIC) {
+      strcpy(functionName,indexOfItems[abs(item)].itemCatalogName);
     }
     else {
-      functionName = dynmenuGetLabel(dynamicMenuItem);
+      strcpy(functionName,dynmenuGetLabel(dynamicMenuItem));
     }
 
   showFunctionNameItem = item;

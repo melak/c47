@@ -348,23 +348,23 @@ void Setup_MultiPresses(int16_t result) {                            //Setup and
 
 void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
   int16_t longpressDelayedkey1 = 0;                                   //To Setup the timer locally for the next timed stage
-  longpressDelayedkey2 = 0;                                           //To Store the next timed stage
-  longpressDelayedkey3 = 0;                                           //To Store the next timed stage
-  int16_t tmpi;
+          longpressDelayedkey2 = 0;                                   //To Store the next timed stage
+          longpressDelayedkey3 = 0;                                   //To Store the next timed stage
 
   if((calcMode == CM_NORMAL || calcMode == CM_NIM) && tam.mode==0) {  //longpress yellow math functions on the first two rows, menus allowed provided it is within keys 00-14
     if(key_no >= 0 && key_no < 15 && LongPressM == RB_M1234) {
-      tmpi = getSystemFlag(FLAG_USER) ? kbd_usr[key_no].fShifted : kbd_std[key_no].fShifted;
-      longpressDelayedkey1 = tmpi;
-      tmpi = getSystemFlag(FLAG_USER) ? kbd_usr[key_no].gShifted : kbd_std[key_no].gShifted;
-      longpressDelayedkey3 = tmpi;
+      longpressDelayedkey1 = getSystemFlag(FLAG_USER) ? kbd_usr[key_no].fShifted : kbd_std[key_no].fShifted;
+      longpressDelayedkey3 = getSystemFlag(FLAG_USER) ? kbd_usr[key_no].gShifted : kbd_std[key_no].gShifted;
     }
   }                                                                   //yellow and blue function keys ^^
 
+  char *funcParam = (char *)getNthString((uint8_t *)userKeyLabel, key_no); //keyCode * 6 + g ? 2 : f ? 1 : 0);
+  //printf("\n\n >>>> ## result=%i key_no=%i *funcParam=%s  [0]=%u\n", *result, key_no, (char*)funcParam, ((char*)funcParam)[0]);
+    
   if(calcMode == CM_NORMAL) {                                         //longpress special keys
     switch(*result) {
       case ITM_XEQ      : 
-        if(tam.mode == 0) {
+        if(tam.mode == 0 && ((char*)funcParam)[0] == 0) { //If XEQ has a parameter, then do not inject it into the long press cycle
           longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = -MNU_XXEQ;    //XEQ longpress to XEQMENU 
         }
         break;
@@ -382,7 +382,7 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
   else if(calcMode == CM_NIM) {
     switch(*result) {
       case ITM_XEQ      : 
-        if(tam.mode == 0) {
+        if(tam.mode == 0 && ((char*)funcParam)[0] == 0) { //If XEQ has a parameter, then do not inject it into the long press cycle
           longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = -MNU_XXEQ;    //XEQ longpress to XEQMENU 
         }
         break;
@@ -450,7 +450,7 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
     if(JM_auto_doublepress_autodrop_enabled != 0) {
       hideFunctionName();
       undo();
-      showFunctionName(JM_auto_doublepress_autodrop_enabled, FUNCTION_NOPTIME);            //JM CLRDROP
+      showFunctionName(JM_auto_doublepress_autodrop_enabled, FUNCTION_NOPTIME, "SF:M");            //JM CLRDROP
       *result = JM_auto_doublepress_autodrop_enabled;
       fnTimerStop(TO_CL_DROP);          //JM TIMER CLRDROP ON DOUBLE BACKSPACE
       setSystemFlag(FLAG_ASLIFT);       //JM TIMER CLRDROP ON DOUBLE BACKSPACE
@@ -475,14 +475,7 @@ int16_t nameFunction(int16_t fn, int16_t itemShift) { //JM LONGPRESS vv
   #endif //PC_BUILD
 
 
-
-//XXX JM
-  if(func < 0)  {
-    func = -func;
-  }
-//    }
-
-  return func;
+  return abs(func);
 }
 
 
@@ -642,16 +635,38 @@ void btnFnPressed_StateMachine(void *unused, void *data) {
     FN_timeouts_in_progress = true;
     fnTimerStart(TO_FN_LONG, TO_FN_LONG, JM_TO_FN_LONG);    //dr
     FN_timed_out_to_NOP = false;
+
+    
+    char *varCatalogItem = "";
+
     if(!shiftF && !shiftG) {
-      showFunctionName(nameFunction(FN_key_pressed-37,0),0);
+      int16_t Dyn = nameFunction(FN_key_pressed-37,0);
+      //printf("dynamicMenuItem=%i\n",dynamicMenuItem);
+      if(dynamicMenuItem > -1) {
+        varCatalogItem = dynmenuGetLabel(dynamicMenuItem);
+      }
+      //strcpy(tmpString,varCatalogItem); //tempString system not used to preview argument names
+      showFunctionName(Dyn,0,varCatalogItem); //"SF:U");
       underline_softkey(FN_key_pressed-38, 0, !true /*dontclear at first call*/); //JMUL inverted clearflag
     }
     else if(shiftF && !shiftG) {
-      showFunctionName(nameFunction(FN_key_pressed-37,6),0);
+      int16_t Dyn = nameFunction(FN_key_pressed-37,6);
+      //printf("dynamicMenuItem=%i\n",dynamicMenuItem);
+      if(dynamicMenuItem > -1) {
+        varCatalogItem = dynmenuGetLabel(dynamicMenuItem);
+      }
+      //strcpy(tmpString,varCatalogItem);
+      showFunctionName(Dyn,0,varCatalogItem); //"SF:V");
       underline_softkey(FN_key_pressed-38, 1, !true /*dontclear at first call*/); //JMUL inverted clearflag
     }
     else if(!shiftF && shiftG) {
-      showFunctionName(nameFunction(FN_key_pressed-37,12),0);
+      int16_t Dyn = nameFunction(FN_key_pressed-37,12);
+      //printf("dynamicMenuItem=%i\n",dynamicMenuItem);
+      if(dynamicMenuItem > -1) {
+        varCatalogItem = dynmenuGetLabel(dynamicMenuItem);
+      }
+      //strcpy(tmpString,varCatalogItem);
+      showFunctionName(Dyn,0, varCatalogItem); //"SF:W");
       underline_softkey(FN_key_pressed-38, 2, !true /*dontclear at first call*/); //JMUL inverted clearflag
     }                                                                       //further shifts are done within FN_handler
   }
@@ -659,6 +674,8 @@ void btnFnPressed_StateMachine(void *unused, void *data) {
 //  if(testEnabled) { fnSwStop(1); }      //dr
 //#endif
 }
+
+
 
 
 

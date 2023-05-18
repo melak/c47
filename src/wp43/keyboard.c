@@ -135,7 +135,10 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
 
       case MNU_MVAR: {
         dynamicMenuItem = firstItem + itemShift + fn;
-        if(currentMvarLabel != INVALID_VARIABLE) {
+        if(tam.mode) {
+          item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : MNU_DYNAMIC);
+        }
+        else if(currentMvarLabel != INVALID_VARIABLE) {
           item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : ITM_SOLVE_VAR);
         }
         else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_SOLVER) && dynamicMenuItem == 5) {
@@ -660,7 +663,7 @@ printf(">>>>Z 011a btnFnPressed >>determineFunctionKeyItem_C43; data=|%s| data[0
           case MNU_PROGS:
           case MNU_VARS: {
             #if (FN_KEY_TIMEOUT_TO_NOP == 1)
-              showFunctionName(item, 1000); // 1000ms = 1s
+              showFunctionName(item, 1000, "SF:A"); // 1000ms = 1s
             #else // (FN_KEY_TIMEOUT_TO_NOP == 0)
               showFunctionNameItem = item;
             #endif // (FN_KEY_TIMEOUT_TO_NOP == 1)
@@ -1489,9 +1492,11 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         return;
       }
 
+      char *funcParam = "";
+
       if(getSystemFlag(FLAG_USER)) {
         int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (g ? 2 : f ? 1 : 0);
-        char *funcParam = (char *)getNthString((uint8_t *)userKeyLabel, keyCode * 6 + keyStateCode);
+        funcParam = (char *)getNthString((uint8_t *)userKeyLabel, keyCode * 6 + keyStateCode);
         xcopy(tmpString, funcParam, stringByteLength(funcParam) + 1);
       }
       else {
@@ -1513,7 +1518,8 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         #endif //PC_BUILD_TELLTALE
   
         if(!keyActionProcessed) {
-          showFunctionName(item, 1000); // 1000ms = 1s
+
+          showFunctionName(item, 1000, funcParam);// "SF:B"); // 1000ms = 1s
         }
       }
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && tamBuffer[0] == 0) {
@@ -1626,9 +1632,11 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         shiftG = g;
       }
 
+      char *funcParam = "";
+
       if(getSystemFlag(FLAG_USER)) {
         int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (g ? 2 : f ? 1 : 0);
-        char *funcParam = (char *)getNthString((uint8_t *)userKeyLabel, keyCode * 6 + keyStateCode);
+        funcParam = (char *)getNthString((uint8_t *)userKeyLabel, keyCode * 6 + keyStateCode);
         xcopy(tmpString, funcParam, stringByteLength(funcParam) + 1);
       }
       else {
@@ -1639,7 +1647,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       if(item != ITM_NOP && item != ITM_NULL) {
         processKeyAction(item);
         if(!keyActionProcessed) {
-          showFunctionName(item, 1000); // 1000ms = 1s
+          showFunctionName(item, 1000, funcParam); //"SF:C"); // 1000ms = 1s
         }
       }
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && tamBuffer[0] == 0) {
@@ -3199,7 +3207,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
         }
         else {
 //          runFunction(ITM_CLX);          //JM old
-          showFunctionName(ITM_CLX, 1000); //JM 1000ms = 1s        
+          showFunctionName(ITM_CLX, 1000, ""); //JM 1000ms = 1s        
         }
         break;
       }

@@ -1057,7 +1057,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
     uint8_t *ptr;
 
     #ifdef PC_BUILD
-      printf("initvariableSoftMenu (cachedDynamicMenu=%i)",cachedDynamicMenu);
+      //printf("initvariableSoftMenu (cachedDynamicMenu=%i)",cachedDynamicMenu);
     #endif //PC_BUILD
     free(dynamicSoftmenu[menu].menuContent);
 
@@ -1677,7 +1677,7 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
       return;
     } else {
 
-      if(itemNr >= ITM_X_P1 && itemNr <= ITM_X_g6) {
+      if(itemNr%10000 >= ITM_X_P1 && itemNr%10000 <= ITM_X_g6) {
         strcpy(itemName, indexOfItemsXEQM + 8*(itemNr%10000-fnXEQMENUpos));
       } else {
         strcpy(itemName, changeItoJ(itemNr));
@@ -1742,7 +1742,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
 
     if(m < NUMBER_OF_DYNAMIC_SOFTMENUS) { // Dynamic softmenu
       #ifdef PC_BUILD
-        printf("Dynamic menu: m=%i cachedDynamicMenu=%i softmenu[m].menuItem= %i \n",m, cachedDynamicMenu, softmenu[m].menuItem);
+        //printf("Dynamic menu: m=%i cachedDynamicMenu=%i softmenu[m].menuItem= %i \n",m, cachedDynamicMenu, softmenu[m].menuItem);
       #endif //PC_BUILD
       if(softmenu[m].menuItem != cachedDynamicMenu || softmenu[m].menuItem == -MNU_DYNAMIC) {
         initVariableSoftmenu(m);
@@ -1801,16 +1801,16 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
       }
     }
 
-    videoMode_t vm = vmNormal;
     char itemName[16];
-    int8_t showCb = NOVAL;
-    int16_t showValue = NOVAL;
     char showText[16];
     showText[0]=0;                                  //strcat(showText, NOTEXT); not working, hence clearing the string
+    videoMode_t vm = vmNormal;
+    int8_t showCb = NOVAL;
+    int16_t showValue = NOVAL;
 
     if(m < NUMBER_OF_DYNAMIC_SOFTMENUS) { // Dynamic softmenu
       #ifdef PC_BUILD
-        printf("Dynamic menu: m=%i cachedDynamicMenu=%i softmenu[m].menuItem= %i \n",m, cachedDynamicMenu, softmenu[m].menuItem);
+        //printf("Dynamic menu: m=%i cachedDynamicMenu=%i softmenu[m].menuItem= %i \n",m, cachedDynamicMenu, softmenu[m].menuItem);
       #endif //PC_BUILD
       if(numberOfItems == 0) {
         for(x=0; x<6; x++) {
@@ -1819,25 +1819,32 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
       }
       else {
         #ifdef PC_BUILD
-          printf("Dynamic menu: populate\n");
+          //printf("Dynamic menu: populate\n");
         #endif //PC_BUILD
         uint8_t *ptr = getNthString(dynamicSoftmenu[m].menuContent, currentFirstItem);
         for(y=0; y<3; y++) {
           for(x=0; x<6; x++) {
             if(x + 6*y + currentFirstItem < numberOfItems) {
               if(*ptr != 0) {
+                vm = vmNormal;
+                showCb = NOVAL;
+                showValue = NOVAL;
                 int16_t itemNr = userMenuItems[x + 6*y].item;
                 strcpy(itemName,(char *)ptr);
+                //printf(">>>> %u %u %s %s \n", x, y, itemName, userMenuItems[x + 6*y].argumentName);
                 switch(-softmenu[m].menuItem) {
                   case MNU_MENUS: {
                     vm = vmReverse;
                     break;
                   }
                   case MNU_MyMenu: {
-                    if(userMenuItems[x + 6*y].item < 0) {
-                      vm = vmReverse;
+                    //printf(">>>> MyMenu: %i %s : %s\n",itemNr, itemName, userMenuItems[x + 6*y].argumentName);
+                    if(itemNr < 0) {
+                     vm = vmReverse;       //No item name changes available for menu names
                     } else {
-                      changeSoftKey(softmenu[m].menuItem, itemNr, itemName, &vm, &showCb, &showValue, showText);
+                      if(userMenuItems[x + 6*y].argumentName[0] == 0) {
+                        changeSoftKey(softmenu[m].menuItem, itemNr, itemName, &vm, &showCb, &showValue, showText);
+                      }
                     }
                     break;
                   }

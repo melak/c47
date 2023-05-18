@@ -220,7 +220,7 @@ void       fnAGraph                           (uint16_t regist);
    * \param[in] item     Item ID to show
    * \param[in] counter  number of 1/10 seconds until NOP
    */
-  void     showFunctionName                   (int16_t item, int16_t delayInMs);
+  void     showFunctionName                   (int16_t item, int16_t delayInMs, const char * arg);
     
   /**
    * Hides the function name.
