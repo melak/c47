@@ -52,6 +52,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/stat.h>
 #endif
 #if defined(DMCP_BUILD)
 #include <dmcp.h>

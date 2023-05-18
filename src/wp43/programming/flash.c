@@ -32,6 +32,11 @@
 #include <string.h>
 #include <stdlib.h>
 
+#if defined(PC_BUILD)
+#include <sys/stat.h>
+#endif
+
+
 #define LIBDATA               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
   #define FLASH_PGM_DIR  "LIBRARY"
