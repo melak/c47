@@ -111,9 +111,14 @@ TO_QSPI const int16_t menu_DISP[]        = { ITM_FIX,                       ITM_
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                           //JM 
 
 
-                                             ITM_GAP_L,                     ITM_GRP_L,                  ITM_GRP1_L,               ITM_GRP_R,             ITM_GAP_R,                   ITM_SET_TO_TEXT,
+                                             ITM_GAP_L,                     ITM_GRP_L,                  ITM_GRP1_L,               ITM_GRP1_L_OF,         ITM_GRP_R,                   ITM_GAP_R,
                                              ITM_RDXPER,                    ITM_RDXCOM,                 ITM_NULL,                 ITM_DMY,               ITM_YMD,                     ITM_MDY,  
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_CLK12,                   ITM_CLK24,                    }; 
+                                             ITM_SET_TO_TEXT,               ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_CLK12,                   ITM_CLK24,
+
+                                             ITM_SETCHN,                    ITM_SETEUR,                 ITM_SETIND,               ITM_SETJPN,            ITM_SETUK,                   ITM_SETUSA,                    
+                                             ITM_SETCH,                     ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_SETUKOLD,                ITM_SETDFLT,
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                        };
+
 
 
 TO_QSPI const int16_t menu_EQN[]         = { ITM_EQ_NEW,                    ITM_EQ_EDI,                 -MNU_2NDDERIV,            -MNU_1STDERIV,         -MNU_Sf,                     -MNU_Solver,
@@ -1635,6 +1640,8 @@ bool_t isFunctionItemAMenu(int16_t item) {
          item == ITM_HPLOT     || 
          item == ITM_DRAW      || 
          item == ITM_CFG       || 
+         item == ITM_GAP_L     || 
+         item == ITM_GAP_R     || 
          item == ITM_PLOT_STAT ||
          item == ITM_EQ_NEW    ||
          item == ITM_VARMNU    ||
@@ -1700,6 +1707,8 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
                         else {
                           *showValue = grpGroupingGr1Left; 
                         }
+                        break;
+      case ITM_GRP1_L_OF:*showValue = grpGroupingGr1LeftOverflow; 
                         break;
       case ITM_GRP_R  : *showValue = grpGroupingRight; 
                         break;  

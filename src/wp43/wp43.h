@@ -212,6 +212,7 @@
   extern uint8_t                previousCalcMode;
   extern uint8_t                groupingGap;
   extern uint8_t                grpGroupingLeft;
+  extern uint8_t                grpGroupingGr1LeftOverflow;
   extern uint8_t                grpGroupingGr1Left;
   extern uint8_t                grpGroupingRight;
   extern uint8_t                roundingMode;

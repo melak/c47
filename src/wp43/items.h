@@ -1618,8 +1618,8 @@
 #define ITM_RESET                   1568
 #define ITM_REtoCX                  1569
 #define ITM_REexIM                  1570
-#define MNU_1571                    1571
-#define MNU_1572                    1572
+#define ITM_SETUKOLD                1571
+#define ITM_SETCH                   1572
 #define ITM_DSP                     1573
 #define ITM_RNORM                   1574
 #define ITM_EX1                     1575
@@ -2184,12 +2184,13 @@
 #define MNU_GAP_R                   2128
 #define ITM_SET_TO_TEXT             2129
 #define ITM_GRP_L                   2130
-#define ITM_GRP1_L                  2131
-#define ITM_GRP_R                   2132
-#define ITM_GAP_L                   2133
-#define ITM_GAP_R                   2134
+#define ITM_GRP1_L_OF               2131
+#define ITM_GRP1_L                  2132
+#define ITM_GRP_R                   2133
+#define ITM_GAP_L                   2134
+#define ITM_GAP_R                   2135
 
-#define LAST_ITEM                   2135
+#define LAST_ITEM                   2136
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
