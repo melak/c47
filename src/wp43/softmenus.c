@@ -191,7 +191,8 @@ TO_QSPI const int16_t menu_M_EDIT[]      = { ITM_LEFT_ARROW,                ITM_
                                              ITM_M_INSR,                    ITM_NULL,                   ITM_M_DELR,               ITM_M_GOTO,            ITM_M_WRAP,                  ITM_M_GROW                    };  //JM
 
 
-#if defined (INLINE_TEST) && defined (DMCP_BUILD)
+//#if defined (INLINE_TEST) && 
+#if defined (DMCP_BUILD)
   #define ITM_TST -MNU_INL_TST
 #else
   #define ITM_TST ITM_RESERVE
