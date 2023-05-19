@@ -626,6 +626,29 @@ int16_t fnItemShowValue(int16_t item) {
     result = roundingMode;
     break;
 
+
+  case ITM_GAP_L:      //
+    result = (uint8_t) (gapCharLeft[0])*256+(uint8_t)(gapCharLeft[1]);
+    break;
+
+  case ITM_GAP_R:      //
+    result = (uint8_t)(gapCharRight[0])*256+(uint8_t)(gapCharRight[1]);
+    break;
+
+  case ITM_GRP_L:      //
+    result = grpGroupingLeft;
+    break;
+
+  case ITM_GRP1_L:      //
+    result = grpGroupingGr1Left;
+    break;
+
+  case ITM_GRP_R:      //
+    result = grpGroupingRight;
+    break;
+
+
+
   case ITM_HASH_JM: //
     if(lastIntegerBase != 0)
       result = lastIntegerBase;
@@ -710,7 +733,7 @@ char *figlabel(const char *label, const char* showText, int16_t showValue) {    
   char tmp1[16];
   tmp[0] = 0;
 
-  if(strlen(label) <= 12) {
+  if(strlen(label) <= 15) {
     strcpy(tmp, label);
   }
 
@@ -724,13 +747,25 @@ char *figlabel(const char *label, const char* showText, int16_t showValue) {    
     strcat(tmp, tmp1);
   }
 
-  if(showText[0] != 0 && strlen(tmp)+strlen(showText) + 1 <= 12) {
+  if(showText[0] != 0 && strlen(tmp)+strlen(showText) + 1 <= 15) {
     //strcat(tmp, showText);
     uint16_t ii = 0;
     while (showText[ii] != 0) {
        if(showText[ii]>='A' && showText[ii]<='Z') {
          strcat(tmp, STD_SUB_A);
          tmp[strlen(tmp)-1] += showText[ii]-'A';
+       }
+       if(showText[ii]>='0' && showText[ii]<='9') {
+         strcat(tmp, STD_SUB_0);
+         tmp[strlen(tmp)-1] += showText[ii]-'0';
+       }
+       switch(showText[ii]) {
+          case '+'  : strcat(tmp,STD_SUB_PLUS);break;
+          case ','  : strcat(tmp,STD_COMMA);break;
+          case '-'  : strcat(tmp,STD_SUB_MINUS);break;
+          case '.'  : strcat(tmp,STD_PERIOD);break;
+          case '_'  : strcat(tmp,STD_UNDERSCORE);break;
+          default:break;
        }
     ii++;
     }

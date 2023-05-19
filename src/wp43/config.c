@@ -100,6 +100,69 @@ void configCommon(uint16_t idx) {
 }
 
 
+  
+
+  void fnSetGapChar (uint16_t charParam) {
+printf("Pre: %u %u %u %u \n", gapCharLeft[0],gapCharLeft[1],gapCharRight[0],gapCharRight[1]);
+printf("--%u--charParam\n",charParam);
+    if(charParam & 32768) {
+      if((charParam & 32767) == ITM_NULL) {
+        gapCharRight[0]=0;
+      } else {
+printf("1 %s\n", indexOfItems[charParam & 32767].itemCatalogName);
+        gapCharRight[0] = (indexOfItems[charParam & 32767].itemSoftmenuName)[0];
+        gapCharRight[1] = (indexOfItems[charParam & 32767].itemSoftmenuName)[1];
+        if (gapCharRight[0] == 0) {
+printf("2\n");
+          gapCharRight[0] = gapCharRight[1];
+          gapCharRight[1] = 0;
+        }
+      }
+    } else {
+      if(charParam == ITM_NULL) {
+        gapCharLeft[0]=0;
+      } else {
+printf("--%u--charParam\n",charParam);
+printf("3 %s\n", indexOfItems[charParam].itemCatalogName);
+        gapCharLeft[0] = (indexOfItems[charParam].itemSoftmenuName)[0];
+        gapCharLeft[1] = (indexOfItems[charParam].itemSoftmenuName)[1];
+        if (gapCharLeft[0] == 0) {
+printf("4\n");
+          gapCharLeft[0] = gapCharLeft[1];
+          gapCharLeft[1] = 0;
+        }
+      }        
+    }
+printf("Post: %u %u %u %u \n", gapCharLeft[0],gapCharLeft[1],gapCharRight[0],gapCharRight[1]);
+  }
+
+
+
+
+  void fnSettingsToXEQ            (uint16_t unusedButMandatoryParameter) {
+
+  }
+  void fnSettingsDispFormatGrpL   (uint16_t param) {
+     grpGroupingLeft = param;
+  }
+  void fnSettingsDispFormatGrp1L  (uint16_t param) {
+     grpGroupingGr1Left = param;
+  }
+  void fnSettingsDispFormatGrpR   (uint16_t param) {
+     grpGroupingRight = param;    
+  }
+
+  void fnMenuGapL (uint16_t unusedButMandatoryParameter) {
+    showSoftmenu(-MNU_GAP_L);
+  }
+  void fnMenuGapR (uint16_t unusedButMandatoryParameter) {
+    showSoftmenu(-MNU_GAP_R);
+  }
+
+
+
+
+
 
 void fnIntegerMode(uint16_t mode) {
   shortIntegerMode = mode;
@@ -675,6 +738,12 @@ void resetOtherConfigurationStuff(void) {
 
   shortIntegerMode = SIM_2COMPL;                              //64:2
   fnSetWordSize(64);
+
+  grpGroupingLeft   = 3;
+  grpGroupingGr1Left= 3;
+  grpGroupingRight  = 3;
+  fnSetGapChar(ITM_SPACE);
+  fnSetGapChar(32768+ITM_PERIOD);
 
   significantDigits = 0;
   currentAngularMode = amDegree;

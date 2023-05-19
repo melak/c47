@@ -77,6 +77,18 @@ void     fnConfigUk            (uint16_t unusedButMandatoryParameter);
  ***********************************************/
 void     fnConfigUsa           (uint16_t unusedButMandatoryParameter);
 
+void     fnMenuGapL                 (uint16_t unusedButMandatoryParameter);
+void     fnMenuGapR                 (uint16_t unusedButMandatoryParameter);
+void     fnSetGapChar               (uint16_t charParam);
+void     fnSettingsToXEQ            (uint16_t unusedButMandatoryParameter);
+void     fnSettingsDispFormatGrpL   (uint16_t param);
+void     fnSettingsDispFormatGrp1L  (uint16_t param);
+void     fnSettingsDispFormatGrpR   (uint16_t param);
+
+
+
+
+
 /********************************************//**
  * \brief Sets the calc to back to default standards
  *

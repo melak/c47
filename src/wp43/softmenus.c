@@ -85,8 +85,9 @@ TO_QSPI const int16_t menu_CLK[]         = { ITM_DATE,                      ITM_
 
                                              ITM_DATE,                      ITM_TIME,                   ITM_TDISP,                ITM_DMY,               ITM_YMD,                     ITM_MDY,
                                              ITM_SD,                        ITM_ST,                     ITM_WDAY,                 ITM_DAY,               ITM_MONTH,                   ITM_YEAR,
-                                             ITM_JUL_GREG,                  ITM_NULL,                   ITM_NULL,                 ITM_SECOND,            ITM_MINUTE,                  ITM_HR_DEG                  };    
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_SECOND,            ITM_MINUTE,                  ITM_HR_DEG,    
 
+                                             ITM_GET_JUL_GREG,              ITM_JUL_GREG,               ITM_JUL_GREG_1582,        ITM_JUL_GREG_1752,     ITM_JUL_GREG_1873,           ITM_JUL_GREG_1949             };    
 
 
 TO_QSPI const int16_t menu_CLR[]         = { ITM_CLSIGMA,                   ITM_CLP,                    ITM_CF,                   ITM_CLMENU,            ITM_CLCVAR,                  ITM_CLX,
@@ -109,9 +110,10 @@ TO_QSPI const int16_t menu_DISP[]        = { ITM_FIX,                       ITM_
                                              ITM_SI_All,                    ITM_SHOIREP,                ITM_LARGELI,              ITM_NULL,              ITM_CPXI,                    ITM_CPXJ,                           //JM 
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                           //JM 
 
-                                             ITM_SETCHN,                    ITM_SETEUR,                 ITM_SETIND,               ITM_SETJPN,            ITM_SETUK,                   ITM_SETUSA,                    
-                                             ITM_CLK12,                     ITM_CLK24,                  ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_SETDFLT,
-                                             ITM_RDXPER,                    ITM_RDXCOM,                 ITM_GAP,                  ITM_DMY,               ITM_YMD,                     ITM_MDY                       };
+
+                                             ITM_GAP_L,                     ITM_GRP_L,                  ITM_GRP1_L,               ITM_GRP_R,             ITM_GAP_R,                   ITM_SET_TO_TEXT,
+                                             ITM_RDXPER,                    ITM_RDXCOM,                 ITM_NULL,                 ITM_DMY,               ITM_YMD,                     ITM_MDY,  
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_CLK12,                   ITM_CLK24,                    }; 
 
 
 TO_QSPI const int16_t menu_EQN[]         = { ITM_EQ_NEW,                    ITM_EQ_EDI,                 -MNU_2NDDERIV,            -MNU_1STDERIV,         -MNU_Sf,                     -MNU_Solver,
@@ -684,6 +686,12 @@ TO_QSPI const int16_t menu_ALPHA[]       = { ITM_T_UP_ARROW,                ITM_
 TO_QSPI const int16_t menu_XXEQ[]        = { ITM_XSAVE,                     ITM_XLOAD,                  ITM_XEDIT,                ITM_XNEW,              ITM_XXEQ,                     -MNU_XEQ                        };   //JM
 
 
+TO_QSPI const int16_t menu_GAP_L[]       = { ITM_GAPPER_L,                  ITM_GAPCOM_L,               ITM_GAPAPO_L,             ITM_GAPSPC_L,          ITM_GAPUND_L,                 ITM_GAPNIL_L                    };
+TO_QSPI const int16_t menu_GAP_R[]       = { ITM_GAPPER_R,                  ITM_GAPCOM_R,               ITM_GAPAPO_R,             ITM_GAPSPC_R,          ITM_GAPUND_R,                 ITM_GAPNIL_R                    };
+
+
+
+
 #include "softmenuCatalogs.h"
 
 TO_QSPI const softmenu_t softmenu[] = {
@@ -824,12 +832,13 @@ TO_QSPI const softmenu_t softmenu[] = {
 /* 132 */  {.menuItem = -MNU_TAMNONREG,   .numItems = sizeof(menu_TamNonReg     )/sizeof(int16_t), .softkeyItem = menu_TamNonReg      },
 /* 133 */  {.menuItem = -MNU_TAMNONREGIND,.numItems = sizeof(menu_TamNonRegInd  )/sizeof(int16_t), .softkeyItem = menu_TamNonRegInd   },
 /* 134 */  {.menuItem = -MNU_BLUE_C47,    .numItems = sizeof(menu_BLUE_C47      )/sizeof(int16_t), .softkeyItem = menu_BLUE_C47       },
+/* 135 */  {.menuItem = -MNU_GAP_L,       .numItems = sizeof(menu_GAP_L         )/sizeof(int16_t), .softkeyItem = menu_GAP_L          },
+/* 136 */  {.menuItem = -MNU_GAP_R,       .numItems = sizeof(menu_GAP_R         )/sizeof(int16_t), .softkeyItem = menu_GAP_R          },
 #ifdef INLINE_TEST                                                              //vv dr
 /*     */  {.menuItem= -MNU_INL_TST,     .numItems = sizeof(menu_Inl_Tst        )/sizeof(int16_t), .softkeyItem = menu_Inl_Tst        },
 #endif                                                                          //^^
 /*     */  {.menuItem =  0,               .numItems = 0,                                           .softkeyItem = NULL                }
 };
-
 
 dynamicSoftmenu_t dynamicSoftmenu[NUMBER_OF_DYNAMIC_SOFTMENUS] = {
 /*   0 */  {.menuItem = -MNU_MyMenu,  .numItems = 0, .menuContent = NULL},
@@ -1662,15 +1671,42 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
   if(itemNr > 0) { 
     * showCb = fnCbIsSet(itemNr%10000);
     * showValue = fnItemShowValue(itemNr%10000);
-    switch (* showValue) {
-      case 32700 : strcat(showText, "ALL" ); *showValue = NOVAL; break;
-      case 32701 : strcat(showText, "FIX" ); *showValue = NOVAL; break;
-      case 32702 : strcat(showText, "SCI" ); *showValue = NOVAL; break;
-      case 32703 : strcat(showText, "ENG" ); *showValue = NOVAL; break;
-      case 32704 : strcat(showText, "SIG" ); *showValue = NOVAL; break; 
-      case 32705 : strcat(showText, "UNIT"); *showValue = NOVAL; break;
-      default: break;
-    }
+
+    switch(itemNr%10000) {
+
+      case ITM_DSPCYCLE:switch (* showValue) {
+                          case 32700 : strcat(showText, "ALL" ); *showValue = NOVAL; break;
+                          case 32701 : strcat(showText, "FIX" ); *showValue = NOVAL; break;
+                          case 32702 : strcat(showText, "SCI" ); *showValue = NOVAL; break;
+                          case 32703 : strcat(showText, "ENG" ); *showValue = NOVAL; break;
+                          case 32704 : strcat(showText, "SIG" ); *showValue = NOVAL; break; 
+                          case 32705 : strcat(showText, "UNIT"); *showValue = NOVAL; break;
+                          default: break;
+                        } 
+                        break;
+      case ITM_GAP_L  : strcat(showText, gapCharLeft); 
+                        *showValue = NOVAL; 
+                        break;
+      case ITM_GAP_R  : strcat(showText, gapCharRight); 
+                        *showValue = NOVAL; 
+                        break;
+      case ITM_GRP_L  : *showValue = grpGroupingLeft; 
+                        break;
+      case ITM_GRP1_L : *showValue = NOVAL;
+                        if(grpGroupingGr1Left == 1) {
+                          strcat(showText,"+1");
+                          *showValue = NOVAL;
+                        }
+                        else {
+                          *showValue = grpGroupingGr1Left; 
+                        }
+                        break;
+      case ITM_GRP_R  : *showValue = grpGroupingRight; 
+                        break;  
+      default:break;
+      } 
+
+    
     if(itemNr%10000 == 9999) {
       strcpy(itemName, indexOfItems[!getSystemFlag(FLAG_MULTx) ? ITM_DOT : ITM_CROSS].itemSoftmenuName);
       //printf("WWW1: itemName=%s, 0:%i 1:%i, ItemNr=%i \n",itemName, (uint8_t) itemName[0], (uint8_t) itemName[1], itemNr);

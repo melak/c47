@@ -1069,8 +1069,13 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnDeltaPercentXmean        (uint16_t unusedButMandatoryParameter) {}
   void fnSetCPXmult               (uint16_t unusedButMandatoryParameter) {}
   void setFGLSettings             (uint16_t unusedButMandatoryParameter) {}
-
-
+  void fnSettingsToXEQ            (uint16_t unusedButMandatoryParameter) {}
+  void fnSettingsDispFormatGrpL   (uint16_t unusedButMandatoryParameter) {}
+  void fnSettingsDispFormatGrp1L  (uint16_t unusedButMandatoryParameter) {}
+  void fnSettingsDispFormatGrpR   (uint16_t unusedButMandatoryParameter) {}
+  void fnSetGapChar               (uint16_t unusedButMandatoryParameter) {}
+  void fnMenuGapL                 (uint16_t unusedButMandatoryParameter) {}
+  void fnMenuGapR                 (uint16_t unusedButMandatoryParameter) {}
 
 
                                                                               //JM ^^
@@ -1083,7 +1088,7 @@ TO_QSPI const item_t indexOfItems[] = {
 
 //This list is generated (manually) from items3.xlsx, EXPORT.C
 
-//            function                      parameter                    item in catalog                                item in softmenu                               TAM min                 max  CATALOG    stackLift       UNDO status    EIM status     In program
+//            function                      parameter                    item in catalog                                item in softmenu
 /*    0 */  { itemToBeCoded,                NOPARAM,                     "",                                            "0000",                                        (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         }, // ITM_NULL
 
 // Items from 1 to 127 are 1 byte OP codes
@@ -3236,6 +3241,30 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2108 */  { itemToBeCoded,                NOPARAM,                     "",                                            "TamNoRegInd",                                 (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2109 */  { fnSave,                       SM_STATE_SAVE,               "SAVEST",                                      "SAVEST",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
 /* 2110 */  { fnLoad,                       LM_STATE_LOAD,               "LOADST",                                      "LOADST",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_CANCEL    | EIM_DISABLED | PTP_DISABLED     },
+/* 2111 */  { fnSetGapChar,                 ITM_PERIOD,                  "LGAP.",                                       "GAP.",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2112 */  { fnSetGapChar,                 ITM_COMMA,                   "LGAP,",                                       "GAP,",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2113 */  { fnSetGapChar,                 ITM_QUOTE,                   "LGAP'",                                       "GAP'",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2114 */  { fnSetGapChar,                 ITM_SPACE_4_PER_EM,          "LGAP" STD_OPEN_BOX,                           "GAP" STD_OPEN_BOX,                            (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2115 */  { fnSetGapChar,                 ITM_UNDERSCORE,              "LGAP" STD_UNDERSCORE,                         "GAP" STD_UNDERSCORE,                          (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2116 */  { fnSetGapChar,                 ITM_NULL,                    "LNOGAP",                                      "NOGAP",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2117 */  { fnSetGapChar,                 32768+ITM_PERIOD,            "RGAP.",                                       "GAP.",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2118 */  { fnSetGapChar,                 32768+ITM_COMMA,             "RGAP,",                                       "GAP,",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2119 */  { fnSetGapChar,                 32768+ITM_QUOTE,             "RGAP'",                                       "GAP'",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2120 */  { fnSetGapChar,                 32768+ITM_SPACE_4_PER_EM,    "RGAP" STD_OPEN_BOX,                           "GAP" STD_OPEN_BOX,                            (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2121 */  { fnSetGapChar,                 32768+ITM_UNDERSCORE,        "RGAP" STD_UNDERSCORE,                         "GAP" STD_UNDERSCORE,                          (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2122 */  { fnSetGapChar,                 32768+ITM_NULL,              "RNOGAP",                                      "NOGAP",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2123 */  { fnSetFirstGregorianDay,       ITM_JUL_GREG_1582,           "JG.1582",                                     "JG.1582",                                     (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2124 */  { fnSetFirstGregorianDay,       ITM_JUL_GREG_1752,           "JG.1752",                                     "JG.1752",                                     (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2125 */  { fnSetFirstGregorianDay,       ITM_JUL_GREG_1873,           "JG.1873",                                     "JG.1873",                                     (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2126 */  { fnSetFirstGregorianDay,       ITM_JUL_GREG_1949,           "JG.1949",                                     "JG.1949",                                     (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2127 */  { itemToBeCoded,                NOPARAM,                     "GAP.L",                                       "GAP.L",                                       (0 << TAM_MAX_BITS) |     0, CAT_MENU | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2128 */  { itemToBeCoded,                NOPARAM,                     "GAP.R",                                       "GAP.R",                                       (0 << TAM_MAX_BITS) |     0, CAT_MENU | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2129 */  { fnSettingsToXEQ,              NOPARAM,                     "SET" STD_RIGHT_ARROW "TXT",                   "SET" STD_RIGHT_ARROW "TXT",                   (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2130 */  { fnSettingsDispFormatGrpL,     TM_VALUE,                    "GRP." STD_SPACE_3_PER_EM "L",                 "GRP." STD_SPACE_3_PER_EM "L",                 (2 << TAM_MAX_BITS) |     9, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NUMBER_8     },
+/* 2131 */  { fnSettingsDispFormatGrp1L,    TM_VALUE,                    "GRP1." STD_SPACE_3_PER_EM "L",                "GRP1." STD_SPACE_3_PER_EM "L",                (1 << TAM_MAX_BITS) |     9, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NUMBER_8     },
+/* 2132 */  { fnSettingsDispFormatGrpR,     TM_VALUE,                    "GRP." STD_SPACE_3_PER_EM "R",                 "GRP." STD_SPACE_3_PER_EM "R",                 (2 << TAM_MAX_BITS) |     9, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NUMBER_8     },
+/* 2133 */  { fnMenuGapL,                   MNU_GAP_L,                   "GAP." STD_SPACE_3_PER_EM "L",                 "GAP." STD_SPACE_3_PER_EM "L",                 (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2134 */  { fnMenuGapR,                   MNU_GAP_R,                   "GAP." STD_SPACE_3_PER_EM "R",                 "GAP." STD_SPACE_3_PER_EM "R",                 (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 
-/* 2111 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
+/* 2135 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
 };
