@@ -52,6 +52,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/stat.h>
 #endif
 #if defined(DMCP_BUILD)
 #include <dmcp.h>
@@ -138,7 +139,7 @@ int load_statefile(const char * fpath, const char * fname, void * data) {
 //GTK file selection dialog function
  
 #if defined(PC_BUILD)
-int file_selection_screen(const char * title, const char * base_dir, const char * ext, int disp_save, int overwrite_check, void * data) {
+  int file_selection_screen(const char * title, const char * base_dir, const char * ext, int disp_save, int overwrite_check, void * data) {
       GtkFileChooserNative *native;
       gint res;
 
@@ -188,7 +189,21 @@ int file_selection_screen(const char * title, const char * base_dir, const char 
         g_object_unref (native);
         return 0;
       } 
-}
+  }
+
+  static int create_dir(char * dir) {
+    int ret;
+    #if defined(WIN32)
+      ret = mkdir( dir );
+    #else
+      ret = mkdir( dir, 0775);
+    #endif // WIN3
+    if (( ret != 0) && (errno != EEXIST)) {
+      return -1;
+    } else { 
+      return 0;
+    }
+  }
 #endif // PC_BUILD
 
 
@@ -1142,11 +1157,18 @@ char tmpString[3000];             //The concurrent use of the global tmpString
     FILE *ppgm_fp;
 
     if(saveType == manualSave) {
-      strcpy(fileName,"C47.sav");
+	  #if defined(PC_BUILD)	
+        if (create_dir("SAVFILES") != 0) return;
+	  #endif // PC_BUILD
+      strcpy(fileName,"SAVFILES/C47.sav");
     } else {
       char * base_dir;
       int ret = 0;
       base_dir = g_get_current_dir();
+	  #if defined(PC_BUILD)
+        if (create_dir("." STATE_DIR) != 0) return;
+	  #endif // PC_BUILD
+      strcat(base_dir, STATE_DIR);
       ret = file_selection_screen("Save State File", base_dir, "*"STATE_EXT, 1, 1, fileName);
       g_free(base_dir);
       if (ret == 0) return;
@@ -1155,7 +1177,7 @@ char tmpString[3000];             //The concurrent use of the global tmpString
     if(BACKUP == NULL) {
       printf("Cannot SAVE in file %s!\n", fileName);
       return;
-	}	
+    }   
 
   #endif // DMCP_BUILD
   // SAV file version number
@@ -2599,11 +2621,14 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
   #else // !DMCP_BUILD
     FILE *ppgm_fp;
     if(loadType == manualLoad) {
-      strcpy(fileName,"C47.sav");
+      if (create_dir("SAVFILES") != 0) return;
+      strcpy(fileName,"SAVFILES/C47.sav");
     } else {
       char * base_dir;
       int ret = 0;
       base_dir = g_get_current_dir();
+      if (create_dir("." STATE_DIR) != 0) return;
+      strcat(base_dir, STATE_DIR);
       ret = file_selection_screen("Load State File", base_dir, "*"STATE_EXT, 0, 0, fileName);
       g_free(base_dir);
       if (ret == 0) return;
@@ -2723,7 +2748,7 @@ void fnDeleteBackup(uint16_t confirmation) {
       }
       sys_disk_write_enable(0);
     #else // !DMCP_BUILD
-      int result = remove("C47.sav");
+      int result = remove("SAVFILES/C47.sav");
       if(result == -1) {
         #if !defined(TESTSUITE_BUILD)
           int e = errno;

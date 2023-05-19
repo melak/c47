@@ -32,14 +32,15 @@
 #include <string.h>
 #include <stdlib.h>
 
+#if defined(PC_BUILD)
+#include <sys/stat.h>
+#endif
+
+
 #define LIBDATA               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
-#if defined(DMCP_BUILD)
   #define FLASH_PGM_DIR  "LIBRARY"
   #define FLASH_PGM_FILE "C47.dat"
-#else // !DMCP_BUILD
-  #define FLASH_PGM_FILE "C47.dat"
-#endif // DMCP_BUILD
 
 static void save(const void *buffer, uint32_t size, void *stream) {
   #if defined(DMCP_BUILD)
@@ -68,6 +69,22 @@ static void seek(uint32_t pos, void *stream) {
   #endif // DMCP_BUILD
 }
 
+
+#if defined(PC_BUILD)
+  static int create_dir(char * dir) {
+    int ret;
+    #if defined(WIN32)
+      ret = mkdir( dir );
+    #else
+      ret = mkdir( dir, 0775);
+    #endif // WIN3
+    if (( ret != 0) && (errno != EEXIST)) {
+      return -1;
+    } else { 
+      return 0;
+    }
+  }
+#endif // PC_BUILD
 
 
 static void _addSpaceAfterPrograms(uint16_t size) {
@@ -185,7 +202,7 @@ void fnPSto(uint16_t unusedButMandatoryParameter) {
     #else // !DMCP_BUILD
       FILE *ppgm_fp;
 
-      if((LIBDATA = fopen(FLASH_PGM_FILE, "r+b")) == NULL) {
+      if((LIBDATA = fopen(FLASH_PGM_DIR "/" FLASH_PGM_FILE, "r+b")) == NULL) {
         displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function deleteFromFlashPgmLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
@@ -232,7 +249,7 @@ void deleteFromFlashPgmLibrary(uint32_t fromAddr, uint32_t toAddr) {
   #else // !DMCP_BUILD
     FILE *ppgm_fp;
 
-    if((LIBDATA = fopen(FLASH_PGM_FILE, "r+b")) == NULL) {
+    if((LIBDATA = fopen(FLASH_PGM_DIR "/" FLASH_PGM_FILE, "r+b")) == NULL) {
       displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function deleteFromFlashPgmLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
@@ -274,7 +291,7 @@ void readStepInFlashPgmLibrary(uint8_t *buffer, uint16_t bufferSize, uint32_t po
   #else // !DMCP_BUILD
     FILE *ppgm_fp;
 
-    if((LIBDATA = fopen(FLASH_PGM_FILE, "rb")) == NULL) {
+    if((LIBDATA = fopen(FLASH_PGM_DIR "/" FLASH_PGM_FILE, "rb")) == NULL) {
       displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function scanFlashProgramLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
@@ -310,9 +327,9 @@ void scanFlashPgmLibrary(void) {
   #else // !DMCP_BUILD
     FILE *ppgm_fp;
 
-    if((LIBDATA = fopen(FLASH_PGM_FILE, "rb")) == NULL) {
+    if((LIBDATA = fopen(FLASH_PGM_DIR "/" FLASH_PGM_FILE, "rb")) == NULL) {
       initFlashPgmLibrary();
-      if((LIBDATA = fopen(FLASH_PGM_FILE, "rb")) == NULL) {
+      if((LIBDATA = fopen(FLASH_PGM_DIR "/" FLASH_PGM_FILE, "rb")) == NULL) {
         displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function scanFlashProgramLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
@@ -433,7 +450,11 @@ void initFlashPgmLibrary(void) {
   #else // !DMCP_BUILD
     FILE *ppgm_fp;
 
-    LIBDATA = fopen(FLASH_PGM_FILE, "wb");
+    
+	#if defined(PC_BUILD)
+      if (create_dir(FLASH_PGM_DIR) != 0) return;
+    #endif // PC_BUILD
+    LIBDATA = fopen(FLASH_PGM_DIR "/" FLASH_PGM_FILE, "wb");
     if(LIBDATA == NULL) {
       printf("Cannot SAVE in file " FLASH_PGM_FILE "!\n");
       return;
