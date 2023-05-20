@@ -2174,7 +2174,7 @@ void timeToDisplayString(calcRegister_t regist, char *displayString, bool_t igno
       displayFormat = getSystemFlag(FLAG_ALLENG) ? DF_ENG : DF_SCI;
       displayFormatDigits = 3;
     }
-    real34ToDisplayString(REGISTER_REAL34_DATA(regist), amSecond, displayString, &standardFont, 2000, ignoreTDisp ? 34 : 16, false, STD_SPACE_4_PER_EM, false);
+    real34ToDisplayString(REGISTER_REAL34_DATA(regist), amSecond, displayString, &standardFont, 2000, ignoreTDisp ? 34 : 16, false, SEPARATOR_LEFT, false);
     displayFormatDigits = savedDisplayFormatDigits;
     displayFormat = savedDisplayFormat;
     return;
@@ -2267,8 +2267,8 @@ void timeToDisplayString(calcRegister_t regist, char *displayString, bool_t igno
   for(digits = strlen(digitBuf2); digits > 0; --digits){
     digitBuf[0] = *bufPtr++;
     strcat(displayString, digitBuf);
-    if((digits % 3u == 1) && (digits > 1)) {
-      strcat(displayString, STD_SPACE_4_PER_EM);
+    if((digits % grpGroupingLeft == 1) && (digits > 1)) {
+      strcat(displayString, SEPARATOR_LEFT);
     }
     ++tDigits;
   }
@@ -2311,8 +2311,8 @@ void timeToDisplayString(calcRegister_t regist, char *displayString, bool_t igno
       if(digits == 0u) {
         strcat(displayString, RADIX34_MARK_STRING);
       }
-      else if(digits % 3 == 0u) {
-        strcat(displayString, STD_SPACE_4_PER_EM);
+      else if(digits % grpGroupingRight == 0u) {
+        strcat(displayString, SEPARATOR_RIGHT);
       }
 
       realToUInt32(&value, DEC_ROUND_DOWN, &s32, &overflow);
@@ -2344,11 +2344,9 @@ void complex34MatrixToDisplayString(calcRegister_t regist, char *displayString) 
 static void _complex34ToShowTmpString(const real34_t *r, const real34_t *i) {
   int16_t last;
   real34_t real34;
-  char *separator;
 
   // Real part
-  separator = STD_SPACE_4_PER_EM;
-  real34ToDisplayString(r, amNone, tmpString, &standardFont, 2000, 34, false, separator, false);
+  real34ToDisplayString(r, amNone, tmpString, &standardFont, 2000, 34, false, SEPARATOR_LEFT, false);
 
   // +/- i×
   real34Copy(i, &real34);
@@ -2362,7 +2360,7 @@ static void _complex34ToShowTmpString(const real34_t *r, const real34_t *i) {
 
   // Imaginary part
   real34SetPositiveSign(&real34);
-  real34ToDisplayString(&real34, amNone, tmpString + 600, &standardFont, 2000, 34, false, separator, false);
+  real34ToDisplayString(&real34, amNone, tmpString + 600, &standardFont, 2000, 34, false, SEPARATOR_LEFT, false);
 
   if(stringWidth(tmpString + 300, &standardFont, true, true) + stringWidth(tmpString + 600, &standardFont, true, true) <= SCREEN_WIDTH) {
     last = 300;
@@ -2387,7 +2385,6 @@ static void _complex34ToShowTmpString(const real34_t *r, const real34_t *i) {
 void fnShow(uint16_t unusedButMandatoryParameter) {
   uint8_t savedDisplayFormat = displayFormat, savedDisplayFormatDigits = displayFormatDigits;
   int16_t source, dest, last, d, maxWidth, offset, bytesProcessed;
-  char *separator;
   bool_t thereIsANextLine;
 
   displayFormat = DF_ALL;
@@ -2405,8 +2402,7 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger: {
-      separator = STD_SPACE_4_PER_EM;
-      longIntegerRegisterToDisplayString(REGISTER_X, errorMessage, WRITE_BUFFER_LEN, 3200, 400, separator, false);//JM added last parameter: Allow LARGELI
+      longIntegerRegisterToDisplayString(REGISTER_X, errorMessage, WRITE_BUFFER_LEN, 3200, 400, SEPARATOR_LEFT, false);//JM added last parameter: Allow LARGELI
 
       last = stringByteLength(errorMessage);
       source = 0;
@@ -2416,7 +2412,7 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
         maxWidth = SCREEN_WIDTH - stringWidth("0", &standardFont, true, true);
       }
       else {
-        maxWidth = SCREEN_WIDTH - stringWidth("0", &standardFont, true, true)*groupingGap - stringWidth(separator, &standardFont, true, true);
+        maxWidth = SCREEN_WIDTH - stringWidth("0", &standardFont, true, true)*groupingGap - stringWidth(SEPARATOR_LEFT, &standardFont, true, true);
       }
 
       for(d=0; d<=1800 ; d+=300) {
@@ -2429,7 +2425,7 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
             }
             source++;
             tmpString[++dest] = 0;
-          } while(source < last && groupingGap > 0 && (errorMessage[source] != *separator || errorMessage[source + 1] != *(separator + 1)));
+          } while(source < last && groupingGap > 0 && (errorMessage[source] != SEPARATOR_LEFT[0] || errorMessage[source + 1] != SEPARATOR_LEFT[1]));
         }
       }
 
@@ -2442,7 +2438,7 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
     }
 
     case dtReal34: {
-      real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpString, &standardFont, 2000, 34, false, STD_SPACE_4_PER_EM, false);
+      real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpString, &standardFont, 2000, 34, false, SEPARATOR_LEFT, false);
       break;
     }
 
@@ -2525,7 +2521,7 @@ void mimShowElement(void) {
     temporaryInformation = TI_SHOW_REGISTER;
 
     if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
-      real34ToDisplayString(&openMatrixMIMPointer.realMatrix.matrixElements[i * openMatrixMIMPointer.header.matrixColumns + j], amNone, tmpString, &standardFont, 2000, 34, false, STD_SPACE_4_PER_EM, false);
+      real34ToDisplayString(&openMatrixMIMPointer.realMatrix.matrixElements[i * openMatrixMIMPointer.header.matrixColumns + j], amNone, tmpString, &standardFont, 2000, 34, false, SEPARATOR_LEFT, false);
     }
 
     else {
@@ -2634,7 +2630,6 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
     bool_t thereIsANextLine;
     int16_t source, dest, last, d, maxWidth, i, offset, bytesProcessed, aa, bb, cc, dd, aa2=0, aa3=0, aa4=0;
     uint64_t nn;
-    char *separator;
 
     displayFormat = DF_ALL;
     displayFormatDigits = 0;
@@ -2688,8 +2683,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
         #endif
 
         strcpy(errorMessage,tmpString + 2100);
-        separator = STD_SPACE_4_PER_EM;
-        longIntegerRegisterToDisplayString(SHOWregis, errorMessage + stringByteLength(tmpString + 2100), WRITE_BUFFER_LEN, 4*400, 350, STD_SPACE_4_PER_EM, false);  //JM added last parameter: Allow LARGELI
+        longIntegerRegisterToDisplayString(SHOWregis, errorMessage + stringByteLength(tmpString + 2100), WRITE_BUFFER_LEN, 4*400, 350, SEPARATOR_LEFT, false);  //JM added last parameter: Allow LARGELI
 
         last = stringByteLength(errorMessage);
         source = 0;
@@ -2704,7 +2698,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
           else {
             char tmp[4];
             strcpy(tmp,"0");
-            strcat(tmp,separator);
+            strcat(tmp,SEPARATOR_LEFT);
             maxWidth = SCREEN_WIDTH - stringWidth(tmp , &numericFont, true, true);          //Add the separator that gets added to the last character
           }
 
@@ -2727,9 +2721,9 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
               }
             tmpString[dest] = 0;
 
-            if(!(source < last) && groupingGap!=0 && (tmpString[dest+0] != 0) && !(tmpString[dest+0] == *(separator + 0) && (tmpString[dest+1] == *(separator + 1)))) {               //Last line
-              tmpString[dest+0] = *(separator + 0); //0xa0;       //Add a space to the very end to space last line nicely.
-              tmpString[dest+1] = *(separator + 1); //0x05;
+            if(!(source < last) && groupingGap!=0 && (tmpString[dest+0] != 0) && !(tmpString[dest+0] == SEPARATOR_LEFT[0] && (tmpString[dest+1] == SEPARATOR_LEFT[1]))) {               //Last line
+              tmpString[dest+0] = SEPARATOR_LEFT[0]; //0xa0;       //Add a space to the very end to space last line nicely.
+              tmpString[dest+1] = SEPARATOR_LEFT[1]; //0x05;
               tmpString[dest+2] = 0;
               dest+=2;
             }
@@ -2745,7 +2739,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
 
           SHOW_reset();
           strcpy(errorMessage,tmpString + 2100);
-          longIntegerRegisterToDisplayString(SHOWregis, errorMessage + stringByteLength(tmpString + 2100), WRITE_BUFFER_LEN, 7*400, 350, STD_SPACE_4_PER_EM, false);  //JM added last parameter: Allow LARGELI
+          longIntegerRegisterToDisplayString(SHOWregis, errorMessage + stringByteLength(tmpString + 2100), WRITE_BUFFER_LEN, 7*400, 350, SEPARATOR_LEFT, false);  //JM added last parameter: Allow LARGELI
 
           last = stringByteLength(errorMessage);
           source = 0;
@@ -2757,7 +2751,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
             maxWidth = SCREEN_WIDTH - stringWidth("0", &standardFont, true, true);
           }
           else {
-            maxWidth = SCREEN_WIDTH - stringWidth("0", &standardFont, true, true)*groupingGap - stringWidth(separator, &standardFont, true, true);
+            maxWidth = SCREEN_WIDTH - stringWidth("0", &standardFont, true, true)*groupingGap - stringWidth(SEPARATOR_LEFT, &standardFont, true, true);
           }
 
           for(d=0; d<=1800 ; d+=300) {                                                      //Small font, fill 7 lines at 0, 300, 600, 900, 1200, 1500, 1800
@@ -2771,7 +2765,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
                 source++;
                 tmpString[++dest] = 0;
               }
-            while(source < last && groupingGap > 0 && (errorMessage[source] != *separator || errorMessage[source + 1] != *(separator + 1)));
+            while(source < last && groupingGap > 0 && (errorMessage[source] != SEPARATOR_LEFT[0] || errorMessage[source + 1] != SEPARATOR_LEFT[1]));
             }
           }
           if(source < last) { // The long integer is too long
@@ -2788,15 +2782,14 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
           printf("SHOW:Real\n");
         #endif
         temporaryInformation = TI_SHOW_REGISTER_BIG;
-        separator = STD_SPACE_4_PER_EM;
-        real34ToDisplayString(REGISTER_REAL34_DATA(SHOWregis), getRegisterAngularMode(SHOWregis), tmpString + 2100+stringByteLength(tmpString + 2100), &numericFont, SCREEN_WIDTH * 2, 34, false, separator, false);
+        real34ToDisplayString(REGISTER_REAL34_DATA(SHOWregis), getRegisterAngularMode(SHOWregis), tmpString + 2100+stringByteLength(tmpString + 2100), &numericFont, SCREEN_WIDTH * 2, 34, false, SEPARATOR_LEFT, false);
         last = 2100 + stringByteLength(tmpString + 2100);
         source = 2100;
         for(d=0; d<=900 ; d+=300) {
           dest = d;
           while(source < last && stringWidth(tmpString + d, &numericFont, true, true) <= SCREEN_WIDTH - 8*2) {
             //check if a full triplet of digits will fit otherwise break line
-            if((tmpString[source] == *separator && tmpString[source + 1] == *(separator + 1))) {
+            if((tmpString[source] == SEPARATOR_LEFT[0] && tmpString[source + 1] == SEPARATOR_LEFT[1])) {
               aa = source;
               if(tmpString[aa] & 0x80) aa += 2;
               if(tmpString[aa] & 0x80) aa += 2;
@@ -2832,10 +2825,10 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
             default:break;
           }
 
-          printXAngle(aa, 600, separator);
-          printXAngle(bb, 900, separator);
-          printXAngle(cc,1200, separator);
-          printXAngle(dd,1500, separator);
+          printXAngle(aa, 600, SEPARATOR_LEFT);
+          printXAngle(bb, 900, SEPARATOR_LEFT);
+          printXAngle(cc,1200, SEPARATOR_LEFT);
+          printXAngle(dd,1500, SEPARATOR_LEFT);
         }
 
 
@@ -2848,8 +2841,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
         #endif
         temporaryInformation = TI_SHOW_REGISTER_BIG;
 
-        separator = STD_SPACE_4_PER_EM;
-        complex34ToDisplayString(REGISTER_COMPLEX34_DATA(SHOWregis), tmpString, &numericFont,2000, 34 ,true, separator, true, getComplexRegisterAngularMode(SHOWregis), getComplexRegisterPolarMode(SHOWregis));
+        complex34ToDisplayString(REGISTER_COMPLEX34_DATA(SHOWregis), tmpString, &numericFont,2000, 34 ,true, SEPARATOR_LEFT, true, getComplexRegisterAngularMode(SHOWregis), getComplexRegisterPolarMode(SHOWregis));
         for(i=stringByteLength(tmpString) - 1; i>0; i--) {
           if(tmpString[i] == 0x08) {
             tmpString[i] = 0x05;

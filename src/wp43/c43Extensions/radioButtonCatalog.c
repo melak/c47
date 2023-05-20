@@ -747,11 +747,13 @@ char *figlabel(const char *label, const char* showText, int16_t showValue) {    
 
               if( ( (uint16_t)(STD_DOT[0] & 0x00FF) << 8) + (STD_DOT[1] & 0x00FF) == tmpi ) {strcat(tmp,STD_DOT); ii++; }
               else { //double byte
+                //printf(">>>> Double byte in RB\n");
                 tt[0]=showText[ii++];
                 tt[1]=showText[ii];
                 strcat(tmp,tt);
               }
             } else { //single byte
+              //printf(">>>> Single byte in RB\n");
               char tt[2]; tt[0]=0; tt[1]=0;
               tt[0]=showText[ii];
               strcat(tmp,tt);

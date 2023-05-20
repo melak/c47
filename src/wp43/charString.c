@@ -62,53 +62,54 @@ static void _calculateStringWidth(const char *str, const font_t *font, bool_t wi
     }                                             //JM ^^
 #endif //TESTSUITE_BUILD
 */
-    
-    glyphId = findGlyph(font, charCode);
-    if(glyphId >= 0) {
-      glyph = (font->glyphs) + glyphId;
-    }
-    else if(glyphId == -1) {
-      generateNotFoundGlyph(-1, charCode);
-      glyph = &glyphNotFound;
-    }
-    else if(glyphId == -2) {
-      generateNotFoundGlyph(-2, charCode);
-      glyph = &glyphNotFound;
-    }
-    else {
-      glyph = NULL;
-    }
-
-    if(glyph == NULL) {
-      #if defined(GENERATE_CATALOGS)
-        printf("\n---------------------------------------------------------------------------\n"
-                 "In function stringWidth: %d is an unexpected value returned by findGlyph!"
-               "/n---------------------------------------------------------------------------\n", glyphId);
-      #else // !GENERATE_CATALOGS
-        sprintf(errorMessage, commonBugScreenMessages[bugMsgValueReturnedByFindGlyph], "stringWidth", glyphId);
-        displayBugScreen(errorMessage);
-      #endif // GENERATE_CATALOGS
-      *width = 0;
-      return;
-    }
-
-    numPixels += glyph->colsGlyph + glyph->colsAfterGlyph;
-    if(firstChar) {
-      firstChar = false;
-      if(withLeadingEmptyRows) {
-        numPixels += glyph->colsBeforeGlyph;
+    if(charCode != 1u) {                          //If the special ASCII 01, then skip the width and font not found portions
+      glyphId = findGlyph(font, charCode);
+      if(glyphId >= 0) {
+        glyph = (font->glyphs) + glyphId;
       }
-    }
-    else {
-      numPixels += glyph->colsBeforeGlyph;
-    }
-
-    if(resultStr != NULL) { // for stringAfterPixels
-      if(numPixels > *width) {
-        break;
+      else if(glyphId == -1) {
+        generateNotFoundGlyph(-1, charCode);
+        glyph = &glyphNotFound;
+      }
+      else if(glyphId == -2) {
+        generateNotFoundGlyph(-2, charCode);
+        glyph = &glyphNotFound;
       }
       else {
-        *resultStr = str + ch;
+        glyph = NULL;
+      }
+
+      if(glyph == NULL) {
+        #if defined(GENERATE_CATALOGS)
+          printf("\n---------------------------------------------------------------------------\n"
+                   "In function stringWidth: %d is an unexpected value returned by findGlyph!"
+                 "/n---------------------------------------------------------------------------\n", glyphId);
+        #else // !GENERATE_CATALOGS
+          sprintf(errorMessage, commonBugScreenMessages[bugMsgValueReturnedByFindGlyph], "stringWidth", glyphId);
+          displayBugScreen(errorMessage);
+        #endif // GENERATE_CATALOGS
+        *width = 0;
+        return;
+      }
+
+      numPixels += glyph->colsGlyph + glyph->colsAfterGlyph;
+      if(firstChar) {
+        firstChar = false;
+        if(withLeadingEmptyRows) {
+          numPixels += glyph->colsBeforeGlyph;
+        }
+      }
+      else {
+        numPixels += glyph->colsBeforeGlyph;
+      }
+
+      if(resultStr != NULL) { // for stringAfterPixels
+        if(numPixels > *width) {
+          break;
+        }
+        else {
+          *resultStr = str + ch;
+        }
       }
     }
   }

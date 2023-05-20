@@ -118,27 +118,35 @@ void configCommon(uint16_t idx) {
 }
 
 
+//note: Changed showGlypCode to skip ASCII 01, printing nothing
+
 void fnSetGapChar (uint16_t charParam) {
-  if(charParam & 32768) {
+  if(charParam & 32768) {                        //+32768 for the right hand separator
     if((charParam & 32767) == ITM_NULL) {
-      gapCharRight[0]=0;
+      gapCharLeft[0]=1;                          //set skip character 0x01
+      gapCharLeft[1]=1;                          //set skip character 0x01
     } else {
       gapCharRight[0] = (indexOfItems[charParam & 32767].itemSoftmenuName)[0];
       gapCharRight[1] = (indexOfItems[charParam & 32767].itemSoftmenuName)[1];
-      if (gapCharRight[0] == 0) {
-        gapCharRight[0] = gapCharRight[1];
-        gapCharRight[1] = 0;
+      #ifdef PC_BUILD
+        printf(">>>> RIGHT: %u %u\n",(uint8_t)gapCharRight[0] , (uint8_t)gapCharRight[1]);
+      #endif //PC_BUILD
+      if (gapCharRight[0] != 0 && gapCharRight[1] == 0) {
+        gapCharRight[1] = 1;                      //set second character to skip character 0x01
       }
     }
   } else {
     if(charParam == ITM_NULL) {
-      gapCharLeft[0]=0;
+      gapCharLeft[0]=1;                          //set skip character 0x01
+      gapCharLeft[1]=1;                          //set skip character 0x01
     } else {
       gapCharLeft[0] = (indexOfItems[charParam].itemSoftmenuName)[0];
       gapCharLeft[1] = (indexOfItems[charParam].itemSoftmenuName)[1];
-      if (gapCharLeft[0] == 0) {
-        gapCharLeft[0] = gapCharLeft[1];
-        gapCharLeft[1] = 0;
+      #ifdef PC_BUILD
+        printf(">>>> LEFT: %u %u\n",(uint8_t)gapCharLeft[0] , (uint8_t)gapCharLeft[1]);
+      #endif //PC_BUILD
+      if (gapCharLeft[0] != 0 && gapCharLeft[1] == 0) {
+        gapCharLeft[1] = 1;                      //set second character to skip character 0x01
       }
     }        
   }
