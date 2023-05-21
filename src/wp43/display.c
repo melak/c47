@@ -847,22 +847,20 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
       }
       else { // zero or positive exponent
   //JM SIGFIGNEW hackpoint
-printf(">>>> >>> %u %u\n",GROUPWIDTH_LEFT, GROUPWIDTH_RIGHT);
-
         for(digitCount=exponent, digitPointer=firstDigit; digitPointer<=firstDigit + exponent + (int16_t)displayFormatDigits_Active; digitPointer++, digitCount--) { // This line is for FIX n displaying more than 16 digits. e.g. in FIX 15: 123 456.789 123 456 789 123
-        //for(digitCount=exponent, digitPointer=firstDigit; digitPointer<=firstDigit + min(exponent + (int16_t)displayFormatDigits, 15); digitPointer++, digitCount--) { // This line is for fixed number of displayed digits, e.g. in FIX 15: 123 456.789 123 456 8
-printf("(%i)(%i)=%u : ",digitCount, digitPointer, bcd[digitPointer]);
-          if(digitCount!=-1 && digitCount!=exponent && GROUPWIDTH_(digitCount)!=0 && IS_SEPARATOR_(digitCount)) {
+        //for(digitCount=exponent, digitPointer=firstDigit; digitPointer<=firstDigit + min(exponent + (int16_t)displayFormatDigits, 15); digitPointer++, digitCount--) { // This line is for fixed number of displayed digits, e.g. in FIX 15: 123 456.789 123 456 8    
 
-printf("%i %i %i \n",GROUPWIDTH_(digitCount), digitCountNEW(digitCount), IS_SEPARATOR_(digitCount) );
-
-
+          //printf(">>>> digitCount=(%2i)digitPointer=(%2i) bcd[digitPointer]=%2u GROUP1_OVFL=%2i GROUPWIDTH_LEFT1=%2u: %i ?? %i :",digitCount, digitPointer, bcd[digitPointer], GROUP1_OVFL(digitCount, exponent), GROUPWIDTH_LEFT1, bcd[digitPointer-1] , GROUP1_OVFL(digitCount, exponent) + 1);
+          if(digitCount!=-1 && digitCount!=exponent && GROUPWIDTH_(digitCount)!=0 
+                            && IS_SEPARATOR_(digitCount) 
+                            && (GROUP1_OVFL(digitCount, exponent)==0 || bcd[digitPointer-1] >= GROUP1_OVFL(digitCount, exponent) + 1)   ) {
+            //printf("GROUPWIDTH_=%2i digitCountNEW=%2i IS_SEPARATOR_=%2i \n",GROUPWIDTH_(digitCount), digitCountNEW(digitCount), IS_SEPARATOR_(digitCount) );
             xcopy(displayString + charIndex, SEPARATOR_(digitCount), 2);
             charIndex += 2;
           }
-else printf("\n");
+          //else printf("\n");
 
-//printf("|\n");
+
           // Significant digit or zero
           if(digitPointer <= lastDigit) {
             displayString[charIndex++] = '0' + bcd[digitPointer];

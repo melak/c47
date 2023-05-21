@@ -612,6 +612,7 @@ bool_t lowercaseselected;
 #ifdef VERBOSEKEYS
 printf(">>>>Z 0010 btnFnPressed SET FN_key_pressed            ; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
 #endif //VERBOSEKEYS
+      temporaryInformation = TI_NO_INFO;
       FN_key_pressed = *((char *)data) - '0' + 37;  //to render 38-43, as per original keypress
 
       asnKey[0] = ((uint8_t *)data)[0];
@@ -1448,6 +1449,8 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
 
     void btnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
+      temporaryInformation = TI_NO_INFO;
+
       nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
 
      int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';

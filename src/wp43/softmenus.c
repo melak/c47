@@ -101,35 +101,25 @@ TO_QSPI const int16_t menu_CPX[]         = { ITM_RE,                        ITM_
                                              KEY_COMPLEX,                   ITM_CONJ,                   ITM_DOT_PROD,             ITM_CROSS_PROD,        ITM_op_j,                    ITM_UNITV,                                          //JM re-arranged menu. CPX menu
                                              ITM_CPXI,                      ITM_CPXJ,                   ITM_CXtoRE,               ITM_REtoCX,            ITM_RECT,                    ITM_POLAR                     };    //JM re-arranged menu
 
-//TO_QSPI const int16_t menu_DISP[]        = { ITM_FIX,                       ITM_SCI,                    ITM_ENG,                  ITM_ALL,               ITM_SIGFIG,                  ITM_UNIT,
-//                                             ITM_RNG,                       ITM_HIDE,                   ITM_NULL,                 ITM_NULL,              ITM_RECT,                    ITM_POLAR,                           //JM 
-//                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
-//
-//
-//                                             ITM_SCIOVR,                    ITM_ENGOVR,                 ITM_DSTACK,               ITM_CPXMULT,           ITM_MULTCR,                  ITM_MULTDOT,                        //JM 
-//                                             ITM_SI_All,                    ITM_SHOIREP,                ITM_LARGELI,              ITM_NULL,              ITM_CPXI,                    ITM_CPXJ,                           //JM 
-//                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                           //JM 
-//
-//
-//                                             ITM_GAP_L,                     ITM_GRP_L,                  ITM_GRP1_L,               ITM_GRP1_L_OF,         ITM_GRP_R,                   ITM_GAP_R,
-//                                             ITM_RDXPER,                    ITM_RDXCOM,                 ITM_NULL,                 ITM_DMY,               ITM_YMD,                     ITM_MDY,  
-//                                             ITM_SET_TO_TEXT,               ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_CLK12,                   ITM_CLK24,
-//
-//                                             ITM_SETCHN,                    ITM_SETEUR,                 ITM_SETIND,               ITM_SETJPN,            ITM_SETUK,                   ITM_SETUSA,                    
-//                                             ITM_SETCH,                     ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_SETUKOLD,                ITM_SETDFLT,
-//                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                        };
+
+TO_QSPI const int16_t menu_DISP[]        = { 
+
+//                                             ITM_FIX,                       ITM_SCI,                    ITM_ENG,                  ITM_ALL,               ITM_SIGFIG,                  ITM_UNIT,
+  //                                           ITM_GAP_L,                     ITM_GRP_L,                  ITM_GRP1_L,               ITM_GRP1_L_OF,         ITM_GRP_R,                   ITM_GAP_R,
+    //                                         ITM_RDXPER,                    ITM_RDXCOM,                 ITM_RNG,                  ITM_HIDE,              ITM_RECT,                    ITM_POLAR,                           //JM 
 
 
-TO_QSPI const int16_t menu_DISP[]        = { ITM_FIX,                       ITM_SCI,                    ITM_ENG,                  ITM_ALL,               ITM_SIGFIG,                  ITM_UNIT,
-                                             ITM_GAP_L,                     ITM_GRP_L,                  ITM_GRP1_L,               ITM_GRP1_L_OF,         ITM_GRP_R,                   ITM_GAP_R,
-                                             ITM_RDXPER,                    ITM_RDXCOM,                 ITM_RNG,                  ITM_HIDE,              ITM_RECT,                    ITM_POLAR,                           //JM 
+/*TEST LAYOUT*/                              ITM_FIX,                       ITM_SCI,                    ITM_ENG,                  ITM_ALL,               ITM_SIGFIG,                  ITM_UNIT,
+                                             ITM_GAP_L,                     ITM_GRP_L,                  ITM_GRP1_L,               ITM_GRP1_L_OF,         ITM_RNG,                     ITM_HIDE, 
+                                             ITM_GAP_R,                     ITM_GRP_R,                  ITM_RDXPER,               ITM_RDXCOM,            ITM_RECT,                    ITM_POLAR,                           //JM 
+
                                              
                                              ITM_DMY,                       ITM_YMD,                    ITM_MDY,                  ITM_SET_TO_TEXT,       ITM_CLK12,                   ITM_CLK24,
                                              ITM_SI_All,                    ITM_DSTACK,                 ITM_SHOIREP,              ITM_LARGELI,           ITM_CPXI,                    ITM_CPXJ,
                                              ITM_SCIOVR,                    ITM_ENGOVR,                 ITM_NULL,                 ITM_CPXMULT,           ITM_MULTCR,                  ITM_MULTDOT,
 
                                              ITM_SETCHN,                    ITM_SETEUR,                 ITM_SETIND,               ITM_SETJPN,            ITM_SETUK,                   ITM_SETUSA,                    
-                                             ITM_SETCH,                     ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_SETUKOLD,                ITM_SETDFLT,
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_SETDFLT,
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                        };
 
 
@@ -704,10 +694,14 @@ TO_QSPI const int16_t menu_ALPHA[]       = { ITM_T_UP_ARROW,                ITM_
 TO_QSPI const int16_t menu_XXEQ[]        = { ITM_XSAVE,                     ITM_XLOAD,                  ITM_XEDIT,                ITM_XNEW,              ITM_XXEQ,                     -MNU_XEQ                        };   //JM
 
 
-TO_QSPI const int16_t menu_GAP_L[]       = { ITM_GAPPER_L,                  ITM_GAPCOM_L,               ITM_GAPAPO_L,             ITM_GAPSPC_L,          ITM_GAPUND_L,                 ITM_GAPNIL_L,
-                                             ITM_GAPDBLSPC_L,               ITM_GAPDOT_L,               ITM_NULL,                 ITM_NULL,              ITM_NULL,                     ITM_NULL                        };
-TO_QSPI const int16_t menu_GAP_R[]       = { ITM_GAPPER_R,                  ITM_GAPCOM_R,               ITM_GAPAPO_R,             ITM_GAPSPC_R,          ITM_GAPUND_R,                 ITM_GAPNIL_R,
-                                             ITM_GAPDBLSPC_R,               ITM_GAPDOT_R,               ITM_NULL,                 ITM_NULL,              ITM_NULL,                     ITM_NULL                        };
+TO_QSPI const int16_t menu_GAP_L[]       = { ITM_GAPPER_L,                  ITM_GAPCOM_L,               ITM_GAPAPO_L,             ITM_GAPNARSPC_L,       ITM_GAPUND_L,                 ITM_GAPNIL_L,
+                                             ITM_GAPDOT_L,                  ITM_NULL,                   ITM_NULL,                 ITM_GAPSPC_L,          ITM_NULL,                     ITM_NULL,
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_GAPDBLSPC_L,       ITM_NULL,                     ITM_NULL                        };
+
+
+TO_QSPI const int16_t menu_GAP_R[]       = { ITM_GAPPER_R,                  ITM_GAPCOM_R,               ITM_GAPAPO_R,             ITM_GAPNARSPC_R,       ITM_GAPUND_R,                 ITM_GAPNIL_R,
+                                             ITM_GAPDOT_R,                  ITM_NULL,                   ITM_NULL,                 ITM_GAPSPC_R,          ITM_NULL,                     ITM_NULL,
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_GAPDBLSPC_R,       ITM_NULL,                     ITM_NULL                        };
 
 
 

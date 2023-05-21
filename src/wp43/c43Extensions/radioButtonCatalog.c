@@ -740,12 +740,14 @@ char *figlabel(const char *label, const char* showText, int16_t showValue) {    
           case '\''      : strcat(tmp,STD_QUOTE);     break;
           default:
             //any other characters won't have sub conversions and are returned as is
+            //printf(">>>> %u %u\n", (uint8_t)showText[ii], (uint8_t)showText[ii+1]);
             if( (showText[ii] & 0x80) && (showText[ii+1] != 0)) {
               char tt[3]; tt[0]=0; tt[1]=0; tt[2]=0;
 
               uint16_t tmpi = (uint16_t)(( ((uint8_t)(showText[ii]) & 0x00FF) ) << 8)    + (uint16_t) ((uint8_t)(showText[ii+1]));              
+              if(      ( (uint16_t)(STD_DOT[0] & 0x00FF) << 8) + (STD_DOT[1] & 0x00FF) == tmpi ) {strcat(tmp,STD_DOT  ); ii++; }
+              else if( ( (uint16_t)(         1 & 0x00FF) << 8) + (         1 & 0x00FF) == tmpi ) {strcat(tmp,STD_SUB_0); ii++; }
 
-              if( ( (uint16_t)(STD_DOT[0] & 0x00FF) << 8) + (STD_DOT[1] & 0x00FF) == tmpi ) {strcat(tmp,STD_DOT); ii++; }
               else { //double byte
                 //printf(">>>> Double byte in RB\n");
                 tt[0]=showText[ii++];
