@@ -1322,7 +1322,14 @@ bool_t allowShiftsToClearError = false;
       result = shiftF ? key->fShiftedAim :
                shiftG ? key->gShiftedAim :
                         key->primaryAim;
-
+      if (calcMode == CM_PEM && getSystemFlag(FLAG_ALPHA)) {
+        if(result == ITM_DOWN_ARROW) {
+          nextChar = NC_SUBSCRIPT;
+        }
+        else if(result == ITM_UP_ARROW) {
+          nextChar = NC_SUPERSCRIPT;
+        }
+      }
     }
     else if(tam.mode) {
       result = key->primaryTam; // No shifted function in TAM
