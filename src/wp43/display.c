@@ -656,8 +656,8 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
         // Zeros before first significant digit
         for(digitCount=0, i=exponent+1; i<0; i++, digitCount--) {
-          if(digitCount != 0 && groupingGap != 0 && digitCount%(uint16_t)groupingGap == 0) {
-            xcopy(displayString + charIndex, separator, 2);
+          if(digitCount != 0 && GROUPWIDTH_RIGHT != 0 && digitCount%(uint16_t)GROUPWIDTH_RIGHT == 0) {
+            xcopy(displayString + charIndex,  SEPARATOR_RIGHT, 2);
             charIndex += 2;
           }
           displayString[charIndex++] = '0';
@@ -668,8 +668,8 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
         // Significant digits
         for(digitPointer=firstDigit; digitPointer<firstDigit+min(displayHasNDigits - 1 - exponent, numDigits); digitPointer++, digitCount--) {
-          if(digitCount != 0 && groupingGap != 0 && digitCount%(uint16_t)groupingGap == 0) {
-            xcopy(displayString + charIndex, separator, 2);
+          if(digitCount != 0 && GROUPWIDTH_RIGHT != 0 && digitCount%(uint16_t)GROUPWIDTH_RIGHT == 0) {
+            xcopy(displayString + charIndex, SEPARATOR_RIGHT, 2);
             charIndex += 2;
           }
           displayString[charIndex++] = '0' + bcd[digitPointer];
@@ -680,8 +680,8 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
       }
       else { // zero or positive exponent
         for(digitCount=exponent, digitPointer=firstDigit; digitPointer<=lastDigit + max(exponent - numDigits + 1, 0); digitPointer++, digitCount--) {
-          if(digitCount != -1 && digitCount != exponent && groupingGap != 0 && modulo(digitCount, (uint16_t)groupingGap) == (uint16_t)groupingGap - 1) {
-            xcopy(displayString + charIndex, separator, 2);
+          if(digitCount != -1 && digitCount != exponent && GROUPWIDTH_LEFT != 0 && modulo(digitCount, (uint16_t)GROUPWIDTH_LEFT) == (uint16_t)GROUPWIDTH_LEFT - 1) {
+            xcopy(displayString + charIndex, SEPARATOR_LEFT, 2);
             charIndex += 2;
           }
 
@@ -811,8 +811,8 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
         // Zeros before first significant digit
         for(digitCount=0, i=exponent+1; i<0; i++, digitCount--) {
-          if(digitCount!=0 && groupingGap!=0 && digitCount%(uint16_t)groupingGap==0) {
-            xcopy(displayString + charIndex, separator, 2);
+          if(digitCount!=0 && GROUPWIDTH_RIGHT!=0 && digitCount%(uint16_t)GROUPWIDTH_RIGHT==0) {
+            xcopy(displayString + charIndex, SEPARATOR_RIGHT, 2);
             charIndex += 2;
           }
           displayString[charIndex++] = '0';
@@ -823,8 +823,8 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
         // Significant digits
         for(digitPointer=firstDigit; digitPointer<=lastDigit; digitPointer++, digitCount--) {
-          if(digitCount!=0 && groupingGap!=0 && digitCount%(uint16_t)groupingGap==0) {
-            xcopy(displayString + charIndex, separator, 2);
+          if(digitCount!=0 && GROUPWIDTH_RIGHT!=0 && digitCount%(uint16_t)GROUPWIDTH_RIGHT==0) {
+            xcopy(displayString + charIndex, SEPARATOR_RIGHT, 2);
             charIndex += 2;
           }
           displayString[charIndex++] = '0' + bcd[digitPointer];
@@ -835,8 +835,8 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
         // Zeros after last significant digit
         for(i=1; i<=(int16_t)displayFormatDigits_Active+exponent+1-numDigits; i++, digitCount--) {   //JM SIGFIGNEW hackpoint
-          if(groupingGap!=0 && digitCount%(uint16_t)groupingGap==0) {
-            xcopy(displayString + charIndex, separator, 2);
+          if(GROUPWIDTH_RIGHT!=0 && digitCount%(uint16_t)GROUPWIDTH_RIGHT==0) {
+            xcopy(displayString + charIndex, SEPARATOR_RIGHT, 2);
             charIndex += 2;
           }
           displayString[charIndex++] = '0';
@@ -847,13 +847,22 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
       }
       else { // zero or positive exponent
   //JM SIGFIGNEW hackpoint
+printf(">>>> >>> %u %u\n",GROUPWIDTH_LEFT, GROUPWIDTH_RIGHT);
+
         for(digitCount=exponent, digitPointer=firstDigit; digitPointer<=firstDigit + exponent + (int16_t)displayFormatDigits_Active; digitPointer++, digitCount--) { // This line is for FIX n displaying more than 16 digits. e.g. in FIX 15: 123 456.789 123 456 789 123
         //for(digitCount=exponent, digitPointer=firstDigit; digitPointer<=firstDigit + min(exponent + (int16_t)displayFormatDigits, 15); digitPointer++, digitCount--) { // This line is for fixed number of displayed digits, e.g. in FIX 15: 123 456.789 123 456 8
-          if(digitCount!=-1 && digitCount!=exponent && groupingGap!=0 && modulo(digitCount, (uint16_t)groupingGap) == (uint16_t)groupingGap - 1) {
-            xcopy(displayString + charIndex, separator, 2);
+printf("(%i)(%i)=%u : ",digitCount, digitPointer, bcd[digitPointer]);
+          if(digitCount!=-1 && digitCount!=exponent && GROUPWIDTH_(digitCount)!=0 && IS_SEPARATOR_(digitCount)) {
+
+printf("%i %i %i \n",GROUPWIDTH_(digitCount), digitCountNEW(digitCount), IS_SEPARATOR_(digitCount) );
+
+
+            xcopy(displayString + charIndex, SEPARATOR_(digitCount), 2);
             charIndex += 2;
           }
+else printf("\n");
 
+//printf("|\n");
           // Significant digit or zero
           if(digitPointer <= lastDigit) {
             displayString[charIndex++] = '0' + bcd[digitPointer];
@@ -2267,7 +2276,7 @@ void timeToDisplayString(calcRegister_t regist, char *displayString, bool_t igno
   for(digits = strlen(digitBuf2); digits > 0; --digits){
     digitBuf[0] = *bufPtr++;
     strcat(displayString, digitBuf);
-    if((digits % grpGroupingLeft == 1) && (digits > 1)) {
+    if((digits % GROUPWIDTH_LEFT == 1) && (digits > 1)) {
       strcat(displayString, SEPARATOR_LEFT);
     }
     ++tDigits;
@@ -2311,7 +2320,7 @@ void timeToDisplayString(calcRegister_t regist, char *displayString, bool_t igno
       if(digits == 0u) {
         strcat(displayString, RADIX34_MARK_STRING);
       }
-      else if(digits % grpGroupingRight == 0u) {
+      else if(digits % GROUPWIDTH_RIGHT == 0u) {
         strcat(displayString, SEPARATOR_RIGHT);
       }
 

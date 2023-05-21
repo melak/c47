@@ -705,8 +705,9 @@ TO_QSPI const int16_t menu_XXEQ[]        = { ITM_XSAVE,                     ITM_
 
 
 TO_QSPI const int16_t menu_GAP_L[]       = { ITM_GAPPER_L,                  ITM_GAPCOM_L,               ITM_GAPAPO_L,             ITM_GAPSPC_L,          ITM_GAPUND_L,                 ITM_GAPNIL_L,
-                                             ITM_GAPDBLSPC_L,               ITM_GAPTHNSPC_L,            ITM_NULL,                 ITM_NULL,              ITM_NULL,                     ITM_NULL                        };
-TO_QSPI const int16_t menu_GAP_R[]       = { ITM_GAPPER_R,                  ITM_GAPCOM_R,               ITM_GAPAPO_R,             ITM_GAPSPC_R,          ITM_GAPUND_R,                 ITM_GAPNIL_R                    };
+                                             ITM_GAPDBLSPC_L,               ITM_GAPDOT_L,               ITM_NULL,                 ITM_NULL,              ITM_NULL,                     ITM_NULL                        };
+TO_QSPI const int16_t menu_GAP_R[]       = { ITM_GAPPER_R,                  ITM_GAPCOM_R,               ITM_GAPAPO_R,             ITM_GAPSPC_R,          ITM_GAPUND_R,                 ITM_GAPNIL_R,
+                                             ITM_GAPDBLSPC_R,               ITM_GAPDOT_R,               ITM_NULL,                 ITM_NULL,              ITM_NULL,                     ITM_NULL                        };
 
 
 

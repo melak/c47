@@ -1219,8 +1219,17 @@ typedef enum {
 #define RADIX34_MARK_CHAR                    (getSystemFlag(FLAG_DECIMP) ? '.'       : ',')
 #define RADIX34_MARK_STRING                  (getSystemFlag(FLAG_DECIMP) ? "."       : ",")
 #define PRODUCT_SIGN                         (getSystemFlag(FLAG_MULTx)  ? STD_CROSS : STD_DOT)
-#define SEPARATOR_LEFT                       gapCharLeft
-#define SEPARATOR_RIGHT                      gapCharRight
+#define SEPARATOR_LEFT                       (gapCharLeft)
+#define SEPARATOR_RIGHT                      (gapCharRight)
+#define GROUPWIDTH_LEFT                      ((uint16_t)grpGroupingLeft)
+#define GROUPWIDTH_LEFT1                     (grpGroupingGr1Left        == 0 ? (uint16_t)grpGroupingLeft : (uint16_t)grpGroupingGr1Left)
+#define GROUPWIDTH_LEFT1_OVFL                (grpGroupingGr1LeftOverflow== 0 ? (uint16_t)grpGroupingLeft : (uint16_t)grpGroupingGr1LeftOverflow)
+#define GROUPWIDTH_RIGHT                     (grpGroupingRight          == 0 ? (uint16_t)grpGroupingLeft : (uint16_t)grpGroupingRight)
+#define SEPARATOR_(digitCount)               (digitCount >= 0 ? SEPARATOR_LEFT : SEPARATOR_RIGHT)
+#define GROUPWIDTH_(digitCount)              (digitCount >= 0 ? GROUPWIDTH_LEFT : GROUPWIDTH_RIGHT)
+#define digitCountNEW(digitCount)            (  digitCount+1 > GROUPWIDTH_LEFT1 ? digitCount - GROUPWIDTH_LEFT1 : digitCount  )  //remaining digits to divide up into groups. "+1" due to the fact the the digit is recognized now, but only added below. So the sep gets added before the digit down below.
+#define IS_SEPARATOR_(digitCount)            ( (digitCount+1 == GROUPWIDTH_LEFT1) || ((digitCount+1  > GROUPWIDTH_LEFT1 || digitCount < 0) && (modulo(digitCountNEW(digitCount), (uint16_t)GROUPWIDTH_(digitCount)) == (uint16_t)GROUPWIDTH_(digitCount) - 1)) )
+
 #define clearScreen()                        {lcd_fill_rect(0, 0, SCREEN_WIDTH, 240, LCD_SET_VALUE); clear_ul();}
 #define currentReturnProgramNumber           (currentSubroutineLevelData[0].returnProgramNumber)
 #define currentReturnLocalStep               (currentSubroutineLevelData[0].returnLocalStep)

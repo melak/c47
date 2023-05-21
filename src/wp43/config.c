@@ -78,16 +78,16 @@ TO_QSPI static const struct {
 
 
 } configSettings[] = {
-                /*   G  . 24  D M Y  Gregorian   GAP char    GRP   GRPx  GRP1 FP.GRP   FP.GAP char*/
-    [CFG_DFLT  ] = { 3, 1, 1, 0,0,1, 2361222,   ITM_SPACE,    3,    0,    0,    0,     ITM_SPACE },    /* 14 Sep 1752 */
-    [CFG_CHINA ] = { 4, 1, 1, 0,0,1, 2433191,   ITM_COMMA,    4,    0,    0,    0,     ITM_COMMA },    /*  1 Oct 1949 */
-    [CFG_EUROPE] = { 3, 0, 1, 1,0,0, 2299161,   ITM_SPACE,    3,    0,    0,    0,     ITM_SPACE },    /* 15 Oct 1582 */
-    [CFG_INDIA ] = { 3, 1, 1, 1,0,0, 2361222,   ITM_COMMA,    2,    0,    3,    0,     ITM_PERIOD},    /* 14 Sep 1752 */
-    [CFG_JAPAN ] = { 3, 1, 1, 0,0,1, 2405160,   ITM_SPACE,    3,    0,    0,    0,     ITM_PERIOD},    /*  1 Jan 1873 */
-    [CFG_UK    ] = { 3, 1, 0, 1,0,0, 2361222,   ITM_SPACE,    3,    0,    0,    0,     ITM_PERIOD},    /* 14 Sep 1752 */
-    [CFG_USA   ] = { 3, 1, 0, 0,1,0, 2361222,   ITM_COMMA,    3,    9,    0,    0,     ITM_SPACE },    /* 14 Sep 1752 */
-    [CFG_UKOLD ] = { 3, 1, 0, 1,0,0, 2361222,   ITM_DOT,      3,    0,    0,    0,     ITM_DOT   },    /* 14 Sep 1752 */
-    [CFG_CH    ] = { 3, 0, 1, 1,0,0, 2299625,   ITM_QUOTE,    3,    0,    0,    0,     ITM_QUOTE },    /* 15 Oct 1582 */    //January 12, 1584 2299625 first Kanton
+                /*   G  . 24  D M Y  Gregorian   GAP char                GRP   GRPx  GRP1 FP.GRP   FP.GAP char*/
+    [CFG_DFLT  ] = { 3, 1, 1, 0,0,1, 2361222,   ITM_SPACE_PUNCTUATION,    3,    0,    0,    0,     ITM_SPACE_PUNCTUATION },    /* 14 Sep 1752 */
+    [CFG_CHINA ] = { 4, 1, 1, 0,0,1, 2433191,   ITM_COMMA            ,    4,    0,    0,    0,     ITM_COMMA },    /*  1 Oct 1949 */
+    [CFG_EUROPE] = { 3, 0, 1, 1,0,0, 2299161,   ITM_SPACE            ,    3,    0,    0,    0,     ITM_SPACE },    /* 15 Oct 1582 */
+    [CFG_INDIA ] = { 3, 1, 1, 1,0,0, 2361222,   ITM_COMMA            ,    2,    0,    3,    0,     ITM_PERIOD},    /* 14 Sep 1752 */
+    [CFG_JAPAN ] = { 3, 1, 1, 0,0,1, 2405160,   ITM_SPACE            ,    3,    0,    0,    0,     ITM_PERIOD},    /*  1 Jan 1873 */
+    [CFG_UK    ] = { 3, 1, 0, 1,0,0, 2361222,   ITM_SPACE            ,    3,    0,    0,    0,     ITM_PERIOD},    /* 14 Sep 1752 */
+    [CFG_USA   ] = { 3, 1, 0, 0,1,0, 2361222,   ITM_COMMA            ,    3,    9,    0,    0,     ITM_SPACE },    /* 14 Sep 1752 */
+    [CFG_UKOLD ] = { 3, 1, 0, 1,0,0, 2361222,   ITM_DOT,                  3,    0,    0,    0,     ITM_DOT   },    /* 14 Sep 1752 */
+    [CFG_CH    ] = { 3, 0, 1, 1,0,0, 2299625,   ITM_QUOTE            ,    3,    0,    0,    0,     ITM_QUOTE },    /* 15 Oct 1582 */    //January 12, 1584 2299625 first Kanton
 };
 
 static void setFlag(int f, int v) {
@@ -123,8 +123,8 @@ void configCommon(uint16_t idx) {
 void fnSetGapChar (uint16_t charParam) {
   if(charParam & 32768) {                        //+32768 for the right hand separator
     if((charParam & 32767) == ITM_NULL) {
-      gapCharLeft[0]=1;                          //set skip character 0x01
-      gapCharLeft[1]=1;                          //set skip character 0x01
+      gapCharRight[0]=1;                         //set skip character 0x01
+      gapCharRight[1]=1;                         //set skip character 0x01
     } else {
       gapCharRight[0] = (indexOfItems[charParam & 32767].itemSoftmenuName)[0];
       gapCharRight[1] = (indexOfItems[charParam & 32767].itemSoftmenuName)[1];
@@ -766,8 +766,8 @@ void resetOtherConfigurationStuff(void) {
   grpGroupingGr1Left= 0;
   grpGroupingGr1Left= 0;
   grpGroupingRight  = 0;
-  fnSetGapChar(ITM_SPACE);
-  fnSetGapChar(32768+ITM_PERIOD);
+  fnSetGapChar(      ITM_SPACE_PUNCTUATION); //ITM_SPACE_4_PER_EM);
+  fnSetGapChar(32768+ITM_SPACE_PUNCTUATION); //ITM_SPACE_4_PER_EM);
 
   significantDigits = 0;
   currentAngularMode = amDegree;

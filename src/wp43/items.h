@@ -2169,7 +2169,7 @@
 #define ITM_GAPAPO_L                2113
 #define ITM_GAPSPC_L                2114
 #define ITM_GAPDBLSPC_L             2115
-#define ITM_GAPTHNSPC_L             2116
+#define ITM_GAPDOT_L                2116
 #define ITM_GAPUND_L                2117
 #define ITM_GAPNIL_L                2118
 #define MNU_2119                    2119
@@ -2178,7 +2178,7 @@
 #define ITM_GAPAPO_R                2122
 #define ITM_GAPSPC_R                2123
 #define ITM_GAPDBLSPC_R             2124
-#define ITM_GAPTHNSPC_R             2125
+#define ITM_GAPDOT_R                2125
 #define ITM_GAPUND_R                2126
 #define ITM_GAPNIL_R                2127
 #define MNU_2128                    2128
