@@ -62,22 +62,33 @@
 
 
 TO_QSPI static const struct {
-    unsigned grouping : 3;
     unsigned decimalDot : 1;
     unsigned tdm24 : 1;
     unsigned dmy : 1;
     unsigned mdy : 1;
     unsigned ymd : 1;
     unsigned gregorianDay : 22;
+    unsigned gapl : 16;
+    unsigned gprl : 4;
+    unsigned gpr1x: 4;
+    unsigned gpr1 : 4;
+    unsigned gprr : 4;
+    unsigned gapr : 16;
+
+
 } configSettings[] = {
-                /*   G  . 24  D M Y  Gregorian */
-    [CFG_DFLT  ] = { 3, 1, 1, 0,0,1, 2361222 },    /* 14 Sept 1752 */
-    [CFG_CHINA ] = { 4, 1, 1, 0,0,1, 2433191 },    /* 1 Oct 1949 */
-    [CFG_EUROPE] = { 3, 0, 1, 1,0,0, 2299161 },    /* 15 Oct 1582 */
-    [CFG_INDIA ] = { 3, 1, 1, 1,0,0, 2361222 },    /* 14 Sept 1752 */
-    [CFG_JAPAN ] = { 3, 1, 1, 0,0,1, 2405160 },    /* 1 Jan 1873 */
-    [CFG_UK    ] = { 3, 1, 0, 1,0,0, 2361222 },    /* 14 Sept 1752 */
-    [CFG_USA   ] = { 3, 1, 0, 0,1,0, 2361222 },    /* 14 Sept 1752 */
+                /*   . 24  D M Y  Gregorian   GAP char                GRP   GRPx  GRP1 FP.GRP   FP.GAP char*/
+    [CFG_DFLT  ] = { 1, 1, 0,0,1, 2361222,   ITM_SPACE_PUNCTUATION,    3,    0,    0,    3,     ITM_SPACE_PUNCTUATION },    /* 14 Sep 1752 */
+    [CFG_CHINA ] = { 1, 1, 0,0,1, 2433191,   ITM_COMMA            ,    4,    0,    0,    4,     ITM_COMMA },                /*  1 Oct 1949 */
+    [CFG_EUROPE] = { 0, 1, 1,0,0, 2299161,   ITM_SPACE_PUNCTUATION,    3,    0,    0,    3,     ITM_SPACE_PUNCTUATION },    /* 15 Oct 1582 */
+    [CFG_INDIA ] = { 1, 1, 1,0,0, 2361222,   ITM_COMMA            ,    2,    0,    3,    2,     ITM_COMMA },                /* 14 Sep 1752 */
+    [CFG_JAPAN ] = { 1, 1, 0,0,1, 2405160,   ITM_SPACE_PUNCTUATION,    3,    0,    0,    3,     ITM_SPACE_PUNCTUATION },    /*  1 Jan 1873 */
+    [CFG_UK    ] = { 1, 0, 1,0,0, 2361222,   ITM_SPACE_PUNCTUATION,    3,    0,    0,    3,     ITM_SPACE_PUNCTUATION },    /* 14 Sep 1752 */
+    [CFG_USA   ] = { 1, 0, 0,1,0, 2361222,   ITM_COMMA            ,    3,    9,    0,    3,     ITM_NULL  },                /* 14 Sep 1752 */
+
+//removed from the menu: test cases only
+    [CFG_UKOLD ] = { 1, 0, 1,0,0, 2361222,   ITM_DOT,                  3,    0,    0,    3,     ITM_DOT   },                /* 14 Sep 1752 */
+    [CFG_CH    ] = { 0, 1, 1,0,0, 2299625,   ITM_QUOTE            ,    3,    0,    0,    3,     ITM_QUOTE },                /* 15 Oct 1582 */    //January 12, 1584 2299625 first Kanton
 };
 
 static void setFlag(int f, int v) {
@@ -88,8 +99,8 @@ static void setFlag(int f, int v) {
   }
 }
 
+
 void configCommon(uint16_t idx) {
-  groupingGap = configSettings[idx].grouping;
   setFlag(FLAG_DECIMP, configSettings[idx].decimalDot);
   setFlag(FLAG_TDM24, configSettings[idx].tdm24);
   setFlag(FLAG_DMY, configSettings[idx].dmy);
@@ -97,7 +108,87 @@ void configCommon(uint16_t idx) {
   setFlag(FLAG_YMD, configSettings[idx].ymd);
   firstGregorianDay = configSettings[idx].gregorianDay;
   temporaryInformation = TI_DISP_JULIAN;
+
+  fnSetGapChar (configSettings[idx].gapl);
+  grpGroupingLeft            = configSettings[idx].gprl ;
+  groupingGap                = grpGroupingLeft;               //legacy function displays use IPGAP
+  grpGroupingGr1LeftOverflow = configSettings[idx].gpr1x;
+  grpGroupingGr1Left         = configSettings[idx].gpr1 ;
+  grpGroupingRight           = configSettings[idx].gprr ;
+  fnSetGapChar (32768+configSettings[idx].gapr);
 }
+
+
+//note: Changed showGlypCode to skip ASCII 01, printing nothing
+
+void fnSetGapChar (uint16_t charParam) {
+  if(charParam & 32768) {                        //+32768 for the right hand separator
+    if((charParam & 32767) == ITM_NULL) {
+      gapCharRight[0]=1;                         //set skip character 0x01
+      gapCharRight[1]=1;                         //set skip character 0x01
+    } else {
+      gapCharRight[0] = (indexOfItems[charParam & 32767].itemSoftmenuName)[0];
+      gapCharRight[1] = (indexOfItems[charParam & 32767].itemSoftmenuName)[1];
+      #ifdef PC_BUILD
+        printf(">>>> RIGHT GRP Character selected: %u %u\n",(uint8_t)gapCharRight[0] , (uint8_t)gapCharRight[1]);
+      #endif //PC_BUILD
+      if (gapCharRight[0] != 0 && gapCharRight[1] == 0) {
+        gapCharRight[1] = 1;                      //set second character to skip character 0x01
+      }
+    }
+  } else {
+    if(charParam == ITM_NULL) {
+      gapCharLeft[0]=1;                          //set skip character 0x01
+      gapCharLeft[1]=1;                          //set skip character 0x01
+    } else {
+      gapCharLeft[0] = (indexOfItems[charParam].itemSoftmenuName)[0];
+      gapCharLeft[1] = (indexOfItems[charParam].itemSoftmenuName)[1];
+      #ifdef PC_BUILD
+        printf(">>>> LEFT GRP Character selected: %u %u\n",(uint8_t)gapCharLeft[0] , (uint8_t)gapCharLeft[1]);
+      #endif //PC_BUILD
+      if (gapCharLeft[0] != 0 && gapCharLeft[1] == 0) {
+        gapCharLeft[1] = 1;                      //set second character to skip character 0x01
+      }
+    }        
+  }
+//printf("Post: %u %u %u %u \n", gapCharLeft[0],gapCharLeft[1],gapCharRight[0],gapCharRight[1]);
+}
+
+
+
+void fnSettingsToXEQ            (uint16_t unusedButMandatoryParameter) {
+
+}
+
+
+void fnSettingsDispFormatGrpL   (uint16_t param) {
+   grpGroupingLeft = param;
+   grpGroupingRight = param;    //TEST00 Test AUTO copying of main IPGRP to FPGRP
+   groupingGap = param;         //Legacy function displays use IPGRP
+}
+void fnSettingsDispFormatGrp1Lo  (uint16_t param) {
+   grpGroupingGr1LeftOverflow = param;
+}
+void fnSettingsDispFormatGrp1L  (uint16_t param) {
+   grpGroupingGr1Left = param;
+}
+void fnSettingsDispFormatGrpR   (uint16_t param) {
+   grpGroupingRight = param;    
+}
+
+void fnMenuGapL (uint16_t unusedButMandatoryParameter) {
+#if !defined(TESTSUITE_BUILD)
+  showSoftmenu(-MNU_GAP_L);
+#endif // !TESTSUITE_BUILD
+}
+void fnMenuGapR (uint16_t unusedButMandatoryParameter) {
+#if !defined(TESTSUITE_BUILD)
+  showSoftmenu(-MNU_GAP_R);
+#endif // !TESTSUITE_BUILD
+}
+
+
+
 
 
 
@@ -676,9 +767,16 @@ void resetOtherConfigurationStuff(void) {
   shortIntegerMode = SIM_2COMPL;                              //64:2
   fnSetWordSize(64);
 
+  groupingGap = 3;
+  grpGroupingLeft   = 3;
+  grpGroupingGr1Left= 0;
+  grpGroupingGr1Left= 0;
+  grpGroupingRight  = 3;
+  fnSetGapChar(      ITM_SPACE_PUNCTUATION); //ITM_SPACE_4_PER_EM);
+  fnSetGapChar(32768+ITM_SPACE_PUNCTUATION); //ITM_SPACE_4_PER_EM);
+
   significantDigits = 0;
   currentAngularMode = amDegree;
-  groupingGap = 3;
   roundingMode = RM_HALF_EVEN;
   displayStack = cachedDisplayStack = 4;
   pcg32_srandom(0x1963073019931121ULL, 0x1995062319981019ULL); // RNG initialisation

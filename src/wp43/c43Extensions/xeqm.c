@@ -354,7 +354,7 @@ TO_QSPI const function_t indexOfFunctions[] = {
               {ITM_DIV,                       "DIV"},
 
 
-//NEW 2023-05-10
+//ADDED 2023-05-10
               {ITM_GAP,                       "GAP"},
               {ITM_RDXCOM,                    "RDXCOM"},
               {ITM_RDXPER,                    "RDXPER"},
@@ -394,6 +394,40 @@ TO_QSPI const function_t indexOfFunctions[] = {
               {ITM_FGLNOFF,                   "FGOFF"},
               {ITM_FGLNLIM,                   "FGLIM"},
               {ITM_FGLNFUL,                   "FGFUL"},
+
+//ADDED 2023-05-05
+              {ITM_GAPPER_L,                  "SEPLPER"},
+              {ITM_GAPCOM_L,                  "SEPLCOM"},
+              {ITM_GAPAPO_L,                  "SEPLAPO"},
+              {ITM_GAPSPC_L,                  "SEPLSPC"},
+              {ITM_GAPDBLSPC_L,               "SEPLDSPC"},
+              {ITM_GAPDOT_L,                  "SEPLDOT"},
+              {ITM_GAPUND_L,                  "SEPLUND"},
+              {ITM_GAPNIL_L,                  "SEPLNO"},
+              {ITM_GAPNARSPC_L,               "SEPNSPC"},
+              {ITM_GAPPER_R,                  "SEPRPER"},
+              {ITM_GAPCOM_R,                  "SEPRCOM"},
+              {ITM_GAPAPO_R,                  "SEPRAPO"},
+              {ITM_GAPSPC_R,                  "SEPRSPC"},
+              {ITM_GAPDBLSPC_R,               "SEPRDSPC"},
+              {ITM_GAPDOT_R,                  "SEPRDOT"},
+              {ITM_GAPUND_R,                  "SEPRUND"},
+              {ITM_GAPNIL_R,                  "SEPRNO"},
+              {ITM_GAPNARSPC_R,               "SEPNSPC"},
+              {ITM_JUL_GREG_1582,             "JG1582"},
+              {ITM_JUL_GREG_1752,             "JG1752"},
+              {ITM_JUL_GREG_1873,             "JG1873"},
+              {ITM_JUL_GREG_1949,             "JG1949"},
+              {MNU_GAP_L,                     "IPSEP"},
+              {MNU_GAP_R,                     "FPSEP"},
+              {ITM_SET_TO_TEXT,               "set>TXT"},
+              {ITM_GRP_L,                     "IPGRP"},
+              {ITM_GRP1_L_OF,                 "IPGRP1X"},
+              {ITM_GRP1_L,                    "IPGRP1"},
+              {ITM_GRP_R,                     "FPGRP"},
+              {ITM_GAP_L,                     "IPSEP"},
+              {ITM_GAP_R,                     "FPSEP"},
+
 
 
 #endif //SAVE_SPACE_DM42_2

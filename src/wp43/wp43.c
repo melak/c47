@@ -122,6 +122,9 @@ char                   asmBuffer[5];
 char                   oldTime[8];
 char                   dateTimeString[12];
 char                   displayValueX[DISPLAY_VALUE_LEN];
+char                   gapCharLeft[3];
+char                   gapCharRight[3];
+
 
 uint8_t                numScreensStandardFont;
 uint8_t                currentAsnScr;
@@ -136,6 +139,10 @@ uint8_t                significantDigits;
 uint8_t                shortIntegerMode;
 uint8_t                previousCalcMode;
 uint8_t                groupingGap;
+uint8_t                grpGroupingLeft;
+uint8_t                grpGroupingGr1LeftOverflow;
+uint8_t                grpGroupingGr1Left;
+uint8_t                grpGroupingRight;
 uint8_t                roundingMode;
 uint8_t                calcMode;
 uint8_t                nextChar;

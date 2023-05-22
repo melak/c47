@@ -537,9 +537,21 @@ void fnIsLeap(uint16_t unusedButMandatoryParameter) {
   }
 }
 
-void fnSetFirstGregorianDay(uint16_t unusedButMandatoryParameter) {
+void fnSetFirstGregorianDay(uint16_t param) {
   real34_t jd34;
   const uint32_t fgd = firstGregorianDay;
+
+  if(param != NOPARAM) {
+    switch(param) {
+      case ITM_JUL_GREG_1752: firstGregorianDay = 2361222; break;    /* 14 Sept 1752 */
+      case ITM_JUL_GREG_1949: firstGregorianDay = 2433191; break;    /* 1 Oct   1949 */
+      case ITM_JUL_GREG_1582: firstGregorianDay = 2299161; break;    /* 15 Oct  1582 */
+      case ITM_JUL_GREG_1873: firstGregorianDay = 2405160; break;    /* 1 Jan   1873 */
+      default: break;
+    }
+    temporaryInformation = TI_DISP_JULIAN;
+    return;
+  }
 
   if((getRegisterDataType(REGISTER_X) == dtReal34) && (getRegisterAngularMode(REGISTER_X) == amNone)) {
     firstGregorianDay = 0u; // proleptic Gregorian mode
@@ -549,6 +561,7 @@ void fnSetFirstGregorianDay(uint16_t unusedButMandatoryParameter) {
     else {
       firstGregorianDay = fgd;
     }
+    temporaryInformation = TI_DISP_JULIAN;
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);

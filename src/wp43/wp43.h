@@ -195,6 +195,8 @@
   extern char                   oldTime[8];
   extern char                   dateTimeString[12];
   extern char                   displayValueX[DISPLAY_VALUE_LEN];
+  extern char                   gapCharLeft[3];
+  extern char                   gapCharRight[3];
 
   extern uint8_t                numScreensStandardFont;
   extern uint8_t                currentAsnScr;
@@ -209,6 +211,10 @@
   extern uint8_t                shortIntegerMode;
   extern uint8_t                previousCalcMode;
   extern uint8_t                groupingGap;
+  extern uint8_t                grpGroupingLeft;
+  extern uint8_t                grpGroupingGr1LeftOverflow;
+  extern uint8_t                grpGroupingGr1Left;
+  extern uint8_t                grpGroupingRight;
   extern uint8_t                roundingMode;
   extern uint8_t                calcMode;
   extern uint8_t                nextChar;

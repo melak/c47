@@ -1618,8 +1618,8 @@
 #define ITM_RESET                   1568
 #define ITM_REtoCX                  1569
 #define ITM_REexIM                  1570
-#define MNU_1571                    1571
-#define MNU_1572                    1572
+#define ITM_SETUKOLD                1571
+#define ITM_SETCH                   1572
 #define ITM_DSP                     1573
 #define ITM_RNORM                   1574
 #define ITM_EX1                     1575
@@ -2164,8 +2164,39 @@
 #define MNU_TAMNONREGIND            2108
 #define ITM_SAVEST                  2109
 #define ITM_LOADST                  2110
+#define ITM_GAPPER_L                2111
+#define ITM_GAPCOM_L                2112
+#define ITM_GAPAPO_L                2113
+#define ITM_GAPSPC_L                2114
+#define ITM_GAPDBLSPC_L             2115
+#define ITM_GAPDOT_L                2116
+#define ITM_GAPUND_L                2117
+#define ITM_GAPNIL_L                2118
+#define ITM_GAPNARSPC_L             2119
+#define ITM_GAPPER_R                2120
+#define ITM_GAPCOM_R                2121
+#define ITM_GAPAPO_R                2122
+#define ITM_GAPSPC_R                2123
+#define ITM_GAPDBLSPC_R             2124
+#define ITM_GAPDOT_R                2125
+#define ITM_GAPUND_R                2126
+#define ITM_GAPNIL_R                2127
+#define ITM_GAPNARSPC_R             2128
+#define ITM_JUL_GREG_1582           2129
+#define ITM_JUL_GREG_1752           2130
+#define ITM_JUL_GREG_1873           2131
+#define ITM_JUL_GREG_1949           2132
+#define MNU_GAP_L                   2133
+#define MNU_GAP_R                   2134
+#define ITM_SET_TO_TEXT             2135
+#define ITM_GRP_L                   2136
+#define ITM_GRP1_L_OF               2137
+#define ITM_GRP1_L                  2138
+#define ITM_GRP_R                   2139
+#define ITM_GAP_L                   2140
+#define ITM_GAP_R                   2141
 
-#define LAST_ITEM                   2111
+#define LAST_ITEM                   2142
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
