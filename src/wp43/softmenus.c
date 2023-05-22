@@ -83,7 +83,7 @@ TO_QSPI const int16_t menu_CLK[]         = { ITM_DATE,                      ITM_
                                              ITM_DATEto,                    ITM_TIMEto,                 ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
                                              ITM_toDATE,                    ITM_toTIME,                 ITM_NULL,                 ITM_NULL,              ITM_toHMS,                   ITM_msTo,
 
-                                             ITM_DATE,                      ITM_TIME,                   ITM_TDISP,                ITM_DMY,               ITM_YMD,                     ITM_MDY,
+                                             ITM_DATE,                      ITM_TIME,                   ITM_TDISP,                ITM_DMY,               ITM_MDY,                     ITM_YMD,
                                              ITM_SD,                        ITM_ST,                     ITM_WDAY,                 ITM_DAY,               ITM_MONTH,                   ITM_YEAR,
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_SECOND,            ITM_MINUTE,                  ITM_HR_DEG,    
 
@@ -102,18 +102,10 @@ TO_QSPI const int16_t menu_CPX[]         = { ITM_RE,                        ITM_
                                              ITM_CPXI,                      ITM_CPXJ,                   ITM_CXtoRE,               ITM_REtoCX,            ITM_RECT,                    ITM_POLAR                     };    //JM re-arranged menu
 
 
-TO_QSPI const int16_t menu_DISP[]        = { 
+TO_QSPI const int16_t menu_DISP[]        = { ITM_FIX,                       ITM_SCI,                    ITM_ENG,                  ITM_ALL,               ITM_SIGFIG,                  ITM_UNIT,
+                                             ITM_GAP_R,                     ITM_GRP_R,                  ITM_RNG,                  ITM_HIDE,              ITM_RDXPER,                  ITM_RDXCOM,     
+                                             ITM_GAP_L,                     ITM_GRP_L,                  ITM_GRP1_L,               ITM_GRP1_L_OF,         ITM_RECT,                    ITM_POLAR,                           //JM 
 
-//                                             ITM_FIX,                       ITM_SCI,                    ITM_ENG,                  ITM_ALL,               ITM_SIGFIG,                  ITM_UNIT,
-  //                                           ITM_GAP_L,                     ITM_GRP_L,                  ITM_GRP1_L,               ITM_GRP1_L_OF,         ITM_GRP_R,                   ITM_GAP_R,
-    //                                         ITM_RDXPER,                    ITM_RDXCOM,                 ITM_RNG,                  ITM_HIDE,              ITM_RECT,                    ITM_POLAR,                           //JM 
-
-
-/*TEST LAYOUT*/                              ITM_FIX,                       ITM_SCI,                    ITM_ENG,                  ITM_ALL,               ITM_SIGFIG,                  ITM_UNIT,
-                                             ITM_GAP_L,                     ITM_GRP_L,                  ITM_GRP1_L,               ITM_GRP1_L_OF,         ITM_RNG,                     ITM_HIDE, 
-                                             ITM_GAP_R,                     ITM_GRP_R,                  ITM_RDXPER,               ITM_RDXCOM,            ITM_RECT,                    ITM_POLAR,                           //JM 
-
-                                             
                                              ITM_DMY,                       ITM_YMD,                    ITM_MDY,                  ITM_SET_TO_TEXT,       ITM_CLK12,                   ITM_CLK24,
                                              ITM_SI_All,                    ITM_DSTACK,                 ITM_SHOIREP,              ITM_LARGELI,           ITM_CPXI,                    ITM_CPXJ,
                                              ITM_SCIOVR,                    ITM_ENGOVR,                 ITM_NULL,                 ITM_CPXMULT,           ITM_MULTCR,                  ITM_MULTDOT,
@@ -1386,7 +1378,6 @@ bool_t maxfgLines(int16_t y) {
       displayBugScreen(errorMessage);
       return;
     }
-
     showKey(label, x1, x2, y1, y2, xSoftkey == 5, videoMode, topLine, bottomLine, showCb, showValue, showText);
   }
 
@@ -1708,14 +1699,7 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
                         break;
       case ITM_GRP_L  : *showValue = grpGroupingLeft; 
                         break;
-      case ITM_GRP1_L : *showValue = NOVAL;
-                        if(grpGroupingGr1Left == 1) {
-                          strcat(showText,"+1");
-                          *showValue = NOVAL;
-                        }
-                        else {
-                          *showValue = grpGroupingGr1Left; 
-                        }
+      case ITM_GRP1_L : *showValue = grpGroupingGr1Left; 
                         break;
       case ITM_GRP1_L_OF:*showValue = grpGroupingGr1LeftOverflow; 
                         break;
@@ -1935,7 +1919,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
         showEquation(currentFormula, 0, EQUATION_NO_CURSOR, false, NULL, NULL);
       }
     }
-    else {
+    else {  //normal (not Dynamic) softmenu
       const int16_t *softkeyItem = softmenu[m].softkeyItem + currentFirstItem;
       char itemName[16];
       for(y=currentFirstItem/6; y<=min(currentFirstItem/6+2, numberOfItems/6); y++, softkeyItem+=6) {
@@ -1947,7 +1931,6 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
             item = softkeyItem[x];
           }
           changeSoftKey(softmenu[m].menuItem, item, itemName, &vm, &showCb, &showValue, showText);
-
 
           if(item < 0) { // item is softmenu name
             int16_t menu = 0;

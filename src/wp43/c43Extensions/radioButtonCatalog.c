@@ -707,6 +707,11 @@ void use_base_glyphs(char* tmp1, int16_t xx) {              // Needs non-local v
 
 
 char *figlabel(const char *label, const char* showText, int16_t showValue) {      //JM
+  //uint16_t ii=0;
+  //while (label[ii]!=0) {printf("(%u)=%c=%u ",ii, label[ii], label[ii]);ii++;}
+  //printf(">>>>> %1u %1u\n",(uint8_t)showText[strlen(showText)-2], (uint8_t)showText[strlen(showText)-1]);
+  //printf("\n");
+
   char tmp1[16];
   tmp[0] = 0;
 
@@ -738,15 +743,18 @@ char *figlabel(const char *label, const char* showText, int16_t showValue) {    
           case '_'       : strcat(tmp,STD_UNDERSCORE);break;
           case ' '       : strcat(tmp,STD_OPEN_BOX);  break;
           case '\''      : strcat(tmp,STD_QUOTE);     break;
-          default:
-            //any other characters won't have sub conversions and are returned as is
-            //printf(">>>> %u %u\n", (uint8_t)showText[ii], (uint8_t)showText[ii+1]);
-            if( (showText[ii] & 0x80) && (showText[ii+1] != 0)) {
-              char tt[3]; tt[0]=0; tt[1]=0; tt[2]=0;
+          default: {
+            uint16_t tmpi = (uint16_t)(( ((uint8_t)(showText[ii]) & 0x00FF) ) << 8)    + (uint16_t) ((uint8_t)(showText[ii+1]));
+            if(0x0101 == tmpi) {strcat(tmp,STD_o_STROKE); ii++; }
 
-              uint16_t tmpi = (uint16_t)(( ((uint8_t)(showText[ii]) & 0x00FF) ) << 8)    + (uint16_t) ((uint8_t)(showText[ii+1]));              
-              if(      ( (uint16_t)(STD_DOT[0] & 0x00FF) << 8) + (STD_DOT[1] & 0x00FF) == tmpi ) {strcat(tmp,STD_DOT  ); ii++; }
-              else if( ( (uint16_t)(         1 & 0x00FF) << 8) + (         1 & 0x00FF) == tmpi ) {strcat(tmp,STD_SUB_0); ii++; }
+            //any other characters won't have actual subscript conversions and are returned translated, or as is
+            //printf(">>>> %u %u\n", (uint8_t)showText[ii], (uint8_t)showText[ii+1]);
+            else if( (showText[ii] & 0x80) && (showText[ii+1] != 0)) {
+              char tt[3]; tt[0]=0; tt[1]=0; tt[2]=0;
+              
+              if(      ( (uint16_t)(STD_SPACE_PUNCTUATION[0] & 0x00FF) << 8) + (STD_SPACE_PUNCTUATION[1] & 0x00FF) == tmpi ) {strcat(tmp,STD_OPEN_BOX); ii++; }
+              else if( ( (uint16_t)(STD_SPACE_4_PER_EM   [0] & 0x00FF) << 8) + (STD_SPACE_4_PER_EM   [1] & 0x00FF) == tmpi ) {strcat(tmp,".."); ii++; }
+              else if( ( (uint16_t)(STD_SPACE_EM         [0] & 0x00FF) << 8) + (STD_SPACE_EM         [1] & 0x00FF) == tmpi ) {strcat(tmp,STD_OPEN_BOX STD_OPEN_BOX); ii++; }
 
               else { //double byte
                 //printf(">>>> Double byte in RB\n");
@@ -761,6 +769,7 @@ char *figlabel(const char *label, const char* showText, int16_t showValue) {    
               strcat(tmp,tt);
             }
             break;
+          }
         }
     ii++;
     }

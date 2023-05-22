@@ -1219,14 +1219,13 @@ typedef enum {
 #define RADIX34_MARK_CHAR                    (getSystemFlag(FLAG_DECIMP) ? '.'       : ',')
 #define RADIX34_MARK_STRING                  (getSystemFlag(FLAG_DECIMP) ? "."       : ",")
 #define PRODUCT_SIGN                         (getSystemFlag(FLAG_MULTx)  ? STD_CROSS : STD_DOT)
+
 #define SEPARATOR_LEFT                       (gapCharLeft)
 #define SEPARATOR_RIGHT                      (gapCharRight)
 #define GROUPWIDTH_LEFT                      ((uint16_t)grpGroupingLeft)
 #define GROUPWIDTH_LEFT1                     ((grpGroupingGr1Left        == 0 ? (uint16_t)grpGroupingLeft : (uint16_t)grpGroupingGr1Left))
 #define GROUP1_OVFL(digitCount, exp)         ( (grpGroupingGr1LeftOverflow > 0 && exp == GROUPWIDTH_LEFT1 && digitCount+1 == GROUPWIDTH_LEFT1  ? grpGroupingGr1LeftOverflow:0 ) )
-//#define GROUPWIDTH_LEFT1_OVFL                (grpGroupingGr1LeftOverflow== 0 ? (uint16_t)grpGroupingLeft : (uint16_t)grpGroupingGr1LeftOverflow)
-
-#define GROUPWIDTH_RIGHT                     (grpGroupingRight)  //TEST00 Remove the auto copying of main IPGRP to FPGRP     (grpGroupingRight          == 0 ? (uint16_t)grpGroupingLeft : (uint16_t)grpGroupingRight)
+#define GROUPWIDTH_RIGHT                     (grpGroupingRight)  // Removed the auto copying of main IPGRP to FPGRP:     (grpGroupingRight          == 0 ? (uint16_t)grpGroupingLeft : (uint16_t)grpGroupingRight)
 #define SEPARATOR_(digitCount)               (digitCount >= 0 ? SEPARATOR_LEFT : SEPARATOR_RIGHT)
 #define GROUPWIDTH_(digitCount)              (digitCount >= 0 ? GROUPWIDTH_LEFT : GROUPWIDTH_RIGHT)
 #define digitCountNEW(digitCount)            (  digitCount+1 > GROUPWIDTH_LEFT1 ? digitCount - GROUPWIDTH_LEFT1 : digitCount  )  //remaining digits to divide up into groups. "+1" due to the fact the the digit is recognized now, but only added below. So the sep gets added before the digit down below.
