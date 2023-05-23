@@ -201,7 +201,7 @@ static void _setCaption(uint16_t keyNum) {
         }
 
       case dtLongInteger: {
-        longIntegerRegisterToDisplayString(REGISTER_K, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH, 50, STD_SPACE_PUNCTUATION, false);  //JM added last parameter: Allow LARGELI);
+        longIntegerRegisterToDisplayString(REGISTER_K, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH, 50, SEPARATOR_LEFT, false);  //JM added last parameter: Allow LARGELI);
         break;
         }
 

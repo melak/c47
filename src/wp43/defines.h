@@ -24,7 +24,7 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
- #define VERSION1 "108_09r"
+ #define VERSION1 "108_09r D"
 
 
   #undef SAVE_SPACE_DM42
@@ -1224,8 +1224,9 @@ typedef enum {
 #define SEPARATOR_RIGHT                      (gapCharRight)
 #define GROUPWIDTH_LEFT                      ((uint16_t)grpGroupingLeft)
 #define GROUPWIDTH_LEFT1                     ((grpGroupingGr1Left        == 0 ? (uint16_t)grpGroupingLeft : (uint16_t)grpGroupingGr1Left))
+#define GROUPWIDTH_LEFT1X                    (grpGroupingGr1LeftOverflow)  
 #define GROUP1_OVFL(digitCount, exp)         ( (grpGroupingGr1LeftOverflow > 0 && exp == GROUPWIDTH_LEFT1 && digitCount+1 == GROUPWIDTH_LEFT1  ? grpGroupingGr1LeftOverflow:0 ) )
-#define GROUPWIDTH_RIGHT                     (grpGroupingRight)  // Removed the auto copying of main IPGRP to FPGRP:     (grpGroupingRight          == 0 ? (uint16_t)grpGroupingLeft : (uint16_t)grpGroupingRight)
+#define GROUPWIDTH_RIGHT                     (grpGroupingRight)
 #define SEPARATOR_(digitCount)               (digitCount >= 0 ? SEPARATOR_LEFT : SEPARATOR_RIGHT)
 #define GROUPWIDTH_(digitCount)              (digitCount >= 0 ? GROUPWIDTH_LEFT : GROUPWIDTH_RIGHT)
 #define digitCountNEW(digitCount)            (  digitCount+1 > GROUPWIDTH_LEFT1 ? digitCount - GROUPWIDTH_LEFT1 : digitCount  )  //remaining digits to divide up into groups. "+1" due to the fact the the digit is recognized now, but only added below. So the sep gets added before the digit down below.

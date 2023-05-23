@@ -186,11 +186,11 @@ TO_QSPI const int16_t menu_M_EDIT[]      = { ITM_LEFT_ARROW,                ITM_
 
 
 //#if defined (INLINE_TEST) && 
-#if defined (DMCP_BUILD)
+//#if defined (DMCP_BUILD)
   #define ITM_TST -MNU_INL_TST
-#else
-  #define ITM_TST ITM_RESERVE
-#endif
+//#else
+//  #define ITM_TST ITM_RESERVE
+//#endif
 
 #ifdef DMCP_BUILD
   #define ITM_SYS ITM_SYSTEM
@@ -596,9 +596,9 @@ TO_QSPI const int16_t menu_EE[]          = { ITM_CONSTpi,                   ITM_
                                              ITM_EE_STO_V_I,                ITM_EE_STO_IR,              ITM_EE_STO_V_Z,           ITM_EE_X2BAL,          ITM_PARALLEL,                -MNU_CPX,                           //JM EE
                                              ITM_EE_STO_Z,                  ITM_EE_RCL_Z,               ITM_EE_STO_V,             ITM_EE_RCL_V,          ITM_EE_STO_I,                ITM_EE_RCL_I                  };    //JM EE
 
-#ifdef INLINE_TEST
+//#ifdef INLINE_TEST
 TO_QSPI const int16_t menu_Inl_Tst[]     = { ITM_TEST,                      ITM_NULL,                   ITM_NULL,                 ITM_SYS_FREE_RAM,      ITM_GET_TEST_BS,             ITM_SET_TEST_BS               };    //dr
-#endif
+//#endif
 
 
 TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_N_KEY_CC,               ITM_N_KEY_GSH,            ITM_N_KEY_MM,          ITM_N_KEY_DRG,               ITM_NULL,       //JM USER NAORMAL MODE
@@ -840,9 +840,9 @@ TO_QSPI const softmenu_t softmenu[] = {
 /* 134 */  {.menuItem = -MNU_BLUE_C47,    .numItems = sizeof(menu_BLUE_C47      )/sizeof(int16_t), .softkeyItem = menu_BLUE_C47       },
 /* 135 */  {.menuItem = -MNU_GAP_L,       .numItems = sizeof(menu_GAP_L         )/sizeof(int16_t), .softkeyItem = menu_GAP_L          },
 /* 136 */  {.menuItem = -MNU_GAP_R,       .numItems = sizeof(menu_GAP_R         )/sizeof(int16_t), .softkeyItem = menu_GAP_R          },
-#ifdef INLINE_TEST                                                              //vv dr
+//#ifdef INLINE_TEST                                                              //vv dr
 /*     */  {.menuItem= -MNU_INL_TST,     .numItems = sizeof(menu_Inl_Tst        )/sizeof(int16_t), .softkeyItem = menu_Inl_Tst        },
-#endif                                                                          //^^
+//#endif                                                                          //^^
 /*     */  {.menuItem =  0,               .numItems = 0,                                           .softkeyItem = NULL                }
 };
 
@@ -1723,7 +1723,7 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
       //printf("WWW2: itemName=%s, ItemNr=%i \n",itemName,itemNr);
       return;
     }
-  } else { //itemNr >= 0
+  } else if(itemNr < 0) { //itemNr >= 0
     strcpy(itemName, indexOfItems[-itemNr%10000].itemSoftmenuName);
     //printf("WWW3: itemName=%s, ItemNr=%i \n",itemName,itemNr);
     return;
@@ -1950,19 +1950,16 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
             else if(softmenu[menu].menuItem == -MNU_ALPHA_OMEGA && alphaCase == AC_LOWER) {
                 showSoftkey(indexOfItems[MNU_alpha_omega].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
             }
-            else {
-              #ifdef INLINE_TEST
-                if(softmenu[menu].menuItem == -MNU_INL_TST) {
+            else if(softmenu[menu].menuItem == -MNU_INL_TST) {
+                #ifdef INLINE_TEST
+                  showSoftkey(itemName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
+                #else  //!INLINE_TEST
                   showSoftkey(/*STD_omicron*/STD_SPACE_3_PER_EM, x, y-currentFirstItem/6, vmNormal, false, false, NOVAL, NOVAL, NOTEXT);
-                }
-                else {
-              #endif
-              //MAIN SOFTMENU DISPLAY
-              showSoftkey(indexOfItems[-softmenu[menu].menuItem].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
-              #ifdef INLINE_TEST
-                }
-              #endif
-
+                #endif //!INLINE_TEST
+            }
+            else {
+                //MAIN SOFTMENU DISPLAY
+                showSoftkey(itemName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
             }
           } //softmenu
 
@@ -2173,6 +2170,10 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
     #ifdef PC_BUILD
       char tmp[200]; sprintf(tmp,"^^^^showSoftmenu: Showing Softmenu id=%d\n",id); jm_show_comment(tmp);
     #endif //PC_BUILD
+
+    #ifndef INLINE_TEST
+      if(id == -MNU_INL_TST) return;
+    #endif
 
     enterAsmModeIfMenuIsACatalog(id);
 

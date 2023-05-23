@@ -62,13 +62,13 @@
         if(showContent) {
           if(regist >= FIRST_RESERVED_VARIABLE) {
             copySourceRegisterToDestRegister(regist, TEMP_REGISTER_1);
-            longIntegerRegisterToDisplayString(TEMP_REGISTER_1, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - 1 - registerNameWidth, 50, STD_SPACE_4_PER_EM, false);
+            longIntegerRegisterToDisplayString(TEMP_REGISTER_1, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - 1 - registerNameWidth, 50, SEPARATOR_LEFT, false);
           }
           else if(getRegisterLongIntegerSign(regist) == LI_NEGATIVE) {
-            longIntegerRegisterToDisplayString(regist, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - 1 - registerNameWidth, 50, STD_SPACE_4_PER_EM, false);   //JM added last parameter: Allow LARGELI
+            longIntegerRegisterToDisplayString(regist, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - 1 - registerNameWidth, 50, SEPARATOR_LEFT, false);   //JM added last parameter: Allow LARGELI
           }
           else {
-            longIntegerRegisterToDisplayString(regist, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - 9 - registerNameWidth, 50, STD_SPACE_4_PER_EM, false);   //JM added last parameter: Allow LARGELI
+            longIntegerRegisterToDisplayString(regist, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - 9 - registerNameWidth, 50, SEPARATOR_LEFT, false);   //JM added last parameter: Allow LARGELI
           }
         }
         else {
