@@ -355,7 +355,6 @@ TO_QSPI const function_t indexOfFunctions[] = {
 
 
 //ADDED 2023-05-10
-              {ITM_GAP,                       "GAP"},
               {ITM_RDXCOM,                    "RDXCOM"},
               {ITM_RDXPER,                    "RDXPER"},
               {ITM_MULTCR,                    "MULTCR "},
@@ -404,7 +403,7 @@ TO_QSPI const function_t indexOfFunctions[] = {
               {ITM_GAPDOT_L,                  "SEPLDOT"},
               {ITM_GAPUND_L,                  "SEPLUND"},
               {ITM_GAPNIL_L,                  "SEPLNO"},
-              {ITM_GAPNARSPC_L,               "SEPNSPC"},
+              {ITM_GAPNARSPC_L,               "SEPLNSPC"},
               {ITM_GAPPER_R,                  "SEPRPER"},
               {ITM_GAPCOM_R,                  "SEPRCOM"},
               {ITM_GAPAPO_R,                  "SEPRAPO"},
@@ -413,20 +412,16 @@ TO_QSPI const function_t indexOfFunctions[] = {
               {ITM_GAPDOT_R,                  "SEPRDOT"},
               {ITM_GAPUND_R,                  "SEPRUND"},
               {ITM_GAPNIL_R,                  "SEPRNO"},
-              {ITM_GAPNARSPC_R,               "SEPNSPC"},
+              {ITM_GAPNARSPC_R,               "SEPRNSPC"},
               {ITM_JUL_GREG_1582,             "JG1582"},
               {ITM_JUL_GREG_1752,             "JG1752"},
               {ITM_JUL_GREG_1873,             "JG1873"},
               {ITM_JUL_GREG_1949,             "JG1949"},
-              {MNU_GAP_L,                     "IPSEP"},
-              {MNU_GAP_R,                     "FPSEP"},
               {ITM_SET_TO_TEXT,               "set>TXT"},
               {ITM_GRP_L,                     "IPGRP"},
               {ITM_GRP1_L_OF,                 "IPGRP1X"},
               {ITM_GRP1_L,                    "IPGRP1"},
               {ITM_GRP_R,                     "FPGRP"},
-              {ITM_GAP_L,                     "IPSEP"},
-              {ITM_GAP_R,                     "FPSEP"},
 
 
 
@@ -485,6 +480,8 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
       print_linestr(inputstring,true);
       print_linestr("",false);
     #endif
+
+
 
         if(exec1) namescan = false;     //no scanning option if tasked to execute
         int16_t commno;
