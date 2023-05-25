@@ -753,7 +753,7 @@ char *figlabel(const char *label, const char* showText, int16_t showValue) {    
               char tt[3]; tt[0]=0; tt[1]=0; tt[2]=0;
               
               if(      ( (uint16_t)(STD_SPACE_PUNCTUATION[0] & 0x00FF) << 8) + (STD_SPACE_PUNCTUATION[1] & 0x00FF) == tmpi ) {strcat(tmp,STD_OPEN_BOX); ii++; }
-              else if( ( (uint16_t)(STD_SPACE_4_PER_EM   [0] & 0x00FF) << 8) + (STD_SPACE_4_PER_EM   [1] & 0x00FF) == tmpi ) {strcat(tmp,".."); ii++; }
+              else if( ( (uint16_t)(STD_SPACE_4_PER_EM   [0] & 0x00FF) << 8) + (STD_SPACE_4_PER_EM   [1] & 0x00FF) == tmpi ) {strcat(tmp,STD_INV_BRIDGE); ii++; }
               else if( ( (uint16_t)(STD_SPACE_EM         [0] & 0x00FF) << 8) + (STD_SPACE_EM         [1] & 0x00FF) == tmpi ) {strcat(tmp,STD_OPEN_BOX STD_OPEN_BOX); ii++; }
 
               else { //double byte

@@ -197,6 +197,7 @@
   extern char                   displayValueX[DISPLAY_VALUE_LEN];
   extern char                   gapCharLeft[3];
   extern char                   gapCharRight[3];
+  extern char                   gapCharRadix[3];
 
   extern uint8_t                numScreensStandardFont;
   extern uint8_t                currentAsnScr;

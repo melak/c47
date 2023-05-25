@@ -377,6 +377,13 @@
 #define STD_sampi                     "\x83\xe1"  //JM GREEK
 #define STD_case                      "\xa1\x02"  //JM CAPS
 #define STD_num                       "\xa1\x15"  //JM NUM
+
+#define STD_WDOT                      "\xa2\xc5" //   22c5
+#define STD_WPERIOD                   "\xff\x0e" //   ff0e
+#define STD_WCOMMA                    "\xff\x0c" //   ff0c
+#define STD_NQUOTE                    "\x82\xbc" //   02bc
+#define STD_INV_BRIDGE                "\x83\x3a" //   033a   
+
 #define STD_SPACE_EM                  "\xa0\x03"
 #define STD_SPACE_3_PER_EM            "\xa0\x04"
 #define STD_SPACE_4_PER_EM            "\xa0\x05"

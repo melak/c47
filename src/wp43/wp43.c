@@ -123,6 +123,7 @@ char                   oldTime[8];
 char                   dateTimeString[12];
 char                   displayValueX[DISPLAY_VALUE_LEN];
 char                   gapCharLeft[3];
+char                   gapCharRadix[3];
 char                   gapCharRight[3];
 
 

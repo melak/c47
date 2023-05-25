@@ -24,7 +24,7 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
- #define VERSION1 "108_09r D"
+ #define VERSION1 "108_09r E"
 
 
   #undef SAVE_SPACE_DM42
@@ -1216,8 +1216,13 @@ typedef enum {
 #define modulo(n, d)                         ((n)%(d)<0 ? (n)%(d)+(d) : (n)%(d))                             // This version works only if d > 0
 #define nbrOfElements(x)                     (sizeof(x) / sizeof((x)[0]))                                    //dr
 #define COMPLEX_UNIT                         (getSystemFlag(FLAG_CPXj)   ? STD_j     : STD_i)
-#define RADIX34_MARK_CHAR                    (getSystemFlag(FLAG_DECIMP) ? '.'       : ',')
-#define RADIX34_MARK_STRING                  (getSystemFlag(FLAG_DECIMP) ? "."       : ",")
+
+#define RADIX34_MARK_CHAR                    (getSystemFlag(FLAG_DECIMP) ? '@'       : '@')
+//#define RADIX34_MARK_CHAR                    (getSystemFlag(FLAG_DECIMP) ? '.'       : ',')
+//#define RADIX34_MARK_STRING                  (getSystemFlag(FLAG_DECIMP) ? "."       : ",")
+//#define RADIX34_MARK_CHAR                    ((uint8_t)gapCharRadix[1] + ((uint8_t)(gapCharRadix[1]) << 8) == STD_DOT[1]    + (((uint8_t)(STD_DOT[1])    << 8)) ? 'a' : (uint8_t)gapCharRadix[1] + ((uint8_t)(gapCharRadix[1]) << 8) == STD_SUB_A[1]  + (((uint8_t)(STD_SUB_A[1])  << 8)) ? 'b' : (uint8_t)gapCharRadix[1] + ((uint8_t)(gapCharRadix[1]) << 8) == STD_PERIOD[0]                                  ? 'c' : (uint8_t)gapCharRadix[1] + ((uint8_t)(gapCharRadix[1]) << 8) == STD_SUB_B[1]  + (((uint8_t)(STD_SUB_B[1])  << 8)) ? 'd' : (uint8_t)gapCharRadix[1] + ((uint8_t)(gapCharRadix[1]) << 8) == STD_COMMA[0]                                   ? 'e' :(uint8_t)gapCharRadix[1] + ((uint8_t)(gapCharRadix[1]) << 8) == STD_SUB_C[1]  + (((uint8_t)(STD_SUB_C[1])  << 8)) ? 'f' : 'g') 
+
+#define RADIX34_MARK_STRING                  (gapCharRadix)
 #define PRODUCT_SIGN                         (getSystemFlag(FLAG_MULTx)  ? STD_CROSS : STD_DOT)
 
 #define SEPARATOR_LEFT                       (gapCharLeft)

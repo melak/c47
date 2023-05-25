@@ -1820,7 +1820,7 @@ void printHalfSecUpdate_Integer(uint8_t mode, char *txt, int loop) {
   if(running_program_jm) return;                             //JM
   showFunctionNameCounter = delayInMs;
   strcpy(padding,functionName);                              //JM
-  strcat(padding,"    ");                                    //JM
+  strcat(padding,"     ");                                    //JM
   if(stringWidth(padding, &standardFont, true, true) + 1 /*JM 20*/ + lineTWidth > SCREEN_WIDTH) {                //JM T-Register clearing
     clearRegisterLine(REGISTER_T, true, false);
   }

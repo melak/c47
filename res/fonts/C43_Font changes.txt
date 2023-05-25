@@ -144,3 +144,11 @@ C43 Font:
 2023-10-11 Add "U+21D2", Rightwards Double Arrow to StandardFont only
 2023-01-15 Add "U+267A", Recycling Symbol For Generic Materials to both fonts
 2023-01-15 Copied "U+21D2", Rightwards Double Arrow to Numericfont to try keep them the same, even for just the additions
+
+----
+
+2023-05-25 Add STD_WDOT                      "\xa2\xc5" //   22c5
+2023-05-25 Add STD_WPERIOD                   "\xff\x0e" //   ff0e
+2023-05-25 Add STD_WCOMMA                    "\xff\x0c" //   ff0c
+2023-05-25 Add STD_NQUOTE                    "\x82\xbc" //   02bc
+2023-05-25 Add STD_INV_BRIDGE                "\x83\x3a" //   033a   

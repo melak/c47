@@ -649,7 +649,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
         }
         displayString[charIndex] = 0;
         strcat(displayString, RADIX34_MARK_STRING);
-        charIndex++;
+        charIndex += strlen(RADIX34_MARK_STRING);
         if(updateDisplayValueX) {
           displayValueX[valueIndex++] = '.';
         }
@@ -711,7 +711,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
           if(digitCount == 0) {
             displayString[charIndex] = 0;
             strcat(displayString, RADIX34_MARK_STRING);
-            charIndex++;
+            charIndex += strlen(RADIX34_MARK_STRING);
             if(updateDisplayValueX) {
               displayValueX[valueIndex++] = '.';
             }
@@ -812,7 +812,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
         }
         displayString[charIndex] = 0;
         strcat(displayString, RADIX34_MARK_STRING);
-        charIndex++;
+        charIndex += strlen(RADIX34_MARK_STRING);
         if(updateDisplayValueX) {
           displayValueX[valueIndex++] = '.';
         }
@@ -890,7 +890,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
           if(digitCount == 0) {
             displayString[charIndex] = 0;
             strcat(displayString, RADIX34_MARK_STRING);
-            charIndex++;
+            charIndex += strlen(RADIX34_MARK_STRING);
             if(updateDisplayValueX) {
               displayValueX[valueIndex++] = '.';
             }
@@ -956,7 +956,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
     // Radix mark
     displayString[charIndex] = 0;
     strcat(displayString, RADIX34_MARK_STRING);
-    charIndex++;
+    charIndex += strlen(RADIX34_MARK_STRING);
     if(updateDisplayValueX) {
       displayValueX[valueIndex++] = '.';
     }
@@ -1075,7 +1075,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
     // Radix Mark
     displayString[charIndex] = 0;
     strcat(displayString, RADIX34_MARK_STRING);
-    charIndex++;
+    charIndex += strlen(RADIX34_MARK_STRING);
     if(updateDisplayValueX) {
       displayValueX[valueIndex++] = '.';
     }
