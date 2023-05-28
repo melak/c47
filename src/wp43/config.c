@@ -62,7 +62,6 @@
 
 
 TO_QSPI static const struct {
-    unsigned decimalDot : 1;
     unsigned tdm24 : 1;
     unsigned dmy : 1;
     unsigned mdy : 1;
@@ -78,16 +77,16 @@ TO_QSPI static const struct {
 
 
 } configSettings[] = {
-                /*   . 24  D M Y  Gregorian   GAP char                GRP   GRPx  GRP1 FP.GRP   FP.GAP char               New Radix*/
-    [CFG_DFLT  ] = { 1, 1, 0,0,1, 2361222,   ITM_SPACE_PUNCTUATION,    3,    0,    0,    3,     ITM_SPACE_PUNCTUATION ,   ITM_PERIOD},    /* 14 Sep 1752 */
-    [CFG_CHINA ] = { 1, 1, 0,0,1, 2433191,   ITM_COMMA            ,    4,    0,    0,    4,     ITM_COMMA             ,   ITM_PERIOD},                /*  1 Oct 1949 */
-    [CFG_EUROPE] = { 0, 1, 1,0,0, 2299161,   ITM_SPACE_PUNCTUATION,    3,    0,    0,    3,     ITM_SPACE_PUNCTUATION ,   ITM_COMMA },    /* 15 Oct 1582 */
-    [CFG_INDIA ] = { 1, 1, 1,0,0, 2361222,   ITM_COMMA            ,    2,    0,    3,    2,     ITM_COMMA             ,   ITM_PERIOD},                /* 14 Sep 1752 */
-    [CFG_JAPAN ] = { 1, 1, 0,0,1, 2405160,   ITM_SPACE_PUNCTUATION,    3,    0,    0,    3,     ITM_SPACE_PUNCTUATION ,   ITM_PERIOD},    /*  1 Jan 1873 */
-    [CFG_UK    ] = { 1, 0, 1,0,0, 2361222,   ITM_SPACE_PUNCTUATION,    3,    0,    0,    3,     ITM_SPACE_PUNCTUATION ,   ITM_PERIOD},    /* 14 Sep 1752 */
-    [CFG_USA   ] = { 1, 0, 0,1,0, 2361222,   ITM_COMMA            ,    3,    9,    0,    3,     ITM_NULL              ,   ITM_PERIOD},                /* 14 Sep 1752 */
-    [CFG_HP15C ] = { 1, 0, 0,1,0, 2361222,   ITM_COMMA            ,    3,    0,    0,    3,     ITM_COMMA             ,   ITM_PERIOD},                /* 14 Sep 1752 */
-    [CFG_HP35  ] = { 1, 0, 0,1,0, 2361222,   ITM_NULL             ,    3,    0,    0,    3,     ITM_NULL              ,   ITM_WDOT  }                 /* 14 Sep 1752 */
+                /*   24  D M Y  Gregorian   GAP char                GRP   GRPx  GRP1 FP.GRP   FP.GAP char               New Radix*/
+    [CFG_DFLT  ] = {  1, 0,0,1, 2361222,   ITM_SPACE_PUNCTUATION,    3,    0,    0,    3,     ITM_SPACE_PUNCTUATION ,   ITM_PERIOD},    /* 14 Sep 1752 */
+    [CFG_CHINA ] = {  1, 0,0,1, 2433191,   ITM_COMMA            ,    4,    0,    0,    4,     ITM_COMMA             ,   ITM_PERIOD},                /*  1 Oct 1949 */
+    [CFG_EUROPE] = {  1, 1,0,0, 2299161,   ITM_SPACE_PUNCTUATION,    3,    0,    0,    3,     ITM_SPACE_PUNCTUATION ,   ITM_COMMA },    /* 15 Oct 1582 */
+    [CFG_INDIA ] = {  1, 1,0,0, 2361222,   ITM_COMMA            ,    2,    0,    3,    2,     ITM_COMMA             ,   ITM_PERIOD},                /* 14 Sep 1752 */
+    [CFG_JAPAN ] = {  1, 0,0,1, 2405160,   ITM_SPACE_PUNCTUATION,    3,    0,    0,    3,     ITM_SPACE_PUNCTUATION ,   ITM_PERIOD},    /*  1 Jan 1873 */
+    [CFG_UK    ] = {  0, 1,0,0, 2361222,   ITM_SPACE_PUNCTUATION,    3,    0,    0,    3,     ITM_SPACE_PUNCTUATION ,   ITM_PERIOD},    /* 14 Sep 1752 */
+    [CFG_USA   ] = {  0, 0,1,0, 2361222,   ITM_COMMA            ,    3,    9,    0,    3,     ITM_NULL              ,   ITM_PERIOD},                /* 14 Sep 1752 */
+    [CFG_HP15C ] = {  0, 0,1,0, 2361222,   ITM_COMMA            ,    3,    0,    0,    3,     ITM_COMMA             ,   ITM_PERIOD},                /* 14 Sep 1752 */
+    [CFG_HP35  ] = {  0, 0,1,0, 2361222,   ITM_NULL             ,    3,    0,    0,    3,     ITM_NULL              ,   ITM_WDOT  }                 /* 14 Sep 1752 */
 };
 
 static void setFlag(int f, int v) {
@@ -100,7 +99,6 @@ static void setFlag(int f, int v) {
 
 
 void configCommon(uint16_t idx) {
-  setFlag(FLAG_DECIMP, configSettings[idx].decimalDot);
   setFlag(FLAG_TDM24, configSettings[idx].tdm24);
   setFlag(FLAG_DMY, configSettings[idx].dmy);
   setFlag(FLAG_MDY, configSettings[idx].mdy);
@@ -161,7 +159,7 @@ printf(">>>> charParam=%u %u \n", charParam, charParam & 16383);
       gapCharRadix[0] = (indexOfItems[charParam & 16383].itemSoftmenuName)[0];
       gapCharRadix[1] = (indexOfItems[charParam & 16383].itemSoftmenuName)[1];
       #ifdef PC_BUILD
-        printf(">>>> RADIX Character selected: %u %u\n",(uint8_t)gapCharLeft[0] , (uint8_t)gapCharLeft[1]);
+        printf(">>>> RADIX Character selected: %u %u, %c\n",(uint8_t)gapCharLeft[0] , (uint8_t)gapCharLeft[1], RADIX34_MARK_CHAR);
       #endif //PC_BUILD
       if (gapCharRadix[0] != 0 && gapCharRadix[1] == 0) {
         gapCharRadix[1] = 1;                      //set second character to skip character 0x01

@@ -355,8 +355,6 @@ TO_QSPI const function_t indexOfFunctions[] = {
 
 
 //ADDED 2023-05-10
-              {ITM_RDXCOM,                    "RDXCOM"},
-              {ITM_RDXPER,                    "RDXPER"},
               {ITM_MULTCR,                    "MULTCR "},
               {ITM_MULTDOT,                   "MULTDOT"},
               {ITM_DMY,                       "DMY"},

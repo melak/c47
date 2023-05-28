@@ -2394,7 +2394,7 @@ static void _complex34ToShowTmpString(const real34_t *r, const real34_t *i) {
     last++;
   }
   xcopy(tmpString + last++, (real34IsNegative(&real34) ? "-" : "+"), 1);
-  xcopy(tmpString + last++, COMPLEX_UNIT, 1);
+  xcopy(tmpString + last++, COMPLEX_UNIT, 2);
   xcopy(tmpString + last, PRODUCT_SIGN, 3);
 
   // Imaginary part

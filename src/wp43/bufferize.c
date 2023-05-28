@@ -1847,7 +1847,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       }
       }
 
-      if(!getSystemFlag(FLAG_DECIMP)) {
+      if(RADIX34_MARK_CHAR == ',') {
         for(index=stringByteLength(nimBufferDisplay) - 1; index>0; index--) {
           if(nimBufferDisplay[index] == '.') {
             nimBufferDisplay[index] = ',';

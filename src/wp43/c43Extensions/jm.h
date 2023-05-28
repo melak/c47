@@ -40,9 +40,6 @@ Modes available in the mode menu:
 #include "typeDefinitions.h"
 #include <stdint.h>
 
-// Radix Mark 1 bit
-#define RX_PERIOD               103
-#define RX_COMMA                104
 // Time format 1 bit
 #define TF_H24                  105
 #define TF_H12                  106

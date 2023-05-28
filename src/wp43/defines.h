@@ -391,7 +391,7 @@
 #define FLAG_SPCRES                           0x8017
 #define FLAG_SSIZE8                           0x8018
 #define FLAG_QUIET                            0x8019
-#define FLAG_DECIMP                           0x801a
+#define FLAG_SPARE                            0x801a       //SPARE
 #define FLAG_MULTx                            0x801b
 #define FLAG_ALLENG                           0x801c
 #define FLAG_GROW                             0x801d
@@ -1215,15 +1215,11 @@ typedef enum {
 //#define modulo(n, d)                         ((n)%(d)<0 ? ((d)<0 ? (n)%(d) - (d) : (n)%(d) + (d)) : (n)%(d)) // modulo(n,d) = rmd(n,d) (+ |d| if rmd(n,d)<0)  thus the result is always >= 0
 #define modulo(n, d)                         ((n)%(d)<0 ? (n)%(d)+(d) : (n)%(d))                             // This version works only if d > 0
 #define nbrOfElements(x)                     (sizeof(x) / sizeof((x)[0]))                                    //dr
-#define COMPLEX_UNIT                         (getSystemFlag(FLAG_CPXj)   ? STD_op_j     : STD_op_i)
-
-#define RADIX34_MARK_CHAR                    (getSystemFlag(FLAG_DECIMP) ? '@'       : '@')
-//#define RADIX34_MARK_CHAR                    (getSystemFlag(FLAG_DECIMP) ? '.'       : ',')
-//#define RADIX34_MARK_STRING                  (getSystemFlag(FLAG_DECIMP) ? "."       : ",")
-//#define RADIX34_MARK_CHAR                    ((uint8_t)gapCharRadix[1] + ((uint8_t)(gapCharRadix[1]) << 8) == STD_DOT[1]    + (((uint8_t)(STD_DOT[1])    << 8)) ? 'a' : (uint8_t)gapCharRadix[1] + ((uint8_t)(gapCharRadix[1]) << 8) == STD_SUB_A[1]  + (((uint8_t)(STD_SUB_A[1])  << 8)) ? 'b' : (uint8_t)gapCharRadix[1] + ((uint8_t)(gapCharRadix[1]) << 8) == STD_PERIOD[0]                                  ? 'c' : (uint8_t)gapCharRadix[1] + ((uint8_t)(gapCharRadix[1]) << 8) == STD_SUB_B[1]  + (((uint8_t)(STD_SUB_B[1])  << 8)) ? 'd' : (uint8_t)gapCharRadix[1] + ((uint8_t)(gapCharRadix[1]) << 8) == STD_COMMA[0]                                   ? 'e' :(uint8_t)gapCharRadix[1] + ((uint8_t)(gapCharRadix[1]) << 8) == STD_SUB_C[1]  + (((uint8_t)(STD_SUB_C[1])  << 8)) ? 'f' : 'g') 
-
-#define RADIX34_MARK_STRING                  (gapCharRadix)
+#define COMPLEX_UNIT                         (getSystemFlag(FLAG_CPXj)   ? STD_op_j  : STD_op_i)  //Do not change back to single byte character - code must also change accordingly
 #define PRODUCT_SIGN                         (getSystemFlag(FLAG_MULTx)  ? STD_CROSS : STD_DOT)
+
+#define RADIX34_MARK_CHAR                    (gapCharRadix[0] == ',' || (gapCharRadix[0] == STD_WCOMMA[0] && gapCharRadix[1] == STD_WCOMMA[1]) ? ',' : '.') //map comma and wide comma to comma, and dot and period and wdot and wperiod to period 
+#define RADIX34_MARK_STRING                  (gapCharRadix)
 
 #define SEPARATOR_LEFT                       (gapCharLeft)
 #define SEPARATOR_RIGHT                      (gapCharRight)
@@ -1235,7 +1231,9 @@ typedef enum {
 #define SEPARATOR_(digitCount)               (digitCount >= 0 ? SEPARATOR_LEFT : SEPARATOR_RIGHT)
 #define GROUPWIDTH_(digitCount)              (digitCount >= 0 ? GROUPWIDTH_LEFT : GROUPWIDTH_RIGHT)
 #define digitCountNEW(digitCount)            (  digitCount+1 > GROUPWIDTH_LEFT1 ? digitCount - GROUPWIDTH_LEFT1 : digitCount  )  //remaining digits to divide up into groups. "+1" due to the fact the the digit is recognized now, but only added below. So the sep gets added before the digit down below.
-#define IS_SEPARATOR_(digitCount)            ( (digitCount+1 == GROUPWIDTH_LEFT1) || ((digitCount+1  > GROUPWIDTH_LEFT1 || digitCount < 0) && (modulo(digitCountNEW(digitCount), (uint16_t)GROUPWIDTH_(digitCount)) == (uint16_t)GROUPWIDTH_(digitCount) - 1)) )
+#define IS_SEPARATOR_(digitCount)            (   (digitCount+1 == GROUPWIDTH_LEFT1) \
+                                              || ((digitCount+1  > GROUPWIDTH_LEFT1 || digitCount < 0) \
+                                                  && (modulo(digitCountNEW(digitCount), (uint16_t)GROUPWIDTH_(digitCount)) == (uint16_t)GROUPWIDTH_(digitCount) - 1)) )
 
 #define clearScreen()                        {lcd_fill_rect(0, 0, SCREEN_WIDTH, 240, LCD_SET_VALUE); clear_ul();}
 #define currentReturnProgramNumber           (currentSubroutineLevelData[0].returnProgramNumber)

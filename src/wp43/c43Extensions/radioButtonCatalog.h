@@ -57,7 +57,6 @@ char*    figlabel              (const char* label, const char* showText, int16_t
 //??? #define RB_FT   ')' // FractionType
 #define RB_IM   '*' // IntegerMode
 #define RB_PS   '+' // ProductSign
-#define RB_RX   ',' // RadixMark
 #define RB_SS   '-' // StackSize
 #define RB_TF   '.' // TimeFormat
 #define RB_WS   '/' // WordSize

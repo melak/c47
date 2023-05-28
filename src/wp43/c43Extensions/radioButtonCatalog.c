@@ -114,8 +114,6 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   { ITM_SCIOVR,           DO_SCI,                 RB_DO },  //SetSetting          /*  547 */ //fnDisplayOvr
   { ITM_MULTCR,           PS_CROSS,               RB_PS },  //SetSetting          /*  373 */ //fnProductSign
   { ITM_MULTDOT,          PS_DOT,                 RB_PS },  //SetSetting          /*  374 */ //fnProductSign
-  { ITM_RDXCOM,           RX_COMMA,               RB_RX },  //SetSetting          /*  500 */ //fnRadixMark
-  { ITM_RDXPER,           RX_PERIOD,              RB_RX },  //SetSetting          /*  501 */ //fnRadixMark
   { ITM_SSIZE4,           SS_4,                   RB_SS },  //SetSetting          /*  583 */ //fnStackSize
   { ITM_SSIZE8,           SS_8,                   RB_SS },  //SetSetting          /*  584 */ //fnStackSize
   { ITM_CLK12,            TF_H12,                 RB_TF },  //SetSetting          /*   75 */ //fnTimeFormat
@@ -228,12 +226,6 @@ int8_t fnCbIsSet(int16_t item) {
       case RB_PS: {
         if(getSystemFlag(FLAG_MULTx)) { rb_param = PS_CROSS;  }
         else {                          rb_param = PS_DOT;    }
-      }
-      break;
-
-      case RB_RX: {
-        if(getSystemFlag(FLAG_DECIMP)) {  rb_param = RX_PERIOD; }
-        else {                            rb_param = RX_COMMA;  }
       }
       break;
 

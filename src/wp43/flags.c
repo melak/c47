@@ -213,7 +213,6 @@ void systemFlagAction(uint16_t systemFlag, uint16_t action) {
       case FLAG_DENANY:   fnRefreshState (); break;
       case FLAG_DENFIX:   fnRefreshState (); break;
       case FLAG_SSIZE8:   fnRefreshState (); break;
-      case FLAG_DECIMP:   fnRefreshState (); break;
       case FLAG_MULTx:    fnRefreshState (); break;
       case FLAG_ALLENG:   fnRefreshState (); break;
       case FLAG_ENDPMT:   fnRefreshState (); break;
@@ -784,16 +783,6 @@ void SetSetting(uint16_t jmConfig) {
       break;
     }
 
-    case RX_COMMA: {
-      fnClearFlag(FLAG_DECIMP);
-      break;
-    }
-   
-    case RX_PERIOD: {
-      fnSetFlag(FLAG_DECIMP);
-      break;
-    }
-   
     case TF_H12: {
       fnClearFlag(FLAG_TDM24);
       break;

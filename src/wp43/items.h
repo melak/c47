@@ -519,7 +519,7 @@
 #define SFL_SPCRES                   486
 #define SFL_SSIZE8                   487
 #define SFL_QUIET                    488
-#define SFL_DECIMP                   489
+#define ITM_0489                     489
 #define SFL_MULTx                    490
 #define SFL_ALLENG                   491
 #define SFL_GROW                     492
@@ -2000,8 +2000,8 @@
 #define ITM_MULTCR                  1944
 #define ITM_MULTDOT                 1945
 #define ITM_POLAR                   1946
-#define ITM_RDXCOM                  1947
-#define ITM_RDXPER                  1948
+#define MNU_1947                    1947
+#define MNU_1948                    1948
 #define ITM_RECT                    1949
 #define ITM_SCIOVR                  1950
 #define ITM_ENGOVR                  1951
