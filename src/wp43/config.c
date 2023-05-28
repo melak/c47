@@ -180,7 +180,6 @@ void fnSettingsToXEQ            (uint16_t unusedButMandatoryParameter) {
 
 void fnSettingsDispFormatGrpL   (uint16_t param) {
    grpGroupingLeft = param;
-   grpGroupingRight = param;    //TEST00 Test AUTO copying of main IPGRP to FPGRP
    groupingGap = param;         //Legacy function displays use IPGRP
 }
 void fnSettingsDispFormatGrp1Lo  (uint16_t param) {

@@ -1030,7 +1030,7 @@ typedef enum {
 #define SIGMA_YMAX   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_YMAX  )) // could be a real34
 
 #define MAX_NUMBER_OF_GLYPHS_IN_STRING           196
-#define NUMBER_OF_GLYPH_ROWS                     200  //Used in the font browser application
+#define NUMBER_OF_GLYPH_ROWS                     250  //Used in the font browser application
 
 #define MAX_DENMAX                              9999 // Biggest denominator in fraction display mode
 
@@ -1215,7 +1215,7 @@ typedef enum {
 //#define modulo(n, d)                         ((n)%(d)<0 ? ((d)<0 ? (n)%(d) - (d) : (n)%(d) + (d)) : (n)%(d)) // modulo(n,d) = rmd(n,d) (+ |d| if rmd(n,d)<0)  thus the result is always >= 0
 #define modulo(n, d)                         ((n)%(d)<0 ? (n)%(d)+(d) : (n)%(d))                             // This version works only if d > 0
 #define nbrOfElements(x)                     (sizeof(x) / sizeof((x)[0]))                                    //dr
-#define COMPLEX_UNIT                         (getSystemFlag(FLAG_CPXj)   ? STD_j     : STD_i)
+#define COMPLEX_UNIT                         (getSystemFlag(FLAG_CPXj)   ? STD_op_j     : STD_op_i)
 
 #define RADIX34_MARK_CHAR                    (getSystemFlag(FLAG_DECIMP) ? '@'       : '@')
 //#define RADIX34_MARK_CHAR                    (getSystemFlag(FLAG_DECIMP) ? '.'       : ',')

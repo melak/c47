@@ -375,14 +375,18 @@
 #define STD_digamma                   "\x83\xdd"  //JM GREEK
 #define STD_SAMPI                     "\x83\xe0"  //JM GREEK
 #define STD_sampi                     "\x83\xe1"  //JM GREEK
-#define STD_case                      "\xa1\x02"  //JM CAPS
-#define STD_num                       "\xa1\x15"  //JM NUM
 
 #define STD_WDOT                      "\xa2\xc5" //   22c5
 #define STD_WPERIOD                   "\xff\x0e" //   ff0e
 #define STD_WCOMMA                    "\xff\x0c" //   ff0c
 #define STD_NQUOTE                    "\x82\xbc" //   02bc
 #define STD_INV_BRIDGE                "\x83\x3a" //   033a   
+
+#define STD_op_i                      "\xa6\x7c"
+#define STD_op_j                      "\xa6\x7d"
+#define STD_case                      "\xa6\x7b"
+#define STD_num                       "\xa6\x7e"
+#define STD_RIGHT_TACK                "\xa2\xa2"
 
 #define STD_SPACE_EM                  "\xa0\x03"
 #define STD_SPACE_3_PER_EM            "\xa0\x04"

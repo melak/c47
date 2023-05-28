@@ -103,12 +103,12 @@ TO_QSPI const int16_t menu_CPX[]         = { ITM_RE,                        ITM_
 
 
 TO_QSPI const int16_t menu_DISP[]        = { ITM_FIX,                       ITM_SCI,                    ITM_ENG,                  ITM_ALL,               ITM_SIGFIG,                  ITM_UNIT,
-                                             ITM_GAP_L,                     ITM_GAP_RX,                 ITM_GAP_R,                ITM_HIDE,              ITM_RECT,                    ITM_POLAR,
+                                             ITM_GAP_L,                     ITM_GAP_RX,                 ITM_GAP_R,                ITM_NULL,              ITM_RECT,                    ITM_POLAR,
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
 
-                                             ITM_DMY,                       ITM_YMD,                    ITM_MDY,                  ITM_SET_TO_TEXT,       ITM_CLK12,                   ITM_CLK24,
+                                             ITM_DMY,                       ITM_MDY,                    ITM_YMD,                  ITM_CPXMULT,           ITM_MULTCR,                  ITM_MULTDOT,
                                              ITM_SI_All,                    ITM_DSTACK,                 ITM_SHOIREP,              ITM_LARGELI,           ITM_CPXI,                    ITM_CPXJ,
-                                             ITM_SCIOVR,                    ITM_ENGOVR,                 ITM_RNG,                  ITM_CPXMULT,           ITM_MULTCR,                  ITM_MULTDOT,
+                                             ITM_SCIOVR,                    ITM_ENGOVR,                 ITM_RNG,                  ITM_HIDE,              ITM_CLK12,                   ITM_CLK24,
 
                                              ITM_SETCHN,                    ITM_SETEUR,                 ITM_SETIND,               ITM_SETJPN,            ITM_SETUK,                   ITM_SETUSA,                    
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_SETDFLT,
@@ -686,16 +686,16 @@ TO_QSPI const int16_t menu_ALPHA[]       = { ITM_T_UP_ARROW,                ITM_
 TO_QSPI const int16_t menu_XXEQ[]        = { ITM_XSAVE,                     ITM_XLOAD,                  ITM_XEDIT,                ITM_XNEW,              ITM_XXEQ,                     -MNU_XEQ                        };   //JM
 
 
-TO_QSPI const int16_t menu_GAP_L[]       = { ITM_GAPPER_L,                  ITM_GAPCOM_L,               ITM_GAPDOT_L,             ITM_GAPAPO_L,          ITM_GAPSPC_L,                ITM_GAPNIL_L,
-                                             ITM_GAPWIDPER_L,               ITM_GAPWIDCOM_L,            ITM_GAPWIDDOT_L,          ITM_GAPNARAPO_L,       ITM_GAPNARSPC_L,             ITM_GAPUND_L,
-                                             ITM_GRP_L,                     ITM_GRP1_L,                 ITM_GRP1_L_OF,            ITM_NULL,              ITM_NULL,                    ITM_NULL                         };
+TO_QSPI const int16_t menu_GAP_L[]       = { ITM_GAPPER_L,                  ITM_GAPCOM_L,               ITM_GAPDOT_L,             ITM_GAPNARAPO_L,       ITM_GAPSPC_L,                ITM_GAPNIL_L,
+                                             ITM_GAPWIDPER_L,               ITM_GAPWIDCOM_L,            ITM_GAPWIDDOT_L,          ITM_GAPAPO_L,          ITM_GAPDBLSPC_L,             ITM_GAPUND_L,
+                                             ITM_GRP_L,                     ITM_GRP1_L,                 ITM_GRP1_L_OF,            ITM_NULL,              ITM_GAPNARSPC_L,             ITM_NULL                         };
 
 TO_QSPI const int16_t menu_GAP_RX[]      = { ITM_GAPPER_RX,                 ITM_GAPCOM_RX,              ITM_GAPDOT_RX,            ITM_GAPWIDPER_RX,      ITM_GAPWIDCOM_RX,            ITM_GAPWIDDOT_RX };
 
 
-TO_QSPI const int16_t menu_GAP_R[]       = { ITM_GAPPER_R,                  ITM_GAPCOM_R,               ITM_GAPDOT_R,             ITM_GAPAPO_R,          ITM_GAPSPC_R,                ITM_GAPNIL_R,
-                                             ITM_GAPWIDPER_R,               ITM_GAPWIDCOM_R,            ITM_GAPWIDDOT_R,          ITM_GAPNARAPO_R,       ITM_GAPNARSPC_R,             ITM_GAPUND_R,
-                                             ITM_GRP_R,                     ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                         };
+TO_QSPI const int16_t menu_GAP_R[]       = { ITM_GAPPER_R,                  ITM_GAPCOM_R,               ITM_GAPDOT_R,             ITM_GAPNARAPO_R,       ITM_GAPSPC_R,                ITM_GAPNIL_R,
+                                             ITM_GAPWIDPER_R,               ITM_GAPWIDCOM_R,            ITM_GAPWIDDOT_R,          ITM_GAPAPO_R,          ITM_GAPDBLSPC_R,             ITM_GAPUND_R,
+                                             ITM_GRP_R,                     ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_GAPNARSPC_R,             ITM_NULL                         };
 
 
 
@@ -1657,9 +1657,10 @@ bool_t isFunctionItemAMenu(int16_t item) {
 static  char FF[16];
 static char *changeItoJ(int16_t item) {
   strcpy(FF, indexOfItems[item%10000].itemSoftmenuName);
+  //printf(">>>> %u %u %u %u %u %s %u %u\n", (uint8_t)(FF[0]), (uint8_t)(FF[1]), (uint8_t)(FF[2]), (uint8_t)(FF[3]), (uint8_t)(FF[4]), FF , (uint8_t)(STD_SUP_i[0]), (uint8_t)(STD_SUP_i[1]));
   if (getSystemFlag(FLAG_CPXj)) {
-    if (item == ITM_op_j && FF[0] == STD_i[0]) {
-      FF[0]++;
+    if (item == ITM_op_j && FF[1] == STD_op_i[1]) {
+      FF[1]++;
     }
     if (item == ITM_EE_EXP_TH && FF[2] == STD_SUP_i[1]) {
       FF[2]++;
@@ -1737,7 +1738,7 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
 
 
 void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
-  if(indexOfItems[itemNr%10000].func == itemToBeCoded) {
+  if(itemNr > 0 && indexOfItems[itemNr%10000].func == itemToBeCoded) {
     // Strike out non coded functions
     int16_t yStroke = SCREEN_HEIGHT - y*23 - 1;
     for(int16_t xStroke=x*67 + 1 +9 ; xStroke<x*67 + 66 -10; xStroke++) {      //JM mod stroke slash cross out
