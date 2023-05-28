@@ -156,6 +156,7 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
   #endif //PC_BUILD
   #ifndef TESTSUITE_BUILD
     resetKeytimers();  //JM
+    clearSystemFlag(FLAG_FRACT);
 
     temporaryInformation = TI_NO_INFO;
     if(calcMode == CM_NIM) {
