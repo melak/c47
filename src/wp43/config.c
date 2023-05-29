@@ -26,6 +26,7 @@
 #include "calcMode.h"
 #include "charString.h"
 #include "constantPointers.h"
+#include "constants.h"
 #include "debug.h"
 #include "display.h"
 #include "error.h"
@@ -85,8 +86,6 @@ TO_QSPI static const struct {
     [CFG_JAPAN ] = {  1, 0,0,1, 2405160,   ITM_SPACE_PUNCTUATION,    3,    0,    0,    3,     ITM_SPACE_PUNCTUATION ,   ITM_PERIOD},    /*  1 Jan 1873 */
     [CFG_UK    ] = {  0, 1,0,0, 2361222,   ITM_SPACE_PUNCTUATION,    3,    0,    0,    3,     ITM_SPACE_PUNCTUATION ,   ITM_PERIOD},    /* 14 Sep 1752 */
     [CFG_USA   ] = {  0, 0,1,0, 2361222,   ITM_COMMA            ,    3,    9,    0,    3,     ITM_NULL              ,   ITM_PERIOD},                /* 14 Sep 1752 */
-    [CFG_HP15C ] = {  0, 0,1,0, 2361222,   ITM_COMMA            ,    3,    0,    0,    3,     ITM_COMMA             ,   ITM_PERIOD},                /* 14 Sep 1752 */
-    [CFG_HP35  ] = {  0, 0,1,0, 2361222,   ITM_NULL             ,    3,    0,    0,    3,     ITM_NULL              ,   ITM_WDOT  }                 /* 14 Sep 1752 */
 };
 
 static void setFlag(int f, int v) {
@@ -115,6 +114,38 @@ void configCommon(uint16_t idx) {
   fnSetGapChar (32768+configSettings[idx].gapr);
   fnSetGapChar (49152+configSettings[idx].gaprx);
 }
+
+
+void fnSetHP35(uint16_t unusedButMandatoryParameter) {
+  configCommon(CFG_USA);
+  exponentHideLimit = 99;
+  exponentLimit     = 99;
+  significantDigits = 10;
+  displayStack      =  1;
+  grpGroupingLeft   =  3;
+  grpGroupingRight   =  3;
+  grpGroupingGr1Left =  0;
+  grpGroupingGr1LeftOverflow = 0;
+  fnSetGapChar(ITM_NULL);
+  fnSetGapChar(ITM_NULL+32768);
+  fnSetGapChar(ITM_WDOT+49152);
+  temporaryInformation = TI_NO_INFO;
+  fnDisplayFormatSigFig(9);
+  fnPi(0);
+}
+
+
+void fnSetC47(uint16_t unusedButMandatoryParameter) {
+  configCommon(CFG_DFLT);
+  exponentHideLimit = 0;
+  exponentLimit     = 6145;
+  significantDigits = 34;
+  displayStack      =  4;
+  temporaryInformation = TI_NO_INFO;
+  fnDisplayFormatAll(3);
+  fnPi(0);
+}
+
 
 
 //note: Changed showGlypCode to skip ASCII 01, printing nothing
@@ -178,7 +209,7 @@ void fnSettingsToXEQ            (uint16_t unusedButMandatoryParameter) {
 
 void fnSettingsDispFormatGrpL   (uint16_t param) {
    grpGroupingLeft = param;
-   groupingGap = param;         //Legacy function displays use IPGRP
+   groupingGap = param;         //Legacy function displays use IPGRP, for NIM et al
 }
 void fnSettingsDispFormatGrp1Lo  (uint16_t param) {
    grpGroupingGr1LeftOverflow = param;

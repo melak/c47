@@ -27,7 +27,7 @@
 
 enum {
     CFG_DFLT,
-    CFG_CHINA, CFG_EUROPE, CFG_INDIA, CFG_JAPAN, CFG_UK, CFG_USA, CFG_HP15C, CFG_HP35
+    CFG_CHINA, CFG_EUROPE, CFG_INDIA, CFG_JAPAN, CFG_UK, CFG_USA
 };
 
 void     configCommon          (uint16_t idx);
@@ -76,6 +76,9 @@ void     fnConfigUk            (uint16_t unusedButMandatoryParameter);
  * \param[in] unusedButMandatoryParameter uint16_t
  ***********************************************/
 void     fnConfigUsa           (uint16_t unusedButMandatoryParameter);
+
+void     fnSetHP35             (uint16_t unusedButMandatoryParameter);
+void     fnSetC47              (uint16_t unusedButMandatoryParameter);
 
 void     fnMenuGapL                 (uint16_t unusedButMandatoryParameter);
 void     fnMenuGapRX                (uint16_t unusedButMandatoryParameter);

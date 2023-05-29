@@ -826,8 +826,8 @@ TO_QSPI const font_t numericFont = {
      .data="\x02\x00\x02\x00\x03\x80\x03\x80\x03\xc0\xff\xe0\xff\xe0\xff\xf8\x00\x3c\x00\x3c\xff\xf8\xff\xf0\xff\xe0\x03\xc0\x03\xc0\x03\x80\x02\x00\x02\x00"},
 
     // uni2219
-    {.charCode=0xa219, .colsBeforeGlyph= 0, .colsGlyph= 8, .colsAfterGlyph= 0, .rowsAboveGlyph=14, .rowsGlyph= 9, .rowsBelowGlyph= 9, .rank1=  0, .rank2=  0,
-     .data="\x00\x3c\xff\xff\xff\xff\xff\x3c\x00"},
+    {.charCode=0xa219, .colsBeforeGlyph= 0, .colsGlyph= 7, .colsAfterGlyph= 1, .rowsAboveGlyph=17, .rowsGlyph= 7, .rowsBelowGlyph= 8, .rank1=  0, .rank2=  0,
+     .data="\x00\x78\xfc\xfc\xfc\xfc\x78"},
 
     // radical
     {.charCode=0xa21a, .colsBeforeGlyph= 0, .colsGlyph=16, .colsAfterGlyph= 0, .rowsAboveGlyph= 2, .rowsGlyph=27, .rowsBelowGlyph= 3, .rank1=  0, .rank2=  0,
@@ -890,8 +890,8 @@ TO_QSPI const font_t numericFont = {
      .data="\x1f\x80\x70\xe0\x40\x20\xc0\x30\x86\x10\x8f\x10\x8f\x10\x86\x10\xc0\x30\x40\x20\x70\xe0\x1f\x80"},
 
     // dotmath
-    {.charCode=0xa2c5, .colsBeforeGlyph= 4, .colsGlyph= 8, .colsAfterGlyph= 4, .rowsAboveGlyph=14, .rowsGlyph= 9, .rowsBelowGlyph= 9, .rank1=  0, .rank2=  0,
-     .data="\x00\x3c\xff\xff\xff\xff\xff\x3c\x00"},
+    {.charCode=0xa2c5, .colsBeforeGlyph= 3, .colsGlyph= 7, .colsAfterGlyph= 6, .rowsAboveGlyph=17, .rowsGlyph= 7, .rowsBelowGlyph= 8, .rank1=  0, .rank2=  0,
+     .data="\x00\x78\xfc\xfc\xfc\xfc\x78"},
 
     // uni2399
     {.charCode=0xa399, .colsBeforeGlyph= 0, .colsGlyph=14, .colsAfterGlyph= 2, .rowsAboveGlyph=11, .rowsGlyph=17, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
@@ -1262,8 +1262,8 @@ TO_QSPI const font_t numericFont = {
      .data="\xfe\xfe\x0c\x1c\x18\x38\x30\x70\x60\xe0\xfe\xfe"},
 
     // uni267A
-    {.charCode=0xa67a, .colsBeforeGlyph= 0, .colsGlyph=14, .colsAfterGlyph=-14, .rowsAboveGlyph= 4, .rowsGlyph=28, .rowsBelowGlyph= 0, .rank1=  0, .rank2=  0,
-     .data="\x00\x00\x03\x00\x07\x80\x07\x80\x07\x80\x07\x80\x0c\xd0\x1c\xf0\x3c\xf0\x7c\xf0\xfc\xf0\x7d\xf0\x3d\xf0\x3c\xf0\x3c\x70\x74\x30\x60\x98\x61\x98\xe3\x98\xc7\x8c\xff\xfc\xff\xfc\x7f\xf8\x07\x80\x03\x80\x03\x80\x01\x80\x00\x00"},
+    {.charCode=0xa67a, .colsBeforeGlyph= 0, .colsGlyph=14, .colsAfterGlyph= 0, .rowsAboveGlyph= 4, .rowsGlyph=28, .rowsBelowGlyph= 0, .rank1=  0, .rank2=  0,
+     .data="\x00\x00\x03\x00\x07\x80\x07\x80\x07\x80\x05\x80\x0c\xd0\x1c\xf0\x3c\xf0\x7c\xf0\xfc\xf0\x7d\xf0\x3d\xf0\x3c\xf0\x3c\x70\x64\x30\x61\x18\x61\x18\xe3\x18\xc7\x8c\xff\xfc\xff\xf8\x7f\xf8\x07\x80\x03\x00\x03\x00\x01\x00\x00\x00"},
 
     // uni267C
     {.charCode=0xa67c, .colsBeforeGlyph= 1, .colsGlyph=10, .colsAfterGlyph= 5, .rowsAboveGlyph= 5, .rowsGlyph=23, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,

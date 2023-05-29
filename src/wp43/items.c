@@ -1078,6 +1078,9 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnMenuGapL                 (uint16_t unusedButMandatoryParameter) {}
   void fnMenuGapR                 (uint16_t unusedButMandatoryParameter) {}
   void fnMenuGapRX                (uint16_t unusedButMandatoryParameter) {}
+  void fnSetHP35                  (uint16_t unusedButMandatoryParameter) {}
+  void fnSetC47                   (uint16_t unusedButMandatoryParameter) {}
+
 
                                                                               //JM ^^
 #endif // GENERATE_CATALOGS
@@ -2696,8 +2699,8 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1568 */  { fnReset,                      NOT_CONFIRMED,               "RESET",                                       "RESET",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABL_XEQ | EIM_DISABLED | PTP_DISABLED     },
 /* 1569 */  { fnReToCx,                     NOPARAM,                     "RE" STD_RIGHT_ARROW "CX",                     "RE" STD_RIGHT_ARROW "CX",                     (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1570 */  { fnSwapRealImaginary,          NOPARAM,                     "Re" STD_LEFT_RIGHT_ARROWS "Im",               "Re" STD_LEFT_RIGHT_ARROWS "Im",               (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
-/* 1571 */  { configCommon,                 CFG_HP15C,                   "SETHP15C",                                    "HP15C",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
-/* 1572 */  { configCommon,                 CFG_HP35,                    "SETHP35",                                     "HP35",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 1571 */  { fnSetC47,                     NOPARAM,                     "SETC47",                                      "C47",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 1572 */  { fnSetHP35,                    NOPARAM,                     "SETHP35",                                     "HP35",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1573 */  { fnDisplayFormatDsp,           TM_VALUE,                    "DSP",                                         "DSP",                                         (0 << TAM_MAX_BITS) | DSP_MAX, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NUMBER_8     },
 /* 1574 */  { fnRowNorm,                    NOPARAM,                     "RNORM",                                       "RNORM",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1575 */  { fnExpM1,                      NOPARAM,                     "e" STD_SUP_x "-1",                            "e" STD_SUP_x "-1",                            (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
@@ -3136,7 +3139,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2002 */  { fnByte,                       4,                           "RR1",                                         "RR1",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },//JM SHOI
 /* 2003 */  { fnByte,                       5,                           "W.SWP",                                       "W.SWP",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_ENABLED   | EIM_DISABLED | PTP_NONE         },//JM SHOI
 /* 2004 */  { fnByte,                       6,                           "B.SWP",                                       "B.SWP",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_ENABLED   | EIM_DISABLED | PTP_NONE         },//JM SHOI
-/* 2005 */  { fnClrMod,                     NOPARAM,                     "CLRMOD",                                      "CLRMOD",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },//clear HEX mode
+/* 2005 */  { fnClrMod,                     NOPARAM,                     "CLRMOD",                                      "CLRMOD",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_ENABLED   | EIM_DISABLED | PTP_NONE         },//clear HEX mode
 /* 2006 */  { fnShoiXRepeats,               TM_VALUE,                    "DISP_SI",                                     "DISP_SI",                                     (0 << TAM_MAX_BITS) |     3, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM SHOI
 /* 2007 */  { fnScale,                      NOPARAM,                     "X:Y=1",                                       "X:Y=1",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },//JM GRAPHING
 /* 2008 */  { fnSetBCD,                     JC_TOPHEX,                   "KEY" STD_SUB_A STD_SUB_MINUS STD_SUB_F,       "KEY" STD_SUB_A STD_SUB_MINUS STD_SUB_F,       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },

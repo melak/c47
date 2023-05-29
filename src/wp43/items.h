@@ -1618,7 +1618,7 @@
 #define ITM_RESET                   1568
 #define ITM_REtoCX                  1569
 #define ITM_REexIM                  1570
-#define ITM_SETHP15C                1571
+#define ITM_SETC47                  1571
 #define ITM_SETHP35                 1572
 #define ITM_DSP                     1573
 #define ITM_RNORM                   1574

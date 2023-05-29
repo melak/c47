@@ -152,3 +152,10 @@ C43 Font:
 2023-05-25 Add STD_WCOMMA                    "\xff\x0c" //   ff0c
 2023-05-25 Add STD_NQUOTE                    "\x82\xbc" //   02bc
 2023-05-25 Add STD_INV_BRIDGE                "\x83\x3a" //   033a   
+
+2023-05-29 #define STD_op_i                      "\xa6\x7c"
+2023-05-29 #define STD_op_j                      "\xa6\x7d"
+2023-05-29 #define STD_case                      "\xa6\x7b"
+2023-05-29 #define STD_num                       "\xa6\x7e"
+2023-05-29 #define STD_RIGHT_TACK                "\xa2\xa2"
+
