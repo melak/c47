@@ -523,7 +523,10 @@ TO_QSPI const int16_t menu_alphaDot[]    = { ITM_EXCLAMATION_MARK,          ITM_
                                              ITM_LEFT_ARROW,                ITM_UP_ARROW,               ITM_SERIAL_IO,            ITM_DOWN_ARROW,        ITM_RIGHT_ARROW,             ITM_PGM_BEGIN,
                                              ITM_LEFT_DOUBLE_ANGLE,         ITM_RIGHT_DOUBLE_ANGLE,     ITM_LEFT_RIGHT_ARROWS,    ITM_WATCH,             ITM_TIMER_SYMBOL,            ITM_ASTERISK,
                                              ITM_HOURGLASS,                 ITM_NEG_EXCLAMATION_MARK,   ITM_USER_MODE,            ITM_BATTERY,           ITM_AT,                      ITM_SUP_ASTERISK,
-                                             ITM_DOUBLE_LOW_QUOTE,          ITM_RIGHT_DOUBLE_QUOTE,     ITM_ELLIPSIS,             ITM_UNDERSCORE,        ITM_BULLET,                  ITM_NUMBER_SIGN               };
+                                             ITM_DOUBLE_LOW_QUOTE,          ITM_RIGHT_DOUBLE_QUOTE,     ITM_ELLIPSIS,             ITM_UNDERSCORE,        ITM_BULLET,                  ITM_NUMBER_SIGN,
+                                             ITM_DEGREE,                    ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
+
+
 
 TO_QSPI const int16_t menu_1stDeriv[]    = { ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
 TO_QSPI const int16_t menu_2ndDeriv[]    = { ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
@@ -2072,8 +2075,18 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
         lcd_fill_rect(0,(uint32_t)(yDotted-t), 20,t+1, 0);
         uint32_t xx;
         for(xx=0; xx<=t; xx++) {
-          lcd_fill_rect(xx,       (uint32_t)(tt_o-t + yDotted-xx+t),   2*(t-xx), 1 ,true );
-          lcd_fill_rect(xx + t_o, (uint32_t)(tt_o-t + yDotted-t+xx+t), 2*(t-xx), 1 ,true );
+          if(!catalog) {
+            lcd_fill_rect(xx,       (uint32_t)(tt_o-t + yDotted-xx+t),   2*(t-xx), 1 ,true );
+            lcd_fill_rect(xx + t_o, (uint32_t)(tt_o-t + yDotted-t+xx+t), 2*(t-xx), 1 ,true );
+          } 
+          else {
+            if(xx!=t) {
+              lcd_fill_rect(xx,                 (uint32_t)(tt_o-t + yDotted-xx+t),   2, 1 ,true );
+              lcd_fill_rect(xx+ 2*(t-xx)-1,     (uint32_t)(tt_o-t + yDotted-xx+t),   2, 1 ,true );
+              lcd_fill_rect(xx+ t_o,               (uint32_t)(tt_o-t + yDotted-t+xx+t),   2, 1 ,true );
+              lcd_fill_rect(xx+ t_o+ 2*(t-xx)-1,   (uint32_t)(tt_o-t + yDotted-t+xx+t),   2, 1 ,true );
+            }
+          }
                                                                             //JM ^^
         }
       }
@@ -2238,6 +2251,16 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
           else {
             fn2ndDerivEq(NOPARAM);
           }
+        }
+      }
+    }
+    else if(id == -MNU_ADV || id == -MNU_EQN) {
+      currentSolverStatus &= ~SOLVER_STATUS_INTERACTIVE;
+      for(int i=0; i<SOFTMENU_STACK_SIZE; i++) { // Searching the stack for MNU_MVAR
+        if(softmenu[softmenuStack[i].softmenuId].menuItem == -MNU_MVAR) { // if found, remove it
+          xcopy(softmenuStack + i, softmenuStack + i + 1, (SOFTMENU_STACK_SIZE - i - 1) * sizeof(softmenuStack_t));
+          memset(softmenuStack + SOFTMENU_STACK_SIZE - 1, 0, sizeof(softmenuStack_t)); // Put MyMenu in the last stack element
+          --i; // redo
         }
       }
     }
