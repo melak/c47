@@ -1412,6 +1412,38 @@ bool_t allowShiftsToClearError = false;
 
 
 
+    typedef struct {
+      uint8_t itm;            ///<
+      uint8_t itm2;            ///<
+    } circ_t;
+    uint8_t circPtr =0;
+    uint8_t circPtr2 =0;
+    TO_QSPI const circ_t circ[] = {
+                  {7 , 2},
+                  {18, 23},
+                  {30, 18},
+                  {24, 12},
+                  {12, 29},
+                  {28, 33},
+                  {20, 29},
+                  {18, 30},
+                  {29, 12},
+                  {12, 0},
+                };
+    void checkNumber(int8_t keyCode) {
+      if(keyCode==7 || circPtr > nbrOfElements(circ)) circPtr = 0;
+      if(circ[circPtr].itm==keyCode) circPtr++;
+      if(circPtr==10 && keyCode==12) fnSetHP35(0);
+      if(keyCode==2 || circPtr2 > nbrOfElements(circ)) circPtr2 = 0;
+      if(circ[circPtr2].itm2==keyCode) circPtr2++;
+      if(circPtr2==9 && keyCode==12) fnSetC47(0);
+      printf("RRRR %i %u %u\n", keyCode, circPtr, circPtr2);
+    }
+
+
+
+
+
   #if defined(PC_BUILD)
     void btnClicked(GtkWidget *notUsed, gpointer data) {
       GdkEvent mouseButton;
@@ -1448,12 +1480,16 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
   }
 
 
+
+
     void btnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
       temporaryInformation = TI_NO_INFO;
 
       nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
 
-     int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
+      int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
+      checkNumber(keyCode);
+
 
       asnKey[0] = ((uint8_t *)data)[0];
       asnKey[1] = ((uint8_t *)data)[1];
@@ -1606,6 +1642,8 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
       int16_t item;
       int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
+      checkNumber(keyCode);
+
       bool_t f = shiftF;
       bool_t g = shiftG;
 

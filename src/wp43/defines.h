@@ -24,7 +24,7 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
- #define VERSION1 "108_09r E"
+ #define VERSION1 "108_09r G"
 
 
   #undef SAVE_SPACE_DM42
@@ -81,7 +81,7 @@
     #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
 //    #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers; 
 //    #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
-//    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
+    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
 //    #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
 //   #define SAVE_SPACE_DM42_16   //           without Norml
   #endif
@@ -1218,11 +1218,31 @@ typedef enum {
 #define COMPLEX_UNIT                         (getSystemFlag(FLAG_CPXj)   ? STD_op_j  : STD_op_i)  //Do not change back to single byte character - code must also change accordingly
 #define PRODUCT_SIGN                         (getSystemFlag(FLAG_MULTx)  ? STD_CROSS : STD_DOT)
 
-#define RADIX34_MARK_CHAR                    (gapCharRadix[0] == ',' || (gapCharRadix[0] == STD_WCOMMA[0] && gapCharRadix[1] == STD_WCOMMA[1]) ? ',' : '.') //map comma and wide comma to comma, and dot and period and wdot and wperiod to period 
-#define RADIX34_MARK_STRING                  (gapCharRadix)
+#define RADIX34_MARK_CHAR                    (gapChar1Radix[0] == ',' || (gapChar1Radix[0] == STD_WCOMMA[0] && gapChar1Radix[1] == STD_WCOMMA[1]) ? ',' : '.') //map comma and wide comma to comma, and dot and period and wdot and wperiod to period 
+#define RADIX34_MARK_STRING                  (gapChar1Radix)
 
-#define SEPARATOR_LEFT                       (gapCharLeft)
-#define SEPARATOR_RIGHT                      (gapCharRight)
+
+#define Lt                                   (gapItemLeft  == 0 ?  (char*) "\1\1\0" : (char*)indexOfItems[gapItemLeft].itemSoftmenuName) // "\0" 
+#define Rt                                   (gapItemRight == 0 ?  (char*) "\1\1\0" : (char*)indexOfItems[gapItemRight].itemSoftmenuName)// "\0"
+#define Rx                                   (gapItemRadix == 0 ?  (char*) "\1\1\0" : (char*)indexOfItems[gapItemRadix].itemSoftmenuName)// "\0"
+#define gapChar1Left                         (Lt[0] != 0 && Lt[1] == 0 && Lt[2] == 0 ? \
+                                                ( Lt[0] == ',' ? (char*) ",\1\0" : \
+                                                  Lt[0] == '.' ? (char*) ".\1\0" : \
+                                                  Lt[0] == '\'' ? (char*) "\'\1\0" : \
+                                                  Lt[0] == '_' ? (char*) "_\1\0" : Lt ) : Lt )  //set second character to skip character 0x01
+#define gapChar1Right                        (Rt[0] != 0 && Rt[1] == 0 && Rt[2] == 0 ? \
+                                                ( Rt[0] == ',' ? (char*) ",\1\0" : \
+                                                  Rt[0] == '.' ? (char*) ".\1\0" : \
+                                                  Rt[0] == '\'' ? (char*) "\'\1\0" : \
+                                                  Rt[0] == '_' ? (char*) "_\1\0" : Rt ) : Rt )  //set second character to skip character 0x01
+#define gapChar1Radix                        (Rx[0] != 0 && Rx[1] == 0 && Rx[2] == 0 ? \
+                                                ( Rx[0] == ',' ? (char*) ",\1\0" : \
+                                                  Rx[0] == '.' ? (char*) ".\1\0" : \
+                                                  Rx[0] == '\'' ? (char*) "\'\1\0" : \
+                                                  Rx[0] == '_' ? (char*) "_\1\0" : Rx ) : Rx )  //set second character to skip character 0x01
+
+#define SEPARATOR_LEFT                       (gapChar1Left)
+#define SEPARATOR_RIGHT                      (gapChar1Right)
 #define GROUPWIDTH_LEFT                      ((uint16_t)grpGroupingLeft)
 #define GROUPWIDTH_LEFT1                     ((grpGroupingGr1Left        == 0 ? (uint16_t)grpGroupingLeft : (uint16_t)grpGroupingGr1Left))
 #define GROUPWIDTH_LEFT1X                    (grpGroupingGr1LeftOverflow)  

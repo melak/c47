@@ -195,9 +195,14 @@
   extern char                   oldTime[8];
   extern char                   dateTimeString[12];
   extern char                   displayValueX[DISPLAY_VALUE_LEN];
-  extern char                   gapCharLeft[3];
-  extern char                   gapCharRight[3];
-  extern char                   gapCharRadix[3];
+//  extern char                   gapCharLeft[3];
+//  extern char                   gapCharRight[3];
+//  extern char                   gapCharRadix[3];
+extern uint16_t               gapItemLeft;
+extern uint16_t               gapItemRight;
+extern uint16_t               gapItemRadix;
+
+
 
   extern uint8_t                numScreensStandardFont;
   extern uint8_t                currentAsnScr;

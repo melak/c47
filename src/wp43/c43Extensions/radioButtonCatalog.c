@@ -161,7 +161,41 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   { ITM_2BIN,             2,                      RB_HX  }, //fnChangeBaseJM
   { ITM_2OCT,             8,                      RB_HX  }, //fnChangeBaseJM
   { ITM_2DEC,             10,                     RB_HX  }, //fnChangeBaseJM
-  { ITM_2HEX,             16,                     RB_HX  }  //fnChangeBaseJM
+  { ITM_2HEX,             16,                     RB_HX  },  //fnChangeBaseJM
+
+
+  { ITM_GAPDOT_L     ,    ITM_DOT                         ,     RB_IP  },
+  { ITM_GAPWIDDOT_L  ,    ITM_WDOT                        ,     RB_IP  },   
+  { ITM_GAPPER_L     ,    ITM_PERIOD                      ,     RB_IP  },
+  { ITM_GAPWIDPER_L  ,    ITM_WPERIOD                     ,     RB_IP  },   
+  { ITM_GAPCOM_L     ,    ITM_COMMA                       ,     RB_IP  },
+  { ITM_GAPWIDCOM_L  ,    ITM_WCOMMA                      ,     RB_IP  },   
+  { ITM_GAPAPO_L     ,    ITM_QUOTE                       ,     RB_IP  },
+  { ITM_GAPNARAPO_L  ,    ITM_NQUOTE                      ,     RB_IP  },   
+  { ITM_GAPSPC_L     ,    ITM_SPACE_PUNCTUATION           ,     RB_IP  },
+  { ITM_GAPNARSPC_L  ,    ITM_SPACE_4_PER_EM              ,     RB_IP  },   
+  { ITM_GAPDBLSPC_L  ,    ITM_SPACE_EM                    ,     RB_IP  },   
+  { ITM_GAPUND_L     ,    ITM_UNDERSCORE                  ,     RB_IP  },
+  { ITM_GAPNIL_L     ,    ITM_NULL                        ,     RB_IP  },
+  { ITM_GAPDOT_R     ,    ITM_DOT                         ,     RB_FP  },
+  { ITM_GAPWIDDOT_R  ,    ITM_WDOT                        ,     RB_FP  },   
+  { ITM_GAPPER_R     ,    ITM_PERIOD                      ,     RB_FP  },
+  { ITM_GAPWIDPER_R  ,    ITM_WPERIOD                     ,     RB_FP  },   
+  { ITM_GAPCOM_R     ,    ITM_COMMA                       ,     RB_FP  },
+  { ITM_GAPWIDCOM_R  ,    ITM_WCOMMA                      ,     RB_FP  },   
+  { ITM_GAPAPO_R     ,    ITM_QUOTE                       ,     RB_FP  },
+  { ITM_GAPNARAPO_R  ,    ITM_NQUOTE                      ,     RB_FP  },   
+  { ITM_GAPSPC_R     ,    ITM_SPACE_PUNCTUATION           ,     RB_FP  },
+  { ITM_GAPNARSPC_R  ,    ITM_SPACE_4_PER_EM              ,     RB_FP  },   
+  { ITM_GAPDBLSPC_R  ,    ITM_SPACE_EM                    ,     RB_FP  },   
+  { ITM_GAPUND_R     ,    ITM_UNDERSCORE                  ,     RB_FP  },
+  { ITM_GAPNIL_R     ,    ITM_NULL                        ,     RB_FP  },
+  { ITM_GAPDOT_RX    ,    ITM_DOT                         ,     RB_RX  }, 
+  { ITM_GAPWIDDOT_RX ,    ITM_WDOT                        ,     RB_RX  },    
+  { ITM_GAPPER_RX    ,    ITM_PERIOD                      ,     RB_RX  }, 
+  { ITM_GAPWIDPER_RX ,    ITM_WPERIOD                     ,     RB_RX  },    
+  { ITM_GAPCOM_RX    ,    ITM_COMMA                       ,     RB_RX  }, 
+  { ITM_GAPWIDCOM_RX ,    ITM_WCOMMA                      ,     RB_RX  }    
 };
 
 
@@ -283,6 +317,22 @@ int8_t fnCbIsSet(int16_t item) {
         else                        return result;
       }
       break;
+
+      case RB_FP: {
+        rb_param = gapItemRight;
+      }
+      break;
+
+      case RB_IP: {
+        rb_param = gapItemLeft;
+      }
+      break;
+
+      case RB_RX: {
+        rb_param = gapItemRadix;
+      }
+      break;
+
 
       case CB_JC: {
         is_cb = true;

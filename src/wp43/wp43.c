@@ -122,10 +122,12 @@ char                   asmBuffer[5];
 char                   oldTime[8];
 char                   dateTimeString[12];
 char                   displayValueX[DISPLAY_VALUE_LEN];
-char                   gapCharLeft[3];
-char                   gapCharRadix[3];
-char                   gapCharRight[3];
-
+//char                   gapCharLeft[3];
+//char                   gapCharRadix[3];
+//char                   gapCharRight[3];
+uint16_t               gapItemLeft;
+uint16_t               gapItemRight;
+uint16_t               gapItemRadix;
 
 uint8_t                numScreensStandardFont;
 uint8_t                currentAsnScr;
