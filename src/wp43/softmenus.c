@@ -521,7 +521,10 @@ TO_QSPI const int16_t menu_alphaDot[]    = { ITM_EXCLAMATION_MARK,          ITM_
                                              ITM_LEFT_ARROW,                ITM_UP_ARROW,               ITM_SERIAL_IO,            ITM_DOWN_ARROW,        ITM_RIGHT_ARROW,             ITM_PGM_BEGIN,
                                              ITM_LEFT_DOUBLE_ANGLE,         ITM_RIGHT_DOUBLE_ANGLE,     ITM_LEFT_RIGHT_ARROWS,    ITM_WATCH,             ITM_TIMER_SYMBOL,            ITM_ASTERISK,
                                              ITM_HOURGLASS,                 ITM_NEG_EXCLAMATION_MARK,   ITM_USER_MODE,            ITM_BATTERY,           ITM_AT,                      ITM_SUP_ASTERISK,
-                                             ITM_DOUBLE_LOW_QUOTE,          ITM_RIGHT_DOUBLE_QUOTE,     ITM_ELLIPSIS,             ITM_UNDERSCORE,        ITM_BULLET,                  ITM_NUMBER_SIGN               };
+                                             ITM_DOUBLE_LOW_QUOTE,          ITM_RIGHT_DOUBLE_QUOTE,     ITM_ELLIPSIS,             ITM_UNDERSCORE,        ITM_BULLET,                  ITM_NUMBER_SIGN,
+                                             ITM_DEGREE,                    ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
+
+
 
 TO_QSPI const int16_t menu_1stDeriv[]    = { ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
 TO_QSPI const int16_t menu_2ndDeriv[]    = { ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
