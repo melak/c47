@@ -1379,7 +1379,7 @@
 #define MNU_FIN                     1331
 #define MNU_SINTS                   1332
 #define MNU_FLAGS                   1333
-#define MNU_FLASH                   1334
+#define MNU_1334                    1334
 #define MNU_1STDERIV                1335
 #define MNU_2NDDERIV                1336
 #define MNU_CONVFP                  1337
@@ -1404,7 +1404,7 @@
 #define MNU_PFN                     1356
 #define MNU_PFN_MORE                1357
 #define MNU_CONVP                   1358
-#define MNU_RAM                     1359
+#define MNU_1359                    1359
 #define MNU_REALS                   1360
 #define MNU_Solver                  1361
 #define MNU_STAT                    1362

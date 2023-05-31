@@ -197,8 +197,7 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
         break;
       }
 
-      case MNU_RAM:
-      case MNU_FLASH: {
+      case MNU_PROGS: {
         dynamicMenuItem = firstItem + itemShift + fn;
         item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : (tam.mode == TM_DELITM) ? MNU_DYNAMIC : ITM_XEQ);
         break;
@@ -286,8 +285,7 @@ printf(">>>>  0096     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
     if(calcMode == CM_ASSIGN && item != ITM_NOP && item != ITM_NULL) {
       switch(-softmenu[menuId].menuItem) {
         case MNU_PROG:
-        case MNU_RAM:
-        case MNU_FLASH: {
+        case MNU_PROGS: {
           return findNamedLabel((char *)getNthString(dynamicSoftmenu[menuId].menuContent, dynamicMenuItem)) - FIRST_LABEL + ASSIGN_LABELS;
         }
         case MNU_VAR:
@@ -416,11 +414,9 @@ printf(">>>>Z 0070 btnFnClicked data=|%s| data[0]=%d\n",(char*)data, ((char*)dat
           case MNU_CPXS :
           case MNU_DATES :
           case MNU_FCNS :
-          case MNU_FLASH :
           case MNU_LINTS :
           case MNU_MATRS :
           case MNU_MENUS :
-          case MNU_RAM :
           case MNU_REALS :
           case MNU_SINTS :
           case MNU_STRINGS :

@@ -120,8 +120,7 @@
 
       case ITM_DELITM: {
         switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
-          case MNU_RAM:
-          case MNU_FLASH: {
+          case MNU_PROGS: {
             return ITM_DELITM_PROG;
           }
           case MNU_MENUS: {
@@ -838,7 +837,7 @@
           }
         }
       }
-      else if(tam.mode == TM_LABEL || tam.mode == TM_SOLVE || (tam.mode == TM_KEY && tam.keyInputFinished) || (tam.mode == TM_DELITM && (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_RAM || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_FLASH))) {
+      else if(tam.mode == TM_LABEL || tam.mode == TM_SOLVE || (tam.mode == TM_KEY && tam.keyInputFinished) || (tam.mode == TM_DELITM && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PROGS)) {
         value = findNamedLabelWithDuplicate(buffer, dupNum);
         if(value == INVALID_VARIABLE && tam.function != ITM_LBL && tam.function != ITM_LBLQ && (calcMode != CM_PEM || tam.mode != TM_SOLVE)) {
           if(calcMode != CM_PEM && getSystemFlag(FLAG_IGN1ER)) {
