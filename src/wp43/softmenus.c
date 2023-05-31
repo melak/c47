@@ -278,7 +278,7 @@ TO_QSPI const int16_t menu_PFN[]         = { ITM_XEQ,                       ITM_
                                              ITM_CASE,                      ITM_BACK,                   ITM_SKIP,                 ITM_RTNP1,             ITM_PAUSE,                   ITM_NOP,
                                              ITM_INPUT,                     ITM_MSG,                    ITM_ERR,                  ITM_TICKS,             ITM_LocR,                    ITM_POPLR                     };
 
-TO_QSPI const int16_t menu_PFN_MORE[]    = { ITM_AGRAPH,                    ITM_PIXEL,                  ITM_POINT,                ITM_PSTO,              ITM_PRCL,                    -MNU_PFN,
+TO_QSPI const int16_t menu_PFN_MORE[]    = { ITM_AGRAPH,                    ITM_PIXEL,                  ITM_POINT,                ITM_NULL,              ITM_NULL,                    -MNU_PFN,
                                              ITM_CLMENU,                    ITM_R_COPY,                 ITM_R_SORT,               ITM_R_SWAP,            ITM_R_CLR,                   ITM_EXITALL,
                                              ITM_MENU,                      ITM_KEYG,                   ITM_KEYX,                 ITM_VARMNU,            ITM_MVAR,                    ITM_PUTK                      };
 

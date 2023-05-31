@@ -1601,8 +1601,8 @@
 #define ITM_POINT                   1551
 #define ITM_LOADV                   1552
 #define ITM_POPLR                   1553
-#define ITM_PRCL                    1554
-#define ITM_PSTO                    1555
+#define ITM_1554                    1554
+#define ITM_1555                    1555
 #define ITM_PUTK                    1556
 #define ITM_RAD                     1557
 #define ITM_1558                    1558
