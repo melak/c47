@@ -41,7 +41,6 @@
 #include "mathematics/matrix.h"
 #include "memory.h"
 #include "plotstat.h"
-#include "programming/flash.h"
 #include "programming/manage.h"
 #include "programming/programmableMenu.h"
 #include "c43Extensions/graphs.h"
@@ -1023,15 +1022,12 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     firstDisplayedLocalStepNumber = 0;
     labelList                     = NULL;
     programList                   = NULL;
-    flashLabelList                = NULL;
-    flashProgramList              = NULL;
     *(beginOfProgramMemory + 0) = (ITM_END >> 8) | 0x80;
     *(beginOfProgramMemory + 1) =  ITM_END       & 0xff;
     *(beginOfProgramMemory + 2) = 255; // .END.
     *(beginOfProgramMemory + 3) = 255; // .END.
     freeProgramBytes            = 0;
 
-    scanFlashPgmLibrary();
     scanLabelsAndPrograms();
 
     // "Not found glyph" initialization

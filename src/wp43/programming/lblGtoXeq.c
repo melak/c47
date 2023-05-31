@@ -32,7 +32,6 @@
 #include "keyboard.h"
 #include "longIntegerType.h"
 #include "memory.h"
-#include "programming/flash.h"
 #include "programming/manage.h"
 #include "programming/nextStep.h"
 #include "realType.h"
@@ -70,13 +69,6 @@ void fnGoto(uint16_t label) {
             goToGlobalStep(-labelList[lbl].step);
           }
           return;
-        }
-        else if(labelList[lbl].program == -currentProgramNumber && labelList[lbl].step < 0) { // Is in the current program and is a local label and is the searched label
-          readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, labelList[lbl].labelPointer.flash);
-          if(*((uint8_t *)(tmpString + 1600)) == label) {
-            goToGlobalStep(labelList[lbl].step);
-            return;
-          }
         }
       }
 
@@ -130,15 +122,8 @@ void goToGlobalStep(int32_t step) {
 
     int16_t c, len = stringByteLength((char *)labelName);
     for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
-      uint8_t tmpLabel[16];
       uint8_t *lblPtr;
-      if(labelList[lbl].program < 0) {
-        readStepInFlashPgmLibrary(tmpLabel, 16, labelList[lbl].labelPointer.flash);
-        lblPtr = tmpLabel;
-      }
-      else {
-        lblPtr = labelList[lbl].labelPointer.ram;
-      }
+      lblPtr = labelList[lbl].labelPointer.ram;
       if(labelList[lbl].step > 0 && *lblPtr == len) { // It's a global label and the length is OK
         for(c=0; c<len; c++) {
           if(labelName[c] != lblPtr[c + 1]) {
@@ -721,13 +706,9 @@ static void _putLiteral(uint8_t *literalAddress) {
 
 int16_t executeOneStep(pgmPtr_t step) {
   #if defined(TESTSUITE_BUILD)
-  return 0;
-#else // TESTSUITE_BUILD
+    return 0;
+  #else // TESTSUITE_BUILD
   uint16_t op;
-  if(programList[currentProgramNumber - 1].step < 0) {
-    readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, step.flash);
-    step.ram = (uint8_t *)(tmpString + 1600);
-  }
 
   op = *(step.ram++);
   if(op & 0x80) {
@@ -839,22 +820,10 @@ void runProgram(bool_t singleStep, uint16_t menuLabel) {
   while(1) {
     int16_t stepsToBeAdvanced;
     uint16_t subLevel = currentSubroutineLevel;
-    uint16_t opCode;
-    if(programList[currentProgramNumber - 1].step < 0) {
-      readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, currentStep.flash);
-      opCode = *((uint8_t *)(tmpString + 1600));
-    }
-    else {
-      opCode = *currentStep.ram;
-    }
+    uint16_t opCode = *currentStep.ram;
     currentInputVariable = INVALID_VARIABLE; // INPUT is already executed
     if(opCode & 0x80) {
-      if(programList[currentProgramNumber - 1].step < 0) {
-        opCode = ((uint16_t)(opCode & 0x7F) << 8) | *((uint8_t *)(tmpString + 1601));
-      }
-      else {
-        opCode = ((uint16_t)(opCode & 0x7F) << 8) | *(currentStep.ram + 1);
-      }
+      opCode = ((uint16_t)(opCode & 0x7F) << 8) | *(currentStep.ram + 1);
     }
     if(temporaryInformation == TI_TRUE || temporaryInformation == TI_FALSE || temporaryInformation == TI_SOLVER_FAILED || (opCode != ITM_RTN && opCode != ITM_STOP && opCode != ITM_END && opCode != 0x7fff)) {
       temporaryInformation = TI_NO_INFO;
@@ -862,27 +831,27 @@ void runProgram(bool_t singleStep, uint16_t menuLabel) {
     stepsToBeAdvanced = executeOneStep(currentStep);
     if(lastErrorCode == ERROR_NONE) {
       switch(stepsToBeAdvanced) {
-          case -1: { // Already the pointer is set
+        case -1: { // Already the pointer is set
           break;
-          }
+        }
 
-          case 0: { // End of the routine
+        case 0: { // End of the routine
           if(subLevel == startingSubLevel) {
             goto stopProgram;
           }
           break;
-          }
+        }
 
-          default: { // Find the next step
+        default: { // Find the next step
           fnSkip((uint16_t)(stepsToBeAdvanced - 1));
           break;
+        }
       }
     }
-      }
     else {
       break;
     }
-      #if defined(DMCP_BUILD)
+    #if defined(DMCP_BUILD)
       if(!nestedEngine) {
         int key = key_pop();
         key = convertKeyCode(key);
@@ -959,13 +928,6 @@ void fnCheckLabel(uint16_t label) {
       if(labelList[lbl].program == currentProgramNumber && labelList[lbl].step < 0 && *(labelList[lbl].labelPointer.ram) == label) { // Is in the current program and is a local label and is the searched label
         temporaryInformation = TI_TRUE;
         return;
-      }
-      else if(labelList[lbl].program == -currentProgramNumber && labelList[lbl].step < 0) { // Is in the current program and is a local label and is the searched label
-        readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 32, labelList[lbl].labelPointer.flash);
-        if(*((uint8_t *)(tmpString + 1600)) == label) {
-          temporaryInformation = TI_TRUE;
-          return;
-        }
       }
     }
     temporaryInformation = TI_FALSE;

@@ -32,7 +32,6 @@
 #include "mathematics/matrix.h"
 #include "memory.h"
 #include "plotstat.h"
-#include "programming/flash.h"
 #include "programming/lblGtoXeq.h"
 #include "programming/manage.h"
 #include "programming/nextStep.h"
@@ -60,7 +59,7 @@
 #endif
 
 #include "wp43.h"
-#define BACKUP_VERSION                     781  // save new gap settings
+#define BACKUP_VERSION                     782  // remove FM program support
 #define OLDEST_COMPATIBLE_BACKUP_VERSION   779  // save running app
 #define configFileVersion                  10000005 // arbitrary starting point version 10 000 001. Allowable values are 10000000 to 20000000
 #define VersionAllowed                     10000005 // This code will not autoload versions earlier than this
@@ -170,11 +169,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
     save(&ramPtr,                             sizeof(ramPtr));
     ramPtr = TO_WP43MEMPTR(labelList);
     save(&ramPtr,                             sizeof(ramPtr));
-    ramPtr = TO_WP43MEMPTR(flashLabelList);
-    save(&ramPtr,                             sizeof(ramPtr));
     ramPtr = TO_WP43MEMPTR(programList);
-    save(&ramPtr,                             sizeof(ramPtr));
-    ramPtr = TO_WP43MEMPTR(flashProgramList);
     save(&ramPtr,                             sizeof(ramPtr));
     ramPtr = TO_WP43MEMPTR(currentSubroutineLevelData);
     save(&ramPtr,                             sizeof(ramPtr));
@@ -265,9 +260,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
     save(&freeProgramBytes,                   sizeof(freeProgramBytes));
     save(&firstDisplayedLocalStepNumber,      sizeof(firstDisplayedLocalStepNumber));
     save(&numberOfLabels,                     sizeof(numberOfLabels));
-    save(&numberOfLabelsInFlash,              sizeof(numberOfLabelsInFlash));
     save(&numberOfPrograms,                   sizeof(numberOfPrograms));
-    save(&numberOfProgramsInFlash,            sizeof(numberOfProgramsInFlash));
     save(&currentLocalStepNumber,             sizeof(currentLocalStepNumber));
     save(&currentProgramNumber,               sizeof(currentProgramNumber));
     save(&lastProgramListEnd,                 sizeof(lastProgramListEnd));
@@ -497,12 +490,14 @@ static uint32_t restore(void *buffer, uint32_t size) {
       savedStatisticalSumsPointer = TO_PCMEMPTR(ramPtr);
       restore(&ramPtr,                             sizeof(ramPtr));
       labelList = TO_PCMEMPTR(ramPtr);
-      restore(&ramPtr,                             sizeof(ramPtr));
-      flashLabelList = TO_PCMEMPTR(ramPtr);
+      if(backupVersion < 782) { // flashLabelList
+        restore(&ramPtr,                           sizeof(ramPtr));
+      }
       restore(&ramPtr,                             sizeof(ramPtr));
       programList = TO_PCMEMPTR(ramPtr);
-      restore(&ramPtr,                             sizeof(ramPtr));
-      flashProgramList = TO_PCMEMPTR(ramPtr);
+      if(backupVersion < 782) { // flashProgramList
+        restore(&ramPtr,                           sizeof(ramPtr));
+      }
       restore(&ramPtr,                             sizeof(ramPtr));
       currentSubroutineLevelData = TO_PCMEMPTR(ramPtr);
       restore(&xCursor,                            sizeof(xCursor));
@@ -598,9 +593,13 @@ static uint32_t restore(void *buffer, uint32_t size) {
       restore(&freeProgramBytes,                   sizeof(freeProgramBytes));
       restore(&firstDisplayedLocalStepNumber,      sizeof(firstDisplayedLocalStepNumber));
       restore(&numberOfLabels,                     sizeof(numberOfLabels));
-      restore(&numberOfLabelsInFlash,              sizeof(numberOfLabelsInFlash));
+      if(backupVersion < 782) { // numberOfLabelsInFlash
+        restore(&numberOfPrograms,                 sizeof(numberOfPrograms));
+      }
       restore(&numberOfPrograms,                   sizeof(numberOfPrograms));
-      restore(&numberOfProgramsInFlash,            sizeof(numberOfProgramsInFlash));
+      if(backupVersion < 782) { // numberOfProgramsInFlash
+        restore(&currentLocalStepNumber,           sizeof(currentLocalStepNumber));
+      }
       restore(&currentLocalStepNumber,             sizeof(currentLocalStepNumber));
       restore(&currentProgramNumber,               sizeof(currentProgramNumber));
       restore(&lastProgramListEnd,                 sizeof(lastProgramListEnd));
@@ -739,16 +738,8 @@ static uint32_t restore(void *buffer, uint32_t size) {
       if(temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL)
         temporaryInformation = TI_NO_INFO;
 
-      if(currentProgramNumber >= (numberOfPrograms - numberOfProgramsInFlash)) {
-        currentStep.flash = 1;
-      }
-      scanFlashPgmLibrary();
       scanLabelsAndPrograms();
-      defineCurrentProgramFromGlobalStepNumber((programList[currentProgramNumber - 1].step < 0 ? -1 : 1) * (currentLocalStepNumber + abs(programList[currentProgramNumber - 1].step) - 1));
-      if(programList[currentProgramNumber - 1].step < 0) {
-        dynamicMenuItem = -1;
-        goToPgmStep(currentProgramNumber, currentLocalStepNumber);
-      }
+      defineCurrentProgramFromGlobalStepNumber(currentLocalStepNumber + abs(programList[currentProgramNumber - 1].step) - 1);
       defineCurrentStep();
       defineFirstDisplayedStep();
       defineCurrentProgramFromCurrentStep();

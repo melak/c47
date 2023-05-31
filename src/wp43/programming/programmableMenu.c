@@ -25,9 +25,9 @@
 #include "defines.h"
 #include "display.h"
 #include "error.h"
+#include "flags.h"
 #include "fonts.h"
 #include "items.h"
-#include "programming/flash.h"
 #include "programming/lblGtoXeq.h"
 #include "programming/manage.h"
 #include "programming/nextStep.h"
@@ -123,26 +123,17 @@ void fnKeyGtoXeq(uint16_t keyNum) {
   uint16_t label;
 
   opParam.any = secondParam.any + 1;
-  if(programList[currentProgramNumber - 1].step > 0) { // RAM
-    label = _get2ndParamOfKey(opParam.ram);
+  label = _get2ndParamOfKey(opParam.ram);
 
-    if(*secondParam.ram == ITM_XEQ) {
-      keyXeq(keyNum, label);
-    }
-    else {
-      keyGto(keyNum, label);
-    }
+  if(lastErrorCode != ERROR_NONE && getSystemFlag(FLAG_IGN1ER)) {
+    lastErrorCode = ERROR_NONE;
+    clearSystemFlag(FLAG_IGN1ER);
   }
-  else { // Flash
-    readStepInFlashPgmLibrary((uint8_t *)tmpString, 400, secondParam.flash);
-    label = _get2ndParamOfKey((uint8_t *)tmpString + 1);
-
-    if(*((uint8_t *)tmpString) == ITM_XEQ) {
-      keyXeq(keyNum, label);
-    }
-    else {
-      keyGto(keyNum, label);
-    }
+  else if(*secondParam.ram == ITM_XEQ) {
+    keyXeq(keyNum, label);
+  }
+  else {
+    keyGto(keyNum, label);
   }
 }
 

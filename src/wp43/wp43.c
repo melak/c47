@@ -100,9 +100,7 @@ glyph_t                glyphNotFound = {.charCode = 0x0000, .colsBeforeGlyph = 0
 freeMemoryRegion_t     freeMemoryRegions[MAX_FREE_REGION];
 pcg32_random_t         pcg32_global = PCG32_INITIALIZER;
 labelList_t           *labelList = NULL;
-labelList_t           *flashLabelList = NULL;
 programList_t         *programList = NULL;
-programList_t         *flashProgramList = NULL;
 angularMode_t          currentAngularMode;
 formulaHeader_t       *allFormulae;
 
@@ -257,9 +255,7 @@ uint16_t               freeProgramBytes;
 uint16_t               glyphRow[NUMBER_OF_GLYPH_ROWS];
 uint16_t               firstDisplayedLocalStepNumber;
 uint16_t               numberOfLabels;
-uint16_t               numberOfLabelsInFlash;
 uint16_t               numberOfPrograms;
-uint16_t               numberOfProgramsInFlash;
 uint16_t               numberOfNamedVariables;
 uint16_t               currentLocalStepNumber;
 uint16_t               currentProgramNumber;
