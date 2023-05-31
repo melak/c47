@@ -252,14 +252,16 @@
     }
   }
 
-  static bool_t _processOneStep(pgmPtr_t step) {
+
+
+  static bool_t _processOneStep(uint8_t *step) {
     uint16_t op;
 
-    op = *(step.ram++);
+    op = *(step++);
     if(op & 0x80) {
       op &= 0x7f;
       op <<= 8;
-      op |= *(step.ram++);
+      op |= *(step++);
     }
 
     if(op == ITM_END || op == 0x7fff) {
@@ -282,14 +284,14 @@
         }
 
         case PTP_KEYG_KEYX: {
-          uint8_t *secondParam = findKey2ndParam_ram(step.ram - 2);
-          _processOp(step.ram, op, PARAM_NUMBER_8);
+          uint8_t *secondParam = findKey2ndParam(step - 2);
+          _processOp(step, op, PARAM_NUMBER_8);
           _processOp(secondParam, *secondParam, PARAM_LABEL);
           return true;
         }
 
         default: {
-          _processOp(step.ram, op, (indexOfItems[op].status & PTP_STATUS) >> 9);
+          _processOp(step, op, (indexOfItems[op].status & PTP_STATUS) >> 9);
           return true;
         }
       }
@@ -301,8 +303,7 @@
 
 void fnClCVar(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
-    pgmPtr_t ptr;
-    ptr.any = beginOfCurrentProgram.any;
+    uint8_t *ptr = beginOfCurrentProgram;
 
     while(_processOneStep(ptr)) {
       ptr = findNextStep(ptr);

@@ -1861,10 +1861,10 @@ RELEASE_END:
       uint16_t fdLocalStepNumber = firstDisplayedLocalStepNumber;
       bool_t inRam = (programList[currentProgramNumber - 1].step > 0);
       if(inRam) {
-        currentStep.ram           += (freeProgramBytes & 0xfffc);
-        firstDisplayedStep.ram    += (freeProgramBytes & 0xfffc);
-        beginOfCurrentProgram.ram += (freeProgramBytes & 0xfffc);
-        endOfCurrentProgram.ram   += (freeProgramBytes & 0xfffc);
+        currentStep           += (freeProgramBytes & 0xfffc);
+        firstDisplayedStep    += (freeProgramBytes & 0xfffc);
+        beginOfCurrentProgram += (freeProgramBytes & 0xfffc);
+        endOfCurrentProgram   += (freeProgramBytes & 0xfffc);
       }
       freeProgramBytes &= 0x03;
       resizeProgramMemory(TO_BLOCKS(newProgramSize));
@@ -3441,9 +3441,9 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
             pemCursorIsZerothStep = false;
           }
           if(!pemCursorIsZerothStep) {
-            nextStep = findNextStep_ram(currentStep.ram);
-            if(*currentStep.ram != 255 || *(currentStep.ram + 1) != 255) { // Not the last END
-              deleteStepsFromTo(currentStep.ram, nextStep);
+            nextStep = findNextStep(currentStep);
+            if(*currentStep != 255 || *(currentStep + 1) != 255) { // Not the last END
+              deleteStepsFromTo(currentStep, nextStep);
             }
             if(currentLocalStepNumber > 1) {
               --currentLocalStepNumber;
