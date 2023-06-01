@@ -3255,7 +3255,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2118 */  { fnSetGapChar,                 ITM_NQUOTE,                  "ITICK" STD_NQUOTE,                            "TICK" STD_NQUOTE,                             (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
 /* 2119 */  { fnSetGapChar,                 ITM_SPACE_PUNCTUATION,       "ISPC" STD_OPEN_BOX,                           "SPC" STD_OPEN_BOX,                            (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
 /* 2120 */  { fnSetGapChar,                 ITM_SPACE_4_PER_EM,          "INSPC" STD_INV_BRIDGE,                        "NSPC" STD_INV_BRIDGE,                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
-/* 2121 */  { fnSetGapChar,                 ITM_SPACE_EM,                "IWSPC" STD_OPEN_BOX STD_OPEN_BOX,             "WSPC" STD_OPEN_BOX STD_OPEN_BOX,              (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
+/* 2121 */  { fnSetGapChar,                 ITM_SPACE_EM,                "IWSPC" STD_INV_BRIDGE STD_INV_BRIDGE,         "WSPC" STD_INV_BRIDGE STD_INV_BRIDGE,          (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
 /* 2122 */  { fnSetGapChar,                 ITM_UNDERSCORE,              "IUNDR" STD_UNDERSCORE,                        "UNDR" STD_UNDERSCORE,                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
 /* 2123 */  { fnSetGapChar,                 ITM_NULL,                    "INONE",                                       "NONE",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
 /* 2124 */  { fnSetGapChar,                 32768+ITM_DOT,               "FDOT" STD_DOT,                                "DOT" STD_DOT,                                 (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
@@ -3268,7 +3268,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2131 */  { fnSetGapChar,                 32768+ITM_NQUOTE,            "FTICK" STD_NQUOTE,                            "TICK" STD_NQUOTE,                             (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
 /* 2132 */  { fnSetGapChar,                 32768+ITM_SPACE_PUNCTUATION, "FSPC" STD_OPEN_BOX,                           "SPC" STD_OPEN_BOX,                            (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
 /* 2133 */  { fnSetGapChar,                 32768+ITM_SPACE_4_PER_EM,    "FNSPC" STD_INV_BRIDGE,                        "NSPC" STD_INV_BRIDGE,                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
-/* 2134 */  { fnSetGapChar,                 32768+ITM_SPACE_EM,          "FWSPC" STD_OPEN_BOX STD_OPEN_BOX,             "WSPC" STD_OPEN_BOX STD_OPEN_BOX,              (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
+/* 2134 */  { fnSetGapChar,                 32768+ITM_SPACE_EM,          "FWSPC" STD_INV_BRIDGE STD_INV_BRIDGE,         "WSPC" STD_INV_BRIDGE STD_INV_BRIDGE,          (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
 /* 2135 */  { fnSetGapChar,                 32768+ITM_UNDERSCORE,        "FUNDR" STD_UNDERSCORE,                        "UNDR" STD_UNDERSCORE,                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
 /* 2136 */  { fnSetGapChar,                 32768+ITM_NULL,              "FNONE",                                       "NONE",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
 /* 2137 */  { fnSetGapChar,                 49152+ITM_DOT,               "RDOT" STD_DOT,                                "DOT" STD_DOT,                                 (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
@@ -3296,21 +3296,6 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2159 */  { fnMenuGapL,                   MNU_GAP_L,                   "IPART",                                       "IPART",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2160 */  { fnMenuGapRX,                  MNU_GAP_RX,                  "RADIX",                                       "RADIX",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2161 */  { fnMenuGapR,                   MNU_GAP_R,                   "FPART",                                       "FPART",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
