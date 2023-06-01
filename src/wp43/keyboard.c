@@ -1419,25 +1419,32 @@ bool_t allowShiftsToClearError = false;
     uint8_t circPtr =0;
     uint8_t circPtr2 =0;
     TO_QSPI const circ_t circ[] = {
-                  {7 , 2},
-                  {18, 23},
-                  {30, 18},
-                  {24, 12},
-                  {12, 29},
-                  {28, 33},
-                  {20, 29},
-                  {18, 30},
-                  {29, 12},
-                  {12, 0},
+                  {7 , 2},    //0
+                  {18, 23},   //1
+                  {30, 18},   //2
+                  {24, 12},   //3
+                  {12, 29},   //4
+                  {28, 33},   //5
+                  {20, 29},   //6
+                  {18, 30},   //7
+                  {29, 0 },   //8
+                  {0 , 0 },    //9
                 };
-    void checkNumber(int8_t keyCode) {
-      if(keyCode==7 || circPtr > nbrOfElements(circ)) circPtr = 0;
-      if(circ[circPtr].itm==keyCode) circPtr++;
-      if(circPtr==10 && keyCode==12) fnSetHP35(0);
-      if(keyCode==2 || circPtr2 > nbrOfElements(circ)) circPtr2 = 0;
-      if(circ[circPtr2].itm2==keyCode) circPtr2++;
-      if(circPtr2==9 && keyCode==12) fnSetC47(0);
-      printf("RRRR %i %u %u\n", keyCode, circPtr, circPtr2);
+    bool_t checkNumber(uint8_t keyCode) {
+      if((circPtr == 0 && keyCode==7) || circPtr > nbrOfElements(circ)) circPtr = 0;
+      if(circ[circPtr].itm==keyCode) circPtr++; else circPtr = 0;
+      if(circPtr == 9 && keyCode==29) {
+        fnSetHP35(0); 
+        return true;
+      }
+      if((circPtr2 == 0 && keyCode==2) || circPtr2 > nbrOfElements(circ)) circPtr2 = 0;
+      if(circ[circPtr2].itm2==keyCode) circPtr2++; else circPtr2 = 0;
+      if(circPtr2 == 8 && keyCode==30) {
+        fnSetC47(0); 
+        return true;
+      }
+      //printf("RRRR %i %u %u\n", keyCode, circPtr, circPtr2);
+      return false;
     }
 
 
@@ -1488,7 +1495,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
 
       int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
-      checkNumber(keyCode);
+      if (checkNumber((uint8_t)keyCode)) return;
 
 
       asnKey[0] = ((uint8_t *)data)[0];
@@ -1642,7 +1649,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
       int16_t item;
       int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
-      checkNumber(keyCode);
+      if (checkNumber((uint8_t)keyCode)) return;
 
       bool_t f = shiftF;
       bool_t g = shiftG;

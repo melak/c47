@@ -58,6 +58,8 @@
 
 #include "wp43.h"
 
+static uint16_t charCodeFromString(const char *ch, uint16_t *offset);
+
 
 //#define DEBUGCLEARS
 
@@ -1102,7 +1104,6 @@ uint8_t  displaymode = stdNoEnlarge;
   int32_t  glyphId;
   int8_t   byte, *data;
   const glyph_t  *glyph;
-  int8_t rep_enlarge;
 
   if(charCode == 1) return x; //This is special usage of the 01 ASCII code, to ignore the code and return with nothing printed
 
@@ -1149,20 +1150,21 @@ uint8_t  displaymode = stdNoEnlarge;
   xGlyph      = showLeadingCols ? glyph->colsBeforeGlyph : 0;
   endingCols  = showEndingCols ? glyph->colsAfterGlyph : 0;
 
-#define REDUCT_A 3
-#define REDUCT_B 4
-#define REDUCT_OFF 3
+  #define REDUCT_A 3
+  #define REDUCT_B 4
+  #define REDUCT_OFF 3
+  bool_t numDouble = font == &numericFont && checkHP && charCodeFromString(STD_SUP_f, 0)!=charCode && charCodeFromString(STD_SUP_g, 0)!=charCode; //this also triggers the vertical doubling
+  uint8_t doubling = numDouble ? DOUBLING : 4u;      //this is the horizontal factor 
 
   // Clearing the space needed by the glyph
-  if(enlarge && combinationFonts !=0) rep_enlarge = 2; else rep_enlarge = 1;                //JM ENLARGE
-  if(!noShow) lcd_fill_rect(x, y, ((xGlyph + glyph->colsGlyph + endingCols) >> miniC), rep_enlarge*((glyph->rowsAboveGlyph + glyph->rowsGlyph + glyph->rowsBelowGlyph) >> miniC)-(rep_enlarge-1)*4, (videoMode == vmNormal ? LCD_SET_VALUE : LCD_EMPTY_VALUE));  //JMmini
-  if(displaymode == numHalf) {y += (glyph->rowsAboveGlyph*REDUCT_A/REDUCT_B);} else {y += glyph->rowsAboveGlyph;}        //JM REDUCE
+  bool_t rep_enlarge = numDouble || (enlarge && combinationFonts != 0);                //JM ENLARGE
+  if(!noShow) lcd_fill_rect(x, y, (uint32_t)(doubling * ((xGlyph + glyph->colsGlyph + endingCols) >> miniC)) >> 2, (rep_enlarge ? 2 : 1) * (((glyph->rowsAboveGlyph + glyph->rowsGlyph + glyph->rowsBelowGlyph) >> miniC) - (rep_enlarge ? 4 : 0)), (videoMode == vmNormal ? LCD_SET_VALUE : LCD_EMPTY_VALUE));  //JMmini
+  if(displaymode == numHalf) {y += (uint32_t)(glyph->rowsAboveGlyph*REDUCT_A/REDUCT_B*(rep_enlarge ? 2 : 1));} else {y += glyph->rowsAboveGlyph*(rep_enlarge ? 2 : 1);}        //JM REDUCE and DOUBLE
   //x += xGlyph; //JM
 
   // Drawing the glyph
   for(row=0; row<glyph->rowsGlyph; row++, y++) {
     if(displaymode == numHalf) {if((int)((REDUCT_A*row+REDUCT_OFF)) % REDUCT_B == 0) y--;}                           //JM REDUCE
-    if(enlarge && combinationFonts !=0) rep_enlarge = 1; else rep_enlarge = 0;                //JM ENLARGE
       // Drawing the columns of the glyph
       int32_t bit = 7;
       for(col=0; col<glyph->colsGlyph; col++) {
@@ -1171,17 +1173,21 @@ uint8_t  displaymode = stdNoEnlarge;
             if(miniC!=0) byte = (uint8_t)byte | (((uint8_t)byte) << 1);           //JMmini
         }
 
-        if(byte & 0x80) {// MSB set
+        if(byte & 0x80 && !noShow) {// MSB set
           if(videoMode == vmNormal) { // Black pixel for white background
-            if(!noShow) setBlackPixel(x+((xGlyph+col) >> miniC), y0+((y-y0) >> miniC));       //JMmini
-            if(rep_enlarge == 1) {
-              if(!noShow) setBlackPixel(x+((xGlyph+col) >> miniC), 1+(y0+((y-y0) >> miniC)));       //JMmini              
+                            setBlackPixel(   x+((((doubling * (xGlyph+col)) >> miniC)) >> 2),    y0+((y-y0) >> miniC));       //JMmini
+            if(numDouble)   setBlackPixel(-1+x+((((doubling * (xGlyph+col)) >> miniC)) >> 2),    y0+((y-y0) >> miniC));       //JMmini
+            if(rep_enlarge) {
+                            setBlackPixel(   x+((((doubling * (xGlyph+col)) >> miniC)) >> 2), 1+(y0+((y-y0) >> miniC)));       //JMmini              
+              if(numDouble) setBlackPixel(-1+x+((((doubling * (xGlyph+col)) >> miniC)) >> 2), 1+(y0+((y-y0) >> miniC)));       //JMmini              
             }
           }
           else { // White pixel for black background
-            if(!noShow) setWhitePixel(x+((xGlyph+col) >> miniC), y0+((y-y0) >> miniC));       //JMmini
-            if(rep_enlarge == 1) {
-              if(!noShow) setWhitePixel(x+((xGlyph+col) >> miniC), 1+(y0+((y-y0) >> miniC)));       //JMmini
+                            setWhitePixel(   x+((((doubling * (xGlyph+col)) >> miniC)) >> 2),    y0+((y-y0) >> miniC));       //JMmini
+            if(numDouble)   setWhitePixel(-1+x+((((doubling * (xGlyph+col)) >> miniC)) >> 2),    y0+((y-y0) >> miniC));       //JMmini
+            if(rep_enlarge) {
+                            setWhitePixel(   x+((((doubling * (xGlyph+col)) >> miniC)) >> 2), 1+(y0+((y-y0) >> miniC)));       //JMmini
+              if(numDouble) setWhitePixel(-1+x+((((doubling * (xGlyph+col)) >> miniC)) >> 2), 1+(y0+((y-y0) >> miniC)));       //JMmini
             }
           }
         }
@@ -1192,9 +1198,9 @@ uint8_t  displaymode = stdNoEnlarge;
           bit = 7;
         }
       }
-    if(rep_enlarge == 1 && row!=3 && row!=6 && row!=9 && row!=12) y++; //JM ENLARGE vv do not advance the row counter for four rows, to match the row height of the enlarge font
-  }
-  return x + ((xGlyph + glyph->colsGlyph + endingCols) >> miniC);        //JMmini
+    if(rep_enlarge && row!=3 && row!=6 && row!=9 && row!=12) y++; //JM ENLARGE vv do not advance the row counter for four rows, to match the row height of the enlarge font
+  } 
+  return x + (((doubling * (xGlyph + glyph->colsGlyph + endingCols)) >> miniC) >> 2);        //JMmini
 }
 
 
@@ -3334,13 +3340,13 @@ void hideFunctionName(void) {
           lineWidth = w;
           if(prefixWidth > 0) {
             if(temporaryInformation == TI_INTEGRAL) {
-              showString(prefix, &numericFont, 1, baseY, vmNormal, prefixPre, prefixPost);
+              showString(prefix, &numericFont, 1, checkHP ? baseY - 50 : baseY, vmNormal, prefixPre, prefixPost);
             }
             else {
-              showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
+              showString(prefix, &standardFont, 1, checkHP ? baseY - 50 : baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
             }
           }
-          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY, vmNormal, false, true);
+          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, checkHP ? baseY - 50 : baseY, vmNormal, false, true);
         }
 
           //JM else if(getRegisterDataType(regist) == dtComplex34) {                                                                                                      //JM EE Removed and replaced with the below
@@ -3421,9 +3427,9 @@ void hideFunctionName(void) {
           w = stringWidth(tmpString, &numericFont, false, true);
           lineWidth = w;
           if(prefixWidth > 0) {
-            showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
+            showString(prefix, &standardFont, 1, checkHP ? baseY - 50 : baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
           }
-          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY, vmNormal, false, true);
+          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, checkHP ? baseY - 50 : baseY, vmNormal, false, true);
         }
 
         else if(getRegisterDataType(regist) == dtString) {

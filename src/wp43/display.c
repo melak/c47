@@ -298,6 +298,18 @@ void real34ToDisplayString(const real34_t *real34, uint32_t tag, char *displaySt
     displayValueX[0] = 0;
   }
 
+
+if(displayFormat == DF_SF) {
+    if(tag == amNone) {
+      uint8_t digits = checkHP ? significantDigits : displayHasNDigits;
+      real34ToDisplayString2(real34, displayString, digits, limitExponent, separator, false, frontSpace);
+      if(stringWidth(displayString, font, true, true) > maxWidth) {
+        real34ToDisplayString2(real34, displayString, digits, limitExponent, separator, true, frontSpace);
+      }
+    }
+} else {
+
+
   if(tag == amNone) {
     real34ToDisplayString2(real34, displayString, displayHasNDigits, limitExponent, separator, false, frontSpace);
   }
@@ -330,6 +342,9 @@ void real34ToDisplayString(const real34_t *real34, uint32_t tag, char *displaySt
       angle34ToDisplayString2(real34, tag, displayString, displayHasNDigits, limitExponent, separator, frontSpace);
     }
   }
+}
+
+
   displayFormatDigits = savedDisplayFormatDigits;
 }
 
@@ -421,15 +436,18 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
           while(tmpString100[ii] == '0') {
             if(tmpString100[ii] == 0) break;
             ii++;
-          }                                            //counter at first non-'0' or end
+          }                                            //counter at first non-'0' or end, eg. 3.14159265358979E+15
+          //printf("------- 004a >>>>%s|, %i, displayFormatDigits=%i\n",tmpString100, ii, displayFormatDigits);
 
           if(tmpString100[ii] != 0) {
-            ii = ii + displayFormatDigits; 
+            ii = ii + displayFormatDigits+1;           //2023-06-01 added 1 digit, giving FIX one extra digit for rounding. If it does not work properly, to do rounding here.
             int8_t jj = ii;
-            while(tmpString100[jj] != 0 && tmpString100[jj] != 'E') {
+            //round here
+
+            while(tmpString100[jj] != 0 && tmpString100[jj] != 'E') {   //find E or first non-zero
               jj++;
             }
-            if(tmpString100[jj] == 'E') {
+            if(tmpString100[jj] == 'E') {              //If E, then move over the exponent to have only the specified significant digts, eg. 3.141E+15
               while(tmpString100[jj] != 0) {
                 tmpString100[ii] = tmpString100[jj];
                 jj++; ii++;
@@ -437,7 +455,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
               tmpString100[ii] = 0; 
             }
           }
-        //printf("------- 005 >>>>%s|\n",tmpString100);
+          //printf("------- 005 >>>>%s|\n",tmpString100);
         break;
       } 
       else {
@@ -763,7 +781,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
         bcd[digitToRound]++;
       }
 
-      // Transfert the carry
+      // Transfer the carry
       while(bcd[digitToRound] == 10) {
         bcd[digitToRound--] = 0;
         if(displayFormat == DF_SF) numDigits--;

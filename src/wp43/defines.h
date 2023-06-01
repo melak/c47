@@ -24,7 +24,7 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
- #define VERSION1 "108_09r G"
+ #define VERSION1 "0.108.9-1"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
 
   #undef SAVE_SPACE_DM42
@@ -258,7 +258,6 @@
 
 
 #define REAL34_WIDTH_TEST 0 // For debugging real34 ALL 0 formating. Use UP/DOWN to shrink or enlarge the available space. The Z register holds the available width.
-
 
 //*************************
 //* Other defines         *
@@ -1243,6 +1242,8 @@ typedef enum {
 
 #define SEPARATOR_LEFT                       (gapChar1Left)
 #define SEPARATOR_RIGHT                      (gapChar1Right)
+#define checkHP                              (significantDigits == 10 && displayStack == 1 && grpGroupingLeft == 3 && exponentHideLimit == 99 && exponentLimit == 99)
+#define DOUBLING                             6u  // 8=is double; 7 is 1.75*; 6=1.5*; 5=1.25* 
 #define GROUPWIDTH_LEFT                      ((uint16_t)grpGroupingLeft)
 #define GROUPWIDTH_LEFT1                     ((grpGroupingGr1Left        == 0 ? (uint16_t)grpGroupingLeft : (uint16_t)grpGroupingGr1Left))
 #define GROUPWIDTH_LEFT1X                    (grpGroupingGr1LeftOverflow)  
@@ -1254,6 +1255,7 @@ typedef enum {
 #define IS_SEPARATOR_(digitCount)            (   (digitCount+1 == GROUPWIDTH_LEFT1) \
                                               || ((digitCount+1  > GROUPWIDTH_LEFT1 || digitCount < 0) \
                                                   && (modulo(digitCountNEW(digitCount), (uint16_t)GROUPWIDTH_(digitCount)) == (uint16_t)GROUPWIDTH_(digitCount) - 1)) )
+
 
 #define clearScreen()                        {lcd_fill_rect(0, 0, SCREEN_WIDTH, 240, LCD_SET_VALUE); clear_ul();}
 #define currentReturnProgramNumber           (currentSubroutineLevelData[0].returnProgramNumber)

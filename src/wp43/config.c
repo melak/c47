@@ -36,6 +36,7 @@
 #include "items.h"
 #include "c43Extensions/jm.h"
 #include "c43Extensions/addons.h"
+#include "c43Extensions/keyboardTweak.h"
 #include "keyboard.h"
 #include "mathematics/matrix.h"
 #include "memory.h"
@@ -117,7 +118,14 @@ void configCommon(uint16_t idx) {
 
 
 void fnSetHP35(uint16_t unusedButMandatoryParameter) {
+  fnKeyExit(0);
+  fnClrMod(0);
+  fnPi(0);
   configCommon(CFG_USA);
+  fnInDefault(ID_DP);
+  fnDisplayFormatSigFig(9);
+  jm_BASE_SCREEN = false;
+  SH_BASE_HOME = false;
   exponentHideLimit = 99;
   exponentLimit     = 99;
   significantDigits = 10;
@@ -130,22 +138,26 @@ void fnSetHP35(uint16_t unusedButMandatoryParameter) {
   fnSetGapChar(ITM_NULL+32768);
   fnSetGapChar(ITM_WDOT+49152);
   temporaryInformation = TI_NO_INFO;
-  fnDisplayFormatSigFig(9);
-  fnPi(0);
-  liftStack();
+  refreshScreen();
 }
 
 
 void fnSetC47(uint16_t unusedButMandatoryParameter) {
+  fnKeyExit(0);
+  fnClrMod(0);
+  fnPi(0);
+  addItemToBuffer(ITM_EXIT1);
   configCommon(CFG_DFLT);
+  fnInDefault(ID_43S);
+  fnDisplayFormatAll(3);
+  jm_BASE_SCREEN = true;
+  SH_BASE_HOME = false;
   exponentHideLimit = 0;
   exponentLimit     = 6145;
   significantDigits = 34;
   displayStack      =  4;
   temporaryInformation = TI_NO_INFO;
-  fnDisplayFormatAll(3);
-  fnPi(0);
-  liftStack();
+  refreshScreen();
 }
 
 

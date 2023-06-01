@@ -34,6 +34,12 @@ static void _calculateStringWidth(const char *str, const font_t *font, bool_t wi
   int16_t ch, numPixels, charCode, glyphId;
   const glyph_t *glyph;
   bool_t  firstChar;
+  #if defined(GENERATE_CATALOGS)
+    uint8_t doubling = false;
+  #else //GENERATE_CATALOGS
+    uint8_t doubling = (font == &numericFont && checkHP) ? DOUBLING : 4u;
+  #endif //GENERATE_CATALOGS
+
 //  const font_t  *font;  //JM
 
   glyph = NULL;
@@ -92,15 +98,15 @@ static void _calculateStringWidth(const char *str, const font_t *font, bool_t wi
         return;
       }
 
-      numPixels += glyph->colsGlyph + glyph->colsAfterGlyph;
+      numPixels += (doubling*(glyph->colsGlyph + glyph->colsAfterGlyph)) >> 2;
       if(firstChar) {
         firstChar = false;
         if(withLeadingEmptyRows) {
-          numPixels += glyph->colsBeforeGlyph;
+          numPixels += (doubling*(glyph->colsBeforeGlyph)) >> 2;
         }
       }
       else {
-        numPixels += glyph->colsBeforeGlyph;
+        numPixels += (doubling*(glyph->colsBeforeGlyph)) >> 2;
       }
 
       if(resultStr != NULL) { // for stringAfterPixels
@@ -115,7 +121,7 @@ static void _calculateStringWidth(const char *str, const font_t *font, bool_t wi
   }
 
   if(glyph != NULL && withEndingEmptyRows == false) {
-    numPixels -= glyph->colsAfterGlyph;
+    numPixels -= doubling*(glyph->colsAfterGlyph);
     if(resultStr != NULL && numPixels <= *width) { // for stringAfterPixels
       if((**resultStr) & 0x80) {
         *resultStr += 2;

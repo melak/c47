@@ -166,7 +166,6 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
     }
     lastIntegerBase = 0;
 
-  #ifndef TESTSUITE_BUILD
     uint_fast8_t ix = 0;
     while(ix < SOFTMENU_STACK_SIZE && softmenuStack[0].softmenuId != 0) {
     #ifdef PC_BUILD
@@ -182,8 +181,7 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
     refreshScreen();
     fnKeyExit(0);                         //Call fnkeyExit to ensure the correct home screen is brought up, if HOME is selected.
     popSoftmenu();
-  #endif
-#endif //TESTSUITE_BUILD
+  #endif //TESTSUITE_BUILD
 }
 
 //fnArg for real and longints in addition to the standard complex. Simply returns 0 angle
