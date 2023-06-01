@@ -1697,13 +1697,15 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
                           default: break;
                         } 
                         break;
-      case ITM_GAP_L  : strcat(showText,  indexOfItems[gapItemLeft].itemSoftmenuName);  //  gapCharLeft); 
+      case ITM_GAP_L  : if(gapItemLeft == ITM_NULL) strcat(showText, "\1\1"); 
+                        else strcat(showText,  indexOfItems[gapItemLeft].itemSoftmenuName);  //  gapCharLeft); 
                         *showValue = NOVAL; 
                         break;
       case ITM_GAP_RX : strcat(showText,  indexOfItems[gapItemRadix].itemSoftmenuName);  //  gapCharRadix); 
                         *showValue = NOVAL; 
                         break;
-      case ITM_GAP_R  : strcat(showText, indexOfItems[gapItemRight].itemSoftmenuName);  //  gapCharRight); 
+      case ITM_GAP_R  : if(gapItemRight == ITM_NULL) strcat(showText, "\1\1"); 
+                        else strcat(showText, indexOfItems[gapItemRight].itemSoftmenuName);  //  gapCharRight); 
                         *showValue = NOVAL; 
                         break;
       case ITM_GRP_L  : *showValue = grpGroupingLeft; 
