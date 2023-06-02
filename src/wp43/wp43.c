@@ -187,11 +187,13 @@ bool_t                jm_LARGELI;
 bool_t                constantFractions;                       //JM
 uint8_t               constantFractionsMode;
 bool_t                constantFractionsOn;                     //JM
+uint32_t              indic_x = 0;
+uint32_t              indic_y = SCREEN_HEIGHT-1;
+
 bool_t                eRPN;                                    //JM eRPN Create a flag to enable or disable eRPN. See bufferize.c
 bool_t                HOME3;                                   //JM HOME Create a flag to enable or disable triple shift HOME3. Create a flag to enable or disable HOME TIMER CANCEL.
 bool_t                ShiftTimoutMode;                         //JM SHIFT Create a flag to enable or disable SHIFT TIMER CANCEL.
 bool_t                SH_BASE_HOME;                            //JM BASEHOME
-bool_t                SH_BASE_AHOME;                           //JM BASEHOME
 int16_t               Norm_Key_00_VAR;                         //JM USER NORMAL
 uint8_t               Input_Default;                           //JM Input Default
 float                 graph_xmin;                              //JM Graph
@@ -201,8 +203,8 @@ float                 graph_ymax;                              //JM Graph
 uint8_t               DRG_Cycling = 0;
 uint8_t               DM_Cycling = 0;
 #ifdef INLINE_TEST                                             //vv dr
-bool_t                testEnabled;                             //
-uint16_t              testBitset;                              //
+  bool_t                testEnabled;                             //
+  uint16_t              testBitset;                              //
 #endif                                                         //^^
 int16_t                longpressDelayedkey2;         //JM
 int16_t                longpressDelayedkey3;         //JM

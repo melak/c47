@@ -304,6 +304,29 @@ extern uint16_t               gapItemRadix;
   extern uint8_t                last_CM;                      //Do extern !!
   extern uint8_t                FN_state; // = ST_0_INIT;      
 
+  // Variables from jm.h
+  extern bool_t                 eRPN;                         //JM eRPN Create a flag to enable or disable eRPN. See bufferize.c
+  extern bool_t                 HOME3;                        //JM HOME Create a flag to enable or disable triple shift HOME3; enable or disable TRIPLE SHIFT TIMER FOR HOME.
+  extern bool_t                 ShiftTimoutMode;              //JM HOME Create a flag to enable or disable SHIFT TIMER CANCEL.
+  extern bool_t                 SH_BASE_HOME;                 //JM BASEHOME Create a flag to enable or disable triple shift
+  extern int16_t                Norm_Key_00_VAR;              //JM USER NORMAL
+  extern uint8_t                Input_Default;                //JM Input Default
+  extern bool_t                 jm_BASE_SCREEN;               //JM Screen / keyboard operation setup
+  extern bool_t                 jm_G_DOUBLETAP;               //JM Screen / keyboard operation setup
+  extern float                  graph_xmin;                   //JM Graph
+  extern float                  graph_xmax;                   //JM Graph
+  extern float                  graph_ymin;                   //JM Graph
+  extern float                  graph_ymax;                   //JM Graph
+  extern bool_t                 jm_temporary;                 //JMHOME
+  extern bool_t                 jm_LARGELI;                   //JM flag to keep large font numbers on screen
+  extern bool_t                 constantFractions;            //JM
+  extern uint8_t                constantFractionsMode;        //JM
+  extern bool_t                 constantFractionsOn;          //JM
+  // Variables from jm.h & xeqm.c
+  extern uint32_t               indic_x;                      //JM program progress indicators
+  extern uint32_t               indic_y;                      //JM program progress indicators
+
+
   extern uint16_t               glyphRow[NUMBER_OF_GLYPH_ROWS];
   extern uint16_t               freeProgramBytes;
   extern uint16_t               firstDisplayedLocalStepNumber;

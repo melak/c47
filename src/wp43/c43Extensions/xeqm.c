@@ -173,8 +173,6 @@ bool_t strcompare( char *in1, char *in2) {
 
 
 bool_t running_program_jm = false;
-uint32_t indic_x = 0;
-uint32_t indic_y = SCREEN_HEIGHT-1;
 
 
 

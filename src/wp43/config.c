@@ -99,6 +99,10 @@ static void setFlag(int f, int v) {
 
 
 void configCommon(uint16_t idx) {
+  if(checkHP) {
+    fnSetC47(0);
+  }
+
   setFlag(FLAG_TDM24, configSettings[idx].tdm24);
   setFlag(FLAG_DMY, configSettings[idx].dmy);
   setFlag(FLAG_MDY, configSettings[idx].mdy);
@@ -122,14 +126,20 @@ void fnSetHP35(uint16_t unusedButMandatoryParameter) {
   fnClrMod(0);
   fnPi(0);
   configCommon(CFG_USA);
-  fnInDefault(ID_DP);
+  fnInDefault(ID_DP);                      //ID
   fnDisplayFormatSigFig(9);
   jm_BASE_SCREEN = false;
   SH_BASE_HOME = false;
-  exponentHideLimit = 99;
-  exponentLimit     = 99;
-  significantDigits = 10;
-  displayStack      =  1;
+  exponentHideLimit = 12;                  //ID
+  exponentLimit     = 99;                  //ID
+  significantDigits = 15;                  //ID
+  displayStack = cachedDisplayStack = 1;   //ID
+  SetSetting(SS_4);
+  SetSetting(ITM_CPXRES0);
+  SetSetting(ITM_SPCRES0);
+  fneRPN(0); //RPN
+  setFGLSettings(RB_FGLNOFF); //fgLine OFF
+  temporaryInformation = TI_NO_INFO;
   grpGroupingLeft   =  3;
   grpGroupingRight   =  3;
   grpGroupingGr1Left =  0;
@@ -137,8 +147,17 @@ void fnSetHP35(uint16_t unusedButMandatoryParameter) {
   fnSetGapChar(ITM_NULL);
   fnSetGapChar(ITM_NULL+32768);
   fnSetGapChar(ITM_WDOT+49152);
-  temporaryInformation = TI_NO_INFO;
   refreshScreen();
+}
+
+
+void fnHP35JM(void){
+  fneRPN(1); //eRPN
+  setFGLSettings(RB_FGLNFUL); //fgLine OFF
+  SetSetting(SS_8);
+  SetSetting(ITM_CPXRES1);
+  SetSetting(ITM_SPCRES1);
+
 }
 
 
@@ -150,12 +169,18 @@ void fnSetC47(uint16_t unusedButMandatoryParameter) {
   configCommon(CFG_DFLT);
   fnInDefault(ID_43S);
   fnDisplayFormatAll(3);
+
   jm_BASE_SCREEN = true;
   SH_BASE_HOME = false;
   exponentHideLimit = 0;
   exponentLimit     = 6145;
   significantDigits = 34;
-  displayStack      =  4;
+  displayStack = cachedDisplayStack = 4;
+  SetSetting(SS_8);
+  SetSetting(ITM_CPXRES1);
+  SetSetting(ITM_SPCRES1);
+  fneRPN(1); //eRPN
+  setFGLSettings(RB_FGLNFUL); //fgLine ON
   temporaryInformation = TI_NO_INFO;
   refreshScreen();
 }

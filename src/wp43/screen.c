@@ -633,7 +633,7 @@ static uint16_t charCodeFromString(const char *ch, uint16_t *offset);
       if(++cursorBlinkCounter > cursorCycle) {         //JM cursor vv
         cursorBlinkCounter = 0;
         if(cursorBlink) {
-          showGlyph(STD_CURSOR, cursorFont, xCursor, yCursor, vmNormal, true, false);
+          showGlyph(STD_CURSOR, cursorFont, xCursor, yCursor - (checkHP ? 50:0), vmNormal, true, false);
           }                                              //JM cursor ^^
         else {
           hideCursor();
@@ -688,7 +688,7 @@ static uint16_t charCodeFromString(const char *ch, uint16_t *offset);
       if(++cursorBlinkCounter > cursorCycle) {         //JM cursor vv
       cursorBlinkCounter = 0;
       if(cursorBlink) {
-        showGlyph(STD_CURSOR, cursorFont, xCursor, yCursor, vmNormal, true, false);
+        showGlyph(STD_CURSOR, cursorFont, xCursor, yCursor - (checkHP ? 50:0), vmNormal, true, false);
       }                                              //JM cursor ^^
       else {
         hideCursor();
@@ -1744,7 +1744,11 @@ void printHalfSecUpdate_Integer(uint8_t mode, char *txt, int loop) {
         lcd_fill_rect(xCursor, yCursor + 10,  6,  6, LCD_SET_VALUE);
       }
       else {
-        lcd_fill_rect(xCursor, yCursor + 15, 13, 13, LCD_SET_VALUE);
+        if(checkHP) {
+          lcd_fill_rect(xCursor, yCursor + 15 -50, 13*2, 13*2, LCD_SET_VALUE);          
+        } else {
+          lcd_fill_rect(xCursor, yCursor + 15, 13, 13, LCD_SET_VALUE);
+        }
       }
     }
   }
@@ -2590,7 +2594,7 @@ void hideFunctionName(void) {
           w = stringWidth(tmpString, &numericFont, false, true);
           lineWidth = w;
           if(w <= SCREEN_WIDTH) {
-            showString(tmpString, &numericFont, SCREEN_WIDTH - w, baseY, vmNormal, false, true);
+            showString(tmpString, &numericFont, SCREEN_WIDTH - w, baseY - (checkHP ? 50:0), vmNormal, false, true);
           }
           else {
             w = stringWidth(tmpString, &standardFont, false, true);
@@ -3340,13 +3344,13 @@ void hideFunctionName(void) {
           lineWidth = w;
           if(prefixWidth > 0) {
             if(temporaryInformation == TI_INTEGRAL) {
-              showString(prefix, &numericFont, 1, checkHP ? baseY - 50 : baseY, vmNormal, prefixPre, prefixPost);
+              showString(prefix, &numericFont, 1, baseY - (checkHP ? 50:0), vmNormal, prefixPre, prefixPost);
             }
             else {
-              showString(prefix, &standardFont, 1, checkHP ? baseY - 50 : baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
+              showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
             }
           }
-          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, checkHP ? baseY - 50 : baseY, vmNormal, false, true);
+          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY - (checkHP ? 50:0), vmNormal, false, true);
         }
 
           //JM else if(getRegisterDataType(regist) == dtComplex34) {                                                                                                      //JM EE Removed and replaced with the below
@@ -3427,9 +3431,9 @@ void hideFunctionName(void) {
           w = stringWidth(tmpString, &numericFont, false, true);
           lineWidth = w;
           if(prefixWidth > 0) {
-            showString(prefix, &standardFont, 1, checkHP ? baseY - 50 : baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
+            showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
           }
-          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, checkHP ? baseY - 50 : baseY, vmNormal, false, true);
+          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY - (checkHP ? 50:0), vmNormal, false, true);
         }
 
         else if(getRegisterDataType(regist) == dtString) {
@@ -3798,12 +3802,12 @@ void hideFunctionName(void) {
   void displayNim(const char *nim, const char *lastBase, int16_t wLastBaseNumeric, int16_t wLastBaseStandard) {
     int16_t w;
     if(stringWidth(nim, &numericFont, true, true) + wLastBaseNumeric <= SCREEN_WIDTH - 16) { // 16 is the numeric font cursor width
-      xCursor = showString(nim, &numericFont, 0, Y_POSITION_OF_NIM_LINE, vmNormal, true, true);
+      xCursor = showString(nim, &numericFont, 0, Y_POSITION_OF_NIM_LINE - (checkHP ? 50:0), vmNormal, true, true);
       yCursor = Y_POSITION_OF_NIM_LINE;
       cursorFont = &numericFont;
 
       if(lastIntegerBase != 0 || (aimBuffer[0] != 0 && aimBuffer[strlen(aimBuffer)-1]=='/')) {
-        showString(lastBase, &numericFont, xCursor + 16, Y_POSITION_OF_NIM_LINE, vmNormal, true, true);
+        showString(lastBase, &numericFont, xCursor + 16, Y_POSITION_OF_NIM_LINE - (checkHP ? 50:0), vmNormal, true, true);
       }
     }
     else if(stringWidth(nim, &standardFont, true, true) + wLastBaseStandard <= SCREEN_WIDTH - 8) { // 8 is the standard font cursor width
