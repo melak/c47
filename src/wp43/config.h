@@ -100,6 +100,14 @@ void     fnIntegerMode         (uint16_t mode);
 void     fnWho                 (uint16_t unusedButMandatoryParameter);
 
 /********************************************//**
+ * \brief Displays help info based on the current menu
+ *
+ *
+ * \param[in] unusedButMandatoryParameter uint16_t
+ ***********************************************/
+void     fnHelp                 (uint16_t unusedButMandatoryParameter);
+
+/********************************************//**
  * \brief Displays the version of this software
  *
  * \param[in] unusedButMandatoryParameter uint16_t

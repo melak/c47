@@ -514,11 +514,16 @@ void fnJM(uint16_t JM_OPCODE) {
 
   char line1[700];
   //Create a 3x3 A-matrix
-  strcpy(line1,"XEQC43 ERPN RECT 3 ENTER 3 M.NEW STO 99 DROP INDEX 99 1 ENTER 1 STOIJ DROP DROP");
-  strcat(line1, " 1 STOEL J+ STOEL J+ STOEL");
-  strcat(line1, " J+ STOEL DROP 0.5 ENTER CHS 3 ENTER SQRT 2 / CHS COMPLEX J+ STOEL COMPLEX CHS COMPLEX J+ STOEL");
-  strcat(line1, " 1 J+ STOEL DROP J+ STOEL X^2 J+ STOEL DROP");
-  strcat(line1, " RCL 99 ");
+  TO_QSPI static const char *aa001 = "XEQC43 ERPN RECT 3 ENTER 3 M.NEW STO 99 DROP INDEX 99 1 ENTER 1 STOIJ DROP DROP";
+  TO_QSPI static const char *aa002 = " 1 STOEL J+ STOEL J+ STOEL";
+  TO_QSPI static const char *aa003 = " J+ STOEL DROP 0.5 ENTER CHS 3 ENTER SQRT 2 / CHS COMPLEX J+ STOEL COMPLEX CHS COMPLEX J+ STOEL";
+  TO_QSPI static const char *aa004 = " 1 J+ STOEL DROP J+ STOEL X^2 J+ STOEL DROP";
+  TO_QSPI static const char *aa005 = " RCL 99 ";
+  strcpy(line1, aa001);
+  strcat(line1, aa002);
+  strcat(line1, aa003);
+  strcat(line1, aa004);
+  strcat(line1, aa005);
   fnXEQMexecute(line1);
     }
   else
@@ -526,7 +531,8 @@ void fnJM(uint16_t JM_OPCODE) {
   if(JM_OPCODE == 46) {                                         //PRIME stats
   char line1[700];
   //Create a 3x1 matrix from Z Y X
-  strcpy(line1,"XEQC43 ERPN 3 ENTER 1 M.NEW STO 99 DROP INDEX 99 3 ENTER 1 STOIJ DROP DROP STOEL DROP  I- STOEL DROP  I-  STOEL DROP RCL 99 ");
+  TO_QSPI static const char *aa006 = "XEQC43 ERPN 3 ENTER 1 M.NEW STO 99 DROP INDEX 99 3 ENTER 1 STOIJ DROP DROP STOEL DROP  I- STOEL DROP  I-  STOEL DROP RCL 99 ";
+  strcpy(line1, aa006);
   fnXEQMexecute(line1);
     }
   else
@@ -535,7 +541,8 @@ void fnJM(uint16_t JM_OPCODE) {
   if(JM_OPCODE == 47) {                                         //PRIME stats
   char line1[700];
   //Create a ZYX form a 3x1 matrix
-  strcpy(line1,"XEQC43 ERPN STO 99 INDEX 99 DROP 1 ENTER 1 STOIJ DROP DROP RCLEL I+ RCLEL I+ RCLEL ");
+  TO_QSPI static const char *aa007 = "XEQC43 ERPN STO 99 INDEX 99 DROP 1 ENTER 1 STOIJ DROP DROP RCLEL I+ RCLEL I+ RCLEL ";
+  strcpy(line1, aa007);
   fnXEQMexecute(line1);
     }
 

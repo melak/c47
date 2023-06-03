@@ -115,6 +115,10 @@ void fnWho(uint16_t unusedButMandatoryParameter) {
  }
 
 
+void fnHelp(uint16_t unusedButMandatoryParameter) {
+  temporaryInformation = TI_HELP;
+ }
+
 
 void fnVersion(uint16_t unusedButMandatoryParameter) {
   temporaryInformation = TI_VERSION;
