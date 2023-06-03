@@ -213,6 +213,9 @@ void     fnAngularMode         (uint16_t angularMode);
  ***********************************************/
 void     fnFractionType        (uint16_t unusedButMandatoryParameter);
 
+
+void getHelp(char * text);
+
 #define  loadAutoSav           true
 #define  doNotLoadAutoSav      false
 void     resetOtherConfigurationStuff(void);

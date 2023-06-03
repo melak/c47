@@ -21,6 +21,7 @@
 #include "bufferize.h"
 #include "calcMode.h"
 #include "charString.h"
+#include "config.h"
 #include "constantPointers.h"
 #include "curveFitting.h"
 #include "dateTime.h"
@@ -2174,28 +2175,11 @@ void hideFunctionName(void) {
       }
 
       else if(temporaryInformation == TI_HELP) {
-        typedef struct {              //JM HELP DEMO
-          uint8_t  itemType;
-          int16_t  count;
-          char     *itemName;
-        } helpstr;
-        TO_QSPI const helpstr helpStrings[] = {
-          {0,MNU_HOME,   "This is the HOME page draft help page.\n"},
-          {0,MNU_MyMenu, "This is the start of the MyMenu draft help page. This text is not mastered in the reference database dated 2023.04.12\n"},
-          {0,0,          "This is a stub for the help page system.\n"},
-        };
         if (regist == REGISTER_Z || regist == REGISTER_Y || regist == REGISTER_X) { //Force repainting it 3 times to get it painted properly over three lines
-          uint_fast16_t i;
-          popSoftmenu();
-          uint_fast16_t n = nbrOfElements(helpStrings);
-          for (i = 0; i < n; i++) {
-            if( helpStrings[i].itemType== 0 && (helpStrings[i].count) == -softmenu[softmenuStack[0].softmenuId].menuItem) {
-              break;
-            }
-          }
-          if(i == n) i--;
-          sprintf(tmpString, "C47 Menu %i: HELP SYSTEM\n",-softmenu[softmenuStack[0].softmenuId].menuItem);
-          strcat(tmpString,helpStrings[i].itemName);
+          if (MNU_INFO == -softmenu[softmenuStack[0].softmenuId].menuItem) popSoftmenu();  //remove the INFO menu
+          sprintf(tmpString, "   C47 Menu %i: HELP SYSTEM\n",-softmenu[softmenuStack[0].softmenuId].menuItem);
+          showStringEnhanced(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*3 + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
+          getHelp(tmpString);
           showStringEnhanced(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*2 + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
         }
       }
