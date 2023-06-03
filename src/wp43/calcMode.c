@@ -280,7 +280,7 @@
     aimBuffer[0] = 0;
     hexDigits = 0;
 
-    clearRegisterLine(NIM_REGISTER_LINE, true, true);
+    if(!checkHP) clearRegisterLine(NIM_REGISTER_LINE, true, true);
     xCursor = 1;
     cursorEnabled = true;
     cursorFont = &numericFont;
