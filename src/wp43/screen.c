@@ -1300,7 +1300,7 @@ uint8_t  displaymode = stdNoEnlarge;
           prevX = x;
         }
       }
-      if(LF && (x > SCREEN_WIDTH-20)) {                      //auto LF when line is full
+      if(LF && (x > SCREEN_WIDTH)) {                      //auto LF when line is full
         x = orgX;
         prevX = x;
         y += 20;
