@@ -21,6 +21,7 @@
 #include "bufferize.h"
 #include "calcMode.h"
 #include "charString.h"
+#include "config.h"
 #include "constantPointers.h"
 #include "curveFitting.h"
 #include "dateTime.h"
@@ -1257,8 +1258,6 @@ uint8_t  displaymode = stdNoEnlarge;
   }
 
 
-  #define DO_LF true
-  #define NO_LF false
   uint8_t  compressString = 0;                                                              //JM compressString
   uint8_t  raiseString = 0;                                                                 //JM compressString
 
@@ -1289,6 +1288,17 @@ uint8_t  displaymode = stdNoEnlarge;
         sec = true;
       }
 
+      if(LF && x > SCREEN_WIDTH - 20 && !noShow) {                      //auto LF when line is full
+        noShow = true;
+        uint16_t tmp = ch;
+        if(x + showGlyphCode(charCodeFromString(string, &tmp), font, 0, 0, videoMode, slc, sec) - compressString > SCREEN_WIDTH) {
+          x = orgX;
+          prevX = x;
+          y += 20;
+        }
+        noShow = false;
+      }
+
       x = showGlyphCode(charCodeFromString(string, &ch), font, x, y - raiseString, videoMode, slc, sec) - compressString;
       if(resStr) { // for stringAfterPixelsC43
         if(x > width) {
@@ -1308,11 +1318,6 @@ uint8_t  displaymode = stdNoEnlarge;
           prevX = x;
         }
       }
-      if(LF && (x > SCREEN_WIDTH-20)) {                      //auto LF when line is full
-        x = orgX;
-        prevX = x;
-        y += 20;
-      }  
       uint16_t tmp = ch;                                     //LF after 0x0A is recognized (/n)
       if(LF && (charCodeFromString(string, &tmp) == 0x0A)) {   //do not touch character pointer
         charCodeFromString(string, &ch);                       //increment character pointer to skip 0x0A
@@ -1327,11 +1332,11 @@ uint8_t  displaymode = stdNoEnlarge;
   }
 
 
-  uint32_t showStringEnhanced(const char *string, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, uint8_t compress1, uint8_t raise1, uint8_t noShow1) {
+  uint32_t showStringEnhanced(const char *string, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, uint8_t compress1, uint8_t raise1, uint8_t noShow1, bool_t lf) {
     compressString = compress1;
     raiseString = raise1;
     noShow = noShow1;    
-    return _doShowString(string, font, x, y, NULL, 0, videoMode, showLeadingCols, showEndingCols, DO_LF);
+    return _doShowString(string, font, x, y, NULL, 0, videoMode, showLeadingCols, showEndingCols, lf);
     compressString = 0;
     raiseString = 0;
     noShow = 0;    
@@ -1461,9 +1466,9 @@ uint8_t  displaymode = stdNoEnlarge;
           goto gotoReturn;
         }
 
-        w = stringWidthWithLimitC43(tmpString + offset, numSmall, stdcompress, SCREEN_WIDTH, true, true);
+        w = stringWidthWithLimitC43(tmpString + offset, numSmall, DO_compress, SCREEN_WIDTH, true, true);
         if(w < SCREEN_WIDTH) {
-          showStringC43(tmpString + offset, numSmall, stdcompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
+          showStringC43(tmpString + offset, numSmall, DO_compress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
           goto gotoReturn;
         }
         w = stringWidth(tmpString + offset + 2, &standardFont, true, true);
@@ -2177,9 +2182,20 @@ void hideFunctionName(void) {
 
       else if(temporaryInformation == TI_WHO) {
         if (regist == REGISTER_Z || regist == REGISTER_Y || regist == REGISTER_X) { //Force repainting it 3 times to get it painted properly over three lines
-          showStringEnhanced(whoStr1, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*2 + 6, vmNormal, true, true, 0, 0, 0);
+          showStringEnhanced(whoStr1, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*2 + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
         }
       }
+
+      else if(temporaryInformation == TI_HELP) {
+        if (regist == REGISTER_Z || regist == REGISTER_Y || regist == REGISTER_X) { //Force repainting it 3 times to get it painted properly over three lines
+          if (MNU_INFO == -softmenu[softmenuStack[0].softmenuId].menuItem) popSoftmenu();  //remove the INFO menu
+          sprintf(tmpString, "   C47 Menu %i: HELP SYSTEM\n",-softmenu[softmenuStack[0].softmenuId].menuItem);
+          showStringEnhanced(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*3 + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
+          getHelp(tmpString);
+          showStringEnhanced(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*2 + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
+        }
+      }
+
 
       else if(temporaryInformation == TI_VERSION && regist == REGISTER_X) {
         clearRegisterLine(REGISTER_X,true,true);

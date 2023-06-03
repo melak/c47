@@ -345,8 +345,9 @@
 #define ERROR_NO_GLOBAL_LABEL                     51
 #define ERROR_INVALID_DATA_TYPE_FOR_POLAR_RECT    52
 #define ERROR_BAD_INPUT                           53 // This error is not in ReM and cannot occur (theoretically).
+#define ERROR_NO_PROGRAM_SPECIFIED                54
 
-#define NUMBER_OF_ERROR_CODES                     54
+#define NUMBER_OF_ERROR_CODES                     55
 #define SIZE_OF_EACH_ERROR_MESSAGE                48
 
 #define NUMBER_OF_BUG_SCREEN_MESSAGES             10
@@ -888,6 +889,7 @@ typedef enum {
 #define TI_DISP_JULIAN                            81
 #define TI_FROM_DATEX                             82
 #define TI_LAST_CONST_CATNAME                     83
+#define TI_HELP                                   84
 
 
 // Register browser mode

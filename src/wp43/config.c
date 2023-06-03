@@ -314,6 +314,10 @@ void fnWho(uint16_t unusedButMandatoryParameter) {
  }
 
 
+void fnHelp(uint16_t unusedButMandatoryParameter) {
+  temporaryInformation = TI_HELP;
+ }
+
 
 void fnVersion(uint16_t unusedButMandatoryParameter) {
   temporaryInformation = TI_VERSION;
@@ -844,6 +848,163 @@ void restoreStats(void){
       {0,100,"Error List"}
     };
 
+
+    typedef struct {              //JM HELP DEMO
+      uint8_t  itemType;
+      int16_t  count;
+      char     *itemName;
+    } helpstr;
+
+    TO_QSPI const helpstr helpStrings[] = {
+{0,MNU_Sf,   "Integral f\n"},
+{0,MNU_Sfdx,   "Integral f dx\n"},
+{0,MNU_ADV,   "Advanced functions\n"},
+{0,MNU_CONVANG,   "Convert between units of angle\n"},
+{0,MNU_ANGLES,   "Auto-generated catalog of variables of the specified type: angle\n"},
+{0,MNU_CONVA,   "Convert between units of area\n"},
+{0,MNU_PLOT_LR,   "Assess curve fitting\n"},
+{0,MNU_BASE,   "Number base operations\n"},
+{0,MNU_BINOM,   "Binomial probability distribution\n"},
+{0,MNU_BITS,   "Bitwise operations\n"},
+{0,MNU_BLUE_C47,   "Access all C47 gShifted functions and a few fShifted, supporting layout DM42\n"},
+{0,MNU_CATALOG,   "Catalog of all items (functions, characters, programs, variables, menus)\n"},
+{0,MNU_CAUCH,   "Cauchy-Lorentz probability distribution\n"},
+{0,MNU_CHARS,   "Access to all character submenus (international, greek, math, MyAlpha, alphaDot)\n"},
+{0,MNU_CLK,   "Clock functions, including setting date and time and julian day numbers (astronomy)\n"},
+{0,MNU_CLR,   "Clear flags, programs, registers, stacks, variables and reset calculator\n"},
+{0,MNU_CONST,   "Important scientific and technical constant values\n"},
+{0,MNU_UNITCONV,   "Convert units\n"},
+{0,MNU_ANGLECONV_C43,   "Convert angles\n"},
+{0,MNU_CPX,   "Complex functions\n"},
+{0,MNU_CPXS,   "Auto-generated catalog of variables of the specified type: complex\n"},
+{0,MNU_DATES,   "Auto-generated catalog of variables of the specified type: date\n"},
+{0,MNU_DISP,   "Display settings\n"},
+{0,MNU_CONVX,   "Convert between units of distance\n"},
+{0,MNU_M_EDIT,   "Matrix edit functions\n"},
+{0,MNU_EE,   "Electrical engineering functions and custom programs\n"},
+{0,MNU_ELLIPT,   "Elliptical functions\n"},
+{0,MNU_CONVE,   "Convert between units of energy\n"},
+{0,MNU_EQN,   "Equation editor\n"},
+{0,MNU_EXP,   "Exponential functions\n"},
+{0,MNU_EXPON,   "Exponential probability distribution\n"},
+{0,MNU_F,   "Fisher's F probability distribution\n"},
+{0,MNU_1STDERIV,   "First derivative\n"},
+{0,MNU_2NDDERIV,   "Second derivative\n"},
+{0,MNU_CONVFP,   "Convert between units of force and pressure\n"},
+{0,MNU_FCNS,   "Catalog of all calculator functions\n"},
+{0,MNU_FIN,   "Financial calculations including time value of money (TVM)\n"},
+{0,MNU_FLAGS,   "Setting, clearing and testing flags\n"},
+{0,MNU_FLASH,   "Auto-generated catalog of programs in FLASH memory\n"},
+{0,MNU_GEOM,   "Geometric probability distribution\n"},
+{0,MNU_GRAPH,   "Graphing functions\n"},
+{0,MNU_HIST,   "Histogram functions\n"},
+{0,MNU_HOME,   "HOME menu\n"},
+{0,MNU_HPLOT,   "Histogram plotting\n"},
+{0,MNU_HYPER,   "Hypergeometric probability distribution\n"},
+{0,MNU_IO,   "Input/output functions\n"},
+{0,MNU_INFO,   "System information and some information about the value in the X-register\n"},
+{0,MNU_INL_TST,   "Internal menu Inl. Tst ; part of test system\n"},
+{0,MNU_INTS,   "Short integer functions\n"},
+{0,MNU_ASN,   "Keyboard layouts\n"},
+{0,MNU_LINTS,   "Auto-generated catalog of variables of the specified type: long integer\n"},
+{0,MNU_LGNRM,   "Log normal probability distribution\n"},
+{0,MNU_LOGIS,   "Logistic probability distribution\n"},
+{0,MNU_LOOP,   "Looping (programming) functions\n"},
+{0,MNU_CONVM,   "Convert between units of mass\n"},
+{0,MNU_MATRS,   "Auto-generated catalog of variables of the specified type: matrix\n"},
+{0,MNU_MATX,   "Matrix functions\n"},
+{0,MNU_MENUS,   "Catalog of all menus (including user defined menus)\n"},
+{0,MNU_MISC,   "Time, temperature, torque, power and field ratio conversions\n"},
+{0,MNU_MODE,   "System (mode) settings with status indication and modification\n"},
+{0,MNU_MODEL,   "Model functions\n"},
+{0,MNU_MVAR,   "(Internal) menu MVAR for VarMNU\n"},
+{0,MNU_MyMenu,   "MyMenu is where to assign user selected functions or user selected or defined menus\n"},
+{0,MNU_MyAlpha,   "MyAlpha is where to assign special characters for easy entry\n"},
+{0,MNU_NBIN,   "Negative binomial probability distribution\n"},
+{0,MNU_EQ_EDIT,   "Create new equation (previous equation pushed)\n"},
+{0,MNU_NORML,   "Normal probability distribution\n"},
+{0,MNU_ORTHOG,   "Orthogonal polynomials\n"},
+{0,MNU_PFN,   "Programming functions\n"},
+{0,MNU_PFN_MORE,   "More programming functions\n"},
+{0,MNU_PARTS_C43,   "Functions on real and complex numbers\n"},
+{0,MNU_PLOTTING,   "Plotting and summation functions\n"},
+{0,MNU_PLOT_STAT,   "Plot statistics\n"},
+{0,MNU_POISS,   "Poisson probability distribution\n"},
+{0,MNU_CONVP,   "Convert between units of power\n"},
+{0,MNU_PRINT,   "Printing functions\n"},
+{0,MNU_PROB,   "Probability functions\n"},
+{0,MNU_PROG,   "Presented in TAM menus for commands accessing labels\n"},
+{0,MNU_PROGS,   "Auto-generated catalog of programs\n"},
+{0,MNU_RAM,   "Auto-generated catalog of programs in RAM (main) memory\n"},
+{0,MNU_PARTS,   "Functions on real and complex numbers\n"},
+{0,MNU_REALS,   "Auto-generated catalog of variables of the specified type: real\n"},
+{0,MNU_REGR,   "Regression functions\n"},
+{0,MNU_SINTS,   "Auto-generated catalog of variables of the specified type: short integer\n"},
+{0,MNU_PLOT,   "Scatter plot of measurments\n"},
+{0,MNU_SETUP,   "System (mode) settings with status indication and modification\n"},
+{0,MNU_SIMQ,   "Matrix simultaneous equations functions (Mat A • Mat X = Mat B)\n"},
+{0,MNU_Solver,   "Solver, with iteration counter, interrupt by keypress ; tolerance set by SDIGS\n"},
+{0,MNU_CONVS,   "Convert between units of speed\n"},
+{0,MNU_STAT,   "Statistics functions\n"},
+{0,MNU_STK,   "Stack functions\n"},
+{0,MNU_STRINGS,   "Auto-generated catalog of variables of the specified type: string\n"},
+{0,MNU_SUMS_C43,   "Summation and plotting functions\n"},
+{0,MNU_SYSFL,   "Presented in TAM menus for commands accessing system flags\n"},
+{0,MNU_T,   "Student's t probability distribution\n"},
+{0,MNU_TAM,   "Transient alpha mode is activated for trailing input (general)\n"},
+{0,MNU_TAMCMP,   "Transient alpha mode is activated for trailing input (compare)\n"},
+{0,MNU_TAMFLAG,   "Transient alpha mode is activated for trailing input (flag)\n"},
+{0,MNU_TAMLABEL,   "Transient alpha mode is activated for trailing input (LBL/GTO/XEQ)\n"},
+{0,MNU_TAMLBLALPHA,   "Transient alpha mode is activated for trailing input (LBL/GTO/XEQ + alpha)\n"},
+{0,MNU_TAMNONREG,   "Transient alpha mode is activated for trailing input (value)\n"},
+{0,MNU_TAMNONREGIND,   "Transient alpha mode is activated for trailing input (indirect)\n"},
+{0,MNU_TAMSHUFFLE,   "Transient alpha mode is activated for trailing input (shuffle)\n"},
+{0,MNU_TAMSTORCL,   "Transient alpha mode is activated for trailing input (STO, RCL)\n"},
+{0,MNU_TAMSRALPHA,   "Transient alpha mode is activated for trailing input (STO, RCL + alpha)\n"},
+{0,MNU_TEST,   "Testing functions\n"},
+{0,MNU_TIMES,   "Auto-generated catalog of variables of the specified type: time\n"},
+{0,MNU_TRG_C47,   "Trigonometry and hyperbolic functions\n"},
+{0,MNU_TRG_C47_MORE,   "Extended trigonometry (and access to hyperbolic) functions\n"},
+{0,MNU_TRG,   "Trigonometry functions (other layouts)\n"},
+{0,MNU_TRI,   "Trigonometry and hyperbolic functions\n"},
+{0,MNU_TVM,   "Time value of money functions\n"},
+{0,MNU_UNITCONV_C43,   "Unit conversions\n"},
+{0,MNU_VAR,   "Presented in TAM menus for commands accessing variables\n"},
+{0,MNU_VARS,   "Auto-generated catalog of variables\n"},
+{0,MNU_CONVV,   "Convert between units of volume\n"},
+{0,MNU_WEIBL,   "Weibull probability distribution\n"},
+{0,MNU_XFN,   "Extended functions (Bessel, Bernouilli, Gamma, Elliptical, Orthogonal, etc.)\n"},
+{0,MNU_XEQ,   "Menu of predefined functions\n"},
+{0,MNU_XXEQ,   "XXEQ menu\n"},
+{0,MNU_ALPHA,   "Alpha menu is used to enter, edit and clear alpha input\n"},
+{0,MNU_ALPHA_OMEGA,   "Uppercase Greek characters\n"},
+{0,MNU_alpha_omega,   "Lowercase Greek characters\n"},
+{0,MNU_ALPHAFN,   "Alpha (string) functions\n"},
+{0,MNU_ALPHADOT,   "Special characters\n"},
+{0,MNU_ALPHAINTL,   "International characters\n"},
+{0,MNU_ALPHAMATH,   "Mathematical symbols\n"},
+{0,MNU_ALPHAFN_C43,   "Alpha (string) functions\n"},
+{0,MNU_ASN_N,   "Submenu for special key assignments to Sigma+ key in normal mode\n"},
+{0,MNU_STDNORML,   "Standard normal probability distribution\n"},
+{0,MNU_CHI2,   "χⅢ distribution\n"},
+    };
+
+
+void getHelp(char * text){
+  uint_fast16_t i;
+  uint_fast16_t n = nbrOfElements(helpStrings);
+  for (i = 0; i < n; i++) {
+    if( helpStrings[i].itemType== 0 && (helpStrings[i].count) == -softmenu[softmenuStack[0].softmenuId].menuItem) {
+      break;
+    }
+  }
+  if(i == n) i--;
+  strcpy(text, helpStrings[i].itemName);
+}
+
+
+
+
 uint16_t searchMsg(uint16_t idStr) {
   uint_fast16_t n = nbrOfElements(indexOfMsgs);
   uint_fast16_t i;
@@ -1348,6 +1509,11 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     allFormulae = NULL;
     numberOfFormulae = 0;
     currentFormula = 0;
+
+    currentSolverStatus = 0;
+    currentSolverProgram = 0xffffu;
+    currentSolverVariable = INVALID_VARIABLE;
+    currentSolverNestingDepth = 0;
 
     graphVariable = 0;
 
