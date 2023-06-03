@@ -1633,6 +1633,7 @@ bool_t isFunctionItemAMenu(int16_t item) {
          item == ITM_EQ_NEW    ||
          item == ITM_VARMNU    ||
          item == ITM_SIM_EQ    ||
+         item == ITM_DELITM    ||
          item == ITM_M_EDI;
          /*item == ITM_PLOT_CENTRL ||  CENTRL does not bring up a new menu - it is the same menu therefore not inverted */
          /*|| (item == ITM_TIMER)*/       //JMvv colour PLOT in reverse font to appear to be menus
