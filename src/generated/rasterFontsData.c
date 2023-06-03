@@ -1273,12 +1273,12 @@ TO_QSPI const font_t numericFont = {
     {.charCode=0xa67d, .colsBeforeGlyph= 0, .colsGlyph=14, .colsAfterGlyph= 2, .rowsAboveGlyph= 5, .rowsGlyph=27, .rowsBelowGlyph= 0, .rank1=  0, .rank2=  0,
      .data="\x00\x30\x00\x78\x00\x7c\x00\x78\x00\x38\x00\x00\x00\x00\x00\x00\x03\xf8\x00\xf0\x00\x70\x00\xf0\x00\xf0\x00\xf0\x00\xe0\x01\xe0\x01\xe0\x01\xe0\x01\xc0\x03\xc0\x03\xc0\x03\x80\x03\x80\xe7\x00\xe7\x00\xfe\x00\x78\x00"},
 
-    // uniFF0C
-    {.charCode=0xff0c, .colsBeforeGlyph= 2, .colsGlyph= 5, .colsAfterGlyph= 9, .rowsAboveGlyph=23, .rowsGlyph= 9, .rowsBelowGlyph= 0, .rank1=  0, .rank2=  0,
+    // uni2788
+    {.charCode=0xa788, .colsBeforeGlyph= 2, .colsGlyph= 5, .colsAfterGlyph= 9, .rowsAboveGlyph=23, .rowsGlyph= 9, .rowsBelowGlyph= 0, .rank1=  0, .rank2=  0,
      .data="\x70\xf8\xf8\xf8\x78\x38\x30\x30\x60"},
 
-    // uniFF0E
-    {.charCode=0xff0e, .colsBeforeGlyph= 2, .colsGlyph= 5, .colsAfterGlyph= 9, .rowsAboveGlyph=23, .rowsGlyph= 5, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
+    // uni2789
+    {.charCode=0xa789, .colsBeforeGlyph= 2, .colsGlyph= 5, .colsAfterGlyph= 9, .rowsAboveGlyph=23, .rowsGlyph= 5, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
      .data="\x70\xf8\xf8\xf8\x70"}}
 };
 TO_QSPI const font_t standardFont = {
@@ -3794,11 +3794,11 @@ TO_QSPI const font_t standardFont = {
     {.charCode=0xa713, .colsBeforeGlyph= 0, .colsGlyph= 8, .colsAfterGlyph= 0, .rowsAboveGlyph= 4, .rowsGlyph=12, .rowsBelowGlyph= 4, .rank1=610, .rank2=610,
      .data="\x03\x03\x03\x07\x06\x06\xce\xec\x7c\x7c\x38\x18"},
 
-    // uniFF0C
-    {.charCode=0xff0c, .colsBeforeGlyph= 0, .colsGlyph= 3, .colsAfterGlyph= 6, .rowsAboveGlyph=13, .rowsGlyph= 6, .rowsBelowGlyph= 1, .rank1=512, .rank2=512,
+    // uni2788
+    {.charCode=0xa788, .colsBeforeGlyph= 0, .colsGlyph= 3, .colsAfterGlyph= 6, .rowsAboveGlyph=13, .rowsGlyph= 6, .rowsBelowGlyph= 1, .rank1=512, .rank2=512,
      .data="\xe0\xe0\xe0\x60\x60\xc0"},
 
-    // uniFF0E
-    {.charCode=0xff0e, .colsBeforeGlyph= 0, .colsGlyph= 3, .colsAfterGlyph= 6, .rowsAboveGlyph=13, .rowsGlyph= 3, .rowsBelowGlyph= 4, .rank1=512, .rank2=512,
+    // uni2789
+    {.charCode=0xa789, .colsBeforeGlyph= 0, .colsGlyph= 3, .colsAfterGlyph= 6, .rowsAboveGlyph=13, .rowsGlyph= 3, .rowsBelowGlyph= 4, .rank1=512, .rank2=512,
      .data="\xe0\xe0\xe0"}}
 };
