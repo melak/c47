@@ -1177,10 +1177,10 @@
 #define ITM_SUB_z                   1141
 #define ITM_DELITM_PROG             1142
 #define ITM_DELITM_MENU             1143
-#define VAR_1144                    1144
-#define VAR_1145                    1145
-#define VAR_1146                    1146
-#define VAR_1147                    1147
+#define ITM_LEFT_DARROW             1144
+#define ITM_UP_DARROW               1145
+#define ITM_RIGHT_DARROW            1146
+#define ITM_DOWN_DARROW             1147
 #define VAR_1148                    1148
 #define VAR_1149                    1149
 #define VAR_1150                    1150

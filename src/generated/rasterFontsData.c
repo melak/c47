@@ -1283,7 +1283,7 @@ TO_QSPI const font_t numericFont = {
 };
 TO_QSPI const font_t standardFont = {
   .id             = 1,
-  .numberOfGlyphs = 629,
+  .numberOfGlyphs = 633,
   .glyphs = {
 
     // uni001D
@@ -2885,6 +2885,22 @@ TO_QSPI const font_t standardFont = {
     // arrowdblright
     {.charCode=0xa1d2, .colsBeforeGlyph= 0, .colsGlyph=11, .colsAfterGlyph= 1, .rowsAboveGlyph= 4, .rowsGlyph=12, .rowsBelowGlyph= 4, .rank1=512, .rank2=512,
      .data="\x00\x00\x08\x00\x0c\x00\x0e\x00\xff\x00\xff\x80\x01\xc0\xff\x80\xff\x00\x0e\x00\x0c\x00\x08\x00"},
+
+    // uni21E0
+    {.charCode=0xa1e0, .colsBeforeGlyph= 0, .colsGlyph=12, .colsAfterGlyph= 0, .rowsAboveGlyph= 6, .rowsGlyph=10, .rowsBelowGlyph= 4, .rank1=514, .rank2=514,
+     .data="\x0c\x00\x1c\x00\x38\x00\x70\x00\xf3\x30\xf3\x30\x70\x00\x38\x00\x1c\x00\x0c\x00"},
+
+    // uni21E1
+    {.charCode=0xa1e1, .colsBeforeGlyph= 0, .colsGlyph= 8, .colsAfterGlyph= 2, .rowsAboveGlyph= 4, .rowsGlyph=14, .rowsBelowGlyph= 2, .rank1=516, .rank2=516,
+     .data="\x18\x18\x3c\x3c\x7e\x7e\xc3\xc3\x18\x18\x00\x00\x18\x18"},
+
+    // uni21E2
+    {.charCode=0xa1e2, .colsBeforeGlyph= 0, .colsGlyph=12, .colsAfterGlyph= 0, .rowsAboveGlyph= 6, .rowsGlyph=10, .rowsBelowGlyph= 4, .rank1=512, .rank2=512,
+     .data="\x03\x00\x03\x80\x01\xc0\x00\xe0\xcc\xf0\xcc\xf0\x00\xe0\x01\xc0\x03\x80\x03\x00"},
+
+    // uni21E3
+    {.charCode=0xa1e3, .colsBeforeGlyph= 0, .colsGlyph= 8, .colsAfterGlyph= 2, .rowsAboveGlyph= 4, .rowsGlyph=15, .rowsBelowGlyph= 1, .rank1=520, .rank2=520,
+     .data="\x18\x18\x00\x00\x18\x18\xc3\xc3\x7e\x7e\x3c\x3c\x18\x18\x00"},
 
     // uni21E7
     {.charCode=0xa1e7, .colsBeforeGlyph= 0, .colsGlyph= 9, .colsAfterGlyph= 2, .rowsAboveGlyph= 3, .rowsGlyph=13, .rowsBelowGlyph= 4, .rank1=516, .rank2=517,
