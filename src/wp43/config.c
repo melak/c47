@@ -134,6 +134,7 @@ void fnSetHP35(uint16_t unusedButMandatoryParameter) {
   exponentLimit     = 99;                  //ID, if changed, also set the conditions for checkHP in defines.h
   significantDigits = 10;                  //ID, if changed, also set the conditions for checkHP in defines.h
   displayStack = cachedDisplayStack = 1;   //ID, if changed, also set the conditions for checkHP in defines.h
+  currentAngularMode = amDegree;
   SetSetting(SS_4);
   SetSetting(ITM_CPXRES0);
   SetSetting(ITM_SPCRES0);
@@ -157,7 +158,6 @@ void fnHP35JM(void){
   SetSetting(SS_8);
   SetSetting(ITM_CPXRES1);
   SetSetting(ITM_SPCRES1);
-
 }
 
 
@@ -176,6 +176,7 @@ void fnSetC47(uint16_t unusedButMandatoryParameter) {
   exponentLimit     = 6145;
   significantDigits = 34;
   displayStack = cachedDisplayStack = 4;
+  currentAngularMode = amDegree;
   SetSetting(SS_8);
   SetSetting(ITM_CPXRES1);
   SetSetting(ITM_SPCRES1);

@@ -206,3 +206,10 @@ Added the following:
     267C recycledpapersymbol (i)                    STD_op_i                      "\xa6\x7c"
     267D partiallyrecycledpapersymbol (j)           STD_op_j                      "\xa6\x7d"
 
+2023-06-04 Add four arrows 
+
+    21E0 leftwardsdashedarrow                       STD_LEFT_DASHARROW            "\xa1\xe0"   
+    21E1 upwardsdashedarrow                         STD_UP_DASHARROW              "\xa1\xe1"  
+    21E2 rightwardsdashedarrow                      STD_RIGHT_DASHARROW           "\xa1\xe2"  
+    21E3 downwardsdashedarrow                       STD_DOWN_DASHARROW            "\xa1\xe3"  
+

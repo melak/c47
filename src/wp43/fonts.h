@@ -387,6 +387,11 @@
 #define STD_num                       "\xa6\x7e"  //JM
 #define STD_RIGHT_TACK                "\xa2\xa2"  //JM
 
+#define STD_LEFT_DASHARROW            "\xa1\xe0"
+#define STD_UP_DASHARROW              "\xa1\xe1" 
+#define STD_RIGHT_DASHARROW           "\xa1\xe2" 
+#define STD_DOWN_DASHARROW            "\xa1\xe3" 
+
 #define STD_SPACE_EM                  "\xa0\x03"
 #define STD_SPACE_3_PER_EM            "\xa0\x04"
 #define STD_SPACE_4_PER_EM            "\xa0\x05"
