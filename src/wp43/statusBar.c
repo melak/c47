@@ -336,7 +336,7 @@ void showFracMode(void) {
 
   void showHideAlphaMode(void) {
     int status=0;
-    if(calcMode == CM_AIM || calcMode == CM_EIM || (catalog && catalog != CATALOG_MVAR) || (tam.mode != 0 && tam.alpha)) {
+    if(calcMode == CM_AIM || calcMode == CM_EIM || (catalog && catalog != CATALOG_MVAR) || (tam.mode != 0 && tam.alpha) || ((calcMode == CM_PEM || calcMode == CM_ASSIGN) && getSystemFlag(FLAG_ALPHA))) {
       if(numLock && !shiftF && !shiftG) {
           if(alphaCase == AC_UPPER)                  { status = 3 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); } else
           if(alphaCase == AC_LOWER)                  { status = 6 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); }

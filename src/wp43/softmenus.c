@@ -101,7 +101,6 @@ TO_QSPI const int16_t menu_CPX[]         = { ITM_RE,                        ITM_
                                              KEY_COMPLEX,                   ITM_CONJ,                   ITM_DOT_PROD,             ITM_CROSS_PROD,        ITM_op_j,                    ITM_UNITV,                                          //JM re-arranged menu. CPX menu
                                              ITM_CPXI,                      ITM_CPXJ,                   ITM_CXtoRE,               ITM_REtoCX,            ITM_RECT,                    ITM_POLAR                     };    //JM re-arranged menu
 
-
 TO_QSPI const int16_t menu_DISP[]        = { ITM_FIX,                       ITM_SCI,                    ITM_ENG,                  ITM_ALL,               ITM_SIGFIG,                  ITM_UNIT,
                                              ITM_GAP_L,                     ITM_GAP_RX,                 ITM_GAP_R,                ITM_NULL,              ITM_RECT,                    ITM_POLAR,
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
@@ -850,6 +849,7 @@ TO_QSPI const softmenu_t softmenu[] = {
 /* 139 */  {.menuItem =  0,               .numItems = 0,                                           .softkeyItem = NULL                }
 };
 
+
 dynamicSoftmenu_t dynamicSoftmenu[NUMBER_OF_DYNAMIC_SOFTMENUS] = {
 /*   0 */  {.menuItem = -MNU_MyMenu,  .numItems = 0, .menuContent = NULL},
 /*   1 */  {.menuItem = -MNU_MyAlpha, .numItems = 0, .menuContent = NULL},
@@ -1382,6 +1382,7 @@ bool_t maxfgLines(int16_t y) {
       displayBugScreen(errorMessage);
       return;
     }
+
     showKey(label, x1, x2, y1, y2, xSoftkey == 5, videoMode, topLine, bottomLine, showCb, showValue, showText);
   }
 
@@ -1651,6 +1652,7 @@ bool_t isFunctionItemAMenu(int16_t item) {
          item == ITM_EQ_NEW    ||
          item == ITM_VARMNU    ||
          item == ITM_SIM_EQ    ||
+         item == ITM_DELITM    ||
          item == ITM_M_EDI;
          /*item == ITM_PLOT_CENTRL ||  CENTRL does not bring up a new menu - it is the same menu therefore not inverted */
          /*|| (item == ITM_TIMER)*/       //JMvv colour PLOT in reverse font to appear to be menus
@@ -1943,6 +1945,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
           }
           changeSoftKey(softmenu[m].menuItem, item, itemName, &vm, &showCb, &showValue, showText);
 
+
           if(item < 0) { // item is softmenu name
             int16_t menu = 0;
             while(softmenu[menu].menuItem != 0) {
@@ -1961,16 +1964,25 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
             else if(softmenu[menu].menuItem == -MNU_ALPHA_OMEGA && alphaCase == AC_LOWER) {
                 showSoftkey(indexOfItems[MNU_alpha_omega].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
             }
-            else if(softmenu[menu].menuItem == -MNU_INL_TST) {
-                #ifdef INLINE_TEST
-                  showSoftkey(itemName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
-                #else  //!INLINE_TEST
-                  showSoftkey(/*STD_omicron*/STD_SPACE_3_PER_EM, x, y-currentFirstItem/6, vmNormal, false, false, NOVAL, NOVAL, NOTEXT);
-                #endif //!INLINE_TEST
+            else if(softmenu[menu].menuItem == -MNU_ALPHAINTL && alphaCase == AC_UPPER) {
+                showSoftkey(indexOfItems[MNU_ALPHAINTL].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
+            }
+            else if(softmenu[menu].menuItem == -MNU_ALPHAINTL && alphaCase == AC_LOWER) {
+                showSoftkey(indexOfItems[MNU_ALPHAintl].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
             }
             else {
-                //MAIN SOFTMENU DISPLAY
-                showSoftkey(itemName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
+              #ifdef INLINE_TEST
+                if(softmenu[menu].menuItem == -MNU_INL_TST) {
+                  showSoftkey(/*STD_omicron*/STD_SPACE_3_PER_EM, x, y-currentFirstItem/6, vmNormal, false, false, NOVAL, NOVAL, NOTEXT);
+                }
+                else {
+              #endif
+              //MAIN SOFTMENU DISPLAY
+              showSoftkey(indexOfItems[-softmenu[menu].menuItem].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
+              #ifdef INLINE_TEST
+                }
+              #endif
+
             }
           } //softmenu
 
