@@ -126,14 +126,14 @@ void fnSetHP35(uint16_t unusedButMandatoryParameter) {
   fnClrMod(0);
   fnPi(0);
   configCommon(CFG_USA);
-  fnInDefault(ID_DP);                      //ID
+  fnInDefault(ID_DP);                      //ID, if changed, also set the conditions for checkHP in defines.h 
   fnDisplayFormatSigFig(9);
   jm_BASE_SCREEN = false;
   SH_BASE_HOME = false;
-  exponentHideLimit = 12;                  //ID
-  exponentLimit     = 99;                  //ID
-  significantDigits = 15;                  //ID
-  displayStack = cachedDisplayStack = 1;   //ID
+  exponentHideLimit = 12;                  //ID, if changed, also set the conditions for checkHP in defines.h
+  exponentLimit     = 99;                  //ID, if changed, also set the conditions for checkHP in defines.h
+  significantDigits = 10;                  //ID, if changed, also set the conditions for checkHP in defines.h
+  displayStack = cachedDisplayStack = 1;   //ID, if changed, also set the conditions for checkHP in defines.h
   SetSetting(SS_4);
   SetSetting(ITM_CPXRES0);
   SetSetting(ITM_SPCRES0);

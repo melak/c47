@@ -299,41 +299,19 @@ void real34ToDisplayString(const real34_t *real34, uint32_t tag, char *displaySt
   }
 
 
-if(displayFormat == DF_SF) {
-    if(tag == amNone) {
-      uint8_t digits = checkHP ? significantDigits : displayHasNDigits;
-      real34ToDisplayString2(real34, displayString, digits, limitExponent, separator, false, frontSpace);
-      if(stringWidth(displayString, font, true, true) > maxWidth) {
-        real34ToDisplayString2(real34, displayString, digits, limitExponent, separator, true, frontSpace);
+  if(displayFormat == DF_SF) {        //This portion limits the SIGFIG digits to really n digits, even in the case of SIG3 12345000000000 to be displayed as 1.2340 x 10^5
+      if(tag == amNone) {
+        uint8_t digits = checkHP ? significantDigits : displayHasNDigits;
+        real34ToDisplayString2(real34, displayString, digits, limitExponent, separator, false, frontSpace);
+        if(stringWidth(displayString, font, true, true) > maxWidth) {
+          real34ToDisplayString2(real34, displayString, digits, limitExponent, separator, true, frontSpace);
+        }
       }
-    }
-} else {
-
-
-  if(tag == amNone) {
-    real34ToDisplayString2(real34, displayString, displayHasNDigits, limitExponent, separator, false, frontSpace);
-  }
-  else {
-    angle34ToDisplayString2(real34, tag, displayString, displayHasNDigits, limitExponent, separator, frontSpace);
-  }
-
-  while(stringWidth(displayString, font, true, true) > maxWidth) {
-    if(displayFormat == DF_ALL) {
-      if(displayHasNDigits == 2) {
-        break;
+      else {
+        angle34ToDisplayString2(real34, tag, displayString, displayHasNDigits, limitExponent, separator, frontSpace);
       }
-      displayHasNDigits--;
-    }
-    else {
-      if(displayFormatDigits == 0) {
-        break;
-      }
-      displayFormatDigits--;
-    }
 
-    if(updateDisplayValueX) {
-      displayValueX[0] = 0;
-    }
+  } else { // not DF_SF
 
     if(tag == amNone) {
       real34ToDisplayString2(real34, displayString, displayHasNDigits, limitExponent, separator, false, frontSpace);
@@ -341,8 +319,33 @@ if(displayFormat == DF_SF) {
     else {
       angle34ToDisplayString2(real34, tag, displayString, displayHasNDigits, limitExponent, separator, frontSpace);
     }
+
+    while(stringWidth(displayString, font, true, true) > maxWidth) {
+      if(displayFormat == DF_ALL) {
+        if(displayHasNDigits == 2) {
+          break;
+        }
+        displayHasNDigits--;
+      }
+      else {
+        if(displayFormatDigits == 0) {
+          break;
+        }
+        displayFormatDigits--;
+      }
+
+      if(updateDisplayValueX) {
+        displayValueX[0] = 0;
+      }
+
+      if(tag == amNone) {
+        real34ToDisplayString2(real34, displayString, displayHasNDigits, limitExponent, separator, false, frontSpace);
+      }
+      else {
+        angle34ToDisplayString2(real34, tag, displayString, displayHasNDigits, limitExponent, separator, frontSpace);
+      }
+    }
   }
-}
 
 
   displayFormatDigits = savedDisplayFormatDigits;

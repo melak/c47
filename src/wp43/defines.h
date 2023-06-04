@@ -1252,7 +1252,7 @@ typedef enum {
 
 #define SEPARATOR_LEFT                       (gapChar1Left)
 #define SEPARATOR_RIGHT                      (gapChar1Right)
-#define checkHP                              (significantDigits == 15 && displayStack == 1 && exponentHideLimit == 12 && exponentLimit == 99 && Input_Default == ID_DP)
+#define checkHP                              (significantDigits == 10 && displayStack == 1 && exponentHideLimit == 12 && exponentLimit == 99 && Input_Default == ID_DP)
 #define DOUBLING                             6u  // 8=is double; 7 is 1.75*; 6=1.5*; 5=1.25* 
 #define GROUPWIDTH_LEFT                      ((uint16_t)grpGroupingLeft)
 #define GROUPWIDTH_LEFT1                     ((grpGroupingGr1Left        == 0 ? (uint16_t)grpGroupingLeft : (uint16_t)grpGroupingGr1Left))
