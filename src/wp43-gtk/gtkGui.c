@@ -292,7 +292,8 @@ gboolean keyPressed(GtkWidget *w, GdkEventKey *event, gpointer data) {
                                   softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_alpha_omega ||
                                   softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHADOT ||
                                   softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAMATH ||
-                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAINTL );
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAINTL ||
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAintl );
   if (event_keyval ==  event->keyval + CTRL_State) {
     return FALSE;
   }

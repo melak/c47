@@ -2591,9 +2591,9 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
       }
 
       case CM_AIM: {
-        if(softmenuStack[0].softmenuId == mm_MNU_ALPHA) {     //JMvv
-          popSoftmenu();
-        }                                                     //JM^^
+//        if(softmenuStack[0].softmenuId == mm_MNU_ALPHA) {     //JMvv
+//          popSoftmenu();
+//        }                                                     //JM^^
 
         calcModeNormal();
         popSoftmenu();

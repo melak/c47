@@ -62,8 +62,24 @@
 //#define DEBUGCLEARS
 
 #if !defined(TESTSUITE_BUILD)
-  TO_QSPI static const char *whoStr1 = "C47" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Ben" STD_SPACE_3_PER_EM "GB," STD_SPACE_3_PER_EM "D" STD_SPACE_3_PER_EM "A" STD_SPACE_3_PER_EM "CA," STD_SPACE_3_PER_EM "Dani" STD_SPACE_3_PER_EM "CH," STD_SPACE_3_PER_EM "H" STD_a_RING "kon" STD_SPACE_3_PER_EM "NO," STD_SPACE_3_PER_EM "Jaco" STD_SPACE_3_PER_EM "ZA,";
-  TO_QSPI static const char *whoStr2 = "Martin" STD_SPACE_3_PER_EM "FR," STD_SPACE_3_PER_EM "Mihail" STD_SPACE_3_PER_EM "JP," STD_SPACE_3_PER_EM "Pauli" STD_SPACE_3_PER_EM "AU," STD_SPACE_3_PER_EM "RJvM" STD_SPACE_3_PER_EM "NL," STD_SPACE_3_PER_EM "Walter" STD_SPACE_3_PER_EM "DE.";
+  #define spc STD_SPACE
+  #define spc1 STD_SPACE STD_SPACE_3_PER_EM
+  TO_QSPI static const char *whoStr1 = "C47 Development since 2019" spc "by" spc1 
+                                       "\n"
+                                       "Ben" spc "GB," spc1 
+                                       "D" spc "A" spc "CA," spc1 
+                                       "Dani" spc "CH," spc1 
+                                       "Didier" spc "FR," spc1
+                                       "\n"
+                                       "H" STD_a_RING "kon" spc "NO," spc1 
+                                       "Jaco" spc "ZA," spc1
+                                       "Martin" spc "FR," spc1 
+                                       "Mihail" spc "JP," spc1
+                                       "\n"
+                                       "Pauli" spc "AU," spc1
+                                       "RJvM" spc "NL," spc1
+                                       "Walter" spc "DE.";
+
   TO_QSPI static const char *versionStr = VERSION_STRING " [EXIT]";
 
   #ifdef PC_BUILD
@@ -1233,13 +1249,16 @@ uint8_t  displaymode = stdNoEnlarge;
   }
 
 
+  #define DO_LF true
+  #define NO_LF false
   uint8_t  compressString = 0;                                                              //JM compressString
   uint8_t  raiseString = 0;                                                                 //JM compressString
 
-  static uint32_t _doShowString(const char *string, const font_t *font, uint32_t x, uint32_t y, char **resStr, uint32_t width, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols) {
+  static uint32_t _doShowString(const char *string, const font_t *font, uint32_t x, uint32_t y, char **resStr, uint32_t width, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, bool_t LF) {
     uint16_t ch, lg;
     bool_t   slc, sec;
     uint32_t prevX = x;
+    uint32_t orgX = x;
 
     lg = stringByteLength(string);
 
@@ -1281,6 +1300,18 @@ uint8_t  displaymode = stdNoEnlarge;
           prevX = x;
         }
       }
+      if(LF && (x > SCREEN_WIDTH)) {                      //auto LF when line is full
+        x = orgX;
+        prevX = x;
+        y += 20;
+      }  
+      uint16_t tmp = ch;                                     //LF after 0x0A is recognized (/n)
+      if(LF && (charCodeFromString(string, &tmp) == 0x0A)) {   //do not touch character pointer
+        charCodeFromString(string, &ch);                       //increment character pointer to skip 0x0A
+        x = orgX;
+        prevX = x;
+        y += 20;
+      }  
     }
     compressString = 0;        //JM compressString
     raiseString = 0;
@@ -1292,25 +1323,25 @@ uint8_t  displaymode = stdNoEnlarge;
     compressString = compress1;
     raiseString = raise1;
     noShow = noShow1;    
-    return _doShowString(string, font, x, y, NULL, 0, videoMode, showLeadingCols, showEndingCols);
+    return _doShowString(string, font, x, y, NULL, 0, videoMode, showLeadingCols, showEndingCols, DO_LF);
     compressString = 0;
     raiseString = 0;
     noShow = 0;    
   }
 
   uint32_t showString(const char *string, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols) {
-    return _doShowString(string, font, x, y, NULL, 0, videoMode, showLeadingCols, showEndingCols);
+    return _doShowString(string, font, x, y, NULL, 0, videoMode, showLeadingCols, showEndingCols, NO_LF);
   }
 
   static char *_stringAfterPixels(const char *string, const font_t *font, uint32_t width, bool_t showLeadingCols, bool_t showEndingCols) {
     char *resStr = (char *)string;
-    _doShowString(string, font, 0, 0, &resStr, width, vmNormal, showLeadingCols, showEndingCols);
+    _doShowString(string, font, 0, 0, &resStr, width, vmNormal, showLeadingCols, showEndingCols, NO_LF);
     return resStr;
   }
 
   static uint32_t _showStringWithLimit(const char *string, const font_t *font, uint32_t limitWidth, bool_t showLeadingCols, bool_t showEndingCols) {
     char *resStr = (char *)string;
-    return _doShowString(string, font, 0, 0, &resStr, limitWidth, vmNormal, showLeadingCols, showEndingCols);
+    return _doShowString(string, font, 0, 0, &resStr, limitWidth, vmNormal, showLeadingCols, showEndingCols, NO_LF);
   }
 
   static void _setStringMode(int mode, int comp, const font_t **fontPtr) {
@@ -2132,12 +2163,9 @@ void hideFunctionName(void) {
         showString("Are you sure?", &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
       }
 
-      else if(temporaryInformation == TI_WHO)
-        if (regist == REGISTER_Y) {
-          showString(whoStr1, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
-        } else {
-        if (regist == REGISTER_X) {
-          showString(whoStr2, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);          
+      else if(temporaryInformation == TI_WHO) {
+        if (regist == REGISTER_Z || regist == REGISTER_Y || regist == REGISTER_X) { //Force repainting it 3 times to get it painted properly over three lines
+          showStringEnhanced(whoStr1, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*2 + 6, vmNormal, true, true, 0, 0, 0);
         }
       }
 

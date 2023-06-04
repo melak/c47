@@ -1039,7 +1039,7 @@
       }
     }
 
-    numberOfTamMenusToPop = func == 1; // ITM_ASSIGN ? 0 : 1;    //ALPHA menu needs an extra pop
+    numberOfTamMenusToPop = func == ITM_ASSIGN ? 0 : 1;
 
     _tamUpdateBuffer();
 
