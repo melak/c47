@@ -1281,6 +1281,17 @@ uint8_t  displaymode = stdNoEnlarge;
         sec = true;
       }
 
+      if(LF && x > SCREEN_WIDTH - 20 && !noShow) {                      //auto LF when line is full
+        noShow = true;
+        uint16_t tmp = ch;
+        if(x + showGlyphCode(charCodeFromString(string, &tmp), font, 0, 0, videoMode, slc, sec) - compressString > SCREEN_WIDTH) {
+          x = orgX;
+          prevX = x;
+          y += 20;
+        }
+        noShow = false;
+      }
+
       x = showGlyphCode(charCodeFromString(string, &ch), font, x, y - raiseString, videoMode, slc, sec) - compressString;
       if(resStr) { // for stringAfterPixelsC43
         if(x > width) {
@@ -1300,11 +1311,6 @@ uint8_t  displaymode = stdNoEnlarge;
           prevX = x;
         }
       }
-      if(LF && (x > SCREEN_WIDTH-20)) {                      //auto LF when line is full
-        x = orgX;
-        prevX = x;
-        y += 20;
-      }  
       uint16_t tmp = ch;                                     //LF after 0x0A is recognized (/n)
       if(LF && (charCodeFromString(string, &tmp) == 0x0A)) {   //do not touch character pointer
         charCodeFromString(string, &ch);                       //increment character pointer to skip 0x0A
