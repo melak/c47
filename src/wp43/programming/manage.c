@@ -552,10 +552,6 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       refreshRegisterLine(errorMessageRegisterLine);
     }
 
-    if(programList[currentProgramNumber - 1].step < 0) { // Flash
-      freeWp43(tmpSteps, 400 * 7);
-    }
-
     if(aimBuffer[0] != 0 && linesOfCurrentStep > 4) { // Limited to 4 lines so as not to cause crash or freeze
       if(getSystemFlag(FLAG_ALPHA)) {
         pemAlpha(ITM_BACKSPACE);
@@ -1109,12 +1105,6 @@ static void _pemCloseDmsInput(void) {
 void insertStepInProgram(int16_t func) {
   uint32_t opBytes = (func >= 128) ? 2 : 1;
 
-  if(programList[currentProgramNumber - 1].step < 0) {
-    // attempt to modify a program in the flash memory
-    displayCalcErrorMessage(ERROR_FLASH_MEMORY_WRITE_PROTECTED, ERR_REGISTER_LINE, REGISTER_X);
-    return;
-  }
-
   if(func == ITM_AIM || (!tam.mode && getSystemFlag(FLAG_ALPHA))) {
     if(aimBuffer[0] != 0 && !getSystemFlag(FLAG_ALPHA)) {
       pemCloseNumberInput();
@@ -1344,16 +1334,6 @@ void insertStepInProgram(int16_t func) {
 
 
 void addStepInProgram(int16_t func) {
-  if(programList[currentProgramNumber - 1].step < 0) { // attempt to modify a program in the flash memory
-    //if(func == ITM_CLP) {
-    //  fnClP(NOPARAM);
-    //}
-    //else {
-      displayCalcErrorMessage(ERROR_FLASH_MEMORY_WRITE_PROTECTED, ERR_REGISTER_LINE, REGISTER_X);
-    //}
-    aimBuffer[0] = 0;
-    return;
-  }
   if((!pemCursorIsZerothStep) && ((aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA)) || tam.mode) && !isAtEndOfProgram(currentStep) && !isAtEndOfPrograms(currentStep)) {
     currentStep = findNextStep(currentStep);
     ++currentLocalStepNumber;
