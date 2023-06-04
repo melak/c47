@@ -2007,6 +2007,60 @@ void hideFunctionName(void) {
     }
   }
 
+  void displayTemporaryInformationOnX(char *prefix) {
+    int16_t       w, prefixWidth;
+    uint8_t       savedTempInformation;
+    
+    prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+    savedTempInformation = temporaryInformation;
+    temporaryInformation = TI_NO_INFO;
+    refreshRegisterLine(REGISTER_T);
+    refreshRegisterLine(REGISTER_Z);
+    refreshRegisterLine(REGISTER_Y);
+    refreshRegisterLine(REGISTER_X);
+    temporaryInformation = savedTempInformation;
+ 
+    if (getRegisterDataType(REGISTER_X) == dtReal34) {
+        clearRegisterLine(REGISTER_X, true, true);
+        if (getSystemFlag(FLAG_FRACT)) {
+          fractionToDisplayString(REGISTER_X, tmpString);
+        } else {
+          real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
+        } 
+        w = stringWidth(tmpString, &numericFont, false, true);
+        showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE + 6, vmNormal, true, true);
+        showString(tmpString, &numericFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE, vmNormal, false, true);
+    } 
+    else if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+        clearRegisterLine(REGISTER_X, true, true);
+        complex34ToDisplayString(REGISTER_COMPLEX34_DATA(REGISTER_X), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true, getComplexRegisterAngularMode(REGISTER_X), getComplexRegisterPolarMode(REGISTER_X));
+        w = stringWidth(tmpString, &numericFont, false, true);
+        showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE + 6, vmNormal, true, true);
+        showString(tmpString, &numericFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE, vmNormal, false, true);
+    } 
+    else if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
+        clearRegisterLine(REGISTER_X, true, true);
+        longIntegerRegisterToDisplayString(REGISTER_X, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - prefixWidth, 50, STD_SPACE_PUNCTUATION, true);
+        w = stringWidth(tmpString, &numericFont, false, true);
+        showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE + 6, vmNormal, true, true);
+        if(w <= SCREEN_WIDTH-prefixWidth) {
+          showString(tmpString, &numericFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE, vmNormal, false, true);
+        }
+        else {
+          w = stringWidth(tmpString, &standardFont, false, true);
+          if(w > SCREEN_WIDTH-prefixWidth) {
+            //errorMoreInfo("Long integer representation too wide!\n%s", tmpString);
+            strcpy(tmpString, "Long integer representation too wide!");
+          }
+          w = stringWidth(tmpString, &standardFont, false, true);
+          showString(tmpString, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE + 6, vmNormal, false, true);
+        }
+    } 
+    else {
+        showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE + 6, vmNormal, true, true);
+    }
+  }
+
   void refreshRegisterLine(calcRegister_t regist) {
     int32_t w;
     int16_t wLastBaseNumeric, wLastBaseStandard, prefixWidth = 0, lineWidth = 0;
@@ -2208,7 +2262,8 @@ void hideFunctionName(void) {
       }
 
       else if(temporaryInformation == TI_SAVED && regist == REGISTER_X) {
-        showString("Saved", &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
+        sprintf(prefix, "Saved");
+        displayTemporaryInformationOnX(prefix);
       }
 
       else if(temporaryInformation == TI_BACKUP_RESTORED && regist == REGISTER_X) {
@@ -2221,7 +2276,46 @@ void hideFunctionName(void) {
       }
 
       else if(temporaryInformation == TI_STATEFILE_RESTORED && regist == REGISTER_X) {
-        showString("State file restored", &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
+        sprintf(prefix, "State file restored");
+        displayTemporaryInformationOnX(prefix);
+      }
+
+      else if(temporaryInformation == TI_PROGRAMS_RESTORED && regist == REGISTER_X) {
+        sprintf(prefix, "                                ");
+        displayTemporaryInformationOnX(prefix);
+        sprintf(prefix, "Saved programs and equations");
+        showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) - 3, vmNormal, true, true);
+        sprintf(prefix, "appended");
+        showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 17, vmNormal, true, true);
+     }
+
+      else if(temporaryInformation == TI_REGISTERS_RESTORED && regist == REGISTER_X) {
+        sprintf(prefix, "                                  ");
+        displayTemporaryInformationOnX(prefix);
+        sprintf(prefix, "Saved global and local registers");
+        showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) - 3, vmNormal, true, true);
+        sprintf(prefix, "(w/ local flags) restored");
+        showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 17, vmNormal, true, true);
+      }
+
+      else if(temporaryInformation == TI_SETTINGS_RESTORED && regist == REGISTER_X) {
+        sprintf(prefix, "Saved system settings restored");
+        displayTemporaryInformationOnX(prefix);
+      }
+
+      else if(temporaryInformation == TI_SUMS_RESTORED && regist == REGISTER_X) {
+        sprintf(prefix, "Saved statistic data restored");
+        displayTemporaryInformationOnX(prefix);
+      }
+
+      else if(temporaryInformation == TI_VARIABLES_RESTORED && regist == REGISTER_X) {
+        sprintf(prefix, "Saved user variables restored");
+        displayTemporaryInformationOnX(prefix);
+      }
+
+      else if(temporaryInformation == TI_PROGRAM_LOADED && regist == REGISTER_X) {
+        sprintf(prefix, "Program file loaded");
+        displayTemporaryInformationOnX(prefix);
       }
 
       else if(temporaryInformation == TI_UNDO_DISABLED && regist == REGISTER_X) {

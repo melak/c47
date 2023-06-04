@@ -1,7 +1,8 @@
 testSuite_src = files(
   'testSuite.c',
   'hal/audio.c',
-  'hal/gui.c')
+  'hal/gui.c',
+  'hal/io.c')
 testSuite = executable(
   'testSuite',
   build_by_default    : false,

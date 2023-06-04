@@ -81,6 +81,7 @@
     #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
 //    #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers; 
 //    #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
+    #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
 //    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
 //    #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
 //   #define SAVE_SPACE_DM42_16   //           without Norml
@@ -317,7 +318,7 @@
 #define ERROR_WRITE_PROTECTED_SYSTEM_FLAG         32
 #define ERROR_STRING_WOULD_BE_TOO_LONG            33
 #define ERROR_EMPTY_STRING                        34
-#define ERROR_NO_BACKUP_DATA                      35
+#define ERROR_CANNOT_READ_FILE                    35
 #define ERROR_UNDEF_SOURCE_VAR                    36
 #define ERROR_WRITE_PROTECTED_VAR                 37
 #define ERROR_NO_MATRIX_INDEXED                   38
@@ -335,9 +336,11 @@
 #define ERROR_NON_PROGRAMMABLE_COMMAND            50
 #define ERROR_NO_GLOBAL_LABEL                     51
 #define ERROR_INVALID_DATA_TYPE_FOR_POLAR_RECT    52
-#define ERROR_BAD_INPUT                           53 // This error is not in ReM and cannot occur (theoretically).
+#define ERROR_BAD_INPUT                           54 // This error is not in ReM and cannot occur (theoretically).
+#define ERROR_NO_PROGRAM_SPECIFIED                54
+#define ERROR_CANNOT_WRITE_FILE                   55
 
-#define NUMBER_OF_ERROR_CODES                     54
+#define NUMBER_OF_ERROR_CODES                     56
 #define SIZE_OF_EACH_ERROR_MESSAGE                48
 
 #define NUMBER_OF_BUG_SCREEN_MESSAGES             10
@@ -879,6 +882,12 @@ typedef enum {
 #define TI_DISP_JULIAN                            81
 #define TI_FROM_DATEX                             82
 #define TI_LAST_CONST_CATNAME                     83
+#define TI_PROGRAM_LOADED                         84    //DL
+#define TI_PROGRAMS_RESTORED                      85    //DL
+#define TI_REGISTERS_RESTORED                     86    //DL
+#define TI_SETTINGS_RESTORED                      87    //DL
+#define TI_SUMS_RESTORED                          88    //DL
+#define TI_VARIABLES_RESTORED                     89    //DL
 
 
 // Register browser mode
@@ -1045,6 +1054,7 @@ typedef enum {
 #define KEY_AUTOREPEAT_PERIOD                    200 // in milliseconds
 #define TIMER_APP_PERIOD                         100 // in milliseconds
 #define RAM_SIZE                               16384 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
+#define RAM_SIZE_IN_BLOCKS                     16384 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
 //#define RAM_SIZE                                3072 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
 
 #define CONFIG_SIZE            TO_BLOCKS(sizeof(dtConfigDescriptor_t))

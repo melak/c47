@@ -229,6 +229,7 @@ void       fnAGraph                           (uint16_t regist);
    */
   void     hideFunctionName                   (void);
     
+	
   /**
    * Clears one register line.
    *
