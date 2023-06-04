@@ -155,6 +155,7 @@ void fnSetHP35(uint16_t unusedButMandatoryParameter) {
 void fnHP35JM(void){
   fneRPN(1); //eRPN
   setFGLSettings(RB_FGLNFUL); //fgLine OFF
+  clearSystemFlag(FLAG_HPRP);
   SetSetting(SS_8);
   SetSetting(ITM_CPXRES1);
   SetSetting(ITM_SPCRES1);
