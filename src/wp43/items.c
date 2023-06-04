@@ -779,6 +779,8 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnBeep                      (uint16_t unusedButMandatoryParameter) {}
   void fnSave                      (uint16_t unusedButMandatoryParameter) {}
   void fnLoad                      (uint16_t unusedButMandatoryParameter) {}
+  void fnSaveProgram               (uint16_t unusedButMandatoryParameter) {}
+  void fnLoadProgram               (uint16_t unusedButMandatoryParameter) {}
   void fnDeleteBackup              (uint16_t unusedButMandatoryParameter) {}
   void fnUndo                      (uint16_t unusedButMandatoryParameter) {}
   void fnXmax                      (uint16_t unusedButMandatoryParameter) {}
@@ -1070,8 +1072,6 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnDeltaPercentXmean        (uint16_t unusedButMandatoryParameter) {}
   void fnSetCPXmult               (uint16_t unusedButMandatoryParameter) {}
   void setFGLSettings             (uint16_t unusedButMandatoryParameter) {}
-  void fnSaveProgram               (uint16_t unusedButMandatoryParameter) {}
-  void fnLoadProgram               (uint16_t unusedButMandatoryParameter) {}
 
                                                                               //JM ^^
 #endif // GENERATE_CATALOGS
