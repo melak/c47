@@ -217,6 +217,8 @@ int ioFileRemove(ioFilePath_t path, uint32_t *errorNumber) {
 
 void show_warning(char *string)
 {
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wformat"
   GtkWidget *dialog;
   dialog = gtk_message_dialog_new(GTK_WINDOW(frmCalc),
             GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -226,4 +228,5 @@ void show_warning(char *string)
   gtk_window_set_title(GTK_WINDOW(dialog), "Warning");
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
+  #pragma clang diagnostic pop
 }
