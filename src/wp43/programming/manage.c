@@ -706,16 +706,12 @@ void pemAlpha(int16_t item) {
           item +=  (ITM_ALPHA <= item && item <= ITM_OMEGA) ? (ITM_alpha - ITM_ALPHA) : (ITM_qoppa - ITM_QOPPA);
         }
     }
-    item = convertItemToSubOrSup(item, nextChar);
-    if(len < (256 - stringByteLength(indexOfItems[item].itemSoftmenuName)) && stringGlyphLength(aimBuffer) < 196) {
-      xcopy(aimBuffer + len, indexOfItems[item].itemSoftmenuName, stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
+ 	if ((nextChar == NC_NORMAL) || ((item != ITM_DOWN_ARROW) && (item != ITM_UP_ARROW))) {
+      item = convertItemToSubOrSup(item, nextChar);
+      if(len < (256 - stringByteLength(indexOfItems[item].itemSoftmenuName)) && stringGlyphLength(aimBuffer) < 196) {
+        xcopy(aimBuffer + len, indexOfItems[item].itemSoftmenuName, stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
+      }
     }
-  }
-  else if(item == ITM_DOWN_ARROW) {
-    nextChar = NC_SUBSCRIPT;
-  }
-  else if(item == ITM_UP_ARROW) {
-    nextChar = NC_SUPERSCRIPT;
   }
   else if(item == ITM_BACKSPACE) {
     if(aimBuffer[0] == 0) {
