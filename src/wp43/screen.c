@@ -621,6 +621,7 @@ static uint16_t charCodeFromString(const char *ch, uint16_t *offset);
     gtk_clipboard_set_text(clipboard, clipboardString, -1);
   }
 
+#define checkHPoffset (checkHP && temporaryInformation == TI_NO_INFO ? 50:0)
 
 
   #define cursorCycle 3                      //JM cursor vv
@@ -633,7 +634,7 @@ static uint16_t charCodeFromString(const char *ch, uint16_t *offset);
       if(++cursorBlinkCounter > cursorCycle) {         //JM cursor vv
         cursorBlinkCounter = 0;
         if(cursorBlink) {
-          showGlyph(STD_CURSOR, cursorFont, xCursor, yCursor - (checkHP ? 50:0), vmNormal, true, false);
+          showGlyph(STD_CURSOR, cursorFont, xCursor, yCursor - checkHPoffset, vmNormal, true, false);
           }                                              //JM cursor ^^
         else {
           hideCursor();
@@ -688,7 +689,7 @@ static uint16_t charCodeFromString(const char *ch, uint16_t *offset);
       if(++cursorBlinkCounter > cursorCycle) {         //JM cursor vv
       cursorBlinkCounter = 0;
       if(cursorBlink) {
-        showGlyph(STD_CURSOR, cursorFont, xCursor, yCursor - (checkHP ? 50:0), vmNormal, true, false);
+        showGlyph(STD_CURSOR, cursorFont, xCursor, yCursor - checkHPoffset, vmNormal, true, false);
       }                                              //JM cursor ^^
       else {
         hideCursor();
@@ -1153,7 +1154,7 @@ uint8_t  displaymode = stdNoEnlarge;
   #define REDUCT_A 3
   #define REDUCT_B 4
   #define REDUCT_OFF 3
-  bool_t numDouble = font == &numericFont && checkHP && charCodeFromString(STD_SUP_f, 0)!=charCode && charCodeFromString(STD_SUP_g, 0)!=charCode; //this also triggers the vertical doubling
+  bool_t numDouble = font == &numericFont && checkHP && temporaryInformation == TI_NO_INFO && charCodeFromString(STD_SUP_f, 0)!=charCode && charCodeFromString(STD_SUP_g, 0)!=charCode; //this also triggers the vertical doubling
   uint8_t doubling = numDouble ? DOUBLING : 4u;      //this is the horizontal factor 
 
   // Clearing the space needed by the glyph
@@ -2594,7 +2595,7 @@ void hideFunctionName(void) {
           w = stringWidth(tmpString, &numericFont, false, true);
           lineWidth = w;
           if(w <= SCREEN_WIDTH) {
-            showString(tmpString, &numericFont, SCREEN_WIDTH - w, baseY - (checkHP ? 50:0), vmNormal, false, true);
+            showString(tmpString, &numericFont, SCREEN_WIDTH - w, baseY - checkHPoffset, vmNormal, false, true);
           }
           else {
             w = stringWidth(tmpString, &standardFont, false, true);
@@ -3344,13 +3345,13 @@ void hideFunctionName(void) {
           lineWidth = w;
           if(prefixWidth > 0) {
             if(temporaryInformation == TI_INTEGRAL) {
-              showString(prefix, &numericFont, 1, baseY - (checkHP ? 50:0), vmNormal, prefixPre, prefixPost);
+              showString(prefix, &numericFont, 1, baseY - checkHPoffset, vmNormal, prefixPre, prefixPost);
             }
             else {
               showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
             }
           }
-          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY - (checkHP ? 50:0), vmNormal, false, true);
+          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY - checkHPoffset, vmNormal, false, true);
         }
 
           //JM else if(getRegisterDataType(regist) == dtComplex34) {                                                                                                      //JM EE Removed and replaced with the below
@@ -3433,7 +3434,7 @@ void hideFunctionName(void) {
           if(prefixWidth > 0) {
             showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
           }
-          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY - (checkHP ? 50:0), vmNormal, false, true);
+          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY - checkHPoffset, vmNormal, false, true);
         }
 
         else if(getRegisterDataType(regist) == dtString) {
@@ -3544,7 +3545,7 @@ void hideFunctionName(void) {
         else if(getRegisterDataType(regist) == dtShortInteger) {
 //          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
           shortIntegerToDisplayString(regist, tmpString, true);
-          showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0) - (fontForShortInteger == &numericFont && checkHP ? 50:0), vmNormal, false, true);
+          showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0) - (fontForShortInteger == &numericFont && temporaryInformation == TI_NO_INFO && checkHP ? 50:0), vmNormal, false, true);
   
           //JM SHOIDISP // use the top part of the screen for HEX and BIN    //JM vv SHOIDISP
           if(baseModeActive && lastErrorCode == 0) {
@@ -3653,7 +3654,7 @@ void hideFunctionName(void) {
           }
 
           if(w <= SCREEN_WIDTH) {
-            showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY - (checkHP ? 50:0), vmNormal, false, true);
+            showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY - checkHPoffset, vmNormal, false, true);
           }
           else {
             w = stringWidth(tmpString, &standardFont, false, true);
@@ -3678,7 +3679,7 @@ void hideFunctionName(void) {
           if(prefixWidth > 0) {
             showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
           }
-          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY - (checkHP ? 50:0), vmNormal, false, true);
+          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY - checkHPoffset, vmNormal, false, true);
         }
 
         else if(getRegisterDataType(regist) == dtDate) {
@@ -3697,7 +3698,7 @@ void hideFunctionName(void) {
           if(prefixWidth > 0) {
             showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
           }
-          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY - (checkHP ? 50:0), vmNormal, false, true);
+          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY - checkHPoffset, vmNormal, false, true);
         }
 
         else if(getRegisterDataType(regist) == dtConfig) {
@@ -3710,7 +3711,7 @@ void hideFunctionName(void) {
           if(prefixWidth > 0) {
             showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
           }
-          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY - (checkHP ? 50:0), vmNormal, false, true);
+          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY - checkHPoffset, vmNormal, false, true);
         }
 
         else if(getRegisterDataType(regist) == dtReal34Matrix) {
@@ -3802,12 +3803,12 @@ void hideFunctionName(void) {
   void displayNim(const char *nim, const char *lastBase, int16_t wLastBaseNumeric, int16_t wLastBaseStandard) {
     int16_t w;
     if(stringWidth(nim, &numericFont, true, true) + wLastBaseNumeric <= SCREEN_WIDTH - 16) { // 16 is the numeric font cursor width
-      xCursor = showString(nim, &numericFont, 0, Y_POSITION_OF_NIM_LINE - (checkHP ? 50:0), vmNormal, true, true);
+      xCursor = showString(nim, &numericFont, 0, Y_POSITION_OF_NIM_LINE - checkHPoffset, vmNormal, true, true);
       yCursor = Y_POSITION_OF_NIM_LINE;
       cursorFont = &numericFont;
 
       if(lastIntegerBase != 0 || (aimBuffer[0] != 0 && aimBuffer[strlen(aimBuffer)-1]=='/')) {
-        showString(lastBase, &numericFont, xCursor + 16, Y_POSITION_OF_NIM_LINE - (checkHP ? 50:0), vmNormal, true, true);
+        showString(lastBase, &numericFont, xCursor + 16, Y_POSITION_OF_NIM_LINE - checkHPoffset, vmNormal, true, true);
       }
     }
     else if(stringWidth(nim, &standardFont, true, true) + wLastBaseStandard <= SCREEN_WIDTH - 8) { // 8 is the standard font cursor width

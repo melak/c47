@@ -37,7 +37,7 @@ static void _calculateStringWidth(const char *str, const font_t *font, bool_t wi
   #if defined(GENERATE_CATALOGS)
     uint8_t doubling = false;
   #else //GENERATE_CATALOGS
-    uint8_t doubling = (font == &numericFont && checkHP) ? DOUBLING : 4u;
+    uint8_t doubling = (font == &numericFont && temporaryInformation == TI_NO_INFO && checkHP) ? DOUBLING : 4u;
   #endif //GENERATE_CATALOGS
 
 //  const font_t  *font;  //JM

@@ -175,7 +175,7 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
       ix++;
     }
 
-    fnDisplayStack(4);                    //Restore to default DSTACK 4
+    if(!checkHP) fnDisplayStack(4);                    //Restore to default DSTACK 4
 
     calcModeNormal();
     refreshScreen();
