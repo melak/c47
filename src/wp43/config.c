@@ -124,8 +124,8 @@ void configCommon(uint16_t idx) {
 void fnSetHP35(uint16_t unusedButMandatoryParameter) {
   fnKeyExit(0);
   fnClrMod(0);
+  fnClearStack(0);
   fnPi(0);
-  configCommon(CFG_USA);
   fnInDefault(ID_DP);                      //ID, if changed, also set the conditions for checkHP in defines.h 
   fnDisplayFormatSigFig(9);
   jm_BASE_SCREEN = false;
@@ -142,6 +142,7 @@ void fnSetHP35(uint16_t unusedButMandatoryParameter) {
   setFGLSettings(RB_FGLNOFF); //fgLine OFF
   temporaryInformation = TI_NO_INFO;
   grpGroupingLeft   =  3;
+  groupingGap                = grpGroupingLeft;               //legacy function displays use IPGAP
   grpGroupingRight   =  3;
   grpGroupingGr1Left =  0;
   grpGroupingGr1LeftOverflow = 0;
