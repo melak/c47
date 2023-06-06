@@ -125,6 +125,7 @@ void fnSetHP35(uint16_t unusedButMandatoryParameter) {
   fnClrMod(0);
   fnClearStack(0);
   fnPi(0);
+
   fnInDefault(ID_DP);                      //ID, if changed, also set the conditions for checkHP in defines.h 
   fnDisplayFormatSigFig(9);
   jm_BASE_SCREEN = false;
@@ -140,6 +141,7 @@ void fnSetHP35(uint16_t unusedButMandatoryParameter) {
   fneRPN(0); //RPN
   setFGLSettings(RB_FGLNOFF); //fgLine OFF
   temporaryInformation = TI_NO_INFO;
+
   grpGroupingLeft   =  3;
   groupingGap                = grpGroupingLeft;               //legacy function displays use IPGAP
   grpGroupingRight   =  3;
@@ -165,12 +167,10 @@ void fnHP35JM(void){
 void fnSetC47(uint16_t unusedButMandatoryParameter) {
   fnKeyExit(0);
   fnClrMod(0);
-  fnPi(0);
   addItemToBuffer(ITM_EXIT1);
-  configCommon(CFG_DFLT);
+
   fnInDefault(ID_43S);
   fnDisplayFormatAll(3);
-
   jm_BASE_SCREEN = true;
   SH_BASE_HOME = false;
   exponentHideLimit = 0;
@@ -184,6 +184,16 @@ void fnSetC47(uint16_t unusedButMandatoryParameter) {
   fneRPN(1); //eRPN
   setFGLSettings(RB_FGLNFUL); //fgLine ON
   temporaryInformation = TI_NO_INFO;
+
+  fnSetGapChar (0 + configSettings[CFG_DFLT].gapl);
+  grpGroupingLeft            = configSettings[CFG_DFLT].gprl ;
+  groupingGap                = grpGroupingLeft;               //legacy function displays use IPGAP
+  grpGroupingGr1LeftOverflow = configSettings[CFG_DFLT].gpr1x;
+  grpGroupingGr1Left         = configSettings[CFG_DFLT].gpr1 ;
+  grpGroupingRight           = configSettings[CFG_DFLT].gprr ;
+  fnSetGapChar (32768+configSettings[CFG_DFLT].gapr);
+  fnSetGapChar (49152+configSettings[CFG_DFLT].gaprx);
+
   refreshScreen();
 }
 

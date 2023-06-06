@@ -365,6 +365,7 @@ static uint16_t charCodeFromString(const char *ch, uint16_t *offset);
   }
 
   #endif                                                //JMCSV
+  #define checkHPoffset (checkHP && temporaryInformation == TI_NO_INFO ? 50:0)
   #ifdef PC_BUILD                                       //JMCSV
 
 
@@ -621,8 +622,6 @@ static uint16_t charCodeFromString(const char *ch, uint16_t *offset);
 
     gtk_clipboard_set_text(clipboard, clipboardString, -1);
   }
-
-#define checkHPoffset (checkHP && temporaryInformation == TI_NO_INFO ? 50:0)
 
 
   #define cursorCycle 3                      //JM cursor vv
