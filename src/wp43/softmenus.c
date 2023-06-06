@@ -682,7 +682,7 @@ TO_QSPI const int16_t menu_PLOT[]        = { ITM_PLINE,                     ITM_
                                              ITM_NULL,                      ITM_PLOTRST,                ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL};                          //JM GRAPH
 
 
-TO_QSPI const int16_t menu_ALPHA[]       = { ITM_T_UP_ARROW,                ITM_T_DOWN_ARROW,           ITM_T_LLEFT_ARROW,        ITM_T_RRIGHT_ARROW,    ITM_T_LEFT_ARROW,            ITM_T_RIGHT_ARROW,
+TO_QSPI const int16_t menu_ALPHA[]       = { ITM_T_UP_ARROW,                ITM_T_DOWN_ARROW,           ITM_T_LLEFT_ARROW,        ITM_T_LEFT_ARROW,      ITM_T_RIGHT_ARROW,           ITM_T_RRIGHT_ARROW,    
                                              -MNU_MyAlpha,                 -MNU_ALPHA_OMEGA,           -MNU_ALPHADOT,            -MNU_ALPHAMATH,        -MNU_ALPHAINTL,               ITM_ASSIGN,                           //JM
                                              ITM_XEDIT,                     ITM_XPARSE,                 ITM_CLA,                  CHR_num,               CHR_case,                    ITM_USERMODE                     };   //JM
 
