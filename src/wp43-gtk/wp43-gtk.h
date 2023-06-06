@@ -15,12 +15,7 @@
   #else
     #define BASEPATH "../../../"
   #endif
-  // #define CSSFILE    BASEPATH "res/wp43_pre.css"
 
-  extern bool       calcLandscape;
-  extern bool       calcAutoLandscapePortrait;
-  extern char       debugString[10000];
-  extern GtkWidget *screen;
   extern GtkWidget *frmCalc;
 
 #endif // !WP43_GTK_H
