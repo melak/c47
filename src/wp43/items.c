@@ -49,6 +49,7 @@
 #include "recall.h"
 #include "registers.h"
 #include "saveRestoreCalcState.h"
+#include "saveRestorePrograms.h"
 #include "screen.h"
 #include "softmenus.h"
 #include "solver/graph.h"
@@ -778,6 +779,8 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnBeep                      (uint16_t unusedButMandatoryParameter) {}
   void fnSave                      (uint16_t unusedButMandatoryParameter) {}
   void fnLoad                      (uint16_t unusedButMandatoryParameter) {}
+  void fnSaveProgram               (uint16_t unusedButMandatoryParameter) {}
+  void fnLoadProgram               (uint16_t unusedButMandatoryParameter) {}
   void fnDeleteBackup              (uint16_t unusedButMandatoryParameter) {}
   void fnUndo                      (uint16_t unusedButMandatoryParameter) {}
   void fnXmax                      (uint16_t unusedButMandatoryParameter) {}
@@ -1069,9 +1072,6 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnDeltaPercentXmean        (uint16_t unusedButMandatoryParameter) {}
   void fnSetCPXmult               (uint16_t unusedButMandatoryParameter) {}
   void setFGLSettings             (uint16_t unusedButMandatoryParameter) {}
-
-
-
 
                                                                               //JM ^^
 #endif // GENERATE_CATALOGS
@@ -2686,7 +2686,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1564 */  { fnRecallStack,                TM_REGISTER,                 "RCLS",                                        "RCLS",                                        (0 << TAM_MAX_BITS) |    99, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_REGISTER     },
 /* 1565 */  { fnRdp,                        TM_VALUE,                    "RDP",                                         "RDP",                                         (0 << TAM_MAX_BITS) |    99, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NUMBER_8     },
 /* 1566 */  { fnRealPart,                   NOPARAM,                     "Re",                                          "Re",                                          (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
-/* 1567 */  { itemToBeCoded,                NOPARAM,                     "READP",                                       "READP",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 1567 */  { fnLoadProgram,                NOPARAM,                     "READP",                                       "READP",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_CANCEL    | EIM_DISABLED | PTP_DISABLED     },
 /* 1568 */  { fnReset,                      NOT_CONFIRMED,               "RESET",                                       "RESET",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABL_XEQ | EIM_DISABLED | PTP_DISABLED     },
 /* 1569 */  { fnReToCx,                     NOPARAM,                     "RE" STD_RIGHT_ARROW "CX",                     "RE" STD_RIGHT_ARROW "CX",                     (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1570 */  { fnSwapRealImaginary,          NOPARAM,                     "Re" STD_LEFT_RIGHT_ARROWS "Im",               "Re" STD_LEFT_RIGHT_ARROWS "Im",               (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
@@ -2709,7 +2709,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1587 */  { fnDisplayFormatSci,           TM_VALUE,                    "SCI",                                         "SCI",                                         (0 << TAM_MAX_BITS) | DSP_MAX, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NUMBER_8     },
 /* 1588 */  { fnGetSignificantDigits,       NOPARAM,                     "SDIGS?",                                      "SDIGS?",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1589 */  { fnSeed,                       NOPARAM,                     "SEED",                                        "SEED",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
-/* 1590 */  { itemToBeCoded,                NOPARAM,                     "WRITEP",                                      "WRITEP",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 1590 */  { fnSaveProgram,                TM_LABEL,                    "WRITEP",                                      "WRITEP",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_CANCEL    | EIM_DISABLED | PTP_DISABLED     },
 /* 1591 */  { configCommon,                 CFG_CHINA,                   "SETCHN",                                      "CHINA",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1592 */  { fnSetDate,                    NOPARAM,                     "SETDAT",                                      "SETDAT",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1593 */  { configCommon,                 CFG_EUROPE,                  "SETEUR",                                      "EUROPE",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },

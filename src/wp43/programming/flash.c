@@ -48,6 +48,7 @@ static void save(const void *buffer, uint32_t size, void *stream) {
     f_write(stream, buffer, size, &bytesWritten);
   #else // !DMCP_BUILD
     fwrite(buffer, 1, size, stream);
+    
   #endif // DMCP_BUILD
 }
 
@@ -192,7 +193,7 @@ void fnPSto(uint16_t unusedButMandatoryParameter) {
     #if defined(DMCP_BUILD)
       sys_disk_write_enable(1);
       if(f_open(LIBDATA, FLASH_PGM_DIR "\\" FLASH_PGM_FILE, FA_READ | FA_WRITE | FA_OPEN_EXISTING) != FR_OK) {
-        displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
+        displayCalcErrorMessage(ERROR_CANNOT_READ_FILE, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function deleteFromFlashPgmLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -203,7 +204,7 @@ void fnPSto(uint16_t unusedButMandatoryParameter) {
       FILE *ppgm_fp;
 
       if((LIBDATA = fopen(FLASH_PGM_DIR "/" FLASH_PGM_FILE, "r+b")) == NULL) {
-        displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
+        displayCalcErrorMessage(ERROR_CANNOT_READ_FILE, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function deleteFromFlashPgmLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -239,7 +240,7 @@ void deleteFromFlashPgmLibrary(uint32_t fromAddr, uint32_t toAddr) {
   #if defined(DMCP_BUILD)
     sys_disk_write_enable(1);
     if(f_open(LIBDATA, FLASH_PGM_DIR "\\" FLASH_PGM_FILE, FA_READ | FA_WRITE | FA_OPEN_EXISTING) != FR_OK) {
-      displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
+      displayCalcErrorMessage(ERROR_CANNOT_READ_FILE, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function deleteFromFlashPgmLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -250,7 +251,7 @@ void deleteFromFlashPgmLibrary(uint32_t fromAddr, uint32_t toAddr) {
     FILE *ppgm_fp;
 
     if((LIBDATA = fopen(FLASH_PGM_DIR "/" FLASH_PGM_FILE, "r+b")) == NULL) {
-      displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
+      displayCalcErrorMessage(ERROR_CANNOT_READ_FILE, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function deleteFromFlashPgmLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -282,7 +283,7 @@ void deleteFromFlashPgmLibrary(uint32_t fromAddr, uint32_t toAddr) {
 void readStepInFlashPgmLibrary(uint8_t *buffer, uint16_t bufferSize, uint32_t pointer) {
   #if defined(DMCP_BUILD)
     if(f_open(LIBDATA, FLASH_PGM_DIR "\\" FLASH_PGM_FILE, FA_READ) != FR_OK) {
-      displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
+      displayCalcErrorMessage(ERROR_CANNOT_READ_FILE, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function scanFlashProgramLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -292,7 +293,7 @@ void readStepInFlashPgmLibrary(uint8_t *buffer, uint16_t bufferSize, uint32_t po
     FILE *ppgm_fp;
 
     if((LIBDATA = fopen(FLASH_PGM_DIR "/" FLASH_PGM_FILE, "rb")) == NULL) {
-      displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
+      displayCalcErrorMessage(ERROR_CANNOT_READ_FILE, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function scanFlashProgramLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -317,7 +318,7 @@ void scanFlashPgmLibrary(void) {
     if(f_open(LIBDATA, FLASH_PGM_DIR "\\" FLASH_PGM_FILE, FA_READ) != FR_OK) {
       initFlashPgmLibrary();
       if(f_open(LIBDATA, FLASH_PGM_DIR "\\" FLASH_PGM_FILE, FA_READ) != FR_OK) {
-        displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
+        displayCalcErrorMessage(ERROR_CANNOT_READ_FILE, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function scanFlashProgramLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -330,7 +331,7 @@ void scanFlashPgmLibrary(void) {
     if((LIBDATA = fopen(FLASH_PGM_DIR "/" FLASH_PGM_FILE, "rb")) == NULL) {
       initFlashPgmLibrary();
       if((LIBDATA = fopen(FLASH_PGM_DIR "/" FLASH_PGM_FILE, "rb")) == NULL) {
-        displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
+        displayCalcErrorMessage(ERROR_CANNOT_READ_FILE, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function scanFlashProgramLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
