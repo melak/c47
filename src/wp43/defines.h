@@ -24,7 +24,7 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
- #define VERSION1 "0.108.9-03"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
+ #define VERSION1 "0.108.9-04"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
 
   #undef SAVE_SPACE_DM42
@@ -83,7 +83,7 @@
 //    #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
 //    #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
 //    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
-//    #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
+    #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
 //   #define SAVE_SPACE_DM42_16   //           without Norml
   #endif
 #endif
