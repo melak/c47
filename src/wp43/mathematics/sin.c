@@ -100,13 +100,13 @@ void sinLonI(void) {
       realZero(&x);
     }
     else {
-      realPlus(const_pi, &x, &ctxtReal39);
+      realPlus(const_pi, &x, &ctxtReal75);
     }
   }
   else {
     longIntegerAngleReduction(REGISTER_X, currentAngularMode, &x);
   }
-  WP34S_Cvt2RadSinCosTan(&x, currentAngularMode, &x, NULL, NULL, &ctxtReal39);
+  WP34S_Cvt2RadSinCosTan(&x, currentAngularMode, &x, NULL, NULL, &ctxtReal75);
 
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
   convertRealToReal34ResultRegister(&x, REGISTER_X);
