@@ -221,7 +221,6 @@ void fnStoreAdd(uint16_t regist) {
       copySourceRegisterToDestRegister(REGISTER_X, SAVED_REGISTER_X);
     }
 
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(regist, REGISTER_Y);
     if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
       *(REGISTER_SHORT_INTEGER_DATA(REGISTER_Y)) &= shortIntegerMask;
@@ -251,7 +250,6 @@ void fnStoreSub(uint16_t regist) {
       copySourceRegisterToDestRegister(REGISTER_X, SAVED_REGISTER_X);
     }
 
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(regist, REGISTER_Y);
     if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
       *(REGISTER_SHORT_INTEGER_DATA(REGISTER_Y)) &= shortIntegerMask;
@@ -281,7 +279,6 @@ void fnStoreMult(uint16_t regist) {
       copySourceRegisterToDestRegister(REGISTER_X, SAVED_REGISTER_X);
     }
 
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(regist, REGISTER_Y);
     if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
       *(REGISTER_SHORT_INTEGER_DATA(REGISTER_Y)) &= shortIntegerMask;
@@ -311,7 +308,6 @@ void fnStoreDiv(uint16_t regist) {
       copySourceRegisterToDestRegister(REGISTER_X, SAVED_REGISTER_X);
     }
 
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(regist, REGISTER_Y);
     if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
       *(REGISTER_SHORT_INTEGER_DATA(REGISTER_Y)) &= shortIntegerMask;
