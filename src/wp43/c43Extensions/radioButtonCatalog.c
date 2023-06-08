@@ -731,16 +731,16 @@ void use_base_glyphs(char* tmp1, int16_t xx) {              // Needs non-local v
     add_digitglyph_to_tmp2(tmp2, xx % 10);
     strcat(tmp1, tmp2);
   }
-  else if(xx ==999) {
-    add_digitglyph_to_tmp2(tmp2, 9);   strcat(tmp1, tmp2);
-    add_digitglyph_to_tmp2(tmp2, 9);   strcat(tmp1, tmp2);
-    add_digitglyph_to_tmp2(tmp2, 9);   strcat(tmp1, tmp2);
+  else if(xx<=999) {
+    add_digitglyph_to_tmp2(tmp2, xx / 100);   strcat(tmp1, tmp2);
+    add_digitglyph_to_tmp2(tmp2, (xx % 100) / 10);   strcat(tmp1, tmp2);
+    add_digitglyph_to_tmp2(tmp2, (xx % 100) % 10);   strcat(tmp1, tmp2);
   }
-  else if(xx ==6145) {
-    add_digitglyph_to_tmp2(tmp2, 6);   strcat(tmp1, tmp2);
-    add_digitglyph_to_tmp2(tmp2, 1);   strcat(tmp1, tmp2);
-    add_digitglyph_to_tmp2(tmp2, 4);   strcat(tmp1, tmp2);
-    add_digitglyph_to_tmp2(tmp2, 5);   strcat(tmp1, tmp2);
+  else if(xx<=9999) {
+    add_digitglyph_to_tmp2(tmp2, xx / 1000);     strcat(tmp1, tmp2);                  //9876 > 9
+    add_digitglyph_to_tmp2(tmp2, (xx % 1000) / 100);     strcat(tmp1, tmp2);          //876  > 8
+    add_digitglyph_to_tmp2(tmp2, ((xx % 1000) % 100) / 10);   strcat(tmp1, tmp2);     //76   > 7
+    add_digitglyph_to_tmp2(tmp2, ((xx % 1000) % 100) % 10);   strcat(tmp1, tmp2);     //6  
   }
   else {
     snprintf(tmp1, 12, "%d", xx);
