@@ -994,9 +994,9 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     lastErrorCode = 0;
 
     gammaLanczosCoefficients = (real51_t *)const_gammaC01;
-    angle180 = (real51_t *)const_pi_51;
-    angle90  = (real51_t *)const_piOn2_51;
-    angle45  = (real51_t *)const_piOn4_51;
+    angle180 = (real_t *)const_pi_75;
+    angle90  = (real_t *)const_piOn2_75;
+    angle45  = (real_t *)const_piOn4_75;
 
     #if !defined(TESTSUITE_BUILD)
       resetAlphaSelectionBuffer();
