@@ -112,9 +112,9 @@
   extern void                            (*confirmedFunction)(uint16_t);
   extern const softmenu_t                softmenu[];
   extern real51_t                 const *gammaLanczosCoefficients;
-  extern real51_t                 const *angle180;
-  extern real51_t                 const *angle90;
-  extern real51_t                 const *angle45;
+  extern real_t                 const *angle180;
+  extern real_t                 const *angle90;
+  extern real_t                 const *angle45;
 
   // Variables stored in RAM
   extern bool_t                 fnAsnDisplayUSER;

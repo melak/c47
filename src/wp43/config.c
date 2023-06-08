@@ -488,7 +488,14 @@ void fnGetSignificantDigits(uint16_t unusedButMandatoryParameter) {
 
 
 
-void fnSetSignificantDigits(uint16_t unusedButMandatoryParameter) {
+void fnSetSignificantDigits(uint16_t S) {
+   significantDigits = S;
+   if(significantDigits == 0) {
+     significantDigits = 34;
+   }
+ }
+
+/* Removed in favour of TAM selection
   longInteger_t sigDigits;
 
   if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
@@ -516,7 +523,7 @@ void fnSetSignificantDigits(uint16_t unusedButMandatoryParameter) {
     #endif // PC_BUILD
   }
 }
-
+*/
 
 
 void fnRoundingMode(uint16_t RM) {
@@ -574,7 +581,12 @@ void setConfirmationMode(void (*func)(uint16_t)) {
 
 
 
-void fnRange(uint16_t unusedButMandatoryParameter) {
+void fnRange(uint16_t R) {
+  exponentLimit = R;
+  if(exponentLimit < 99) exponentLimit = 99;
+}
+
+/* removed in favour of TAM selection
   longInteger_t longInt;
 
   if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
@@ -606,6 +618,7 @@ void fnRange(uint16_t unusedButMandatoryParameter) {
 
   longIntegerFree(longInt);
 }
+*/
 
 
 
@@ -622,7 +635,13 @@ void fnGetRange(uint16_t unusedButMandatoryParameter) {
 
 
 
-void fnHide(uint16_t unusedButMandatoryParameter) {
+void fnHide(uint16_t H) {
+  exponentHideLimit = H;
+  if(exponentHideLimit > 0 && exponentHideLimit < 12) {
+    exponentHideLimit = 12;
+  }
+
+/* removed in favour of TAM entry
   longInteger_t longInt;
 
   if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
@@ -656,6 +675,7 @@ void fnHide(uint16_t unusedButMandatoryParameter) {
   }
 
   longIntegerFree(longInt);
+*/
 }
 
 
@@ -1376,9 +1396,9 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     lastErrorCode = 0;
 
     gammaLanczosCoefficients = (real51_t *)const_gammaC01;
-    angle180 = (real51_t *)const_pi_51;
-    angle90  = (real51_t *)const_piOn2_51;
-    angle45  = (real51_t *)const_piOn4_51;
+    angle180 = (real_t *)const_pi_75;
+    angle90  = (real_t *)const_piOn2_75;
+    angle45  = (real_t *)const_piOn4_75;
 
     #if !defined(TESTSUITE_BUILD)
       resetAlphaSelectionBuffer();
