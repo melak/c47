@@ -99,9 +99,11 @@ static void setFlag(int f, int v) {
 
 
 void configCommon(uint16_t idx) {
-  if(checkHP) {
-    fnSetC47(0);
-  }
+  #if !defined(TESTSUITE_BUILD)
+    if(checkHP) {
+      fnSetC47(0);
+    }
+  #endif //TESTSUITE_BUILD
 
   setFlag(FLAG_TDM24, configSettings[idx].tdm24);
   setFlag(FLAG_DMY, configSettings[idx].dmy);
@@ -121,82 +123,87 @@ void configCommon(uint16_t idx) {
 }
 
 
-void fnSetHP35(uint16_t unusedButMandatoryParameter) {
-  fnKeyExit(0);
-  fnClrMod(0);
-  fnClearStack(0);
-  fnPi(0);
+#if !defined(TESTSUITE_BUILD)
+  void fnSetHP35(uint16_t unusedButMandatoryParameter) {
+    fnKeyExit(0);
+    fnClrMod(0);
+    fnClearStack(0);
+    fnPi(0);
 
-  fnInDefault(ID_DP);                      //ID, if changed, also set the conditions for checkHP in defines.h 
-  fnDisplayFormatSigFig(9);
-  jm_BASE_SCREEN = false;
-  SH_BASE_HOME = false;
-  exponentHideLimit = 12;                  //ID, if changed, also set the conditions for checkHP in defines.h
-  exponentLimit     = 99;                  //ID, if changed, also set the conditions for checkHP in defines.h
-  significantDigits = 10;                  //ID, if changed, also set the conditions for checkHP in defines.h
-  displayStack = cachedDisplayStack = 1;   //ID, if changed, also set the conditions for checkHP in defines.h
-  currentAngularMode = amDegree;
-  SetSetting(SS_4);
-  SetSetting(ITM_CPXRES0);
-  SetSetting(ITM_SPCRES0);
-  fneRPN(0); //RPN
-  setFGLSettings(RB_FGLNOFF); //fgLine OFF
-  temporaryInformation = TI_NO_INFO;
+    fnInDefault(ID_DP);                      //ID, if changed, also set the conditions for checkHP in defines.h 
+    fnDisplayFormatSigFig(9);
+    jm_BASE_SCREEN = false;
+    SH_BASE_HOME = false;
+    exponentHideLimit = 12;                  //ID, if changed, also set the conditions for checkHP in defines.h
+    exponentLimit     = 99;                  //ID, if changed, also set the conditions for checkHP in defines.h
+    significantDigits = 10;                  //ID, if changed, also set the conditions for checkHP in defines.h
+    displayStack = cachedDisplayStack = 1;   //ID, if changed, also set the conditions for checkHP in defines.h
+    currentAngularMode = amDegree;
+    SetSetting(SS_4);
+    SetSetting(ITM_CPXRES0);
+    SetSetting(ITM_SPCRES0);
+    fneRPN(0); //RPN
+    setFGLSettings(RB_FGLNOFF); //fgLine OFF
+    temporaryInformation = TI_NO_INFO;
 
-  grpGroupingLeft   =  3;
-  groupingGap                = grpGroupingLeft;               //legacy function displays use IPGAP
-  grpGroupingRight   =  3;
-  grpGroupingGr1Left =  0;
-  grpGroupingGr1LeftOverflow = 0;
-  fnSetGapChar(ITM_NULL);
-  fnSetGapChar(ITM_NULL+32768);
-  fnSetGapChar(ITM_WDOT+49152);
-  refreshScreen();
-}
-
-
-void fnHP35JM(void){
-  fneRPN(1); //eRPN
-  setFGLSettings(RB_FGLNFUL); //fgLine OFF
-  clearSystemFlag(FLAG_HPRP);
-  SetSetting(SS_8);
-  SetSetting(ITM_CPXRES1);
-  SetSetting(ITM_SPCRES1);
-}
+    grpGroupingLeft   =  3;
+    groupingGap                = grpGroupingLeft;               //legacy function displays use IPGAP
+    grpGroupingRight   =  3;
+    grpGroupingGr1Left =  0;
+    grpGroupingGr1LeftOverflow = 0;
+    fnSetGapChar(ITM_NULL);
+    fnSetGapChar(ITM_NULL+32768);
+    fnSetGapChar(ITM_WDOT+49152);
+    refreshScreen();
+  }
 
 
-void fnSetC47(uint16_t unusedButMandatoryParameter) {
-  fnKeyExit(0);
-  fnClrMod(0);
-  addItemToBuffer(ITM_EXIT1);
+  void fnHP35JM(void){
+    fneRPN(1); //eRPN
+    setFGLSettings(RB_FGLNFUL); //fgLine OFF
+    clearSystemFlag(FLAG_HPRP);
+    SetSetting(SS_8);
+    SetSetting(ITM_CPXRES1);
+    SetSetting(ITM_SPCRES1);
+  }
 
-  fnInDefault(ID_43S);
-  fnDisplayFormatAll(3);
-  jm_BASE_SCREEN = true;
-  SH_BASE_HOME = false;
-  exponentHideLimit = 0;
-  exponentLimit     = 6145;
-  significantDigits = 34;
-  displayStack = cachedDisplayStack = 4;
-  currentAngularMode = amDegree;
-  SetSetting(SS_8);
-  SetSetting(ITM_CPXRES1);
-  SetSetting(ITM_SPCRES1);
-  fneRPN(1); //eRPN
-  setFGLSettings(RB_FGLNFUL); //fgLine ON
-  temporaryInformation = TI_NO_INFO;
 
-  fnSetGapChar (0 + configSettings[CFG_DFLT].gapl);
-  grpGroupingLeft            = configSettings[CFG_DFLT].gprl ;
-  groupingGap                = grpGroupingLeft;               //legacy function displays use IPGAP
-  grpGroupingGr1LeftOverflow = configSettings[CFG_DFLT].gpr1x;
-  grpGroupingGr1Left         = configSettings[CFG_DFLT].gpr1 ;
-  grpGroupingRight           = configSettings[CFG_DFLT].gprr ;
-  fnSetGapChar (32768+configSettings[CFG_DFLT].gapr);
-  fnSetGapChar (49152+configSettings[CFG_DFLT].gaprx);
+  void fnSetC47(uint16_t unusedButMandatoryParameter) {
+    fnKeyExit(0);
+    fnClrMod(0);
+    addItemToBuffer(ITM_EXIT1);
 
-  refreshScreen();
-}
+    fnInDefault(ID_43S);
+    fnDisplayFormatAll(3);
+    jm_BASE_SCREEN = true;
+    SH_BASE_HOME = false;
+    exponentHideLimit = 0;
+    exponentLimit     = 6145;
+    significantDigits = 34;
+    displayStack = cachedDisplayStack = 4;
+    currentAngularMode = amDegree;
+    SetSetting(SS_8);
+    SetSetting(ITM_CPXRES1);
+    SetSetting(ITM_SPCRES1);
+    fneRPN(1); //eRPN
+    setFGLSettings(RB_FGLNFUL); //fgLine ON
+    temporaryInformation = TI_NO_INFO;
+
+    fnSetGapChar (0 + configSettings[CFG_DFLT].gapl);
+    grpGroupingLeft            = configSettings[CFG_DFLT].gprl ;
+    groupingGap                = grpGroupingLeft;               //legacy function displays use IPGAP
+    grpGroupingGr1LeftOverflow = configSettings[CFG_DFLT].gpr1x;
+    grpGroupingGr1Left         = configSettings[CFG_DFLT].gpr1 ;
+    grpGroupingRight           = configSettings[CFG_DFLT].gprr ;
+    fnSetGapChar (32768+configSettings[CFG_DFLT].gapr);
+    fnSetGapChar (49152+configSettings[CFG_DFLT].gaprx);
+
+    fnDrop(0);
+    fnDrop(0);
+    runFunction(ITM_SQUARE);
+    refreshScreen();
+  }
+#endif // !TESTSUITE_BUILD
 
 
 

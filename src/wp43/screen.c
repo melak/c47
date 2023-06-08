@@ -58,8 +58,9 @@
 
 #include "wp43.h"
 
-static uint16_t charCodeFromString(const char *ch, uint16_t *offset);
-
+#ifndef TESTSUITE_BUILD
+  static uint16_t charCodeFromString(const char *ch, uint16_t *offset);
+#endif //TESTSUITE_BUILD
 
 //#define DEBUGCLEARS
 
