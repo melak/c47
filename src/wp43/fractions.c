@@ -27,7 +27,14 @@
 
 
 
-void fnDenMax(uint16_t unusedButMandatoryParameter) {
+void fnDenMax(uint16_t D) {
+  denMax = D;
+  if(denMax < 2) {
+    denMax = 2;
+  }
+}
+
+/* Replaces in favour of TAM selection
   real_t reX;
 
   if(!saveLastX()) {
@@ -80,6 +87,7 @@ void fnDenMax(uint16_t unusedButMandatoryParameter) {
     }
   }
 }
+*/
 
 
 

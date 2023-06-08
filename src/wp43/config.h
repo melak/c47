@@ -182,7 +182,7 @@ void     fnGetSignificantDigits(uint16_t unusedButMandatoryParameter);
  *
  * \param[in] unusedButMandatoryParameter uint16_t
  ***********************************************/
-void     fnSetSignificantDigits(uint16_t unusedButMandatoryParameter);
+void     fnSetSignificantDigits(uint16_t S);
 
 /********************************************//**
  * \brief Sets the rounding mode
@@ -217,8 +217,8 @@ void     fnClAll               (uint16_t confirmation);
 void     backToSystem          (uint16_t confirmation);
 void     runDMCPmenu           (uint16_t confirmation);
 void     activateUSBdisk       (uint16_t confirmation);
-void     fnRange               (uint16_t unusedButMandatoryParameter);
+void     fnRange               (uint16_t R);
 void     fnGetRange            (uint16_t unusedButMandatoryParameter);
-void     fnHide                (uint16_t digits);
+void     fnHide                (uint16_t H);
 void     fnGetHide             (uint16_t unusedButMandatoryParameter);
 #endif // !CONFIG_H

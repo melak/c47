@@ -29,11 +29,11 @@
 
 #include "realType.h"
 
-realContext_t ctxtReal34, ctxtReal39, ctxtReal51, ctxtReal1071;
+realContext_t ctxtReal34, ctxtReal39, ctxtReal51, ctxtReal75, ctxtReal1071;
 
 char whiteSpace[50], temp[10000];
 char defines[1000000], externalDeclarations[1000000]; // .h file
-char realArray[1000000], realPointerDeclarations[1000000], real34PointerDeclarations[1000000], real51PointerDeclarations[1000000], real1071PointerDeclarations[1000000]; // .c file
+char realArray[1000000], realPointerDeclarations[1000000], real34PointerDeclarations[1000000], real51PointerDeclarations[1000000], real75PointerDeclarations[1000000], real1071PointerDeclarations[1000000]; // .c file
 FILE *constantsC, *constantsH;
 int  idx, c;
 
@@ -169,6 +169,44 @@ void generateConstantArray51(char *name, char *value) {
   strcat(realArray, "  ");
   for(uint32_t i=0; i<sizeof(real51_t); i++) {
     sprintf(temp, "0x%02x,", *(((uint8_t *)(&real51)) + i));
+    strcat(realArray, temp);
+  }
+
+  strcat(realArray, "  // const_");
+  strcat(realArray, name);
+  strcat(realArray, "\n");
+}
+
+
+void generateConstantArray75(char *name, char *value) {
+  real_t real75;
+
+  #if defined(DEBUG)
+    printf("generateConstantArray75: %-10.10s = %s\n", name, value);
+  #endif // DEBUG
+
+  memset(&real75, 0, sizeof(real_t));
+  stringToReal(value, (real_t *)&real75, &ctxtReal75);
+
+  strcpy(whiteSpace, "                                        ");
+  whiteSpace[13 - strlen(name)] = 0;
+
+  strcat(externalDeclarations, "  extern const real_t * const const_");
+  strcat(externalDeclarations, name);
+  strcat(externalDeclarations, ";\n");
+
+  strcat(real75PointerDeclarations, "TO_QSPI const real_t * const const_");
+  strcat(real75PointerDeclarations, name);
+  strcat(real75PointerDeclarations, whiteSpace);
+  strcat(real75PointerDeclarations, " = (real_t *)(constants + ");
+  sprintf(temp, "%5d)", idx);
+  idx += sizeof(real_t);
+  strcat(real75PointerDeclarations, temp);
+  strcat(real75PointerDeclarations, ";\n");
+
+  strcat(realArray, "  ");
+  for(uint32_t i=0; i<sizeof(real_t); i++) {
+    sprintf(temp, "0x%02x,", *(((uint8_t *)(&real75)) + i));
     strcat(realArray, temp);
   }
 
@@ -544,20 +582,20 @@ void generateAllConstants(void) {
   generateConstantArray51("gammaC28",      "-0.000000000001515686855682081535390179935440192138970398946754350022046202956603870401666503058594"); // cnst235
   generateConstantArray51("gammaC29",      "+0.000000000000000003727184110478268994444830355775133199862144652804253659035860755294511160286895"); // cnst236
 
-  // Array angle180
-  generateConstantArray51("pi_51",         "+3.141592653589793238462643383279502884197169399375105821e+00"); // cnst237
-  generateConstantArray51("200",           "+2.000000000000000000000000000000000000000000000000000000e+02"); // cnst238
-  generateConstantArray51("180",           "+1.800000000000000000000000000000000000000000000000000000e+02"); // cnst239
+  // Array angle180 - these three *must* be contiguious
+  generateConstantArray75("pi_75",         "+3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825e+00"); // cnst237
+  generateConstantArray75("200",           "+2.000000000000000000000000000000000000000000000000000000e+02"); // cnst238
+  generateConstantArray75("180",           "+1.800000000000000000000000000000000000000000000000000000e+02"); // cnst239
 
-  // Array angle90
-  generateConstantArray51("piOn2_51",      "+1.570796326794896619231321691639751442098584699687552910e+00"); // cnst240
-  generateConstantArray51("100",           "+1.000000000000000000000000000000000000000000000000000000e+02"); // cnst241
-  generateConstantArray51("90",            "+9.000000000000000000000000000000000000000000000000000000e+01"); // cnst242
+  // Array angle90 - these three *must* be contiguious
+  generateConstantArray75("piOn2_75",      "+1.570796326794896619231321691639751442098584699687552910487472296153908203143104499314017412e+00"); // cnst240
+  generateConstantArray75("100",           "+1.000000000000000000000000000000000000000000000000000000e+02"); // cnst241
+  generateConstantArray75("90",            "+9.000000000000000000000000000000000000000000000000000000e+01"); // cnst242
 
-  // Array angle45
-  generateConstantArray51("piOn4_51",      "+7.853981633974483096156608458198757210492923498437764552e-01"); // cnst243
-  generateConstantArray51("50",            "+5.000000000000000000000000000000000000000000000000000000e+01"); // cnst244
-  generateConstantArray51("45",            "+4.500000000000000000000000000000000000000000000000000000e+01"); // cnst245
+  // Array angle45 - these three *must* be contiguious
+  generateConstantArray75("piOn4_75",      "+7.85398163397448309615660845819875721049292349843776455243736148076954101571552249657008706e-01"); // cnst243
+  generateConstantArray75("50",            "+5.000000000000000000000000000000000000000000000000000000e+01"); // cnst244
+  generateConstantArray75("45",            "+4.500000000000000000000000000000000000000000000000000000e+01"); // cnst245
 
   generateConstantArray1071("2pi",       "+6.2831853071795864769252867665590057683943387987502116419498891846156328125724179972560696506842341359" //   101
                                             "6429617302656461329418768921910116446345071881625696223490056820540387704221111928924589790986076392" //   201
@@ -819,11 +857,14 @@ int main(int argc, char* argv[]) {
   decContextDefault(&ctxtReal34,   DEC_INIT_DECQUAD);
   decContextDefault(&ctxtReal39,   DEC_INIT_DECQUAD);
   decContextDefault(&ctxtReal51,   DEC_INIT_DECQUAD);
+  decContextDefault(&ctxtReal75,   DEC_INIT_DECQUAD);
   decContextDefault(&ctxtReal1071, DEC_INIT_DECQUAD);
   ctxtReal39.digits = 39;
   ctxtReal39.traps  = 0;
   ctxtReal51.digits = 51;
   ctxtReal51.traps  = 0;
+  ctxtReal75.digits = 75;
+  ctxtReal75.traps  = 0;
   ctxtReal1071.digits  = 1071;
   ctxtReal1071.traps   = 0;
 
@@ -892,6 +933,8 @@ int main(int argc, char* argv[]) {
   fprintf(constantsC, "%s", realPointerDeclarations);
   fprintf(constantsC, "\n");
   fprintf(constantsC, "%s", real51PointerDeclarations);
+  fprintf(constantsC, "\n");
+  fprintf(constantsC, "%s", real75PointerDeclarations);
   fprintf(constantsC, "\n");
   fprintf(constantsC, "%s", real1071PointerDeclarations);
   fprintf(constantsC, "\n");
