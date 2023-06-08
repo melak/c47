@@ -23,6 +23,7 @@
 
 #include "c43Extensions/radioButtonCatalog.h"
 
+#include "charString.h"
 #include "curveFitting.h"
 #include "fonts.h"
 #include "c43Extensions/inlineTest.h"
@@ -651,24 +652,24 @@ void add_digitglyph_to_tmp2(char* tmp2, int16_t xx) {
   tmp2[0] = 0;
 
   switch(xx) {
-    case  0: strcat(tmp2, STD_SUB_0);   break;
-    case  1: strcat(tmp2, STD_BASE_1);  break;
-    case  2: strcat(tmp2, STD_BASE_2);  break;
-    case  3: strcat(tmp2, STD_BASE_3);  break;
-    case  4: strcat(tmp2, STD_BASE_4);  break;
-    case  5: strcat(tmp2, STD_BASE_5);  break;
-    case  6: strcat(tmp2, STD_BASE_6);  break;
-    case  7: strcat(tmp2, STD_BASE_7);  break;
-    case  8: strcat(tmp2, STD_BASE_8);  break;
-    case  9: strcat(tmp2, STD_BASE_9);  break;
-    case 10: strcat(tmp2, STD_BASE_10); break;
-    case 11: strcat(tmp2, STD_BASE_11); break;
-    case 12: strcat(tmp2, STD_BASE_12); break;
-    case 13: strcat(tmp2, STD_BASE_13); break;
-    case 14: strcat(tmp2, STD_BASE_14); break;
-    case 15: strcat(tmp2, STD_BASE_15); break;
-    case 16: strcat(tmp2, STD_BASE_16); break;
-    default:                            break;
+    case  0: stringAppend(tmp2 + stringByteLength(tmp2), STD_SUB_0);   break;
+    case  1: stringAppend(tmp2 + stringByteLength(tmp2), STD_BASE_1);  break;
+    case  2: stringAppend(tmp2 + stringByteLength(tmp2), STD_BASE_2);  break;
+    case  3: stringAppend(tmp2 + stringByteLength(tmp2), STD_BASE_3);  break;
+    case  4: stringAppend(tmp2 + stringByteLength(tmp2), STD_BASE_4);  break;
+    case  5: stringAppend(tmp2 + stringByteLength(tmp2), STD_BASE_5);  break;
+    case  6: stringAppend(tmp2 + stringByteLength(tmp2), STD_BASE_6);  break;
+    case  7: stringAppend(tmp2 + stringByteLength(tmp2), STD_BASE_7);  break;
+    case  8: stringAppend(tmp2 + stringByteLength(tmp2), STD_BASE_8);  break;
+    case  9: stringAppend(tmp2 + stringByteLength(tmp2), STD_BASE_9);  break;
+    case 10: stringAppend(tmp2 + stringByteLength(tmp2), STD_BASE_10); break;
+    case 11: stringAppend(tmp2 + stringByteLength(tmp2), STD_BASE_11); break;
+    case 12: stringAppend(tmp2 + stringByteLength(tmp2), STD_BASE_12); break;
+    case 13: stringAppend(tmp2 + stringByteLength(tmp2), STD_BASE_13); break;
+    case 14: stringAppend(tmp2 + stringByteLength(tmp2), STD_BASE_14); break;
+    case 15: stringAppend(tmp2 + stringByteLength(tmp2), STD_BASE_15); break;
+    case 16: stringAppend(tmp2 + stringByteLength(tmp2), STD_BASE_16); break;
+    default:                                                           break;
   }
 }
 
@@ -680,24 +681,24 @@ void use_base_glyphs(char* tmp1, int16_t xx) {              // Needs non-local v
   
   if(xx <= 16) {
     add_digitglyph_to_tmp2(tmp2, xx);
-    strcat(tmp1, tmp2);
+    stringAppend(tmp1 + stringByteLength(tmp1), tmp2);
   }
   else if(xx <= 99) {
     add_digitglyph_to_tmp2(tmp2, xx / 10);
-    strcat(tmp1, tmp2);
+    stringAppend(tmp1 + stringByteLength(tmp1), tmp2);
     add_digitglyph_to_tmp2(tmp2, xx % 10);
-    strcat(tmp1, tmp2);
+    stringAppend(tmp1 + stringByteLength(tmp1), tmp2);
   }
   else if(xx<=999) {
-    add_digitglyph_to_tmp2(tmp2, xx / 100);   strcat(tmp1, tmp2);
-    add_digitglyph_to_tmp2(tmp2, (xx % 100) / 10);   strcat(tmp1, tmp2);
-    add_digitglyph_to_tmp2(tmp2, (xx % 100) % 10);   strcat(tmp1, tmp2);
+    add_digitglyph_to_tmp2(tmp2, xx / 100);   stringAppend(tmp1 + stringByteLength(tmp1), tmp2);
+    add_digitglyph_to_tmp2(tmp2, (xx % 100) / 10);   stringAppend(tmp1 + stringByteLength(tmp1), tmp2);
+    add_digitglyph_to_tmp2(tmp2, (xx % 100) % 10);   stringAppend(tmp1 + stringByteLength(tmp1), tmp2);
   }
   else if(xx<=9999) {
-    add_digitglyph_to_tmp2(tmp2, xx / 1000);     strcat(tmp1, tmp2);                  //9876 > 9
-    add_digitglyph_to_tmp2(tmp2, (xx % 1000) / 100);     strcat(tmp1, tmp2);          //876  > 8
-    add_digitglyph_to_tmp2(tmp2, ((xx % 1000) % 100) / 10);   strcat(tmp1, tmp2);     //76   > 7
-    add_digitglyph_to_tmp2(tmp2, ((xx % 1000) % 100) % 10);   strcat(tmp1, tmp2);     //6  
+    add_digitglyph_to_tmp2(tmp2, xx / 1000);     stringAppend(tmp1 + stringByteLength(tmp1), tmp2);                  //9876 > 9
+    add_digitglyph_to_tmp2(tmp2, (xx % 1000) / 100);     stringAppend(tmp1 + stringByteLength(tmp1), tmp2);          //876  > 8
+    add_digitglyph_to_tmp2(tmp2, ((xx % 1000) % 100) / 10);   stringAppend(tmp1 + stringByteLength(tmp1), tmp2);     //76   > 7
+    add_digitglyph_to_tmp2(tmp2, ((xx % 1000) % 100) % 10);   stringAppend(tmp1 + stringByteLength(tmp1), tmp2);     //6  
   }
   else {
     snprintf(tmp1, 12, "%d", xx);
@@ -710,29 +711,29 @@ char *figlabel(const char *label, const char* showText, int16_t showValue) {    
   char tmp1[16];
   tmp[0] = 0;
 
-  if(strlen(label) <= 12) {
-    strcpy(tmp, label);
+  if(stringByteLength(label) <= 12) {
+    stringAppend(tmp, label);
   }
 
   if(showValue != NOVAL && showValue != ITEM_NOT_CODED && showValue < 0) {
-    strcat(tmp, STD_SUB_MINUS);
+    stringAppend(tmp + stringByteLength(tmp), STD_SUB_MINUS);
   }
 
-  if(showValue != NOVAL && showValue != ITEM_NOT_CODED && strlen(label) <= 8) {
+  if(showValue != NOVAL && showValue != ITEM_NOT_CODED && stringByteLength(label) <= 8) {
     showValue = max(showValue, -showValue);
     use_base_glyphs(tmp1, showValue);
-    strcat(tmp, tmp1);
+    stringAppend(tmp + stringByteLength(tmp), tmp1);
   }
 
-  if(showText[0] != 0 && strlen(tmp)+strlen(showText) + 1 <= 12) {
-    //strcat(tmp, showText);
+  if(showText[0] != 0 && stringByteLength(tmp)+stringByteLength(showText) + 1 <= 12) {
+    //stringAppend(tmp + stringByteLength(tmp), showText);
     uint16_t ii = 0;
     while (showText[ii] != 0) {
        if(showText[ii]>='A' && showText[ii]<='Z') {
-         strcat(tmp, STD_SUB_A);
-         tmp[strlen(tmp)-1] += showText[ii]-'A';
+         stringAppend(tmp + stringByteLength(tmp), STD_SUB_A);
+         tmp[stringByteLength(tmp)-1] += showText[ii]-'A';
        }
-    ii++;
+    ii += (showText[ii] & 0x80) ? 2 : 1;
     }
   }
   return tmp;
