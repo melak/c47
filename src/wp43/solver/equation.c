@@ -55,10 +55,12 @@ TO_QSPI static const char bugScreenUnknownFormulaParserMode[] = "In function _pa
     { "ASINH",                               ITM_arsinh,      0}, // Inverse hyperbolic sine
     { "ATAN2",                               ITM_atan2,       0}, // Binary arctangent
     { "ATANH",                               ITM_artanh,      0}, // Inverse hyperbolic tangent
+    { "ceil",                                ITM_CEIL,        0}, // Ceiling function
     { "CEIL",                                ITM_CEIL,        0}, // Ceiling function
     { "COS",                                 ITM_cos,         0}, // Cosine
     { "COSH",                                ITM_cosh,        0}, // Hyperbolic cosine
     { "EXP",                                 ITM_EXP,         0}, // Natural exponential
+    { "floor",                               ITM_FLOOR,       0}, // Floor function
     { "FLOOR",                               ITM_FLOOR,       0}, // Floor function
     { "gd",                                  ITM_GD,          0}, // Gudermannian function
     { "gd" STD_SUP_MINUS_1,                  ITM_GDM1,        0}, // Inverse Gudermannian function
@@ -75,23 +77,21 @@ TO_QSPI static const char bugScreenUnknownFormulaParserMode[] = "In function _pa
     { "log2",                                ITM_LOG2,        0}, // Binary logarithm
     { "log" STD_SUB_2,                       ITM_LOG2,        0}, // Binary logarithm
     { "MAX",                                 ITM_Max,         0}, // Maximum
+    { "max",                                 ITM_Max,         0}, // Maximum
     { "MIN",                                 ITM_Min,         0}, // Minimum
+    { "min",                                 ITM_Min,         0}, // Minimum
     { "SIN",                                 ITM_sin,         0}, // Sine
     { "SINH",                                ITM_sinh,        0}, // Hyperbolic sine
     { "TAN",                                 ITM_tan,         0}, // Tangent
     { "TANH",                                ITM_tanh,        0}, // Hyperbolic tangent
     { "W" STD_SUP_MINUS STD_SUP_1,           ITM_WM1,         0}, // Inverse function of Lambert's W
+    { "W" STD_SUP_MINUS_1,                   ITM_WM1,         0}, // Inverse function of Lambert's W
     { STD_GAMMA,                             ITM_GAMMAX,      0}, // Gamma function
     { STD_zeta,                              ITM_zetaX,       0}, // Riemann zeta function
     { STD_SQUARE_ROOT,                       ITM_SQUAREROOTX, 0}, // Square root (available through f SQRT in EIM)
 
-
-    { "acosh",                               ITM_arcosh,      0}, // JM C43 Inverse hyperbolic cosine
-    { "asinh",                               ITM_arsinh,      0}, // JM C43 Inverse hyperbolic sine
     { "atan2",                               ITM_atan2,       0}, // JM C43 Binary arctangent
-    { "atanh",                               ITM_artanh,      0}, // JM C43 Inverse hyperbolic tangent
     { "cos",                                 ITM_cos,         0}, // JM C43 Cosine
-    { "cosh",                                ITM_cosh,        0}, // JM C43 Hyperbolic cosine
     { "exp",                                 ITM_EXP,         0}, // JM C43 Natural exponential
     { "lb",                                  ITM_LOG2,        0}, // JM C43 Binary logarithm
     { "lg",                                  ITM_LOG10,       0}, // JM C43 Common logarithm
@@ -102,9 +102,20 @@ TO_QSPI static const char bugScreenUnknownFormulaParserMode[] = "In function _pa
     { "lB",                                  ITM_LOG2,        0}, // JM C43 Binary logarithm
     { "LOG" STD_SUB_2,                       ITM_LOG2,        0}, // JM C43 Binary logarithm
     { "sin",                                 ITM_sin,         0}, // JM C43 Sine
-    { "sinh",                                ITM_sinh,        0}, // JM C43 Hyperbolic sine
     { "tan",                                 ITM_tan,         0}, // JM C43 Tangent
+
+    { "sinh",                                ITM_sinh,        0}, // JM C43 Hyperbolic sine
+    { "cosh",                                ITM_cosh,        0}, // JM C43 Hyperbolic cosine
     { "tanh",                                ITM_tanh,        0}, // JM C43 Hyperbolic tangent
+    { "asinh",                               ITM_arsinh,      0}, // JM C43 Inverse hyperbolic sine
+    { "acosh",                               ITM_arcosh,      0}, // JM C43 Inverse hyperbolic cosine
+    { "atanh",                               ITM_artanh,      0}, // JM C43 Inverse hyperbolic tangent
+    { "arcosh",                              ITM_arcosh,      0}, // JM C43 Inverse hyperbolic cosine
+    { "arsinh",                              ITM_arsinh,      0}, // JM C43 Inverse hyperbolic sine
+    { "artanh",                              ITM_artanh,      0}, // JM C43 Inverse hyperbolic tangent
+    { "arccosh",                             ITM_arcosh,      0}, // JM C43 Inverse hyperbolic cosine
+    { "arcsinh",                             ITM_arsinh,      0}, // JM C43 Inverse hyperbolic sine
+    { "arctanh",                             ITM_artanh,      0}, // JM C43 Inverse hyperbolic tangent
 
     { "",                                    0,               0}  // Sentinel
   };

@@ -322,22 +322,93 @@ uint8_t DXR = 0, DYR = 0, DXI = 0, DYI = 0;
 
 
 void graph_eqn(uint16_t mode) {
+  double x;
+  double x01 = x_min;
+  double y01 = 0;
+  double y02 = 0;
+  double dy;
+  double dx0 = (x_max-x_min)/SCREEN_WIDTH_GRAPH*10;
+  double dx = dx0;
+  double slope = 1;
+  double slope0 = 1;
+  int16_t count = 0;
+  int16_t ss0 = 0;
+  int16_t ss1 = 0;
+  int16_t ss2 = 0;
+  #define SS1 1.8 //1.4
+  #define SS2 2.4 //2
+
   #if !defined(TESTSUITE_BUILD)
     if(graphVariable <= 0 || graphVariable > 65535) {
       return;
     }
     calcMode = CM_GRAPH;
-    double x;
     fnClearStack(0);
 
     if(mode == 1) {
       fnClDrawMx();
     }
-    for(x=x_min; x<=x_max; x+=0.99999*(x_max-x_min)/SCREEN_WIDTH_GRAPH*10) {    //Reduced the amount of sample data from 400 points to 40 points
+printf("dx0=%f\n",dx0);
+
+    //Main loop, default is 40 x 6 point gaps, across the 240 wide screen 
+    //  If the slope is increasing, then the dx is reduced. That helps going forward, but not looking a the laast sample which already jumped too far, so the next part step back
+    //  The 0.99999 is to purposely stay off integer fractions, which is then less likely to land on easy roots
+    for(x=x_min; x<=x_max; x+=0.99999*dx) {
       convertDoubleToReal34RegisterPush(x, REGISTER_X);
       //leaving y in Y and x in X
       execute_rpn_function();
+      y02 = convertRegisterToDouble(REGISTER_Y);
+      dy = y02 - y01;
+      slope  = dy / (x - x01);
+      ss0 = ss1;
+      ss1 = ss2;
+      ss2 = slope == 0 ? 0 : slope > 0 ? 1 : -1;
+
+      #ifdef DEBUG_GR
+        printRegisterToConsole(REGISTER_X,"X:","");
+        printRegisterToConsole(REGISTER_Y," Y:","");
+        printf("%f %f slope/slope0=%f slope0/slope=%f \n",slope, slope0, slope/slope0, slope0/slope);
+        printf("ss1 %i ss2 %i y01 %6f y02 %6f\n",ss1,ss2,y01,y02);
+      #endif //DEBUG_GR
+
+
+      if(slope0 != 0 && slope != 0 && (
+        fabs(slope/slope0) > SS2 || fabs(slope0/slope) > SS2 ||   //increase in slope        
+        (ss0 == 1  && ss1 == -1 && ss2 == 1) || 
+        (ss0 == -1 && ss1 == 1  && ss2 == -1) ||
+        (             ss1 == 1  && ss2 == -1  && y01 > 0 && y02 < 0) ||
+        (             ss1 == -1 && ss2 == 1   && y01 < 0 && y02 > 0)
+        )){
+
+        #ifdef DEBUG_GR
+          printf("jumping %f %f slope/slope0=%f  slope0/slope=%f\n",slope, slope0, slope/slope0, slope0/slope );
+        #endif //DEBUG_GR
+        x -= dx * (0.90);
+        convertDoubleToReal34RegisterPush(x, REGISTER_X);
+        execute_rpn_function();
+        y02 = convertRegisterToDouble(REGISTER_Y);
+        slope  = (y02 - y01) / (x - x01);
+        ss0 = ss1;
+        ss1 = ss2;
+        ss2 = slope == 0 ? 0 : slope > 0 ? 1 : -1;
+        #ifdef DEBUG_GR
+          printf("Jump back\n");
+          printRegisterToConsole(REGISTER_X,"X:","");
+          printRegisterToConsole(REGISTER_Y," Y:","");
+          printf("%f %f slope/slope0=%f slope0/slope=%f \n",slope, slope0, slope/slope0, slope0/slope);
+        #endif //DEBUG_GR
+      }
+
+      if(slope == 0 || slope0 == 0) dx = dx0; 
+      else dx = dx0 * ( (slope/slope0 > SS1 || slope0/slope > SS1)  ? 0.5 : 1.0);
+      #ifdef DEBUG_GR
+        printf("Graph: dx=%f drawMxN=%i\n",dx,drawMxN());
+      #endif //DEBUG_GR
+
       AddtoDrawMx();
+      slope0 = slope;
+      y01 = y02;
+      x01 = x;
 
       #if defined(VERBOSE_SOLVER0) && defined(PC_BUILD)
         printf(">>> Into DrwMX:%i points ",drawMxN());
@@ -349,6 +420,8 @@ void graph_eqn(uint16_t mode) {
           printf("ERROR CODE CANNOT STAT COMPLEX RESULT, ignored\n"); lastErrorCode = 0;
         }
       #endif //PC_BUILD
+      count++;
+      if(count > 80) break;
     }
 
     fnClearStack(0);

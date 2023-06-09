@@ -662,6 +662,9 @@ void graph_plotmem(void) {
       #endif
 
 //#################################################### vvv SCALING LOOP  vvv #########################
+           uint16_t y_maxcnt=2;
+           uint16_t y_mincnt=2;
+
 /**/       if(PLOT_BOX || PLOT_LINE || PLOT_CROSS || !(PLOT_DIFF || PLOT_INTG)) {  //XXXX
 /**/        for(cnt=0; (cnt < statnum); cnt++) {
 /**/          #ifdef STATDEBUG
@@ -669,8 +672,11 @@ void graph_plotmem(void) {
 /**/          #endif
 /**/          if(grf_x(cnt) < x_min) {x_min = grf_x(cnt);}
 /**/          if(grf_x(cnt) > x_max) {x_max = grf_x(cnt);}
-/**/          if(grf_y(cnt) < y_min) {y_min = grf_y(cnt);}
-/**/          if(grf_y(cnt) > y_max) {y_max = grf_y(cnt);}
+/**/  //        if(grf_y(cnt) < y_min) {y_min = grf_y(cnt);}
+/**/    //      if(grf_y(cnt) > y_max) {y_max = grf_y(cnt);}
+              if(grf_y(cnt) < y_min) {y_mincnt++; if(y_mincnt==3) y_min = grf_y(cnt);} else y_mincnt=0; //anti-asymptote
+              if(grf_y(cnt) > y_max) {y_maxcnt++; if(y_maxcnt==3) y_max = grf_y(cnt);} else y_maxcnt=0; //anti-asymptote
+
 /**/          #ifdef STATDEBUG
 /**/          printf("Axis0b: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);   
 /**/          #endif
@@ -678,6 +684,8 @@ void graph_plotmem(void) {
                  return;
               }
 /**/        }
+            y_min=fmin(y_min,-y_max);
+            y_max=fmax(-y_min,y_max);
 /**/      }
 /**/    } 
 /**/
