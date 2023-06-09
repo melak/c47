@@ -1229,10 +1229,7 @@ bool_t allowShiftsToClearError = false;
       lastshiftF = shiftF;
       lastshiftG = shiftG;
       showShiftState();
-      #ifdef PC_BUILD
-        if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
-        if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
-      #endif
+      refreshModeGui();                                       //JM refreshModeGui
 
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;
@@ -1262,10 +1259,8 @@ bool_t allowShiftsToClearError = false;
       lastshiftF = shiftF;
       lastshiftG = shiftG;
       showShiftState();
-      #ifdef PC_BUILD
-        if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
-        if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
-      #endif
+      refreshModeGui();                                       //JM refreshModeGui
+
 
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;
@@ -1295,10 +1290,7 @@ bool_t allowShiftsToClearError = false;
       lastshiftF = shiftF;
       lastshiftG = shiftG;
       showShiftState();                                                                                                         //JM shifts
-      #ifdef PC_BUILD
-        if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
-        if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
-      #endif
+      refreshModeGui();                                                                                                         //JM refreshModeGui
 
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;
@@ -2748,10 +2740,7 @@ ram_full:
       calcMode = CM_AIM;
     }                                                                     //JM ^^
 
-    #if defined(PC_BUILD) && (SCREEN_800X480 == 0) //JM
-    if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
-    if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
-    #endif // PC_BUILD && (SCREEN_800X480 == 0)    //JM  
+    refreshModeGui(); //JM refreshModeGui
   }
 #endif // !TESTSUITE_BUILD
 

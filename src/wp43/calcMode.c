@@ -101,7 +101,7 @@
     nextChar = NC_NORMAL;
     numLock = false;
 
-    if(!tam.mode && calcMode != CM_ASSIGN) {
+    if(!tam.mode && calcMode != CM_ASSIGN && calcMode != CM_PEM) {
       calcMode = CM_AIM;
       liftStack();
 

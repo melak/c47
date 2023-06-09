@@ -718,6 +718,9 @@ void pemAlpha(int16_t item) {
       deleteStepsFromTo(currentStep.ram, findNextStep_ram(currentStep.ram));
       clearSystemFlag(FLAG_ALPHA);
         calcModeNormalGui();
+      if(softmenuStack[0].softmenuId == 1) { // MyAlpha
+        softmenuStack[0].softmenuId = 0; // MyMenu
+      }
       return;
     }
     else {
@@ -728,6 +731,9 @@ void pemAlpha(int16_t item) {
     pemCloseAlphaInput();
     --firstDisplayedLocalStepNumber;
     defineFirstDisplayedStep();
+    if(softmenuStack[0].softmenuId == 1) { // MyAlpha
+      softmenuStack[0].softmenuId = 0; // MyMenu
+    }
     return;
   }
 
@@ -754,6 +760,9 @@ void pemCloseAlphaInput(void) {
   currentStep = findNextStep(currentStep);
   ++firstDisplayedLocalStepNumber;
   firstDisplayedStep = findNextStep(firstDisplayedStep);
+  if(softmenuStack[0].softmenuId == 1) { // MyAlpha
+    softmenuStack[0].softmenuId = 0; // MyMenu
+  }
   #endif // !TESTSUITE_BUILD
 }
 

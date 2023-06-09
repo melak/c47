@@ -171,10 +171,7 @@ void resetShiftState(void) {
     showShiftState();
     refreshScreen();
   }                                                                             //^^
-  #ifdef PC_BUILD
-        if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
-        if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
-  #endif
+  refreshModeGui();                                                             //JM refreshModeGui
 }
 
 
@@ -1383,3 +1380,29 @@ void fnCln(uint16_t unusedButMandatoryParameter){
   #endif
 }
 
+
+void refreshModeGui(void) {
+  #ifdef PC_BUILD
+    if(!tam.mode) {
+      switch(calcMode) {
+        case CM_AIM:
+        case CM_EIM:
+          calcModeAimGui();
+          break;
+
+        case CM_NORMAL:
+          calcModeNormalGui();
+          break;
+
+        case CM_PEM:
+          if(getSystemFlag(FLAG_ALPHA)) {
+            calcModeAimGui();
+          }
+          else {
+            calcModeNormalGui();
+          }
+          break;
+      }
+    }
+  #endif
+}
