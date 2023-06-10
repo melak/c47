@@ -121,7 +121,8 @@ void fnGoto(uint16_t label) {
 
 void goToGlobalStep(int32_t step) {
   if(dynamicMenuItem >= 0) {
-    uint8_t *labelName = (uint8_t *)dynmenuGetLabel(dynamicMenuItem);
+    int16_t dupNum = 0;
+    uint8_t *labelName = (uint8_t *)dynmenuGetLabelWithDup(dynamicMenuItem, &dupNum);
 
     if(*labelName == 0) {
       return;
@@ -151,13 +152,18 @@ void goToGlobalStep(int32_t step) {
           }
         }
         if(c == len) {
-          if(labelList[lbl].program < 0) {
-            step = -labelList[lbl].step;
+          if(dupNum <= 0) {
+            if(labelList[lbl].program < 0) {
+              step = -labelList[lbl].step;
+            }
+            else {
+              step = labelList[lbl].step;
+            }
+            break;
           }
           else {
-            step = labelList[lbl].step;
+            --dupNum;
           }
-          break;
         }
       }
     }

@@ -75,5 +75,6 @@ void     fnExitAllMenus         (uint16_t unusedButMandatoryParameter);
 
 #endif // !TESTSUITE_BUILD
 char    *dynmenuGetLabel        (int16_t menuitem);
+char    *dynmenuGetLabelWithDup (int16_t menuitem, int16_t *dupNum);
 void     fnDumpMenus            (uint16_t unusedButMandatoryParameter);  //JM
 #endif // !SOFTMENUS_H

@@ -298,7 +298,7 @@
 
 
   static void _tamProcessInput(uint16_t item) {
-    int16_t min, max, min2, max2;
+    int16_t min, max, min2, max2, dupNum;
     bool_t forceTry = false, tryOoR = false;
     bool_t valueParameter = (tam.function == ITM_GTOP || tam.function == ITM_BESTF || tam.function == ITM_SKIP || tam.function == ITM_BACK);
     char *forcedVar = NULL;
@@ -313,6 +313,7 @@
     max = (tam.dot ? (calcMode == CM_PEM ? 98 : ((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) ? NUMBER_OF_LOCAL_FLAGS : currentNumberOfLocalRegisters)) : tam.max);
     min2 = (tam.indirect ? 0 : min);
     max2 = (tam.indirect ? (tam.dot ? (calcMode == CM_PEM ? 98 : currentNumberOfLocalRegisters) : 99) : max);
+    dupNum = 0;
     if(item == ITM_ENTER || (tam.alpha && stringGlyphLength(aimBuffer) > 6)) {
       forceTry = true;
     }
@@ -417,7 +418,7 @@
       return;
     }
     else if(item == MNU_DYNAMIC) {
-      forcedVar = dynmenuGetLabel(dynamicMenuItem);
+      forcedVar = dynmenuGetLabelWithDup(dynamicMenuItem, &dupNum);
       if(forcedVar[0] == 0) {
         forcedVar = NULL;
       }
@@ -807,7 +808,7 @@
         value = 1;
       }
       else if(tam.function == ITM_XEQ) {
-        value = findNamedLabel(buffer);
+        value = findNamedLabelWithDuplicate(buffer, dupNum);
         if(value == INVALID_VARIABLE) {
           for(int i = 0; i < LAST_ITEM; ++i) {
             if((indexOfItems[i].status & CAT_STATUS) == CAT_FNCT && compareString(buffer, indexOfItems[i].itemCatalogName, CMP_NAME) == 0) {
@@ -838,7 +839,7 @@
         }
       }
       else if(tam.mode == TM_LABEL || tam.mode == TM_SOLVE || (tam.mode == TM_KEY && tam.keyInputFinished) || (tam.mode == TM_DELITM && (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_RAM || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_FLASH))) {
-        value = findNamedLabel(buffer);
+        value = findNamedLabelWithDuplicate(buffer, dupNum);
         if(value == INVALID_VARIABLE && tam.function != ITM_LBL && tam.function != ITM_LBLQ && (calcMode != CM_PEM || tam.mode != TM_SOLVE)) {
           if(calcMode != CM_PEM && getSystemFlag(FLAG_IGN1ER)) {
             clearSystemFlag(FLAG_IGN1ER);
