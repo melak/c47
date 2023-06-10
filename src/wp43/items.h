@@ -2215,8 +2215,13 @@
 #define ITM_GAP_L                   2159
 #define ITM_GAP_RX                  2160
 #define ITM_GAP_R                   2161
+#define ITM_ASIN_SIGN               2162
+#define ITM_ACOS_SIGN               2163
+#define ITM_ATAN_SIGN               2164
+#define ITM_op_j_SIGN               2165
+#define ITM_poly_SIGN               2166
 
-#define LAST_ITEM                   2162
+#define LAST_ITEM                   2167
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
