@@ -335,8 +335,11 @@ void graph_eqn(uint16_t mode) {
   int16_t ss0 = 0;
   int16_t ss1 = 0;
   int16_t ss2 = 0;
-  #define SS1 1.8 //1.4
-  #define SS2 2.4 //2
+  #define SS1 1.8 //1.4  slope/slope threshold for 50% dx 
+  #define SS2 2.4 //2    slope/slope threshold for jumping back
+  uint8_t discontinuityDetected = 0;
+  bool_t  slopeIncreaseDetected = false;
+  double yAvg = 0.1;
 
   #if !defined(TESTSUITE_BUILD)
     if(graphVariable <= 0 || graphVariable > 65535) {
@@ -345,24 +348,34 @@ void graph_eqn(uint16_t mode) {
     calcMode = CM_GRAPH;
     fnClearStack(0);
 
+    convertDoubleToReal34RegisterPush(x_max, REGISTER_X);
+    execute_rpn_function();
+    yAvg += 2 * fabs(convertRegisterToDouble(REGISTER_Y));
+
     if(mode == 1) {
       fnClDrawMx();
     }
-printf("dx0=%f\n",dx0);
+    #ifdef DEBUG_GR
+      printf("dx0=%f discontinuityDetected:%u slopeIncreaseDetected:%u\n",dx0, discontinuityDetected, slopeIncreaseDetected);
+    #endif //DEBUG_GR
 
     //Main loop, default is 40 x 6 point gaps, across the 240 wide screen 
     //  If the slope is increasing, then the dx is reduced. That helps going forward, but not looking a the laast sample which already jumped too far, so the next part step back
     //  The 0.99999 is to purposely stay off integer fractions, which is then less likely to land on easy roots
     for(x=x_min; x<=x_max; x+=0.99999*dx) {
+      x = fmax(x_min,x);
+      x = fmin(x_max,x);
       convertDoubleToReal34RegisterPush(x, REGISTER_X);
       //leaving y in Y and x in X
       execute_rpn_function();
+
       y02 = convertRegisterToDouble(REGISTER_Y);
       dy = y02 - y01;
       slope  = dy / (x - x01);
       ss0 = ss1;
       ss1 = ss2;
       ss2 = slope == 0 ? 0 : slope > 0 ? 1 : -1;
+
 
       #ifdef DEBUG_GR
         printRegisterToConsole(REGISTER_X,"X:","");
@@ -372,14 +385,33 @@ printf("dx0=%f\n",dx0);
       #endif //DEBUG_GR
 
 
-      if(slope0 != 0 && slope != 0 && (
-        fabs(slope/slope0) > SS2 || fabs(slope0/slope) > SS2 ||   //increase in slope        
-        (ss0 == 1  && ss1 == -1 && ss2 == 1) || 
-        (ss0 == -1 && ss1 == 1  && ss2 == -1) ||
-        (             ss1 == 1  && ss2 == -1  && y01 > 0 && y02 < 0) ||
-        (             ss1 == -1 && ss2 == 1   && y01 < 0 && y02 > 0)
-        )){
+      if (slope0 != 0 && slope != 0) {
+        slopeIncreaseDetected = ( 
+          (fabs(y02/y01) > 1.01 && fabs(slope/slope0) > SS2) || 
+          (fabs(y01/y02) > 1.01 && fabs(slope0/slope) > SS2) ||   //increase in slope        
+          (ss0 == 1  && ss1 == -1 && ss2 == 1) || 
+          (ss0 == -1 && ss1 == 1  && ss2 == -1) ||
+          (             ss1 == 1  && ss2 == -1  && y01 > 0 && y02 < 0) ||
+          (             ss1 == -1 && ss2 == 1   && y01 < 0 && y02 > 0)     );
+      } else slopeIncreaseDetected = false;
 
+
+      if(count == 0) {
+        yAvg += 2 * fabs(y02);
+      } else
+        if(fabs(y02) > yAvg){
+          yAvg += fabs(y02) / count;
+        }
+
+      if(discontinuityDetected == 0) {
+        if((real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X)) || (real34IsInfinite(REGISTER_IMAG34_DATA(REGISTER_X)))) ||
+           (real34IsNaN     (REGISTER_REAL34_DATA(REGISTER_X)) || (real34IsNaN     (REGISTER_IMAG34_DATA(REGISTER_X)))) ||
+          ((fabs(y02) > 6 * yAvg) && count > 3)   ) {
+          discontinuityDetected = 20;
+        }
+      }
+
+      if((discontinuityDetected == 20) || (discontinuityDetected == 0 && slopeIncreaseDetected)) {
         #ifdef DEBUG_GR
           printf("jumping %f %f slope/slope0=%f  slope0/slope=%f\n",slope, slope0, slope/slope0, slope0/slope );
         #endif //DEBUG_GR
@@ -399,8 +431,14 @@ printf("dx0=%f\n",dx0);
         #endif //DEBUG_GR
       }
 
-      if(slope == 0 || slope0 == 0) dx = dx0; 
-      else dx = dx0 * ( (slope/slope0 > SS1 || slope0/slope > SS1)  ? 0.5 : 1.0);
+      if(discontinuityDetected > 0 && discontinuityDetected <= 20) {
+        dx = 0.1 * dx0;
+      } else if(slope == 0 || slope0 == 0) {
+        dx = dx0;
+      } else if(slopeIncreaseDetected){
+        dx = dx0 * ( (slope/slope0 > SS1 || slope0/slope > SS1)  ? 0.5 : 1.0);
+      } else dx = dx0;
+
       #ifdef DEBUG_GR
         printf("Graph: dx=%f drawMxN=%i\n",dx,drawMxN());
       #endif //DEBUG_GR
@@ -420,8 +458,14 @@ printf("dx0=%f\n",dx0);
           printf("ERROR CODE CANNOT STAT COMPLEX RESULT, ignored\n"); lastErrorCode = 0;
         }
       #endif //PC_BUILD
+
+      if(discontinuityDetected != 0) discontinuityDetected --;
       count++;
-      if(count > 80) break;
+      if(count > 60) break;
+
+      #ifdef DEBUG_GR
+        printf("dx0=%f dx=%f yAvg=%f count=%i discontinuityDetected:%u slopeIncreaseDetected:%u\n",dx0, dx, yAvg, count, discontinuityDetected, slopeIncreaseDetected);
+      #endif //DEBUG_GR
     }
 
     fnClearStack(0);
