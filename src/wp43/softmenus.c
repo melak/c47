@@ -1880,7 +1880,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
                 showCb = NOVAL;
                 showValue = NOVAL;
                 int16_t itemNr = userMenuItems[x + 6*y].item;
-                strcpy(itemName,(char *)ptr);
+                stringAppend(itemName,(char *)ptr);
                 //printf(">>>> %u %u %s %s \n", x, y, itemName, userMenuItems[x + 6*y].argumentName);
                 switch(-softmenu[m].menuItem) {
                   case MNU_MENUS: {

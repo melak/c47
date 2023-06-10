@@ -625,6 +625,7 @@
   }
 
 
+
   #define cursorCycle 3                      //JM cursor vv
   int8_t cursorBlinkCounter;                 //JM cursor ^^
   gboolean refreshLcd(gpointer unusedData) { // This function is called every SCREEN_REFRESH_PERIOD ms by a GTK timer
@@ -1810,33 +1811,33 @@ void printHalfSecUpdate_Integer(uint8_t mode, char *txt, int loop) {
 //    else 
 
     if(item == ITM_XEQ) {
-      strcpy(functionName,arg);
+      stringAppend(functionName,arg);
     } else 
 
     if(item == ITM_RCL) {
-      strcpy(functionName,arg);
+      stringAppend(functionName,arg);
     } else 
 
     if(item >= ITM_X_P1 && item <= ITM_X_g6) {
-      strcpy(functionName, indexOfItemsXEQM + 8*(item-fnXEQMENUpos));
+      stringAppend(functionName, indexOfItemsXEQM + 8*(item-fnXEQMENUpos));
     } else
 
     if(item >= CST_01 && item <= CST_79) {
-      strcpy(functionName,indexOfItems[abs(item)].itemSoftmenuName);
+      stringAppend(functionName,indexOfItems[abs(item)].itemSoftmenuName);
     } else
 
     if(item != MNU_DYNAMIC) {
-      strcpy(functionName,indexOfItems[abs(item)].itemCatalogName);
+      stringAppend(functionName,indexOfItems[abs(item)].itemCatalogName);
     }
     else {
-      strcpy(functionName,dynmenuGetLabel(dynamicMenuItem));
+      stringAppend(functionName,dynmenuGetLabel(dynamicMenuItem));
     }
 
   showFunctionNameItem = item;
   if(running_program_jm) return;                             //JM
   showFunctionNameCounter = delayInMs;
-  strcpy(padding,functionName);                              //JM
-  strcat(padding,"     ");                                    //JM
+  stringAppend(padding,functionName);                              //JM
+  stringAppend(padding + stringByteLength(padding),"    ");                                    //JM
   if(stringWidth(padding, &standardFont, true, true) + 1 /*JM 20*/ + lineTWidth > SCREEN_WIDTH) {                //JM T-Register clearing
     clearRegisterLine(REGISTER_T, true, false);
   }
