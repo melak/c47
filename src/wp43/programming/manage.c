@@ -1342,6 +1342,12 @@ void addStepInProgram(int16_t func) {
 
 
 calcRegister_t findNamedLabel(const char *labelName) {
+  return findNamedLabelWithDuplicate(labelName, 0);
+}
+
+
+
+calcRegister_t findNamedLabelWithDuplicate(const char *labelName, int16_t dupNum) {
   for(uint16_t lbl = 0; lbl < numberOfLabels; lbl++) {
     if(labelList[lbl].step > 0) {
       if(labelList[lbl].program < 0) { // Flash
@@ -1349,15 +1355,25 @@ calcRegister_t findNamedLabel(const char *labelName) {
         readStepInFlashPgmLibrary(tmpLabel, 16, labelList[lbl].labelPointer.flash);
         xcopy(tmpString, tmpLabel + 1, *tmpLabel);
         tmpString[*tmpLabel] = 0;
-        if(compareString(tmpString, labelName, CMP_NAME) == 0) {
-          return lbl + FIRST_LABEL;
+        if(compareString(tmpString, labelName, CMP_BINARY) == 0) {
+          if(dupNum <= 0) {
+            return lbl + FIRST_LABEL;
+          }
+          else {
+            --dupNum;
+          }
         }
       }
       else { // RAM
         xcopy(tmpString, labelList[lbl].labelPointer.ram + 1, *(labelList[lbl].labelPointer.ram));
         tmpString[*(labelList[lbl].labelPointer.ram)] = 0;
-        if(compareString(tmpString, labelName, CMP_NAME) == 0) {
-          return lbl + FIRST_LABEL;
+        if(compareString(tmpString, labelName, CMP_BINARY) == 0) {
+          if(dupNum <= 0) {
+            return lbl + FIRST_LABEL;
+          }
+          else {
+            --dupNum;
+          }
         }
       }
     }
