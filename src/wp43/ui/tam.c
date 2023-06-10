@@ -159,18 +159,18 @@
     }
 
     if(tam.mode == TM_KEY) {
-      tbPtr = stpcpy(tbPtr, "KEY ");
+      tbPtr = stringAppend(tbPtr, "KEY ");
       if(tam.keyInputFinished) {
         if(tam.keyIndirect) {
-          tbPtr = stpcpy(tbPtr, STD_RIGHT_ARROW);
+          tbPtr = stringAppend(tbPtr, STD_RIGHT_ARROW);
         }
         if(tam.keyDot) {
-          tbPtr = stpcpy(tbPtr, ".");
+          tbPtr = stringAppend(tbPtr, ".");
         }
         if(tam.keyAlpha) {
-          tbPtr = stpcpy(tbPtr, STD_LEFT_SINGLE_QUOTE);
-          tbPtr = stpcpy(tbPtr, aimBuffer + AIM_BUFFER_LENGTH / 2);
-          tbPtr = stpcpy(tbPtr, STD_RIGHT_SINGLE_QUOTE);
+          tbPtr = stringAppend(tbPtr, STD_LEFT_SINGLE_QUOTE);
+          tbPtr = stringAppend(tbPtr, aimBuffer + AIM_BUFFER_LENGTH / 2);
+          tbPtr = stringAppend(tbPtr, STD_RIGHT_SINGLE_QUOTE);
         }
         else {
           int16_t v = tam.key;
@@ -181,16 +181,16 @@
           tbPtr += 2;
         }
         if(tam.function == ITM_KEYX) {
-          tbPtr = stpcpy(tbPtr, " XEQ ");
+          tbPtr = stringAppend(tbPtr, " XEQ ");
         }
         else {
-          tbPtr = stpcpy(tbPtr, " GTO ");
+          tbPtr = stringAppend(tbPtr, " GTO ");
         }
       }
     }
     else {
-      tbPtr = stpcpy(tbPtr, indexOfItems[tamOperation()].itemCatalogName);
-      tbPtr = stpcpy(tbPtr, " ");
+      tbPtr = stringAppend(tbPtr, indexOfItems[tamOperation()].itemCatalogName);
+      tbPtr = stringAppend(tbPtr, " ");
     }
 
     if(tam.mode == TM_SHUFFLE) {
@@ -207,23 +207,23 @@
           regists[i] = '_';
         }
       }
-      tbPtr = stpcpy(tbPtr, regists);
+      tbPtr = stringAppend(tbPtr, regists);
     }
     else {
       if(tam.indirect) {
-        tbPtr = stpcpy(tbPtr, STD_RIGHT_ARROW);
+        tbPtr = stringAppend(tbPtr, STD_RIGHT_ARROW);
       }
       if(tam.dot) {
-        tbPtr = stpcpy(tbPtr, ".");
+        tbPtr = stringAppend(tbPtr, ".");
       }
       if(tam.alpha) {
-        tbPtr = stpcpy(tbPtr, STD_LEFT_SINGLE_QUOTE);
+        tbPtr = stringAppend(tbPtr, STD_LEFT_SINGLE_QUOTE);
         if(aimBuffer[0] == 0) {
-          tbPtr = stpcpy(tbPtr, "_");
+          tbPtr = stringAppend(tbPtr, "_");
         }
         else {
-          tbPtr = stpcpy(tbPtr, aimBuffer);
-          tbPtr = stpcpy(tbPtr, STD_RIGHT_SINGLE_QUOTE);
+          tbPtr = stringAppend(tbPtr, aimBuffer);
+          tbPtr = stringAppend(tbPtr, STD_RIGHT_SINGLE_QUOTE);
         }
       }
       else {
