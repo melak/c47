@@ -672,10 +672,30 @@ void graph_plotmem(void) {
 /**/          #endif
 /**/          if(grf_x(cnt) < x_min) {x_min = grf_x(cnt);}
 /**/          if(grf_x(cnt) > x_max) {x_max = grf_x(cnt);}
-/**/  //        if(grf_y(cnt) < y_min) {y_min = grf_y(cnt);}
-/**/    //      if(grf_y(cnt) > y_max) {y_max = grf_y(cnt);}
-              if(grf_y(cnt) < y_min) {y_mincnt++; if(y_mincnt==3) y_min = grf_y(cnt);} else y_mincnt=0; //anti-asymptote
-              if(grf_y(cnt) > y_max) {y_maxcnt++; if(y_maxcnt==3) y_max = grf_y(cnt);} else y_maxcnt=0; //anti-asymptote
+/**/          if(grf_y(cnt) < y_min) {
+                 y_mincnt++; 
+                 if(fabs(grf_y(cnt) / y_min) < 4) {
+                   y_min = grf_y(cnt);
+                   y_mincnt=0; 
+                 }
+                 else if(y_mincnt==3) {
+                   y_min = grf_y(cnt);
+                   y_mincnt=0;
+                 }
+               } else y_mincnt=0;
+
+/**/          if(grf_y(cnt) > y_max) {
+                y_maxcnt++;
+                if(fabs(grf_y(cnt) / y_max) < 4 ) {
+                  y_max = grf_y(cnt);
+                  y_maxcnt=0;
+                }
+                else if(y_maxcnt==3) {
+                  y_max = grf_y(cnt);
+                  y_maxcnt=0;
+                }
+              } else y_maxcnt=0;
+                  
 
 /**/          #ifdef STATDEBUG
 /**/          printf("Axis0b: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);   
@@ -684,8 +704,8 @@ void graph_plotmem(void) {
                  return;
               }
 /**/        }
-            y_min=fmin(y_min,-y_max);
-            y_max=fmax(-y_min,y_max);
+//            y_min=fmin(y_min,-y_max);
+  //          y_max=fmax(-y_min,y_max);
 /**/      }
 /**/    } 
 /**/
