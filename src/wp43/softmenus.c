@@ -1424,11 +1424,11 @@ char label1[30];
 if(xSoftkey == 0 || xSoftkey == 2 || xSoftkey == 4) {
   xx1 = x1; xx2 = x2;
   label0[0]=0;
-  strcat(label0,labelSM1);
+  stringAppend(label0 + stringByteLength(label0),labelSM1);
 
 }
   char sample[4];
-  strcpy(sample, STD_RIGHT_ARROW);
+  stringAppend(sample, STD_RIGHT_ARROW);
   int16_t i = 0;
   while (label0[i+1] != 0) {
     if(sample[0] == label0[i] && sample[1] == label0[i+1]) {
@@ -1438,7 +1438,7 @@ if(xSoftkey == 0 || xSoftkey == 2 || xSoftkey == 4) {
     i++;
   }
 
-  strcpy(sample, STD_LEFT_ARROW);
+  stringAppend(sample, STD_LEFT_ARROW);
   i = 0;
   while (label0[i+1] != 0) {
     if(sample[0] == label0[i] && sample[1] == label0[i+1]) {
@@ -1453,10 +1453,10 @@ if(xSoftkey == 0 || xSoftkey == 2 || xSoftkey == 4) {
 
 if(xSoftkey == 1 || xSoftkey == 3 || xSoftkey == 5) {
   label1[0]=0;
-  strcat(label1,labelSM1);
+  stringAppend(label1 + stringByteLength(label1), labelSM1);
 
 
-  strcpy(sample, STD_RIGHT_ARROW);
+  stringAppend(sample, STD_RIGHT_ARROW);
   i = 0;
   while (label1[i+1] != 0) {
     if(sample[0] == label1[i] && sample[1] == label1[i+1]) {
@@ -1467,7 +1467,7 @@ if(xSoftkey == 1 || xSoftkey == 3 || xSoftkey == 5) {
   }
 
 
-  strcpy(sample, STD_LEFT_ARROW);
+  stringAppend(sample, STD_LEFT_ARROW);
   i = 0;
   while (label1[i+1] != 0) {
     if(sample[0] == label1[i] && sample[1] == label1[i+1]) {
@@ -1660,7 +1660,7 @@ bool_t isFunctionItemAMenu(int16_t item) {
 
 static  char FF[16];
 static char *changeItoJ(int16_t item) {
-  strcpy(FF, indexOfItems[item%10000].itemSoftmenuName);
+  stringAppend(FF,indexOfItems[item%10000].itemSoftmenuName);
   //printf(">>>> %u %u %u %u %u %s %u %u\n", (uint8_t)(FF[0]), (uint8_t)(FF[1]), (uint8_t)(FF[2]), (uint8_t)(FF[3]), (uint8_t)(FF[4]), FF , (uint8_t)(STD_SUP_i[0]), (uint8_t)(STD_SUP_i[1]));
   if (getSystemFlag(FLAG_CPXj)) {
     if (item == ITM_op_j && FF[1] == STD_op_i[1]) {
@@ -1679,7 +1679,7 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
   * vm = (itemNr < 0) || (isFunctionItemAMenu(itemNr%10000)) ? vmReverse : vmNormal;
   * showCb = NOVAL;
   * showValue = NOVAL;
-  strcpy(itemName,NOTEXT);
+  stringAppend(itemName,NOTEXT);
   showText[0]=0;
 
   if(itemNr > 0) { 
@@ -1689,24 +1689,24 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
     switch(itemNr%10000) {
 
       case ITM_DSPCYCLE:switch (* showValue) {
-                          case 32700 : strcat(showText, "ALL" ); *showValue = NOVAL; break;
-                          case 32701 : strcat(showText, "FIX" ); *showValue = NOVAL; break;
-                          case 32702 : strcat(showText, "SCI" ); *showValue = NOVAL; break;
-                          case 32703 : strcat(showText, "ENG" ); *showValue = NOVAL; break;
-                          case 32704 : strcat(showText, "SIG" ); *showValue = NOVAL; break; 
-                          case 32705 : strcat(showText, "UNIT"); *showValue = NOVAL; break;
+                          case 32700 : stringAppend(showText + stringByteLength(showText), "ALL" ); *showValue = NOVAL; break;
+                          case 32701 : stringAppend(showText + stringByteLength(showText), "FIX" ); *showValue = NOVAL; break;
+                          case 32702 : stringAppend(showText + stringByteLength(showText), "SCI" ); *showValue = NOVAL; break;
+                          case 32703 : stringAppend(showText + stringByteLength(showText), "ENG" ); *showValue = NOVAL; break;
+                          case 32704 : stringAppend(showText + stringByteLength(showText), "SIG" ); *showValue = NOVAL; break; 
+                          case 32705 : stringAppend(showText + stringByteLength(showText), "UNIT"); *showValue = NOVAL; break;
                           default: break;
                         } 
                         break;
-      case ITM_GAP_L  : if(gapItemLeft == ITM_NULL) strcat(showText, "\1\1"); 
-                        else strcat(showText,  indexOfItems[gapItemLeft].itemSoftmenuName);  //  gapCharLeft); 
+      case ITM_GAP_L  : if(gapItemLeft == ITM_NULL) stringAppend(showText + stringByteLength(showText), "\1\1"); 
+                        else stringAppend(showText + stringByteLength(showText),  indexOfItems[gapItemLeft].itemSoftmenuName);  //  gapCharLeft); 
                         *showValue = NOVAL; 
                         break;
-      case ITM_GAP_RX : strcat(showText,  indexOfItems[gapItemRadix].itemSoftmenuName);  //  gapCharRadix); 
+      case ITM_GAP_RX : stringAppend(showText + stringByteLength(showText),  indexOfItems[gapItemRadix].itemSoftmenuName);  //  gapCharRadix); 
                         *showValue = NOVAL; 
                         break;
-      case ITM_GAP_R  : if(gapItemRight == ITM_NULL) strcat(showText, "\1\1"); 
-                        else strcat(showText, indexOfItems[gapItemRight].itemSoftmenuName);  //  gapCharRight); 
+      case ITM_GAP_R  : if(gapItemRight == ITM_NULL) stringAppend(showText + stringByteLength(showText), "\1\1"); 
+                        else stringAppend(showText + stringByteLength(showText), indexOfItems[gapItemRight].itemSoftmenuName);  //  gapCharRight); 
                         *showValue = NOVAL; 
                         break;
       case ITM_GRP_L  : *showValue = grpGroupingLeft; 
@@ -1722,21 +1722,21 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
 
     
     if(itemNr%10000 == 9999) {
-      strcpy(itemName, indexOfItems[!getSystemFlag(FLAG_MULTx) ? ITM_DOT : ITM_CROSS].itemSoftmenuName);
+      stringAppend(itemName, indexOfItems[!getSystemFlag(FLAG_MULTx) ? ITM_DOT : ITM_CROSS].itemSoftmenuName);
       //printf("WWW1: itemName=%s, 0:%i 1:%i, ItemNr=%i \n",itemName, (uint8_t) itemName[0], (uint8_t) itemName[1], itemNr);
       return;
     } else {
 
       if(itemNr%10000 >= ITM_X_P1 && itemNr%10000 <= ITM_X_g6) {
-        strcpy(itemName, indexOfItemsXEQM + 8*(itemNr%10000-fnXEQMENUpos));
+        stringAppend(itemName, indexOfItemsXEQM + 8*(itemNr%10000-fnXEQMENUpos));
       } else {
-        strcpy(itemName, changeItoJ(itemNr));
+        stringAppend(itemName, changeItoJ(itemNr));
       }
       //printf("WWW2: itemName=%s, ItemNr=%i \n",itemName,itemNr);
       return;
     }
   } else if(itemNr < 0) { //itemNr >= 0
-    strcpy(itemName, indexOfItems[-itemNr%10000].itemSoftmenuName);
+    stringAppend(itemName, indexOfItems[-itemNr%10000].itemSoftmenuName);
     //printf("WWW3: itemName=%s, ItemNr=%i \n",itemName,itemNr);
     return;
   }
@@ -1776,10 +1776,10 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
     if(tam.mode == TM_KEY && !tam.keyInputFinished) {
       for(y=0; y<=2; y++) {
         for(x=0; x<6; x++) {
-          strcpy(tmp1," ");
+          stringAppend(tmp1," ");
           if(1+x+y*6>9) {
             tmp1[0]='1';
-            strcat(tmp1," ");
+            stringAppend(tmp1 + stringByteLength(tmp1), " ");
             tmp1[1] = (int)(48+(1+x+y*6) % 10);
           } else {
             tmp1[0] = (int)((48+1+x+y*6));            
@@ -1853,7 +1853,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
 
     char itemName[16];
     char showText[16];
-    showText[0]=0;                                  //strcat(showText, NOTEXT); not working, hence clearing the string
+    showText[0]=0;
     videoMode_t vm = vmNormal;
     int8_t showCb = NOVAL;
     int16_t showValue = NOVAL;
@@ -2013,7 +2013,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
             else {
               if( (softmenu[m].menuItem == -MNU_FCNS || softmenu[m].menuItem  == -MNU_CONST) || //CONST is a normal menu not a catalog, but we expect the catalog to be treated as a catalog. //The same could be a problem with any of the generated catalogs (MNU_SYSFL, MNU_alpha_INTL, MNU_alpha_intl, )
                  ((softmenu[m].menuItem == -MNU_IO   || softmenu[m].menuItem  == -MNU_PFN  ) && (item == ITM_STOCFG || item == ITM_RCLCFG))) { //do not display "Config"
-                strcpy(itemName,indexOfItems[item%10000].itemCatalogName);
+                stringAppend(itemName,indexOfItems[item%10000].itemCatalogName);
               }
               showSoftkey(itemName, x, y-currentFirstItem/6, vm, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
             }

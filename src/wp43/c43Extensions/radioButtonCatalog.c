@@ -777,9 +777,7 @@ char *figlabel(const char *label, const char* showText, int16_t showValue) {    
     //stringAppend(tmp + stringByteLength(tmp), showText);
     uint16_t ii = 0;
     while (showText[ii] != 0) {
-//     if(showText[ii]>='A' && showText[ii]<='Z') {strcat(tmp,                               STD_SUB_A); tmp[strlen(tmp)          -1] += showText[ii]-'A'; } else
        if(showText[ii]>='A' && showText[ii]<='Z') {stringAppend(tmp + stringByteLength(tmp), STD_SUB_A); tmp[stringByteLength(tmp)-1] += showText[ii]-'A'; } else
-//     if(showText[ii]>='0' && showText[ii]<='9') {strcat(tmp,                               STD_SUB_0); tmp[strlen(tmp)          -1] += showText[ii]-'0'; } else
        if(showText[ii]>='0' && showText[ii]<='9') {stringAppend(tmp + stringByteLength(tmp), STD_SUB_0); tmp[stringByteLength(tmp)-1] += showText[ii]-'0'; } else
        switch(showText[ii]) {
           case '+'       : stringAppend(tmp + stringByteLength(tmp), STD_SUB_PLUS);  break;
