@@ -1231,9 +1231,9 @@ typedef enum {
 #define RADIX34_MARK_STRING                  (gapChar1Radix)
 
 
-#define Lt                                   (gapItemLeft  == 0 ?  (char*) "\1\1\0" : (char*)indexOfItems[gapItemLeft].itemSoftmenuName) // "\0" 
-#define Rt                                   (gapItemRight == 0 ?  (char*) "\1\1\0" : (char*)indexOfItems[gapItemRight].itemSoftmenuName)// "\0"
-#define Rx                                   (gapItemRadix == 0 ?  (char*) "\1\1\0" : (char*)indexOfItems[gapItemRadix].itemSoftmenuName)// "\0"
+#define Lt                                   (gapItemLeft  == 0 ?  (char*) "\1\1\0" : (char*)indexOfItems[gapItemLeft ].itemSoftmenuName) // softkey display
+#define Rt                                   (gapItemRight == 0 ?  (char*) "\1\1\0" : (char*)indexOfItems[gapItemRight].itemSoftmenuName) // softkey display
+#define Rx                                   (gapItemRadix == 0 ?  (char*) "\1\1\0" : (char*)indexOfItems[gapItemRadix].itemSoftmenuName) // softkey display
 #define gapChar1Left                         (Lt[0] != 0 && Lt[1] == 0 && Lt[2] == 0 ? \
                                                 ( Lt[0] == ',' ? (char*) ",\1\0" : \
                                                   Lt[0] == '.' ? (char*) ".\1\0" : \
