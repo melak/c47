@@ -773,6 +773,13 @@ void pemAlpha(int16_t item) {
     fnFlipFlag(FLAG_USER);
     return;
   }
+  else if(item == ITM_CLA) { // JM addon
+    aimBuffer[0] = 0;
+  }
+  else if(item == CHR_num || item == CHR_case) { // JM addon
+    SetSetting(indexOfItems[item].param);
+    return;
+  }
 
   deleteStepsFromTo(currentStep.ram, findNextStep_ram(currentStep.ram));
   tmpString[0] = ITM_LITERAL;
