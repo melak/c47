@@ -1413,22 +1413,24 @@ bool_t allowShiftsToClearError = false;
 
 
     typedef struct {
-      uint8_t itm;            ///<
-      uint8_t itm2;            ///<
+      uint8_t itm;
+      uint8_t itm2;
+      uint8_t itm3;
     } circ_t;
-    uint8_t circPtr =0;
-    uint8_t circPtr2 =0;
+    uint8_t circPtr =  0;
+    uint8_t circPtr2 = 0;
+    uint8_t circPtr3 = 0;
     TO_QSPI const circ_t circ[] = {
-                  {7 , 2},    //0
-                  {18, 23},   //1
-                  {30, 18},   //2
-                  {24, 12},   //3
-                  {12, 29},   //4
-                  {28, 33},   //5
-                  {20, 29},   //6
-                  {18, 30},   //7
-                  {29, 0 },   //8
-                  {0 , 0 },    //9
+                  {7 , 2 , 7 },   //0
+                  {18, 23, 18},   //1
+                  {30, 18, 30},   //2
+                  {24, 12, 24},   //3
+                  {12, 29, 9 },   //4
+                  {28, 33, 13},   //5
+                  {20, 29, 0 },   //6
+                  {18, 30, 0 },   //7
+                  {29, 0 , 0 },   //8
+                  {0 , 0 , 0 },   //9
                 };
     bool_t checkNumber(uint8_t keyCode) {
       if((circPtr == 0 && keyCode==7) || circPtr > nbrOfElements(circ)) circPtr = 0;
@@ -1441,6 +1443,12 @@ bool_t allowShiftsToClearError = false;
       if(circ[circPtr2].itm2==keyCode) circPtr2++; else circPtr2 = 0;
       if(circPtr2 == 8 && keyCode==30) {
         fnSetC47(0); 
+        return true;
+      }
+      if((circPtr3 == 0 && keyCode==7) || circPtr3 > nbrOfElements(circ)) circPtr3 = 0;
+      if(circ[circPtr3].itm3==keyCode) circPtr3++; else circPtr3 = 0;
+      if(circPtr3 == 6 && keyCode==13) {
+        fnHP35JM(0); 
         return true;
       }
       //printf("RRRR %i %u %u\n", keyCode, circPtr, circPtr2);
