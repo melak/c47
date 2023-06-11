@@ -322,26 +322,26 @@ uint8_t DXR = 0, DYR = 0, DXI = 0, DYI = 0;
 
 
 void graph_eqn(uint16_t mode) {
-  double x;
-  double x01 = x_min;
-  double y01 = 0;
-  double y02 = 0;
-  double dy;
-  double dx0 = (x_max-x_min)/SCREEN_WIDTH_GRAPH*10;
-  double dx = dx0;
-  double slope = 1;
-  double slope0 = 1;
-  int16_t count = 0;
-  int16_t ss0 = 0;
-  int16_t ss1 = 0;
-  int16_t ss2 = 0;
-  #define SS1 1.8 //1.4  slope/slope threshold for 50% dx 
-  #define SS2 2.4 //2    slope/slope threshold for jumping back
-  uint8_t discontinuityDetected = 0;
-  bool_t  slopeIncreaseDetected = false;
-  double yAvg = 0.1;
-
   #if !defined(TESTSUITE_BUILD)
+    double x;
+    double x01 = x_min;
+    double y01 = 0;
+    double y02 = 0;
+    double dy;
+    double dx0 = (x_max-x_min)/SCREEN_WIDTH_GRAPH*10;
+    double dx = dx0;
+    double slope = 1;
+    double slope0 = 1;
+    int16_t count = 0;
+    int16_t ss0 = 0;
+    int16_t ss1 = 0;
+    int16_t ss2 = 0;
+    #define SS1 1.8 //1.4  slope/slope threshold for 50% dx 
+    #define SS2 2.4 //2    slope/slope threshold for jumping back
+    uint8_t discontinuityDetected = 0;
+    bool_t  slopeIncreaseDetected = false;
+    double yAvg = 0.1;
+
     if(graphVariable <= 0 || graphVariable > 65535) {
       return;
     }
