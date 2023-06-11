@@ -769,6 +769,10 @@ void pemAlpha(int16_t item) {
       _closeAlphaMenus();
     return;
   }
+  else if(item == ITM_USERMODE) {
+    fnFlipFlag(FLAG_USER);
+    return;
+  }
 
   deleteStepsFromTo(currentStep.ram, findNextStep_ram(currentStep.ram));
   tmpString[0] = ITM_LITERAL;
@@ -1261,6 +1265,11 @@ void insertStepInProgram(int16_t func) {
           _insertInProgram((uint8_t *)tmpString, 8);
           break;
       }
+
+        case ITM_USERMODE: {         // 1729
+          fnFlipFlag(FLAG_USER);
+          break;
+        }
       }
       break;
     }
