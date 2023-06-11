@@ -21,6 +21,7 @@
 #include "programming/manage.h"
 
 #include "bufferize.h"
+#include "c43Extensions/keyboardTweak.h"
 #include "charString.h"
 #include "config.h"
 #include "dateTime.h"
@@ -551,12 +552,9 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       decodeOneStep_ram(step);
       if(firstDisplayedStepNumber + line - lineOffset == currentStepNumber && !tam.mode) {
         if(getSystemFlag(FLAG_ALPHA)) {
-          char *tstr = tmpString + stringByteLength(tmpString) - 2;
-          *(tstr++) = STD_CURSOR[0];
-          *(tstr++) = STD_CURSOR[1];
-          *(tstr++) = STD_RIGHT_SINGLE_QUOTE[0];
-          *(tstr++) = STD_RIGHT_SINGLE_QUOTE[1];
-          *(tstr++) = 0;
+          xcopy(tmpString + 2 + T_cursorPos + 2, tmpString + 2 + T_cursorPos, stringByteLength(tmpString + 2 + T_cursorPos) + 1);
+          tmpString[2 + T_cursorPos    ] = STD_CURSOR[0];
+          tmpString[2 + T_cursorPos + 1] = STD_CURSOR[1];
         }
         else if(aimBuffer[0] != 0) {
           char *tstr = tmpString + stringByteLength(tmpString);
@@ -714,11 +712,10 @@ static void _closeAlphaMenus(void) {
 void pemAlpha(int16_t item) {
   #if !defined(TESTSUITE_BUILD)
   if(!getSystemFlag(FLAG_ALPHA)) {
-    shiftF = false;
-    shiftG = false;
+    resetShiftState();  //JM
+    displayAIMbufferoffset = 0;
+    T_cursorPos = 0;
     aimBuffer[0] = 0;
-    alphaCase = AC_UPPER;
-    nextChar = NC_NORMAL;
 
     //if(softmenuStack[0].softmenuId == 0) { // MyMenu
     //  softmenuStack[0].softmenuId = 1; // MyAlpha
@@ -748,8 +745,11 @@ void pemAlpha(int16_t item) {
     }
  	if ((nextChar == NC_NORMAL) || ((item != ITM_DOWN_ARROW) && (item != ITM_UP_ARROW))) {
       item = convertItemToSubOrSup(item, nextChar);
-      if(len < (256 - stringByteLength(indexOfItems[item].itemSoftmenuName)) && stringGlyphLength(aimBuffer) < 196) {
-        xcopy(aimBuffer + len, indexOfItems[item].itemSoftmenuName, stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
+      int32_t inputCharLength = stringByteLength(indexOfItems[item].itemSoftmenuName);
+      if(len < (256 - inputCharLength) && stringGlyphLength(aimBuffer) < 196) {
+        xcopy(aimBuffer + T_cursorPos + inputCharLength, aimBuffer + T_cursorPos, stringByteLength(aimBuffer + T_cursorPos) + 1);
+        xcopy(aimBuffer + T_cursorPos, indexOfItems[item].itemSoftmenuName, inputCharLength);
+        T_cursorPos += inputCharLength;
       }
     }
   }
@@ -761,8 +761,17 @@ void pemAlpha(int16_t item) {
       _closeAlphaMenus();
       return;
     }
+    else if(T_cursorPos == 0) {
+      return;
+    }
     else {
-      aimBuffer[stringLastGlyph(aimBuffer)] = 0;
+      char cursorByte = aimBuffer[T_cursorPos];
+      int16_t lastGlyphPos;
+      aimBuffer[T_cursorPos] = 0;
+      lastGlyphPos = stringLastGlyph(aimBuffer);
+      aimBuffer[T_cursorPos] = cursorByte;
+      xcopy(aimBuffer + lastGlyphPos, aimBuffer + T_cursorPos, stringByteLength(aimBuffer + T_cursorPos) + 1);
+      T_cursorPos = lastGlyphPos;
     }
   }
   else if(item == ITM_ENTER) {
@@ -778,9 +787,15 @@ void pemAlpha(int16_t item) {
   }
   else if(item == ITM_CLA) { // JM addon
     aimBuffer[0] = 0;
+    T_cursorPos = 0;
+    nextChar = NC_NORMAL;
   }
   else if(item == CHR_num || item == CHR_case) { // JM addon
     SetSetting(indexOfItems[item].param);
+    return;
+  }
+  else if(indexOfItems[item].func == fnT_ARROW) { // JM addon
+    fnT_ARROW(indexOfItems[item].param);
     return;
   }
 
