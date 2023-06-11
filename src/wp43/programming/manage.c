@@ -735,6 +735,7 @@ void pemAlpha(int16_t item) {
   }
   if(indexOfItems[item].func == addItemToBuffer) {
     int32_t len = stringByteLength(aimBuffer);
+    item = numlockReplacements(0, item, numLock, shiftF, shiftG);
     if(alphaCase == AC_LOWER) {
         if(ITM_A <= item && item <= ITM_Z) {
           item += 26;
@@ -790,10 +791,39 @@ void pemAlpha(int16_t item) {
     T_cursorPos = 0;
     nextChar = NC_NORMAL;
   }
-  else if(item == CHR_num || item == CHR_case) { // JM addon
+
+  else if(item == CHR_numL && !numLock) { // JM addon
+    alphaCase = AC_UPPER;
+    SetSetting(indexOfItems[CHR_num].param);
+    return;
+  }
+  else if(item == CHR_numU && numLock) { // JM addon
+    alphaCase = AC_UPPER;
+    SetSetting(indexOfItems[CHR_num].param);
+    return;
+  }
+  else if(item == CHR_caseUP && alphaCase != AC_UPPER) { // JM addon
+    nextChar = NC_NORMAL;
+    SetSetting(indexOfItems[CHR_case].param);
+    return;
+  }
+  else if(item == CHR_caseDN && alphaCase != AC_LOWER) { // JM addon
+    nextChar = NC_NORMAL;
+    SetSetting(indexOfItems[CHR_case].param);
+    return;
+  }
+  else if(item == CHR_num) { // JM addon
+    alphaCase = AC_UPPER;
     SetSetting(indexOfItems[item].param);
     return;
   }
+  else if(item == CHR_case) { // JM addon
+    nextChar = NC_NORMAL;
+    numLock = false;
+    SetSetting(indexOfItems[item].param);
+    return;
+  }
+
   else if(indexOfItems[item].func == fnT_ARROW) { // JM addon
     fnT_ARROW(indexOfItems[item].param);
     return;

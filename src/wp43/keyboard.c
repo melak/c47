@@ -1995,9 +1995,9 @@ RELEASE_END:
 
 
       case CHR_caseUP: {                                                   //From keyboard: logic for Up/Dn case/num
-        if(numLock)  { } else
-        if(alphaCase == AC_LOWER)  { processKeyAction(CHR_case); } else
-          if(alphaCase == AC_UPPER)  { processKeyAction(CHR_numL); }
+        if(numLock)  { }
+          else if(alphaCase == AC_LOWER)  { processKeyAction(CHR_case); }
+            else if(alphaCase == AC_UPPER)  { processKeyAction(CHR_numL); }
         nextChar = NC_NORMAL;
         keyActionProcessed = true;
         break;
@@ -2050,7 +2050,7 @@ RELEASE_END:
         showAlphaModeonGui(); //dr JM, see keyboardtweaks
         keyActionProcessed = true;
         break;  
-        }
+      }
 
 
       default:
