@@ -718,9 +718,10 @@ void pemAlpha(int16_t item) {
     alphaCase = AC_UPPER;
     nextChar = NC_NORMAL;
 
-    if(softmenuStack[0].softmenuId == 0) { // MyMenu
-      softmenuStack[0].softmenuId = 1; // MyAlpha
-    }
+    //if(softmenuStack[0].softmenuId == 0) { // MyMenu
+    //  softmenuStack[0].softmenuId = 1; // MyAlpha
+    //}
+    showSoftmenu(-MNU_ALPHA); // JM addon
 
     setSystemFlag(FLAG_ALPHA);
 

@@ -2871,7 +2871,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
           softmenuStack[0].softmenuId = 1;                                  //JM
         }                                                                   //JM
 
-        if(running_program_jm || softmenuStack[0].softmenuId <= 1) { // MyMenu or MyAlpha is displayed
+        if(running_program_jm || (softmenuStack[0].softmenuId <= 1 && softmenu[softmenuStack[1].softmenuId].menuItem != -MNU_ALPHA)) { // MyMenu or MyAlpha is displayed
           closeAim();
           #if defined(DEBUGUNDO)
             printf(">>> saveForUndo from fnKeyExitA\n");
@@ -2922,6 +2922,24 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         if(lastErrorCode != 0) {
           lastErrorCode = 0;
           break;
+        }
+        if(getSystemFlag(FLAG_ALPHA) && !tam.mode) {
+          bool_t isInAlphaSubmenu = false;
+          switch(-softmenu[softmenuStack[1].softmenuId].menuItem) {
+            case MNU_ALPHAINTL:
+            case MNU_ALPHAintl:
+            case MNU_ALPHAMATH:
+            case MNU_ALPHA_OMEGA:
+            case MNU_alpha_omega:
+            case MNU_ALPHA:
+            case MNU_MyAlpha:
+              isInAlphaSubmenu = true;
+              break;
+          }
+          if(isInAlphaSubmenu) {
+            popSoftmenu();
+            break;
+          }
         }
         if(getSystemFlag(FLAG_ALPHA) && aimBuffer[0] == 0 && !tam.mode) {
           pemAlpha(ITM_BACKSPACE);
