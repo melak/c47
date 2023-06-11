@@ -342,13 +342,13 @@
   extern const real_t * const const_gammaC27;
   extern const real_t * const const_gammaC28;
   extern const real_t * const const_gammaC29;
-  extern const real_t * const const_pi_51;
+  extern const real_t * const const_pi_75;
   extern const real_t * const const_200;
   extern const real_t * const const_180;
-  extern const real_t * const const_piOn2_51;
+  extern const real_t * const const_piOn2_75;
   extern const real_t * const const_100;
   extern const real_t * const const_90;
-  extern const real_t * const const_piOn4_51;
+  extern const real_t * const const_piOn4_75;
   extern const real_t * const const_50;
   extern const real_t * const const_45;
   extern const real_t * const const1071_2pi;
