@@ -662,15 +662,66 @@ void graph_plotmem(void) {
       #endif
 
 //#################################################### vvv SCALING LOOP  vvv #########################
+           uint16_t y_maxcnt=2;
+           uint16_t y_mincnt=2;
+           float a0,a1,a2,a3,a4,a5,a6,a7,a8;   //Digital filter to get rid of short sharp peak like some asymptotes
+           float aa = 1;
+           a0 = 0;
+           a1 = 0;
+           a2 = 0;
+           a3 = 0;
+           a4 = 0;
+           a5 = 0;
+           a6 = 0;
+           a7 = 0;
+           a8 = 0;
+
+
 /**/       if(PLOT_BOX || PLOT_LINE || PLOT_CROSS || !(PLOT_DIFF || PLOT_INTG)) {  //XXXX
+
 /**/        for(cnt=0; (cnt < statnum); cnt++) {
 /**/          #ifdef STATDEBUG
 /**/          printf("Axis0a: cnt/statnum: %i/%i  x: %f y: %f   \n",cnt, statnum, grf_x(cnt), grf_y(cnt));   
 /**/          #endif
 /**/          if(grf_x(cnt) < x_min) {x_min = grf_x(cnt);}
 /**/          if(grf_x(cnt) > x_max) {x_max = grf_x(cnt);}
-/**/          if(grf_y(cnt) < y_min) {y_min = grf_y(cnt);}
-/**/          if(grf_y(cnt) > y_max) {y_max = grf_y(cnt);}
+              a8 = a7;
+              a7 = a6;
+              a6 = a5;
+              a5 = a4;
+              a4 = a3;
+              a3 = a2;
+              a2 = a1;
+              a1 = a0;
+              a0 = grf_y(cnt);
+              aa = a8*0.2 + a7 *0.2 + a6*0.1 + a5*0.1 + a4*0.1 + a3*0.1 + a2*0.1 + a1*0.1;
+              if(fabs(a0/aa) < 3) aa = a0 * 1.1;
+              //printf("%f %f %f %f %f %f %f %f %f  %f\n", a8,a7,a6,a5,a4,a3,a2,a1,a0, aa);
+/**/          if(aa < y_min) {
+                 y_mincnt++; 
+                 if(fabs(aa / y_min) < 4 || aa == a0 * 1.1) {
+                   y_min = aa;
+                   y_mincnt=0; 
+                 }
+                 else if(y_mincnt==3) {
+                   y_min = aa;
+                   y_mincnt=0;
+                 }
+               } else y_mincnt=0;
+
+/**/          if(aa > y_max) {
+                y_maxcnt++;
+                if(fabs(aa / y_max) < 4 || aa == a0 * 1.1) {
+                  y_max = aa;
+                  y_maxcnt=0;
+                }
+                else if(y_maxcnt==3) {
+                  y_max = aa;
+                  y_maxcnt=0;
+                }
+              } else y_maxcnt=0;
+                  
+
 /**/          #ifdef STATDEBUG
 /**/          printf("Axis0b: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);   
 /**/          #endif
