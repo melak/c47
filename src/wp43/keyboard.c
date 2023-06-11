@@ -263,6 +263,10 @@ printf(">>>>Z 0093c determineFunctionKeyItem  item = %i:   name:=%s\n",item, ind
           if(item == ITM_PROD_SIGN) {
             item = (getSystemFlag(FLAG_MULTx) ? ITM_DOT : ITM_CROSS);
           }
+
+          if(softmenu[menuId].menuItem == -MNU_ALPHA && calcMode == CM_PEM && item == ITM_ASSIGN) {
+            item = ITM_NULL;
+          }
         }
       #ifdef VERBOSEKEYS
       printf(">>>>Z 0094 Fallthrough item=%d \n",item);
