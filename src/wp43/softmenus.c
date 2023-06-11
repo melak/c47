@@ -1950,6 +1950,10 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
             }
           }                                                                      //JM^^
 
+          else if(softmenu[m].menuItem == -MNU_ALPHA && calcMode == CM_PEM && item%10000 == ITM_ASSIGN) {
+            // do nothing
+          }
+
           else if(item > 0 && indexOfItems[item%10000].itemSoftmenuName[0] != 0) { // softkey
             // item : +10000 -> no top line
             //        +20000 -> no bottom line

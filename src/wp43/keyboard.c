@@ -263,6 +263,10 @@ printf(">>>>Z 0093c determineFunctionKeyItem  item = %i:   name:=%s\n",item, ind
           if(item == ITM_PROD_SIGN) {
             item = (getSystemFlag(FLAG_MULTx) ? ITM_DOT : ITM_CROSS);
           }
+
+          if(softmenu[menuId].menuItem == -MNU_ALPHA && calcMode == CM_PEM && item == ITM_ASSIGN) {
+            item = ITM_NULL;
+          }
         }
       #ifdef VERBOSEKEYS
       printf(">>>>Z 0094 Fallthrough item=%d \n",item);
@@ -1229,10 +1233,7 @@ bool_t allowShiftsToClearError = false;
       lastshiftF = shiftF;
       lastshiftG = shiftG;
       showShiftState();
-      #ifdef PC_BUILD
-        if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
-        if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
-      #endif
+      refreshModeGui();                                       //JM refreshModeGui
 
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;
@@ -1262,10 +1263,8 @@ bool_t allowShiftsToClearError = false;
       lastshiftF = shiftF;
       lastshiftG = shiftG;
       showShiftState();
-      #ifdef PC_BUILD
-        if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
-        if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
-      #endif
+      refreshModeGui();                                       //JM refreshModeGui
+
 
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;
@@ -1295,10 +1294,7 @@ bool_t allowShiftsToClearError = false;
       lastshiftF = shiftF;
       lastshiftG = shiftG;
       showShiftState();                                                                                                         //JM shifts
-      #ifdef PC_BUILD
-        if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
-        if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
-      #endif
+      refreshModeGui();                                                                                                         //JM refreshModeGui
 
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;
@@ -2003,9 +1999,9 @@ RELEASE_END:
 
 
       case CHR_caseUP: {                                                   //From keyboard: logic for Up/Dn case/num
-        if(numLock)  { } else
-        if(alphaCase == AC_LOWER)  { processKeyAction(CHR_case); } else
-          if(alphaCase == AC_UPPER)  { processKeyAction(CHR_numL); }
+        if(numLock)  { }
+          else if(alphaCase == AC_LOWER)  { processKeyAction(CHR_case); }
+            else if(alphaCase == AC_UPPER)  { processKeyAction(CHR_numL); }
         nextChar = NC_NORMAL;
         keyActionProcessed = true;
         break;
@@ -2058,7 +2054,7 @@ RELEASE_END:
         showAlphaModeonGui(); //dr JM, see keyboardtweaks
         keyActionProcessed = true;
         break;  
-        }
+      }
 
 
       default:
@@ -2748,10 +2744,7 @@ ram_full:
       calcMode = CM_AIM;
     }                                                                     //JM ^^
 
-    #if defined(PC_BUILD) && (SCREEN_800X480 == 0) //JM
-    if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
-    if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
-    #endif // PC_BUILD && (SCREEN_800X480 == 0)    //JM  
+    refreshModeGui(); //JM refreshModeGui
   }
 #endif // !TESTSUITE_BUILD
 
@@ -2882,7 +2875,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
           softmenuStack[0].softmenuId = 1;                                  //JM
         }                                                                   //JM
 
-        if(running_program_jm || softmenuStack[0].softmenuId <= 1) { // MyMenu or MyAlpha is displayed
+        if(running_program_jm || (softmenuStack[0].softmenuId <= 1 && softmenu[softmenuStack[1].softmenuId].menuItem != -MNU_ALPHA)) { // MyMenu or MyAlpha is displayed
           closeAim();
           #if defined(DEBUGUNDO)
             printf(">>> saveForUndo from fnKeyExitA\n");
@@ -2933,6 +2926,24 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         if(lastErrorCode != 0) {
           lastErrorCode = 0;
           break;
+        }
+        if(getSystemFlag(FLAG_ALPHA) && !tam.mode) {
+          bool_t isInAlphaSubmenu = false;
+          switch(-softmenu[softmenuStack[1].softmenuId].menuItem) {
+            case MNU_ALPHAINTL:
+            case MNU_ALPHAintl:
+            case MNU_ALPHAMATH:
+            case MNU_ALPHA_OMEGA:
+            case MNU_alpha_omega:
+            case MNU_ALPHA:
+            case MNU_MyAlpha:
+              isInAlphaSubmenu = true;
+              break;
+          }
+          if(isInAlphaSubmenu) {
+            popSoftmenu();
+            break;
+          }
         }
         if(getSystemFlag(FLAG_ALPHA) && aimBuffer[0] == 0 && !tam.mode) {
           pemAlpha(ITM_BACKSPACE);

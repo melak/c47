@@ -24,6 +24,7 @@
 #include "items.h"
 #include "hal/gui.h"
 #include "c43Extensions/jm.h"
+#include "c43Extensions/keyboardTweak.h"
 #include "plotstat.h"
 #include "screen.h"
 #include "softmenus.h"
@@ -495,10 +496,7 @@ void showHideUserMode(void) {
   if(getSystemFlag(FLAG_USER)) {
     showGlyph(STD_USER_MODE, &standardFont, X_USER_MODE, 0, vmNormal, false, false); // STD_USER_MODE is 0+12+2 pixel wide
   }
-  #ifndef DMCP_BUILD
-    if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
-    if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
-  #endif //!TESTSUITE_BUILD
+  refreshModeGui(); //JM refreshModeGui
 }
   
 

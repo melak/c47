@@ -115,4 +115,6 @@ void fnCln                   (uint16_t unusedButMandatoryParameter);
 
 void fnT_ARROW(uint16_t command);
 
+void     refreshModeGui       (void);
+
 #endif // KEYBOARDTWEAK_H
