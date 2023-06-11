@@ -57,10 +57,12 @@
 TO_QSPI static const char bugScreenNoParam[] = "In function addItemToBuffer:item should not be NOPARAM=7654!";
 
   void fnAim(uint16_t unusedButMandatoryParameter) {
-    resetShiftState();  //JM
-    displayAIMbufferoffset = 0;
-    T_cursorPos = 0;
-    aimBuffer[0] = 0;
+    if(calcMode != CM_AIM && calcMode != CM_EIM && (calcMode != CM_PEM || tam.mode || !getSystemFlag(FLAG_ALPHA))) {
+      resetShiftState();  //JM
+      displayAIMbufferoffset = 0;
+      T_cursorPos = 0;
+      aimBuffer[0] = 0;
+    }
     calcModeAim(NOPARAM); // Alpha Input Mode
     if(programRunStop != PGM_RUNNING) {
       entryStatus |= 0x01;

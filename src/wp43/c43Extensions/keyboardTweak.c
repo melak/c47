@@ -171,10 +171,7 @@ void resetShiftState(void) {
     showShiftState();
     refreshScreen();
   }                                                                             //^^
-  #ifdef PC_BUILD
-        if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
-        if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
-  #endif
+  refreshModeGui();                                                             //JM refreshModeGui
 }
 
 
@@ -806,7 +803,7 @@ uint16_t numlockReplacements(uint16_t id, int16_t item, bool_t NL, bool_t FSHIFT
  //Note item1 MUST be set to 0 prior to calling.
  bool_t keyReplacements(int16_t item, int16_t * item1, bool_t NL, bool_t FSHIFT, bool_t GSHIFT) {
  //printf("####B>> %d %d\n",item,* item1);
- if(calcMode == CM_AIM || calcMode == CM_EIM || (tam.mode && tam.alpha) ) {
+ if(calcMode == CM_AIM || calcMode == CM_EIM || calcMode == CM_PEM || (tam.mode && tam.alpha) ) {
 
    if(GSHIFT) {        //ensure that sigma and delta stays uppercase
       switch(item) {
@@ -1383,3 +1380,29 @@ void fnCln(uint16_t unusedButMandatoryParameter){
   #endif
 }
 
+
+void refreshModeGui(void) {
+  #ifdef PC_BUILD
+    if(!tam.mode) {
+      switch(calcMode) {
+        case CM_AIM:
+        case CM_EIM:
+          calcModeAimGui();
+          break;
+
+        case CM_NORMAL:
+          calcModeNormalGui();
+          break;
+
+        case CM_PEM:
+          if(getSystemFlag(FLAG_ALPHA)) {
+            calcModeAimGui();
+          }
+          else {
+            calcModeNormalGui();
+          }
+          break;
+      }
+    }
+  #endif
+}
