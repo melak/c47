@@ -23,7 +23,7 @@
 
 #include "longIntegerType.h"
 #include "typeDefinitions.h"
-#include <stdint.h> 
+#include <stdint.h>
 
 //#ifdef INLINE_TEST
 extern bool_t   testEnabled;

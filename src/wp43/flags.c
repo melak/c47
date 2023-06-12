@@ -788,37 +788,37 @@ void SetSetting(uint16_t jmConfig) {
       fnClearFlag(FLAG_DECIMP);
       break;
     }
-   
+
     case RX_PERIOD: {
       fnSetFlag(FLAG_DECIMP);
       break;
     }
-   
+
     case TF_H12: {
       fnClearFlag(FLAG_TDM24);
       break;
     }
-   
+
     case TF_H24: {
       fnSetFlag(FLAG_TDM24);
       break;
     }
-   
+
     case CU_I: {
       fnClearFlag(FLAG_CPXj);
       break;
     }
-   
+
     case CU_J: {
       fnSetFlag(FLAG_CPXj);
       break;
     }
-   
+
     case PS_DOT: {
       fnClearFlag(FLAG_MULTx);
       break;
     }
-   
+
     case PS_CROSS: {
       fnSetFlag(FLAG_MULTx);
       break;
@@ -828,12 +828,12 @@ void SetSetting(uint16_t jmConfig) {
       fnClearFlag(FLAG_SSIZE8);
       break;
     }
-   
+
     case SS_8: {
       fnSetFlag(FLAG_SSIZE8);
       break;
     }
-   
+
     case CM_RECTANGULAR: {
       fnClearFlag(FLAG_POLAR);
       if(getRegisterDataType(REGISTER_X) == dtComplex34) {
@@ -842,7 +842,7 @@ void SetSetting(uint16_t jmConfig) {
       }
       break;
     }
-   
+
     case CM_POLAR: {
       fnSetFlag(FLAG_POLAR);
       if(getRegisterDataType(REGISTER_X) == dtComplex34) {
@@ -853,17 +853,17 @@ void SetSetting(uint16_t jmConfig) {
       }
       break;
     }
-   
+
     case DO_SCI: {
       fnClearFlag(FLAG_ALLENG);
       break;
     }
-   
+
     case DO_ENG: {
       fnSetFlag(FLAG_ALLENG);
       break;
     }
-   
+
     case PR_HPRP: {
       fnFlipFlag(FLAG_HPRP);
       break;
@@ -873,47 +873,47 @@ void SetSetting(uint16_t jmConfig) {
       fnFlipFlag(FLAG_DENANY);
       break;
     }
-   
+
     case DM_FIX: {
       fnFlipFlag(FLAG_DENFIX);
       break;
     }
-   
+
     case JC_BLZ: {    //bit LeadingZeros
       fnFlipFlag(FLAG_LEAD0);
       break;
     }
-   
+
     case JC_BCR: {    //bit ComplexResult
       fnFlipFlag(FLAG_CPXRES);
       break;
     }
-   
+
     case ITM_CPXRES1: {    //bit ComplexResult
       fnSetFlag(FLAG_CPXRES);
       break;
     }
-   
+
     case ITM_CPXRES0: {    //bit ComplexResult
       fnClearFlag(FLAG_CPXRES);
       break;
     }
-   
+
     case JC_BSR: {    //bit SpecialResult
       fnFlipFlag(FLAG_SPCRES);
       break;
     }
-   
+
     case ITM_SPCRES1: {    //bit SpecialResult
       fnSetFlag(FLAG_SPCRES);
       break;
     }
-   
+
     case ITM_SPCRES0: {    //bit SpecialResult
       fnClearFlag(FLAG_SPCRES);
       break;
     }
-   
+
     case JC_FRC: {    //bit
       fnFlipFlag(FLAG_FRCSRN);
       break;
@@ -927,8 +927,8 @@ void SetSetting(uint16_t jmConfig) {
 
     case JC_UC: {    //call flip case
       numLock = false;
-      if(alphaCase == AC_LOWER) 
-        alphaCase = AC_UPPER; 
+      if(alphaCase == AC_LOWER)
+        alphaCase = AC_UPPER;
       else
         alphaCase = AC_LOWER;
        showAlphaModeonGui();

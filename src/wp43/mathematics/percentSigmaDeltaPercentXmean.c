@@ -98,7 +98,7 @@ void fnPcSigmaDeltaPcXmean(uint16_t unusedButMandatoryParameter) {
 
 
 /********************************************//**
- * \brief pcSigmaDeltaPcXmeanReal(X(long integer)) ==> X(real34) ; Y(real34) 
+ * \brief pcSigmaDeltaPcXmeanReal(X(long integer)) ==> X(real34) ; Y(real34)
  *
  * \param void
  * \return void

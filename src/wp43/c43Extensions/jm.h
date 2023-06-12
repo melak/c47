@@ -89,7 +89,7 @@ void jm_show_comment   (char comment[]);
 
 
 // Confirmation Y or N changed from original WP43 because the alpha keys order changed
-#define ITEM_CONF_Y ITM_2 
+#define ITEM_CONF_Y ITM_2
 #define ITEM_CONF_N ITM_CHS
 
 

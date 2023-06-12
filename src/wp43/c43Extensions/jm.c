@@ -102,8 +102,8 @@
     strcat(tmp,"                                                                                                                                                                ");
     tmp[130]=0;
     printf("....%s calcMode=%4d last_CM=%4d tam.mode=%5d catalog=%5d Id=%4d Name=%8s F=%d G=%d \n",tmp, calcMode, last_CM, tam.mode, catalog, softmenuStack[0].softmenuId, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName,shiftF,shiftG);
-  //  printf("....%s\n",tmp);  
-  #endif  
+  //  printf("....%s\n",tmp);
+  #endif
   }
 #endif //PC_BUILD
 
@@ -274,13 +274,13 @@ void fnJM(uint16_t JM_OPCODE) {
     copySourceRegisterToDestRegister(REGISTER_X, JMTEMP);       // STO JMTEMP
                                                                 //
     fnRCL(JM_TEMP_J);                                          //      zx = () / y
-    fnDivide(0);                                                // 
+    fnDivide(0);                                                //
 
-    fnRCL(JMTEMP);                                              // RCL JMTEMP    
+    fnRCL(JMTEMP);                                              // RCL JMTEMP
     fnRCL(JM_TEMP_I);                                          //      yz = () / x
     fnDivide(0);                                                //
 
-    fnRCL(JMTEMP);                                              // RCL JMTEMP    
+    fnRCL(JMTEMP);                                              // RCL JMTEMP
     fnRCL(JM_TEMP_K);                                          //      xy = () / z
     fnDivide(0);                                                //
 
@@ -545,7 +545,7 @@ void fnJM(uint16_t JM_OPCODE) {
       btnClicked(NULL, "27");
     #endif
     }
-  
+
 #endif //SAVE_SPACE_DM42_6
 
 // Item 255 is NOP
@@ -572,7 +572,7 @@ void fnUserJM(uint16_t jmUser) {
     break;
 
 
-  #ifndef SAVE_SPACE_DM42 
+  #ifndef SAVE_SPACE_DM42
     case USER_E47:
         fnUserJM(USER_KRESET);
         fnShowVersion(USER_E47);
@@ -606,7 +606,7 @@ void fnUserJM(uint16_t jmUser) {
 
         kbd_usr[ 8].fShifted      = ITM_DRG;
         kbd_usr[ 8].gShifted      = ITM_CONSTpi;
-        
+
         kbd_usr[13].gShifted      = -MNU_STK;
         kbd_usr[14].fShifted      = ITM_MAGNITUDE;
         kbd_usr[14].gShifted      = ITM_ARG;
@@ -654,11 +654,11 @@ void fnUserJM(uint16_t jmUser) {
         fnRefreshState();
         fnSetFlag(FLAG_USER);
       break;
-    #endif //SAVE_SPACE_DM42 
+    #endif //SAVE_SPACE_DM42
 
 
 
-    #ifndef SAVE_SPACE_DM42 
+    #ifndef SAVE_SPACE_DM42
       case USER_V47:          //USER
         fnUserJM(USER_KRESET);
         fnShowVersion(USER_V47);
@@ -783,31 +783,31 @@ void fnUserJM(uint16_t jmUser) {
         fnRefreshState();                                 //drJM
         fnSetFlag(FLAG_USER);
       break;
-    #endif //SAVE_SPACE_DM42 
+    #endif //SAVE_SPACE_DM42
 
 
-    #ifndef SAVE_SPACE_DM42 
+    #ifndef SAVE_SPACE_DM42
       case USER_N47:          //USER
         fnUserJM(USER_KRESET);
         fnShowVersion(USER_N47);
-        #ifndef SAVE_SPACE_DM42 
+        #ifndef SAVE_SPACE_DM42
           xcopy(kbd_usr, kbd_std_N47, sizeof(kbd_std_N47));
-        #endif //SAVE_SPACE_DM42 
+        #endif //SAVE_SPACE_DM42
         fnSetFlag(FLAG_USER);
       break;
-    #endif //SAVE_SPACE_DM42 
+    #endif //SAVE_SPACE_DM42
 
 
-    #ifndef SAVE_SPACE_DM42 
+    #ifndef SAVE_SPACE_DM42
       case USER_D47:          //USER
         fnUserJM(USER_KRESET);
         fnShowVersion(USER_D47);
-        #ifndef SAVE_SPACE_DM42 
+        #ifndef SAVE_SPACE_DM42
           xcopy(kbd_usr, kbd_std_D47, sizeof(kbd_std_D47));
-        #endif //SAVE_SPACE_DM42 
+        #endif //SAVE_SPACE_DM42
         fnSetFlag(FLAG_USER);
       break;
-    #endif //SAVE_SPACE_DM42 
+    #endif //SAVE_SPACE_DM42
 
 
 
@@ -857,8 +857,8 @@ void fnUserJM(uint16_t jmUser) {
         kbd_usr[10].primaryTam    = KEY_fg;
         kbd_usr[11].fShiftedAim   = ITM_NULL;
         kbd_usr[11].fShifted      = ITM_NULL;
-        kbd_usr[18].gShifted      = ITM_SNAP;  
-        kbd_usr[18].fShifted      = -MNU_ASN; 
+        kbd_usr[18].gShifted      = ITM_SNAP;
+        kbd_usr[18].fShifted      = -MNU_ASN;
         kbd_usr[19].fShifted      = ITM_USERMODE;
         fnSetFlag(FLAG_USER);
     break;
@@ -866,7 +866,7 @@ void fnUserJM(uint16_t jmUser) {
 
 //---KEYS PROFILE: C43-ALTA
 //-------------------------
-  case USER_C43ALTA:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu      
+  case USER_C43ALTA:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
         fnUserJM(USER_KRESET);
         fnShowVersion(USER_C43ALTA);
         xcopy(kbd_usr, kbd_std_C43AltA, sizeof(kbd_std_C43AltA));
@@ -880,13 +880,13 @@ void fnUserJM(uint16_t jmUser) {
 //-------------------------
   case USER_C43ALTB:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
     #ifndef SAVE_SPACE_DM42_7
-      fnUserJM(USER_C43);  
+      fnUserJM(USER_C43);
       fnShowVersion(USER_C43ALTB);
       kbd_usr[0].primary     = ITM_DRG;
       kbd_usr[7].gShifted    = ITM_XTHROOT;
       kbd_usr[8].gShifted    = ITM_Rup;
       kbd_usr[13].gShifted   = -MNU_STK;
-      kbd_usr[14].gShifted   = -MNU_TRI;    
+      kbd_usr[14].gShifted   = -MNU_TRI;
       Norm_Key_00_VAR        = ITM_DRG;
       fnRefreshState();                                 //drJM
       fnSetFlag(FLAG_USER);

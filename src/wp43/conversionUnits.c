@@ -421,7 +421,7 @@ void fnCvtLbfftNm(uint16_t multiplyDivide) {
 void fnCvtMi2Km2 (uint16_t multiplyDivide) {
   unitConversion(const_MiSqToKmSq, multiplyDivide);
 }
-  
+
 void fnCvtNmi2Km2(uint16_t multiplyDivide) {
   unitConversion(const_NmiSqToKmSq, multiplyDivide);
 }
@@ -443,7 +443,7 @@ void fnCvtRpmRadps(uint16_t multiplyDivide) {
 }
 
 void fnCvtDegRad(uint16_t multiplyDivide) {
-  if(getRegisterDataType(REGISTER_X) == dtReal34 && ( 
+  if(getRegisterDataType(REGISTER_X) == dtReal34 && (
     ((getRegisterAngularMode(REGISTER_X) == amDegree) && multiplyDivide == multiply) || ((getRegisterAngularMode(REGISTER_X) == amRadian) && multiplyDivide == divide) )) {
     setRegisterAngularMode(REGISTER_X, amNone);
   }
@@ -451,7 +451,7 @@ void fnCvtDegRad(uint16_t multiplyDivide) {
 }
 
 void fnCvtDegGrad(uint16_t multiplyDivide) {
-  if(getRegisterDataType(REGISTER_X) == dtReal34 && ( 
+  if(getRegisterDataType(REGISTER_X) == dtReal34 && (
     ((getRegisterAngularMode(REGISTER_X) == amDegree) && multiplyDivide == multiply) || ((getRegisterAngularMode(REGISTER_X) == amGrad) && multiplyDivide == divide) )) {
     setRegisterAngularMode(REGISTER_X, amNone);
   }
@@ -459,7 +459,7 @@ void fnCvtDegGrad(uint16_t multiplyDivide) {
 }
 
 void fnCvtGradRad(uint16_t multiplyDivide) {
-  if(getRegisterDataType(REGISTER_X) == dtReal34 && ( 
+  if(getRegisterDataType(REGISTER_X) == dtReal34 && (
     ((getRegisterAngularMode(REGISTER_X) == amGrad) && multiplyDivide == multiply) || ((getRegisterAngularMode(REGISTER_X) == amRadian) && multiplyDivide == divide) )) {
     setRegisterAngularMode(REGISTER_X, amNone);
   }

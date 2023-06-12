@@ -79,13 +79,13 @@ TO_QSPI const int16_t menu_BITS[]        = { ITM_LOGICALAND,                ITM_
 #endif
 
 
-TO_QSPI const int16_t menu_CLK[]         = { ITM_DATE,                      ITM_TIME,                   ITM_DTtoJ,                ITM_JtoDT,             ITM_DtoJ,                    ITM_XtoDATE, 
+TO_QSPI const int16_t menu_CLK[]         = { ITM_DATE,                      ITM_TIME,                   ITM_DTtoJ,                ITM_JtoDT,             ITM_DtoJ,                    ITM_XtoDATE,
                                              ITM_DATEto,                    ITM_TIMEto,                 ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
                                              ITM_toDATE,                    ITM_toTIME,                 ITM_NULL,                 ITM_NULL,              ITM_toHMS,                   ITM_msTo,
 
                                              ITM_DATE,                      ITM_TIME,                   ITM_TDISP,                ITM_DMY,               ITM_MDY,                     ITM_YMD,
                                              ITM_SD,                        ITM_ST,                     ITM_WDAY,                 ITM_DAY,               ITM_MONTH,                   ITM_YEAR,
-                                             ITM_CLK12,                     ITM_CLK24,                  ITM_NULL,                 ITM_SECOND,            ITM_MINUTE,                  ITM_HR_DEG                  };    
+                                             ITM_CLK12,                     ITM_CLK24,                  ITM_NULL,                 ITM_SECOND,            ITM_MINUTE,                  ITM_HR_DEG                  };
 
 
 
@@ -101,15 +101,15 @@ TO_QSPI const int16_t menu_CPX[]         = { ITM_RE,                        ITM_
                                              ITM_CPXI,                      ITM_CPXJ,                   ITM_CXtoRE,               ITM_REtoCX,            ITM_RECT,                    ITM_POLAR                     };    //JM re-arranged menu
 
 TO_QSPI const int16_t menu_DISP[]        = { ITM_FIX,                       ITM_SCI,                    ITM_ENG,                  ITM_ALL,               ITM_SIGFIG,                  ITM_UNIT,
-                                             ITM_RNG,                       ITM_HIDE,                   ITM_NULL,                 ITM_NULL,              ITM_RECT,                    ITM_POLAR,                           //JM 
+                                             ITM_RNG,                       ITM_HIDE,                   ITM_NULL,                 ITM_NULL,              ITM_RECT,                    ITM_POLAR,                           //JM
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
 
 
-                                             ITM_SCIOVR,                    ITM_ENGOVR,                 ITM_DSTACK,               ITM_CPXMULT,           ITM_MULTCR,                  ITM_MULTDOT,                        //JM 
-                                             ITM_SI_All,                    ITM_SHOIREP,                ITM_LARGELI,              ITM_NULL,              ITM_CPXI,                    ITM_CPXJ,                           //JM 
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                           //JM 
+                                             ITM_SCIOVR,                    ITM_ENGOVR,                 ITM_DSTACK,               ITM_CPXMULT,           ITM_MULTCR,                  ITM_MULTDOT,                        //JM
+                                             ITM_SI_All,                    ITM_SHOIREP,                ITM_LARGELI,              ITM_NULL,              ITM_CPXI,                    ITM_CPXJ,                           //JM
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                           //JM
 
-                                             ITM_SETCHN,                    ITM_SETEUR,                 ITM_SETIND,               ITM_SETJPN,            ITM_SETUK,                   ITM_SETUSA,                    
+                                             ITM_SETCHN,                    ITM_SETEUR,                 ITM_SETIND,               ITM_SETJPN,            ITM_SETUK,                   ITM_SETUSA,
                                              ITM_CLK12,                     ITM_CLK24,                  ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_SETDFLT,
                                              ITM_RDXPER,                    ITM_RDXCOM,                 ITM_GAP,                  ITM_DMY,               ITM_YMD,                     ITM_MDY                       };
 
@@ -121,25 +121,25 @@ TO_QSPI const int16_t menu_EXP[]         = { ITM_CUBE,                      ITM_
                                              ITM_CUBEROOT,                  ITM_XTHROOT,                ITM_SQUAREROOTX,          ITM_2X,                ITM_EX1,                     ITM_EXP,                           //JM re-arranged menu. Added YˆX to follow DM42 keyboard. Swapped YˆX and Yˆ(1/X). Re-aligned with 42S keys.
                                              ITM_sinh,                      ITM_cosh,                   ITM_tanh,                 ITM_arsinh,            ITM_arcosh,                  ITM_artanh                    };
 
-TO_QSPI const int16_t menu_TRI[]         = { ITM_DEG2,                      ITM_RAD2,                   ITM_GRAD2,                ITM_sin,               ITM_cos,                     ITM_tan, 
+TO_QSPI const int16_t menu_TRI[]         = { ITM_DEG2,                      ITM_RAD2,                   ITM_GRAD2,                ITM_sin,               ITM_cos,                     ITM_tan,
                                              ITM_sinc,                      ITM_sincpi,                 ITM_atan2,                ITM_arcsin,            ITM_arccos,                  ITM_arctan,                         //JM re-arranged menu TRIG menu
                                              ITM_sinh,                      ITM_cosh,                   ITM_tanh,                 ITM_arsinh,            ITM_arcosh,                  ITM_artanh                    };    //JM re-arranged menu TRIG menu
 
 TO_QSPI const int16_t menu_TRG_C47[]     = { ITM_DEG2,                      ITM_RAD2,                   ITM_GRAD2,                ITM_DMS2,              ITM_MULPI2,                  -MNU_TRG_C47_MORE,
-                                             ITM_sinc,                      ITM_sincpi,                 ITM_atan2,                ITM_ms,                ITM_dotD,                    ITM_msTo                      };                   
+                                             ITM_sinc,                      ITM_sincpi,                 ITM_atan2,                ITM_ms,                ITM_dotD,                    ITM_msTo                      };
 
-TO_QSPI const int16_t menu_TRG_C47_MORE[]= { ITM_DEG2,                      ITM_RAD2,                   ITM_GRAD2,                ITM_sin,               ITM_cos,                     ITM_tan, 
+TO_QSPI const int16_t menu_TRG_C47_MORE[]= { ITM_DEG2,                      ITM_RAD2,                   ITM_GRAD2,                ITM_sin,               ITM_cos,                     ITM_tan,
                                              ITM_sinc,                      ITM_sincpi,                 ITM_atan2,                ITM_arcsin,            ITM_arccos,                  ITM_arctan,                         //JM re-arranged menu TRIG menu
                                              ITM_sinh,                      ITM_cosh,                   ITM_tanh,                 ITM_arsinh,            ITM_arcosh,                  ITM_artanh                    };    //JM re-arranged menu TRIG menu
 
 
 //D47 vv
 TO_QSPI const int16_t menu_TRG[]         = { ITM_DEG,                       ITM_RAD,                    ITM_GRAD,                 ITM_sinc,              ITM_sincpi,                  ITM_atan2,
-                                             ITM_DEG2,                      ITM_RAD2,                   ITM_GRAD2,                ITM_DMS2,              ITM_MULPI2,                  ITM_msTo,                   
+                                             ITM_DEG2,                      ITM_RAD2,                   ITM_GRAD2,                ITM_DMS2,              ITM_MULPI2,                  ITM_msTo,
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
 //D47 ^^
 
-TO_QSPI const int16_t menu_FIN[]         = { ITM_SIGMAPLUS ,                ITM_PCT    ,                ITM_PC         ,          ITM_DELTAPC,            ITM_PCPMG,                   -MNU_TVM,  
+TO_QSPI const int16_t menu_FIN[]         = { ITM_SIGMAPLUS ,                ITM_PCT    ,                ITM_PC         ,          ITM_DELTAPC,            ITM_PCPMG,                   -MNU_TVM,
                                              ITM_SIGMAMINUS,                ITM_SIGMAx ,                ITM_NSIGMA     ,          ITM_XBAR   ,            ITM_PCMRR,                   ITM_NULL,
                                              ITM_CLSIGMA   ,                ITM_PCSIGMA,                ITM_PCSGM_DPCMN,          ITM_DPCMEAN,            ITM_NULL  ,                  ITM_NULL                     };
 
@@ -156,9 +156,9 @@ TO_QSPI const int16_t menu_FLAGS[]       = { ITM_SF,                        ITM_
 
 TO_QSPI const int16_t menu_INFO[]        = { ITM_SSIZE,                     ITM_MEM,                    ITM_RMODEQ,               ITM_ISM,               ITM_WSIZEQ,                  ITM_KTYP,
                                              ITM_LocRQ,                     ITM_FLASH,                  ITM_ULP,                  ITM_NEIGHB,            ITM_SDIGS,                   ITM_BATT,
-                                             ITM_WHO,                       ITM_VERS,                   ITM_M_DIMQ,               ITM_PMINFINITY,        ITM_ALPHAPOS,                ITM_ALPHALENG,                 
+                                             ITM_WHO,                       ITM_VERS,                   ITM_M_DIMQ,               ITM_PMINFINITY,        ITM_ALPHAPOS,                ITM_ALPHALENG,
                                              ITM_GETRANGE,                  ITM_GETHIDE,                ITM_GET_JUL_GREG,         ITM_NULL,              ITM_SH_ERPN,                 ITM_BESTFQ                      };    //JM INFO
-        
+
 
 TO_QSPI const int16_t menu_INTS[]        = { ITM_A,                         ITM_B,                      ITM_C,                    ITM_D,                 ITM_E,                       ITM_F,
                                              ITM_IDIV,                      ITM_RMD,                    ITM_MOD,                  ITM_XMOD,              ITM_FLOOR,                   ITM_LCM,
@@ -212,8 +212,8 @@ TO_QSPI const int16_t menu_MODE[]        = { ITM_DEG,                       ITM_
                                              ITM_INP_DEF_43S,               ITM_INP_DEF_DP,             ITM_INP_DEF_CPXDP,        ITM_INP_DEF_LI,        ITM_NULL,                    ITM_NULL,                          //JM
 
                                              ITM_BASE_SCREEN  ,             ITM_BASE_HOME    ,          ITM_HOMEx3       ,        ITM_G_DOUBLETAP  ,     ITM_SHTIM        ,           ITM_SAFERESET ,
-                                             ITM_F14          ,             ITM_F124         ,          ITM_F1234        ,        ITM_TST          ,     ITM_M14          ,           ITM_M1234          ,       
-                                             ITM_FGLNOFF      ,             ITM_FGLNLIM      ,          ITM_FGLNFUL      ,        ITM_NULL         ,     ITM_NULL         ,           ITM_NULL           };            
+                                             ITM_F14          ,             ITM_F124         ,          ITM_F1234        ,        ITM_TST          ,     ITM_M14          ,           ITM_M1234          ,
+                                             ITM_FGLNOFF      ,             ITM_FGLNLIM      ,          ITM_FGLNFUL      ,        ITM_NULL         ,     ITM_NULL         ,           ITM_NULL           };
 
 // D47 vv
 TO_QSPI const int16_t menu_SETUP[]       = { ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_HPRP,              ITM_RECT,                    ITM_POLAR,
@@ -225,17 +225,17 @@ TO_QSPI const int16_t menu_SETUP[]       = { ITM_NULL,                      ITM_
                                              ITM_INP_DEF_43S,               ITM_INP_DEF_DP,             ITM_INP_DEF_CPXDP,        ITM_INP_DEF_LI,        ITM_NULL,                    ITM_NULL,                          //JM
 
                                              ITM_BASE_SCREEN  ,             ITM_BASE_HOME    ,          ITM_HOMEx3       ,        ITM_G_DOUBLETAP  ,     ITM_SHTIM        ,           ITM_SAFERESET ,
-                                             ITM_F14          ,             ITM_F124         ,          ITM_F1234        ,        ITM_TST          ,     ITM_M14          ,           ITM_M1234          ,       
-                                             ITM_FGLNOFF      ,             ITM_FGLNLIM      ,          ITM_FGLNFUL      ,        ITM_NULL         ,     ITM_NULL         ,           ITM_NULL           };            
+                                             ITM_F14          ,             ITM_F124         ,          ITM_F1234        ,        ITM_TST          ,     ITM_M14          ,           ITM_M1234          ,
+                                             ITM_FGLNOFF      ,             ITM_FGLNLIM      ,          ITM_FGLNFUL      ,        ITM_NULL         ,     ITM_NULL         ,           ITM_NULL           };
 // D47 ^^
 
 
 TO_QSPI const int16_t menu_PARTS[]       = { ITM_IP,                        ITM_FP,                     ITM_MANT,                 ITM_EXPT,              ITM_SIGN,                    ITM_DECOMP,
-                                             ITM_SDL,                       ITM_SDR,                    ITM_ROUND2,               ITM_ROUNDI2,           ITM_RDP,                     ITM_RSD,                            //JM 
+                                             ITM_SDL,                       ITM_SDR,                    ITM_ROUND2,               ITM_ROUNDI2,           ITM_RDP,                     ITM_RSD,                            //JM
                                              ITM_NULL,                      ITM_NULL,                   ITM_MAGNITUDE,            ITM_ARG,               ITM_RE,                      ITM_IM                        };
 
 TO_QSPI const int16_t menu_PARTS_C43[]   = { ITM_IP,                        ITM_FP,                     ITM_MANT,                 ITM_EXPT,              ITM_SIGN,                    ITM_DECOMP,
-                                             ITM_SDL,                       ITM_SDR,                    ITM_ROUND2,               ITM_ROUNDI2,           ITM_RDP,                     ITM_RSD,                            //JM 
+                                             ITM_SDL,                       ITM_SDR,                    ITM_ROUND2,               ITM_ROUNDI2,           ITM_RDP,                     ITM_RSD,                            //JM
                                              ITM_NULL,                      ITM_NULL,                   ITM_MAGNITUDE,            ITM_ARG,               ITM_RE,                      ITM_IM                        };
 
 
@@ -303,7 +303,7 @@ TO_QSPI const int16_t menu_SUMS_C43[]    = { ITM_SIGMAPLUS,                 ITM_
                                              ITM_SIGMAMINUS,                ITM_SIGMAx,                 ITM_SIGMAx2,              ITM_SIGMAxy,           ITM_SIGMAy2,                 ITM_SIGMAy,
                                              ITM_CLSIGMA,                   ITM_SIGMAx3,                ITM_SIGMAx4,             -MNU_REGR,              ITM_PLOT_STAT,              -MNU_HIST,
 
-                                             ITM_SIGMAlnx,                  ITM_SIGMAln2x,              ITM_SIGMAlnxy,            ITM_SIGMAln2y,         ITM_SIGMAlny,                ITM_NSIGMA,                      
+                                             ITM_SIGMAlnx,                  ITM_SIGMAln2x,              ITM_SIGMAlnxy,            ITM_SIGMAln2y,         ITM_SIGMAlny,                ITM_NSIGMA,
                                              ITM_SIGMAx2y,                  ITM_SIGMAxlny,              ITM_SIGMAx2lny,           ITM_SIGMAlnyonx,       ITM_NULL,                    ITM_SIGMAylnx,
                                              ITM_SIGMAx2ony,                ITM_SIGMA1onx,              ITM_SIGMA1onx2,           ITM_SIGMAxony,         ITM_SIGMA1ony2,              ITM_SIGMA1ony                 };
 
@@ -311,7 +311,7 @@ TO_QSPI const int16_t menu_PLOTTING[]    = { ITM_SIGMAPLUS,                 ITM_
                                              ITM_SIGMAMINUS,                ITM_SIGMAx,                 ITM_SIGMAx2,              ITM_SIGMAxy,           ITM_SIGMAy2,                 ITM_SIGMAy,
                                              ITM_CLSIGMA,                   ITM_SIGMAx3,                ITM_SIGMAx4,             -MNU_REGR,              ITM_PLOT_STAT,              -MNU_HIST,
 
-                                             ITM_SIGMAlnx,                  ITM_SIGMAln2x,              ITM_SIGMAlnxy,            ITM_SIGMAln2y,         ITM_SIGMAlny,                ITM_NSIGMA,                      
+                                             ITM_SIGMAlnx,                  ITM_SIGMAln2x,              ITM_SIGMAlnxy,            ITM_SIGMAln2y,         ITM_SIGMAlny,                ITM_NSIGMA,
                                              ITM_SIGMAx2y,                  ITM_SIGMAxlny,              ITM_SIGMAx2lny,           ITM_SIGMAlnyonx,       ITM_NULL,                    ITM_SIGMAylnx,
                                              ITM_SIGMAx2ony,                ITM_SIGMA1onx,              ITM_SIGMA1onx2,           ITM_SIGMAxony,         ITM_SIGMA1ony2,              ITM_SIGMA1ony                 };
 //^^^^^^^^^^^^
@@ -390,7 +390,7 @@ TO_QSPI const int16_t menu_ALPHA_OMEGA[] = { ITM_ALPHA,                     ITM_
 
                                              ITM_RHO,                       ITM_SIGMA,                  ITM_TAU,                  ITM_UPSILON,           ITM_PHI,                     ITM_CHI,
                                              ITM_PSI,                       ITM_OMEGA,                  ITM_SAMPI,                ITM_NULL,              ITM_NULL,                    ITM_NULL,                           //JM modified greek sequence
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                      
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
 
                                              ITM_IOTA_DIALYTIKA,            ITM_NULL,                   ITM_NULL,                 ITM_UPSILON_DIALYTIKA, ITM_NULL,                    ITM_NULL                      };
 
@@ -399,7 +399,7 @@ TO_QSPI const int16_t menu_alpha_omega[] = { ITM_alpha,                     ITM_
                                              ITM_mu,                        ITM_nu,                     ITM_xi,                   ITM_omicron,           ITM_pi,                      ITM_qoppa,
 
                                              ITM_rho,                       ITM_sigma,                  ITM_tau,                  ITM_upsilon,           ITM_phi,                     ITM_chi,
-                                             ITM_psi,                       ITM_omega,                  ITM_sampi,                ITM_NULL,              ITM_NULL,                    ITM_NULL,                        
+                                             ITM_psi,                       ITM_omega,                  ITM_sampi,                ITM_NULL,              ITM_NULL,                    ITM_NULL,
                                              ITM_alpha_TONOS,               ITM_epsilon_TONOS,          ITM_eta_TONOS,            ITM_iotaTON,           ITM_iota_DIALYTIKA_TONOS,    ITM_NULL,                           //JM modified greek sequence
 
                                              ITM_iota_DIALYTIKA,            ITM_omicron_TONOS,          ITM_upsilon_TONOS,        ITM_upsilon_DIALYTIKA, ITM_upsilon_DIALYTIKA_TONOS, ITM_omega_TONOS               };
@@ -422,62 +422,62 @@ TO_QSPI const int16_t menu_AngleConv_C43[]= {ITM_DEG2,                      ITM_
 
 
 //This Section is generated by UNIT and Submenu Changes documenb  0
-TO_QSPI const int16_t menu_UnitConv[]        = {  
-                                                    -MNU_CONVE,               -MNU_CONVM,               -MNU_MISC,                -MNU_CONVX,               -MNU_CONVA,               -MNU_CONVV, 
-                                                    -MNU_CONVP,               ITM_NULL,                 -MNU_CONVANG,             -MNU_CONVS,               -MNU_CONVFP,              ITM_NULL, 
+TO_QSPI const int16_t menu_UnitConv[]        = {
+                                                    -MNU_CONVE,               -MNU_CONVM,               -MNU_MISC,                -MNU_CONVX,               -MNU_CONVA,               -MNU_CONVV,
+                                                    -MNU_CONVP,               ITM_NULL,                 -MNU_CONVANG,             -MNU_CONVS,               -MNU_CONVFP,              ITM_NULL,
                                                     ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL};
-TO_QSPI const int16_t menu_UnitConv_C43[]    = {  
-                                                    -MNU_CONVE,               -MNU_CONVM,               -MNU_MISC,                -MNU_CONVX,               -MNU_CONVA,               -MNU_CONVV, 
-                                                    -MNU_CONVP,               ITM_NULL,                 -MNU_CONVANG,             -MNU_CONVS,               -MNU_CONVFP,              ITM_NULL, 
+TO_QSPI const int16_t menu_UnitConv_C43[]    = {
+                                                    -MNU_CONVE,               -MNU_CONVM,               -MNU_MISC,                -MNU_CONVX,               -MNU_CONVA,               -MNU_CONVV,
+                                                    -MNU_CONVP,               ITM_NULL,                 -MNU_CONVANG,             -MNU_CONVS,               -MNU_CONVFP,              ITM_NULL,
                                                     ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL};
-TO_QSPI const int16_t menu_ConvA[]        = {   
-                                                    ITM_ACtoHA,               ITM_HAtoAC,               ITM_HECTAREtoM2,          ITM_M2toHECTARE,          ITM_MI2toKM2,             ITM_KM2toMI2, 
-                                                    ITM_ACUStoHA,             ITM_HAtoACUS,             ITM_MUtoM2,               ITM_M2toMU,               ITM_NMI2toKM2,            ITM_KM2toNMI2, 
+TO_QSPI const int16_t menu_ConvA[]        = {
+                                                    ITM_ACtoHA,               ITM_HAtoAC,               ITM_HECTAREtoM2,          ITM_M2toHECTARE,          ITM_MI2toKM2,             ITM_KM2toMI2,
+                                                    ITM_ACUStoHA,             ITM_HAtoACUS,             ITM_MUtoM2,               ITM_M2toMU,               ITM_NMI2toKM2,            ITM_KM2toNMI2,
                                                     ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL};
-TO_QSPI const int16_t menu_ConvE[]        = {   
-                                                    ITM_WHtoJ,                ITM_JtoWH,                ITM_CALtoJ,               ITM_JtoCAL,               ITM_BTUtoJ,               ITM_JtoBTU, 
-                                                    ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL, 
+TO_QSPI const int16_t menu_ConvE[]        = {
+                                                    ITM_WHtoJ,                ITM_JtoWH,                ITM_CALtoJ,               ITM_JtoCAL,               ITM_BTUtoJ,               ITM_JtoBTU,
+                                                    ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,
                                                     ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL};
-TO_QSPI const int16_t menu_ConvFP[]        = {  
-                                                    ITM_MMHGtoPA,             ITM_PAtoMMHG,             ITM_INCHHGtoPA,           ITM_PAtoINCHHG,           ITM_LBFtoN,               ITM_NtoLBF, 
-                                                    ITM_ATMtoPA,              ITM_PAtoATM,              ITM_PSItoPA,              ITM_PAtoPSI,              ITM_NULL,                 ITM_NULL, 
+TO_QSPI const int16_t menu_ConvFP[]        = {
+                                                    ITM_MMHGtoPA,             ITM_PAtoMMHG,             ITM_INCHHGtoPA,           ITM_PAtoINCHHG,           ITM_LBFtoN,               ITM_NtoLBF,
+                                                    ITM_ATMtoPA,              ITM_PAtoATM,              ITM_PSItoPA,              ITM_PAtoPSI,              ITM_NULL,                 ITM_NULL,
                                                     ITM_BARtoPA,              ITM_PAtoBAR,              ITM_TORtoPA,              ITM_PAtoTOR,              ITM_NULL,                 ITM_NULL};
-TO_QSPI const int16_t menu_ConvM[]        = {   
-                                                    ITM_LBStoKG,              ITM_KGtoLBS,              ITM_CWTtoKG,              ITM_KGtoCWT,              ITM_OZtoG,                ITM_GtoOZ, 
-                                                    ITM_STOtoKG,              ITM_KGtoSTO,              ITM_SCWtoKG,              ITM_KGtoSCW,              ITM_TRZtoG,               ITM_GtoTRZ, 
-                                                    ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL, 
-                                                    ITM_TONtoKG,              ITM_KGtoTON,              ITM_STtoKG,               ITM_KGtoST,               ITM_CARATtoG,             ITM_GtoCARAT, 
-                                                    ITM_JINtoKG,              ITM_KGtoJIN,              ITM_LIANGtoKG,            ITM_KGtoLIANG,            ITM_NULL,                 ITM_NULL, 
+TO_QSPI const int16_t menu_ConvM[]        = {
+                                                    ITM_LBStoKG,              ITM_KGtoLBS,              ITM_CWTtoKG,              ITM_KGtoCWT,              ITM_OZtoG,                ITM_GtoOZ,
+                                                    ITM_STOtoKG,              ITM_KGtoSTO,              ITM_SCWtoKG,              ITM_KGtoSCW,              ITM_TRZtoG,               ITM_GtoTRZ,
+                                                    ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,
+                                                    ITM_TONtoKG,              ITM_KGtoTON,              ITM_STtoKG,               ITM_KGtoST,               ITM_CARATtoG,             ITM_GtoCARAT,
+                                                    ITM_JINtoKG,              ITM_KGtoJIN,              ITM_LIANGtoKG,            ITM_KGtoLIANG,            ITM_NULL,                 ITM_NULL,
                                                     ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL};
-TO_QSPI const int16_t menu_Misc[]        = {  
-                                                    ITM_YEARtoS,              ITM_StoYEAR,              ITM_CtoF,                 ITM_FtoC,                 ITM_FRtoDB,               ITM_DBtoFR, 
-                                                    ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_PRtoDB,               ITM_DBtoPR, 
+TO_QSPI const int16_t menu_Misc[]        = {
+                                                    ITM_YEARtoS,              ITM_StoYEAR,              ITM_CtoF,                 ITM_FtoC,                 ITM_FRtoDB,               ITM_DBtoFR,
+                                                    ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_PRtoDB,               ITM_DBtoPR,
                                                     ITM_NMtoLBFFT,            ITM_LBFFTtoNM,            ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL};
-TO_QSPI const int16_t menu_ConvP[]        = {   
-                                                    ITM_HPEtoW,               ITM_WtoHPE,               ITM_HPUKtoW,              ITM_WtoHPUK,              ITM_HPMtoW,               ITM_WtoHPM, 
-                                                    ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL, 
+TO_QSPI const int16_t menu_ConvP[]        = {
+                                                    ITM_HPEtoW,               ITM_WtoHPE,               ITM_HPUKtoW,              ITM_WtoHPUK,              ITM_HPMtoW,               ITM_WtoHPM,
+                                                    ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,
                                                     ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL};
-TO_QSPI const int16_t menu_ConvX[]        = {   
-                                                    ITM_MILEtoM,              ITM_MtoMILE,              ITM_YDtoM,                ITM_MtoYD,                ITM_PCtoM,                ITM_MtoPC, 
-                                                    ITM_NMItoM,               ITM_MtoNMI,               ITM_FTtoM,                ITM_MtoFT,                ITM_LYtoM,                ITM_MtoLY, 
-                                                    ITM_NULL,                 ITM_NULL,                 ITM_INCHtoMM,             ITM_MMtoINCH,             ITM_AUtoM,                ITM_MtoAU, 
-                                                    ITM_LItoM,                ITM_MtoLI,                ITM_YINtoM,               ITM_MtoYIN,               ITM_NULL,                 ITM_NULL, 
-                                                    ITM_NULL,                 ITM_NULL,                 ITM_ZHANGtoM,             ITM_MtoZHANG,             ITM_CUNtoM,               ITM_MtoCUN, 
-                                                    ITM_NULL,                 ITM_NULL,                 ITM_CHItoM,               ITM_MtoCHI,               ITM_FENtoM,               ITM_MtoFEN, 
-                                                    ITM_MItoKM,               ITM_KMtoMI,               ITM_FTUStoM,              ITM_MtoFTUS,              ITM_POINTtoMM,            ITM_MMtoPOINT, 
-                                                    ITM_NMItoKM,              ITM_KMtoNMI,              ITM_FATHOMtoM,            ITM_MtoFATHOM,            ITM_NULL,                 ITM_NULL, 
+TO_QSPI const int16_t menu_ConvX[]        = {
+                                                    ITM_MILEtoM,              ITM_MtoMILE,              ITM_YDtoM,                ITM_MtoYD,                ITM_PCtoM,                ITM_MtoPC,
+                                                    ITM_NMItoM,               ITM_MtoNMI,               ITM_FTtoM,                ITM_MtoFT,                ITM_LYtoM,                ITM_MtoLY,
+                                                    ITM_NULL,                 ITM_NULL,                 ITM_INCHtoMM,             ITM_MMtoINCH,             ITM_AUtoM,                ITM_MtoAU,
+                                                    ITM_LItoM,                ITM_MtoLI,                ITM_YINtoM,               ITM_MtoYIN,               ITM_NULL,                 ITM_NULL,
+                                                    ITM_NULL,                 ITM_NULL,                 ITM_ZHANGtoM,             ITM_MtoZHANG,             ITM_CUNtoM,               ITM_MtoCUN,
+                                                    ITM_NULL,                 ITM_NULL,                 ITM_CHItoM,               ITM_MtoCHI,               ITM_FENtoM,               ITM_MtoFEN,
+                                                    ITM_MItoKM,               ITM_KMtoMI,               ITM_FTUStoM,              ITM_MtoFTUS,              ITM_POINTtoMM,            ITM_MMtoPOINT,
+                                                    ITM_NMItoKM,              ITM_KMtoNMI,              ITM_FATHOMtoM,            ITM_MtoFATHOM,            ITM_NULL,                 ITM_NULL,
                                                     ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL};
-TO_QSPI const int16_t menu_ConvV[]        = {   
-                                                    ITM_GLUKtoL,              ITM_LtoGLUK,              ITM_GLUStoL,              ITM_LtoGLUS,              ITM_QTtoL,                ITM_LtoQT, 
-                                                    ITM_FZUKtoML,             ITM_MLtoFZUK,             ITM_FZUStoML,             ITM_MLtoFZUS,             ITM_BARRELtoM3,           ITM_M3toBARREL, 
+TO_QSPI const int16_t menu_ConvV[]        = {
+                                                    ITM_GLUKtoL,              ITM_LtoGLUK,              ITM_GLUStoL,              ITM_LtoGLUS,              ITM_QTtoL,                ITM_LtoQT,
+                                                    ITM_FZUKtoML,             ITM_MLtoFZUK,             ITM_FZUStoML,             ITM_MLtoFZUS,             ITM_BARRELtoM3,           ITM_M3toBARREL,
                                                     ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL};
-TO_QSPI const int16_t menu_ConvS[]        = {   
+TO_QSPI const int16_t menu_ConvS[]        = {
                                                     ITM_KNOTtoKMH,            ITM_KMHtoKNOT,            ITM_KMHtoMPS,             ITM_MPStoKMH,             ITM_RPMtoDEGPS,           ITM_DEGPStoRPM,
-                                                    ITM_MPHtoKMH,             ITM_KMHtoMPH,             ITM_MPHtoMPS,             ITM_MPStoMPH,             ITM_RPMtoRADPS,           ITM_RADPStoRPM, 
-                                                    ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL}; 
-TO_QSPI const int16_t menu_ConvAng[]        = {   
-                                                    ITM_DEGtoRAD,             ITM_RADtoDEG,             ITM_DEGtoGRAD,            ITM_GRADtoDEG,            ITM_GRADtoRAD,            ITM_RADtoGRAD, 
-                                                    ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL, 
+                                                    ITM_MPHtoKMH,             ITM_KMHtoMPH,             ITM_MPHtoMPS,             ITM_MPStoMPH,             ITM_RPMtoRADPS,           ITM_RADPStoRPM,
+                                                    ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL};
+TO_QSPI const int16_t menu_ConvAng[]        = {
+                                                    ITM_DEGtoRAD,             ITM_RADtoDEG,             ITM_DEGtoGRAD,            ITM_GRADtoDEG,            ITM_GRADtoRAD,            ITM_RADtoGRAD,
+                                                    ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,
                                                     ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL};
 
 
@@ -504,7 +504,7 @@ TO_QSPI const int16_t menu_alphaFN[]     = { ITM_XtoALPHA,                  ITM_
 /*                                          <---------------------------------------------------------------------- 6 g shifted functions ------------------------------------------------------------------------->  */
 TO_QSPI const int16_t menu_alphaMATH[]   = { ITM_LESS_THAN,                 ITM_LESS_EQUAL,             ITM_EQUAL,                ITM_ALMOST_EQUAL,      ITM_GREATER_EQUAL,           ITM_GREATER_THAN,
                                              ITM_LEFT_CURLY_BRACKET,        ITM_LEFT_SQUARE_BRACKET,    ITM_LEFT_PARENTHESIS,     ITM_RIGHT_PARENTHESIS, ITM_RIGHT_SQUARE_BRACKET,    ITM_RIGHT_CURLY_BRACKET,
-                                             ITM_DOT,                       ITM_OBELUS,                 ITM_SLASH,                ITM_CROSS,             ITM_MINUS,                   ITM_PLUS,        
+                                             ITM_DOT,                       ITM_OBELUS,                 ITM_SLASH,                ITM_CROSS,             ITM_MINUS,                   ITM_PLUS,
                                              ITM_NOT,                       ITM_AND,                    ITM_OR,                   ITM_NOT_EQUAL,         ITM_PIPE,                    ITM_AMPERSAND,
                                              ITM_MEASURED_ANGLE,            ITM_RIGHT_ANGLE,            ITM_PERPENDICULAR,        ITM_CUBE_ROOT,         ITM_SQUARE_ROOT,             ITM_xTH_ROOT,
                                              ITM_x_BAR,                     ITM_y_BAR,                  ITM_x_CIRC,               ITM_y_CIRC,            ITM_x_UNDER_ROOT,            ITM_y_UNDER_ROOT,
@@ -564,10 +564,10 @@ TO_QSPI const int16_t menu_TamLblAlpha[] = { ITM_INDIRECTION,               -MNU
                                              ITM_NULL,                      ITM_NULL,                  -MNU_MyAlpha,             -MNU_ALPHA_OMEGA,      -MNU_ALPHADOT,               -MNU_ALPHAMATH                 };   //JM
 
 
- 
+
 TO_QSPI const int16_t menu_Eim[]         = { ITM_EQ_LEFT,                   ITM_CIRCUMFLEX,             ITM_ROOT_SIGN,            CHR_num,               CHR_case,                    ITM_EQ_RIGHT,
                                              ITM_COLON,                     ITM_VERTICAL_BAR,           ITM_LEFT_PARENTHESIS,     ITM_RIGHT_PARENTHESIS, ITM_EQUAL,                  -MNU_CATALOG,
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                     
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
 
                                              ITM_ALOG_SYMBOL,               ITM_op_j_SIGN,              ITM_pi,                   ITM_SIN_SIGN,          ITM_COS_SIGN,                ITM_TAN_SIGN,
                                              ITM_poly_SIGN,                 ITM_LG_SIGN,                ITM_LN_SIGN,              ITM_ASIN_SIGN,          ITM_ACOS_SIGN,                ITM_ATAN_SIGN               };
@@ -577,16 +577,16 @@ TO_QSPI const int16_t menu_Timer[]       = { ITM_TIMER_ADD,                 ITM_
 
 
 TO_QSPI const int16_t menu_BASE[]        = { ITM_2HEX,                      ITM_2DEC,                   ITM_2OCT,                 ITM_2BIN,              -MNU_BITS,                   -MNU_INTS,                                    //JM BASE MENU ADDED
-                                             ITM_LOGICALAND,                ITM_LOGICALOR,              ITM_LOGICALXOR,           ITM_LOGICALNOT,        ITM_HASH_JM,                 ITM_IP,     
-                                             ITM_WS64,                      ITM_WS32,                   ITM_WS16,                 ITM_WS8,               ITM_BCD,                     ITM_CB_LEADING_ZERO,                         
+                                             ITM_LOGICALAND,                ITM_LOGICALOR,              ITM_LOGICALXOR,           ITM_LOGICALNOT,        ITM_HASH_JM,                 ITM_IP,
+                                             ITM_WS64,                      ITM_WS32,                   ITM_WS16,                 ITM_WS8,               ITM_BCD,                     ITM_CB_LEADING_ZERO,
 
                                              ITM_SL1,                       ITM_SR1,                    ITM_RL1,                  ITM_RR1,               ITM_RL,                      ITM_RR,
-                                             ITM_S64,                       ITM_S32,                    ITM_S16,                  ITM_S08,               ITM_S06,                     ITM_FWORD,     
+                                             ITM_S64,                       ITM_S32,                    ITM_S16,                  ITM_S08,               ITM_S06,                     ITM_FWORD,
                                              ITM_U64,                       ITM_U32,                    ITM_U16,                  ITM_U08,               ITM_U06,                     ITM_FBYTE,
 
                                              ITM_A,                         ITM_B,                      ITM_C,                    ITM_D,                 ITM_E,                       ITM_F,
                                              ITM_1COMPL,                    ITM_2COMPL,                 ITM_UNSIGN,               ITM_SIGNMT,            ITM_NULL,                    ITM_WSIZE,
-                                             ITM_BCD9,                      ITM_BCD10,                  ITM_BCDU,                 ITM_NULL,              ITM_BCD,                     ITM_TOPHEX                    };    //JM BASE MENU ADDED 
+                                             ITM_BCD9,                      ITM_BCD10,                  ITM_BCDU,                 ITM_NULL,              ITM_BCD,                     ITM_TOPHEX                    };    //JM BASE MENU ADDED
 
 
 TO_QSPI const int16_t menu_EE[]          = { ITM_CONSTpi,                   ITM_op_j,                   ITM_SQUARE,               ITM_op_a,              ITM_op_a2,                   ITM_CLSTK,                          //JM EE
@@ -605,7 +605,7 @@ TO_QSPI const int16_t menu_Inl_Tst[]     = { ITM_TEST,                      ITM_
 TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_N_KEY_CC,               ITM_N_KEY_GSH,            ITM_N_KEY_MM,          ITM_N_KEY_DRG,               ITM_NULL,       //JM USER NAORMAL MODE
                                              ITM_N_KEY_PRGM,                ITM_N_KEY_USER,             ITM_N_KEY_HOME,           ITM_N_KEY_SIGMA,       ITM_N_KEY_SNAP,              ITM_NULL,       //JM USER NAORMAL MODE
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_USER_COPY,         ITM_SH_NORM_E,               ITM_GET_NORM_E                };    //JM USER NAORMAL MODE
-  
+
 
 #ifdef SAVE_SPACE_DM42
   #define CC_V47  ITM_NULL
@@ -617,7 +617,7 @@ TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_
   #define CC_E47  ITM_USER_E47
   #define CC_D47  ITM_USER_D47
   #define CC_N47  ITM_USER_N47
-#endif                                             
+#endif
 
 #ifdef SAVE_SPACE_DM42_7
   #define CC_DM42  ITM_NULL
@@ -629,7 +629,7 @@ TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_
   #define CC_USER_SHIFTSA ITM_USER_C43ALTA
   #define CC_USER_SHIFTSB ITM_USER_C43ALTB
   #define CC_USER_SHIFTS  ITM_USER_C43ALT
-#endif                                             
+#endif
 
 
 TO_QSPI const int16_t menu_ASN[]         = { ITM_USER_C43,                  CC_USER_SHIFTSA,            CC_USER_SHIFTS,           ITM_USER_WP43S,        CC_DM42,                    ITM_ASSIGN,
@@ -641,9 +641,9 @@ TO_QSPI const int16_t menu_XEQ[]         = { ITM_X_P1,                      ITM_
                                              ITM_X_g1,                      ITM_X_g2,                   ITM_X_g3,                 ITM_X_g4,              ITM_X_g5,                    ITM_X_g6   };
 
 
-TO_QSPI const int16_t menu_BLUE_C47[]    = { ITM_MAGNITUDE,       -MNU_CPX,         -MNU_STK,         -MNU_TRG_C47,     -MNU_EXP,         ITM_UNDO,      
-                                             ITM_ARG,             ITM_DELTAPC,      ITM_XTHROOT,      ITM_op_j,         ITM_toREC2,       ITM_toPOL2,    
-                                             ITM_TGLFRT,          ITM_HASH_JM,      ITM_ms,           ITM_dotD,         ITM_LBL,          ITM_RTN,       
+TO_QSPI const int16_t menu_BLUE_C47[]    = { ITM_MAGNITUDE,       -MNU_CPX,         -MNU_STK,         -MNU_TRG_C47,     -MNU_EXP,         ITM_UNDO,
+                                             ITM_ARG,             ITM_DELTAPC,      ITM_XTHROOT,      ITM_op_j,         ITM_toREC2,       ITM_toPOL2,
+                                             ITM_TGLFRT,          ITM_HASH_JM,      ITM_ms,           ITM_dotD,         ITM_LBL,          ITM_RTN,
 
                                              ITM_RI,              ITM_VIEW,         ITM_USERMODE,     ITM_NULL,         ITM_NULL,         ITM_NULL,
                                              ITM_SNAP,            ITM_TIMER,       -MNU_INFO,        -MNU_TEST,        -MNU_CONST,        ITM_NULL,
@@ -657,14 +657,14 @@ TO_QSPI const int16_t menu_BLUE_C47[]    = { ITM_MAGNITUDE,       -MNU_CPX,     
   #define CC_EE  ITM_NULL
 #else
   #define CC_EE  -MNU_EE
-#endif                                             
+#endif
 
 TO_QSPI const int16_t menu_HOME[]        = { ITM_DRG,                       ITM_YX,                     ITM_SQUARE,               ITM_10x,               ITM_EXP,                     ITM_op_j,                          //JM HOME
                                              ITM_MOD,                       ITM_RMD,                    ITM_IDIV,                 ITM_XFACT,             ITM_EE_EXP_TH,               ITM_LINPOL,                    //JM HOME
                                              ITM_FP,                        ITM_IP,                     ITM_DEG2,                 ITM_RAD2,              ITM_RECT,                    ITM_POLAR,                          //JM HOME
 
-                                             ITM_SI_k,                      ITM_SI_M,                   ITM_SI_G,                 ITM_SI_T,              ITM_SI_P,                    ITM_DSPCYCLE,                           
-                                             ITM_SI_f,                      ITM_SI_p,                   ITM_SI_n,                 ITM_SI_u,              ITM_SI_m,                    ITM_DSP,                                    
+                                             ITM_SI_k,                      ITM_SI_M,                   ITM_SI_G,                 ITM_SI_T,              ITM_SI_P,                    ITM_DSPCYCLE,
+                                             ITM_SI_f,                      ITM_SI_p,                   ITM_SI_n,                 ITM_SI_u,              ITM_SI_m,                    ITM_DSP,
                                             -MNU_EE,                        ITM_PARALLEL,               ITM_DEG2,                 ITM_RAD2,              ITM_RECT,                    ITM_POLAR      };                                                                                                                                                                                   //JM HOME
 
 TO_QSPI const int16_t menu_PLOT[]        = { ITM_PLINE,                     ITM_SCALE,                  ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                           //JM GRAPH
@@ -1313,7 +1313,7 @@ int8_t maxgLines = 0;
 
 bool_t maxfgLines(int16_t y) {
   if(((maxfLines & 1) == 1) && ((maxgLines & 1) == 1)) return (2 == y) || (1 == y); else  //if any bit set in the f and g-line, allow fgline on f and g
-  if(((maxfLines & 1) == 1) && ((maxgLines & 1) == 0)) return (1 == y); else              //if any bit set in the f-line, allow fgline on f 
+  if(((maxfLines & 1) == 1) && ((maxgLines & 1) == 0)) return (1 == y); else              //if any bit set in the f-line, allow fgline on f
   return false;
 }
 
@@ -1497,7 +1497,7 @@ void showKey2(const char *label0, const char *label1, int16_t x1, int16_t x2, in
   // s w1 s w2 10 | 10 w3 s w4 s
 
   //printf("@@@@ %f %f\n",space0, space1);
-  
+
   if(space0 < 10 || space1 < 10) {
     space    = ((x2 - x1) - w1 - w2 - w3 - w4) / 7.0f;   //###
     Text0    = x1 + space;
@@ -1505,8 +1505,8 @@ void showKey2(const char *label0, const char *label1, int16_t x1, int16_t x2, in
     midpoint = 3.5 * space + w1 + w2;
     Arr1     = x2 - space - w3 - w4 - space;
     Text1    = x2 - space - w4;
-    // s w1 s w2 s. | .s w3 s w4 s  
-  
+    // s w1 s w2 s. | .s w3 s w4 s
+
   }
   //printf(">>>> |%s|%s| Space %f, w1 %d, w2 %d, w3 %d, w4 %d\n", label0, label1, space, w1, w2, w3, w4);
 
@@ -1624,11 +1624,11 @@ void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, 
 
 
 bool_t isFunctionItemAMenu(int16_t item) {
-  return item == ITM_PLOT      || 
-         item == ITM_PLOT_LR   || 
-         item == ITM_HPLOT     || 
-         item == ITM_DRAW      || 
-         item == ITM_CFG       || 
+  return item == ITM_PLOT      ||
+         item == ITM_PLOT_LR   ||
+         item == ITM_HPLOT     ||
+         item == ITM_DRAW      ||
+         item == ITM_CFG       ||
          item == ITM_PLOT_STAT ||
          item == ITM_EQ_NEW    ||
          item == ITM_VARMNU    ||
@@ -1663,7 +1663,7 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
   strcpy(itemName,NOTEXT);
   showText[0]=0;
 
-  if(itemNr > 0) { 
+  if(itemNr > 0) {
     * showCb = fnCbIsSet(itemNr%10000);
     * showValue = fnItemShowValue(itemNr%10000);
     switch (* showValue) {
@@ -1671,7 +1671,7 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
       case 32701 : strcat(showText, "FIX" ); *showValue = NOVAL; break;
       case 32702 : strcat(showText, "SCI" ); *showValue = NOVAL; break;
       case 32703 : strcat(showText, "ENG" ); *showValue = NOVAL; break;
-      case 32704 : strcat(showText, "SIG" ); *showValue = NOVAL; break; 
+      case 32704 : strcat(showText, "SIG" ); *showValue = NOVAL; break;
       case 32705 : strcat(showText, "UNIT"); *showValue = NOVAL; break;
       default: break;
     }
@@ -1714,7 +1714,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
 
   void showSoftmenuCurrentPart(void) {
 
-//JMTOCHECK: Removed exceptions for underline removal. 
+//JMTOCHECK: Removed exceptions for underline removal.
 
     maxfLines = 0;
     maxgLines = 0;
@@ -1736,7 +1736,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
             strcat(tmp1," ");
             tmp1[1] = (int)(48+(1+x+y*6) % 10);
           } else {
-            tmp1[0] = (int)((48+1+x+y*6));            
+            tmp1[0] = (int)((48+1+x+y*6));
           }
           showSoftkey(tmp1, x, y, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
         }
@@ -1959,15 +1959,15 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
             //        +20000 -> no bottom line
             //        +30000 -> neither top nor bottom line
 
-            if( softmenu[m].menuItem  == -MNU_CONVS  || softmenu[m].menuItem  == -MNU_CONVANG  || 
-                softmenu[m].menuItem  == -MNU_CONVE  || softmenu[m].menuItem  == -MNU_CONVP    || 
-                softmenu[m].menuItem  == -MNU_CONVFP || softmenu[m].menuItem  == -MNU_CONVM    || 
-                softmenu[m].menuItem  == -MNU_CONVX  || softmenu[m].menuItem  == -MNU_CONVV    || 
-                softmenu[m].menuItem  == -MNU_CONVA  || softmenu[m].menuItem  == -MNU_UNITCONV || 
-                softmenu[m].menuItem  == -MNU_MISC) { 
-              showSoftkey2(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText); 
+            if( softmenu[m].menuItem  == -MNU_CONVS  || softmenu[m].menuItem  == -MNU_CONVANG  ||
+                softmenu[m].menuItem  == -MNU_CONVE  || softmenu[m].menuItem  == -MNU_CONVP    ||
+                softmenu[m].menuItem  == -MNU_CONVFP || softmenu[m].menuItem  == -MNU_CONVM    ||
+                softmenu[m].menuItem  == -MNU_CONVX  || softmenu[m].menuItem  == -MNU_CONVV    ||
+                softmenu[m].menuItem  == -MNU_CONVA  || softmenu[m].menuItem  == -MNU_UNITCONV ||
+                softmenu[m].menuItem  == -MNU_MISC) {
+              showSoftkey2(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
             }
-   
+
             else {
               if( (softmenu[m].menuItem == -MNU_FCNS || softmenu[m].menuItem  == -MNU_CONST) || //CONST is a normal menu not a catalog, but we expect the catalog to be treated as a catalog. //The same could be a problem with any of the generated catalogs (MNU_SYSFL, MNU_alpha_INTL, MNU_alpha_intl, )
                  ((softmenu[m].menuItem == -MNU_IO   || softmenu[m].menuItem  == -MNU_PFN  ) && (item == ITM_STOCFG || item == ITM_RCLCFG))) { //do not display "Config"
@@ -2049,7 +2049,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
           if(!catalog) {
             lcd_fill_rect(xx,       (uint32_t)(tt_o-t + yDotted-xx+t),   2*(t-xx), 1 ,true );
             lcd_fill_rect(xx + t_o, (uint32_t)(tt_o-t + yDotted-t+xx+t), 2*(t-xx), 1 ,true );
-          } 
+          }
           else {
             if(xx!=t) {
               lcd_fill_rect(xx,                 (uint32_t)(tt_o-t + yDotted-xx+t),   2, 1 ,true );
@@ -2103,7 +2103,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
 
     softmenuStack[0].softmenuId = softmenuId;
     softmenuStack[0].firstItem = lastCatalogPosition[catalog];
-   
+
       doRefreshSoftMenu = true;     //dr
   }
 
@@ -2128,10 +2128,10 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
 
     if(softmenuStack[0].softmenuId == 0 && SH_BASE_HOME && calcMode != CM_AIM) {                  //JM vv
       softmenuStack[0].softmenuId = mm_MNU_HOME;
-    } 
+    }
     else if(softmenuStack[0].softmenuId == 1 && calcMode == CM_AIM) {
       softmenuStack[0].softmenuId = mm_MNU_ALPHA;
-    } 
+    }
                                                               //JM ^^
     if(softmenuStack[0].softmenuId != mm_MNU_HOME) {          //JM reset menu base point only if not HOME menu
       softmenuStack[0].firstItem = 0;
@@ -2377,7 +2377,7 @@ void fnMenuDump(uint16_t menu, uint16_t item) {                              //J
   while(gtk_events_pending()) {
     gtk_main_iteration();
   }
- 
+
   printf(">>> %s\n",indexOfItems[-softmenu[menu].menuItem].itemSoftmenuName);
 
   sprintf(bmpFileName,"Menu_%4d%4d.bmp",menu,item);
