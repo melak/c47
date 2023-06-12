@@ -13,7 +13,7 @@ Func: fnRound2
 ;=======================================
 ; round(Long Integer) --> Real34; Do not error, do not change the output, do not change Lx
 ;=======================================
-In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"12345678901234567" RL=LonI:"12345678901234567" 
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"12345678901234567" RL=LonI:"12345678901234567"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"12345678901234567" RX=LonI:"12345678901234567"
 
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"-52" RL=LonI:"-52"

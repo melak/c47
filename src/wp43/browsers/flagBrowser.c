@@ -364,7 +364,7 @@
         }
 
         char ss[2];
-        int16_t i; 
+        int16_t i;
         i=0;
         ss[1]=0;
         while(tmpString[i]!=0){

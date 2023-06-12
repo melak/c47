@@ -43,7 +43,7 @@ void fnToPolar2(uint16_t unusedButMandatoryParameter) {
   //X and Y are both only checked for REAL - symmetrical. Therefore clasRP does not play a role in the type checking even when swapped
   dataTypeX = getRegisterDataType(REGISTER_X);
   dataAtagX  = getRegisterAngularMode(REGISTER_X);
-  dataTypeY = getRegisterDataType(REGISTER_Y);      
+  dataTypeY = getRegisterDataType(REGISTER_Y);
   dataAtagY  = getRegisterAngularMode(REGISTER_Y);
 
   // >P needs rectangular coords, i.e. X=real and Y=real
@@ -72,11 +72,11 @@ void fnToPolar(uint16_t unusedButMandatoryParameter) {
     REG_Y = REGISTER_Y;
   } else {
     REG_X = REGISTER_Y;
-    REG_Y = REGISTER_X;    
+    REG_Y = REGISTER_X;
   }
 
   dataTypeX = getRegisterDataType(REG_X);
-  dataTypeY = getRegisterDataType(REG_Y);      
+  dataTypeY = getRegisterDataType(REG_Y);
 
   if((dataTypeX == dtReal34 || dataTypeX == dtLongInteger) && (dataTypeY == dtReal34 || dataTypeY == dtLongInteger)) {
     if(!saveLastX()) {

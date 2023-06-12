@@ -104,7 +104,7 @@ TO_QSPI const char errorMessages[NUMBER_OF_ERROR_CODES][SIZE_OF_EACH_ERROR_MESSA
 /* 52 */  "Invalid input data type for polar/rect mode",
 /* 53 */  "Bad input", // This error is not in ReM and cannot occur (theoretically).
 /* 54 */  "No program specified",
-/* 55 */  "Cannot write file ", 
+/* 55 */  "Cannot write file ",
 };
 
 

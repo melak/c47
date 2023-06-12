@@ -60,7 +60,7 @@ char*    figlabel              (const char* label, const char* showText, int16_t
 #define RB_WS   '/' // WordSize
 #define RB_SA   '>' // SigmaAssign
 #define RB_ID   '?' // InputDefault
-#define CB_JC   'A' // CheckBox 
+#define CB_JC   'A' // CheckBox
 #define RB_HX   'B' // BASE
 #define RB_NM   'C' // NORMALMODE
 #define RB_BCD  'D' // NORMALMODE

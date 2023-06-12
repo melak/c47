@@ -36,7 +36,7 @@
 //extern uint32_t nextTimerRefresh;
 //#endif
 
-void     keyClick(uint8_t length); 
+void     keyClick(uint8_t length);
 
 void     showAlphaModeonGui   (void);
 void     resetShiftState      (void);

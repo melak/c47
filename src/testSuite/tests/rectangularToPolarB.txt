@@ -110,7 +110,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RL=LonI:"3"
 ;jm Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RY=LonI:"2" RX=Cplx:"3 i 2"
 
 
-;jm ================================================= Added this one because the special JM R>P 
+;jm ================================================= Added this one because the special JM R>P
 ;jm  Long Integer, Complex34 --> Error24
 ;jm =================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RY=LonI:"2" RX=Cplx:"3 i 2"

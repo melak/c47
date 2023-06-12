@@ -431,7 +431,7 @@ void fnMirror(uint16_t unusedButMandatoryParameter) {
   }
 }
 
-/********************************************//**                    //JM vv 
+/********************************************//**                    //JM vv
  * \brief regX ==> regL and Change Endianness(regX) ==> regX
  * enables stack lift and refreshes the stack
  *
@@ -457,7 +457,7 @@ uint64_t x;
     b2 = (x & 0x0000000000FF0000) >> (64-48);
     b1 = (x & 0x000000000000FF00) >> (64-56);
     b0 = (x & 0x00000000000000FF) >> (64-64);
-  
+
     if(bitWidth == 8) {
       if(shortIntegerWordSize<16) {fnSetWordSize(16);}
       else

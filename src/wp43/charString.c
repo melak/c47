@@ -85,18 +85,18 @@ static void _calculateStringWidth(const char *str, const font_t *font, bool_t wi
         glyph = NULL;
       }
 
-      if(glyph == NULL) {
-        #if defined(GENERATE_CATALOGS)
-          printf("\n---------------------------------------------------------------------------\n"
-                   "In function stringWidth: %d is an unexpected value returned by findGlyph!"
-                 "/n---------------------------------------------------------------------------\n", glyphId);
-        #else // !GENERATE_CATALOGS
-          sprintf(errorMessage, commonBugScreenMessages[bugMsgValueReturnedByFindGlyph], "stringWidth", glyphId);
-          displayBugScreen(errorMessage);
-        #endif // GENERATE_CATALOGS
-        *width = 0;
-        return;
-      }
+    if(glyph == NULL) {
+      #if defined(GENERATE_CATALOGS)
+        printf("\n---------------------------------------------------------------------------\n"
+                 "In function stringWidth: %d is an unexpected value returned by findGlyph!"
+               "/n---------------------------------------------------------------------------\n", glyphId);
+      #else // !GENERATE_CATALOGS
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgValueReturnedByFindGlyph], "stringWidth", glyphId);
+        displayBugScreen(errorMessage);
+      #endif // GENERATE_CATALOGS
+      *width = 0;
+      return;
+    }
 
       numPixels += (doubling*(glyph->colsGlyph + glyph->colsAfterGlyph)) >> 2;
       if(firstChar) {

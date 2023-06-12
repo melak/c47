@@ -48,7 +48,7 @@ TO_QSPI static const char bugScreenUnknownFormulaParserMode[] = "In function _pa
     uint16_t opCode;
     uint16_t unused;
   } functionAlias_t;
-  
+
   TO_QSPI static const functionAlias_t functionAlias[] = {
     //name                                   opCode           padding
 
@@ -57,7 +57,7 @@ TO_QSPI static const char bugScreenUnknownFormulaParserMode[] = "In function _pa
     { "sin",                                 ITM_sin,         0}, // C47 Sine
     { "asin",                                ITM_arcsin,      0}, // C47 Inverse sin
     { "arsin",                               ITM_arcsin,      0}, // C47 Inverse sin
-    { "arcsin",                              ITM_arcsin,      0}, // C47 Inverse sin 
+    { "arcsin",                              ITM_arcsin,      0}, // C47 Inverse sin
 
 //    { "COS",                                 ITM_cos,         0}, // Cosine
     { "cos",                                 ITM_cos,         0}, // C47 Cosine
@@ -1302,7 +1302,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
         return;
         }
 
-        case '(': 
+        case '(':
         if(bufPtr != buffer) {
           *(bufPtr++) = 0;
           ++strPtr;
@@ -1327,7 +1327,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
           }
         }
         /* fallthrough */
-        
+
 
       case '=':
       case '+':
@@ -1337,7 +1337,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
       case '^':
       case '!':
       case ':':
-        case '|': 
+        case '|':
         if(equalAppeared && (*strPtr == '=')) {
           displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
           #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -1457,7 +1457,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
         inExponent = false;
         exponentSignCanOccur = false;
         break;
-        
+
 
         default: {
         if(afterSpace) {
