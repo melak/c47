@@ -336,7 +336,7 @@ void graph_eqn(uint16_t mode) {
     int16_t ss0 = 0;
     int16_t ss1 = 0;
     int16_t ss2 = 0;
-    #define SS1 1.8 //1.4  slope/slope threshold for 50% dx 
+    #define SS1 1.8 //1.4  slope/slope threshold for 50% dx
     #define SS2 2.4 //2    slope/slope threshold for jumping back
     uint8_t discontinuityDetected = 0;
     bool_t  slopeIncreaseDetected = false;
@@ -359,7 +359,7 @@ void graph_eqn(uint16_t mode) {
       printf("dx0=%f discontinuityDetected:%u slopeIncreaseDetected:%u\n",dx0, discontinuityDetected, slopeIncreaseDetected);
     #endif //DEBUG_GR
 
-    //Main loop, default is 40 x 6 point gaps, across the 240 wide screen 
+    //Main loop, default is 40 x 6 point gaps, across the 240 wide screen
     //  If the slope is increasing, then the dx is reduced. That helps going forward, but not looking a the laast sample which already jumped too far, so the next part step back
     //  The 0.99999 is to purposely stay off integer fractions, which is then less likely to land on easy roots
     for(x=x_min; x<=x_max; x+=0.99999*dx) {
@@ -386,10 +386,10 @@ void graph_eqn(uint16_t mode) {
 
 
       if (slope0 != 0 && slope != 0) {
-        slopeIncreaseDetected = ( 
-          (fabs(y02/y01) > 1.01 && fabs(slope/slope0) > SS2) || 
-          (fabs(y01/y02) > 1.01 && fabs(slope0/slope) > SS2) ||   //increase in slope        
-          (ss0 == 1  && ss1 == -1 && ss2 == 1) || 
+        slopeIncreaseDetected = (
+          (fabs(y02/y01) > 1.01 && fabs(slope/slope0) > SS2) ||
+          (fabs(y01/y02) > 1.01 && fabs(slope0/slope) > SS2) ||   //increase in slope
+          (ss0 == 1  && ss1 == -1 && ss2 == 1) ||
           (ss0 == -1 && ss1 == 1  && ss2 == -1) ||
           (             ss1 == 1  && ss2 == -1  && y01 > 0 && y02 < 0) ||
           (             ss1 == -1 && ss2 == 1   && y01 < 0 && y02 > 0)     );

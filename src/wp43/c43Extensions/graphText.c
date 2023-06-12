@@ -44,7 +44,7 @@ bool_t               cancelFilename = false;
 
 #ifdef DMCP_BUILD
 //###################################################################################
-/*-DMCP-*/ 
+/*-DMCP-*/
 /*-DMCP-*/ TCHAR* f_gets ( //DMCP_BUILD ONLY
 /*-DMCP-*/   TCHAR* buff,  /* Pointer to the buffer to store read string */
 /*-DMCP-*/   int len,    /* Size of string buffer (items) */
@@ -56,7 +56,7 @@ bool_t               cancelFilename = false;
 /*-DMCP-*/   BYTE s[4];
 /*-DMCP-*/   UINT rc;
 /*-DMCP-*/   DWORD dc;
-/*-DMCP-*/ 
+/*-DMCP-*/
 /*-DMCP-*/       /* Byte-by-byte read without any conversion (ANSI/OEM API) */
 /*-DMCP-*/   len -= 1; /* Make a room for the terminator */
 /*-DMCP-*/   while (nc < len) {
@@ -67,13 +67,13 @@ bool_t               cancelFilename = false;
 /*-DMCP-*/     *p++ = (TCHAR)dc; nc++;
 /*-DMCP-*/     if (dc == '\n') break;
 /*-DMCP-*/   }
-/*-DMCP-*/ 
+/*-DMCP-*/
 /*-DMCP-*/   *p = 0;   /* Terminate the string */
 /*-DMCP-*/   return nc ? buff : 0; /* When no data read due to EOF or error, return with error. */
 /*-DMCP-*/ }
-/*-DMCP-*/ 
-/*-DMCP-*/ 
-/*-DMCP-*/ 
+/*-DMCP-*/
+/*-DMCP-*/
+/*-DMCP-*/
 /*-DMCP-*/ TCHAR* f_getsline ( //DMCP_BUILD ONLY
 /*-DMCP-*/   TCHAR* buff,  /* Pointer to the buffer to store read string */
 /*-DMCP-*/   int len,    /* Size of string buffer (items) */
@@ -94,45 +94,45 @@ bool_t               cancelFilename = false;
 /*-DMCP-*/     sc = s[0];
 /*-DMCP-*/     *p++ = (TCHAR)sc; nc++;
 /*-DMCP-*/   }
-/*-DMCP-*/ 
+/*-DMCP-*/
 /*-DMCP-*/   *p = 0;   /* Terminate the string */
 /*-DMCP-*/   return nc ? buff : 0; /* When no data read due to EOF or error, return with error. */
 /*-DMCP-*/ }
-/*-DMCP-*/ 
-/*-DMCP-*/ 
+/*-DMCP-*/
+/*-DMCP-*/
 /*-DMCP-*/ /*-----------------------------------------------------------------------*/
 /*-DMCP-*/ /* Put a Character to the File (sub-functions)                           */
 /*-DMCP-*/ /*-----------------------------------------------------------------------*/
-/*-DMCP-*/ 
+/*-DMCP-*/
 /*-DMCP-*/ /* Putchar output buffer and work area */
-/*-DMCP-*/ 
+/*-DMCP-*/
 /*-DMCP-*/ typedef struct { //DMCP_BUILD ONLY
 /*-DMCP-*/   FIL *fp;    /* Ptr to the writing file */
 /*-DMCP-*/   int idx, nchr;  /* Write index of buf[] (-1:error), number of encoding units written */
 /*-DMCP-*/   BYTE buf[64]; /* Write buffer */
 /*-DMCP-*/ } putbuff;
-/*-DMCP-*/ 
-/*-DMCP-*/ 
+/*-DMCP-*/
+/*-DMCP-*/
 /*-DMCP-*/ /* Buffered write with code conversion */
 /*-DMCP-*/ static void putc_bfd (putbuff* pb, TCHAR c) //DMCP_BUILD ONLY
 /*-DMCP-*/ {
 /*-DMCP-*/   UINT n;
 /*-DMCP-*/   int i, nc;
-/*-DMCP-*/ 
-/*-DMCP-*/ 
+/*-DMCP-*/
+/*-DMCP-*/
 /*-DMCP-*/   if (c == '\n') {    /* LF -> CRLF conversion */
 /*-DMCP-*/     putc_bfd(pb, '\r');
 /*-DMCP-*/   }
-/*-DMCP-*/ 
+/*-DMCP-*/
 /*-DMCP-*/   i = pb->idx;        /* Write index of pb->buf[] */
 /*-DMCP-*/   if (i < 0) return;
 /*-DMCP-*/   nc = pb->nchr;      /* Write unit counter */
-/*-DMCP-*/ 
-/*-DMCP-*/ 
+/*-DMCP-*/
+/*-DMCP-*/
 /*-DMCP-*/   /* ANSI/OEM input (without re-encoding) */
 /*-DMCP-*/   pb->buf[i++] = (BYTE)c;
-/*-DMCP-*/ 
-/*-DMCP-*/ 
+/*-DMCP-*/
+/*-DMCP-*/
 /*-DMCP-*/   if (i >= (int)(sizeof pb->buf) - 4) { /* Write buffered characters to the file */
 /*-DMCP-*/     f_write(pb->fp, pb->buf, (UINT)i, &n);
 /*-DMCP-*/     i = (n == (UINT)i) ? 0 : -1;
@@ -140,80 +140,80 @@ bool_t               cancelFilename = false;
 /*-DMCP-*/   pb->idx = i;
 /*-DMCP-*/   pb->nchr = nc + 1;
 /*-DMCP-*/ }
-/*-DMCP-*/ 
-/*-DMCP-*/ 
+/*-DMCP-*/
+/*-DMCP-*/
 /*-DMCP-*/ /* Flush remaining characters in the buffer */
 /*-DMCP-*/ static int putc_flush (putbuff* pb) //DMCP_BUILD ONLY
 /*-DMCP-*/ {
 /*-DMCP-*/   UINT nw;
-/*-DMCP-*/ 
+/*-DMCP-*/
 /*-DMCP-*/   if (   pb->idx >= 0 /* Flush buffered characters to the file */
 /*-DMCP-*/     && f_write(pb->fp, pb->buf, (UINT)pb->idx, &nw) == FR_OK
 /*-DMCP-*/     && (UINT)pb->idx == nw) return pb->nchr;
 /*-DMCP-*/   return EOF;
 /*-DMCP-*/ }
-/*-DMCP-*/ 
-/*-DMCP-*/ 
+/*-DMCP-*/
+/*-DMCP-*/
 /*-DMCP-*/ /* Initialize write buffer */
-/*-DMCP-*/ 
+/*-DMCP-*/
 /*-DMCP-*/ /* Fill memory block */
 /*-DMCP-*/ static void mem_set (void* dst, int val, UINT cnt) //DMCP_BUILD ONLY
 /*-DMCP-*/ {
 /*-DMCP-*/   BYTE *d = (BYTE*)dst;
-/*-DMCP-*/ 
+/*-DMCP-*/
 /*-DMCP-*/   do {
 /*-DMCP-*/     *d++ = (BYTE)val;
 /*-DMCP-*/   } while (--cnt);
 /*-DMCP-*/ }
-/*-DMCP-*/ 
-/*-DMCP-*/ 
+/*-DMCP-*/
+/*-DMCP-*/
 /*-DMCP-*/ static void putc_init (putbuff* pb, FIL* fp) //DMCP_BUILD ONLY
 /*-DMCP-*/ {
 /*-DMCP-*/   mem_set(pb, 0, sizeof (putbuff));
 /*-DMCP-*/   pb->fp = fp;
 /*-DMCP-*/ }
-/*-DMCP-*/ 
-/*-DMCP-*/ 
-/*-DMCP-*/ 
+/*-DMCP-*/
+/*-DMCP-*/
+/*-DMCP-*/
 /*-DMCP-*/ int f_putc ( //DMCP_BUILD ONLY
 /*-DMCP-*/   TCHAR c,  /* A character to be output */
 /*-DMCP-*/   FIL* fp   /* Pointer to the file object */
 /*-DMCP-*/ )
 /*-DMCP-*/ {
 /*-DMCP-*/   putbuff pb;
-/*-DMCP-*/ 
-/*-DMCP-*/ 
+/*-DMCP-*/
+/*-DMCP-*/
 /*-DMCP-*/   putc_init(&pb, fp);
 /*-DMCP-*/   putc_bfd(&pb, c); /* Put the character */
 /*-DMCP-*/   return putc_flush(&pb);
 /*-DMCP-*/ }
-/*-DMCP-*/ 
-/*-DMCP-*/ 
-/*-DMCP-*/ 
-/*-DMCP-*/ 
+/*-DMCP-*/
+/*-DMCP-*/
+/*-DMCP-*/
+/*-DMCP-*/
 /*-DMCP-*/ /*-----------------------------------------------------------------------*/
 /*-DMCP-*/ /* Put a String to the File                                              */
 /*-DMCP-*/ /*-----------------------------------------------------------------------*/
-/*-DMCP-*/ 
+/*-DMCP-*/
 /*-DMCP-*/ int f_puts ( //DMCP_BUILD ONLY
 /*-DMCP-*/   const TCHAR* str, /* Pointer to the string to be output */
 /*-DMCP-*/   FIL* fp       /* Pointer to the file object */
 /*-DMCP-*/ )
 /*-DMCP-*/ {
 /*-DMCP-*/   putbuff pb;
-/*-DMCP-*/ 
-/*-DMCP-*/ 
+/*-DMCP-*/
+/*-DMCP-*/
 /*-DMCP-*/   putc_init(&pb, fp);
 /*-DMCP-*/   while (*str) putc_bfd(&pb, *str++);   /* Put the string */
 /*-DMCP-*/   return putc_flush(&pb);
 /*-DMCP-*/ }
-/*-DMCP-*/ 
-/*-DMCP-*/ 
+/*-DMCP-*/
+/*-DMCP-*/
 //###################################################################################
 
 
 //DMCP_BUILD
-int16_t export_append_string_to_file(const char line1[TMP_STR_LENGTH], uint8_t mode, const char filedir[40]) { //DMCP_BUILD 
+int16_t export_append_string_to_file(const char line1[TMP_STR_LENGTH], uint8_t mode, const char filedir[40]) { //DMCP_BUILD
 char line[200];               /* Line buffer */
     FIL fil;                      /* File object */
     int fr;                   /* FatFs return code */
@@ -268,13 +268,13 @@ char line[200];               /* Line buffer */
     }
 
     sys_disk_write_enable(0);
- 
+
     return 0;
   }
 
 
 static FIL fil;               /* File object */
-int16_t export_append_string_to_file_n(const char *line1, uint8_t mode, const char filedir[40]) { //DMCP_BUILD 
+int16_t export_append_string_to_file_n(const char *line1, uint8_t mode, const char filedir[40]) { //DMCP_BUILD
 char line[200];               /* Line buffer */
     int fr;                   /* FatFs return code */
 
@@ -292,7 +292,7 @@ char line[200];               /* Line buffer */
       }
       /* Opens an existing file. If not exist, creates a new file. */
       if(mode == APPEND) {
-        fr = f_open(&fil, filedir, FA_OPEN_APPEND | FA_WRITE); 
+        fr = f_open(&fil, filedir, FA_OPEN_APPEND | FA_WRITE);
       } else {
         fr = f_open(&fil, filedir, FA_WRITE|FA_CREATE_ALWAYS);
       }
@@ -314,7 +314,7 @@ char line[200];               /* Line buffer */
       }
       break;
 
-    case WRITE:   
+    case WRITE:
       /* Create string and output */
       fr = f_puts(line1, &fil);
       if (fr == EOF) {
@@ -325,7 +325,7 @@ char line[200];               /* Line buffer */
       }
       break;
 
-    case CLOSE: 
+    case CLOSE:
       /* close the file */
       fr = f_close(&fil);
       if (fr) {
@@ -337,30 +337,30 @@ char line[200];               /* Line buffer */
       sys_disk_write_enable(0);
       break;
 
-    default: 
+    default:
        break;
-    } 
- 
+    }
+
     return 0;
   }
 
 
-int16_t open_text(const char *dirname, const char *dirfile) { //DMCP_BUILD 
+int16_t open_text(const char *dirname, const char *dirfile) { //DMCP_BUILD
     char rr[2];
     rr[0]=0;
-    check_create_dir(dirname);      
+    check_create_dir(dirname);
     if(export_append_string_to_file_n(rr, OPEN, dirfile)) return 1;
     return 0;
 }
 
-int16_t close_text(const char *dirfile) { //DMCP_BUILD 
+int16_t close_text(const char *dirfile) { //DMCP_BUILD
     char rr[2];
     rr[0]=0;
     if(export_append_string_to_file_n(rr, CLOSE, dirfile)) return 1;
     return 0;
 }
 
-int16_t save_text(const char *line1, uint8_t mode1, uint8_t mode2, uint8_t mode3, int16_t  nn, const char *dirfile) { //DMCP_BUILD 
+int16_t save_text(const char *line1, uint8_t mode1, uint8_t mode2, uint8_t mode3, int16_t  nn, const char *dirfile) { //DMCP_BUILD
     char rr[2];
     rr[1]=0;
     switch(mode1) {
@@ -370,7 +370,7 @@ int16_t save_text(const char *line1, uint8_t mode1, uint8_t mode2, uint8_t mode3
         break;
       default: break;
     }
-    
+
     int16_t ii, jj;
     switch(mode2) {
       case WRITE:
@@ -399,15 +399,15 @@ int16_t save_text(const char *line1, uint8_t mode1, uint8_t mode2, uint8_t mode3
 
 
 //DMCP_BUILD
-int16_t export_string_to_filename(const char line1[TMP_STR_LENGTH], uint8_t mode, char *dirname, char *filename) { //DMCP_BUILD 
+int16_t export_string_to_filename(const char line1[TMP_STR_LENGTH], uint8_t mode, char *dirname, char *filename) { //DMCP_BUILD
 char dirfile[40];
     //Create file name
     strcpy(dirfile,dirname);
     strcat(dirfile,"\\");
     strcat(dirfile,filename);
-    
+
     sprintf(tmpString,"%s%s",line1,CSV_NEWLINE);
-    check_create_dir(dirname);      
+    check_create_dir(dirname);
     if(export_append_string_to_file(tmpString, mode, dirfile) != 0) {
       //ERROR ALREADY ANNOUNCED
       return 1;
@@ -418,31 +418,31 @@ char dirfile[40];
 
 
 //DMCP_BUILD
-int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename_short,  char *filename,  char *fallback, bool_t scanning) { //DMCP_BUILD 
-    
-    #if (VERBOSE_LEVEL >= 2) 
+int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename_short,  char *filename,  char *fallback, bool_t scanning) { //DMCP_BUILD
+
+    #if (VERBOSE_LEVEL >= 2)
       print_inlinestr("From dir:",false);
       print_inlinestr(dirname,false);
       print_inlinestr(", ",true);
     #endif
-  
-    #if (VERBOSE_LEVEL >= 2) 
+
+    #if (VERBOSE_LEVEL >= 2)
       char line[300];               /* Line buffer */
     #endif
-      
+
     char dirfile[200];
     dirfile[0]=0;
     FIL fil;                      /* File object */
     int fr;                   /* FatFs return code */
 
     //Create dir name
-    check_create_dir(dirname);  
+    check_create_dir(dirname);
 
     strcpy(dirfile,dirname);
     strcat(dirfile,"\\");
     strcat(dirfile,filename_short);
 
-    #if (VERBOSE_LEVEL >= 1) 
+    #if (VERBOSE_LEVEL >= 1)
       print_inlinestr("1: reading:",false);
       print_inlinestr(dirfile,false);
       print_inlinestr(" ",true);
@@ -451,9 +451,9 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
     /* Opens an existing file. */
     fr = f_open(&fil, dirfile, FA_READ );   //| FA_OPEN_EXISTING
     if (fr != FR_OK) {
-      #if (VERBOSE_LEVEL >= 1) 
+      #if (VERBOSE_LEVEL >= 1)
         print_inlinestr("Not open. ",false);
-        #if (VERBOSE_LEVEL >= 2) 
+        #if (VERBOSE_LEVEL >= 2)
           if(fr == 4) {
             sprintf(line,"Not found ID006 --> %d ",fr); print_inlinestr(line,false);
             sprintf(line,"File: %s \n",dirfile);        print_inlinestr(line,false);
@@ -466,16 +466,16 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
           }
         #endif
       #endif
-      #if (VERBOSE_LEVEL >= 2) 
+      #if (VERBOSE_LEVEL >= 2)
         print_inlinestr(".",true);
       #endif
       f_close(&fil);
-      
+
       if(filename[0]!=0) {
         strcpy(dirfile,dirname);
         strcat(dirfile,"\\");
         strcat(dirfile,filename);
-        #if (VERBOSE_LEVEL >= 1) 
+        #if (VERBOSE_LEVEL >= 1)
           print_inlinestr("2: reading:",false);
           print_inlinestr(dirfile,false);
           print_inlinestr(" ",true);
@@ -484,9 +484,9 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
         /* Opens an existing file. */
         fr = f_open(&fil, dirfile, FA_READ );   //| FA_OPEN_EXISTING
         if (fr != FR_OK) {
-          #if (VERBOSE_LEVEL >= 1) 
+          #if (VERBOSE_LEVEL >= 1)
             print_inlinestr("Not open. ",false);
-            #if (VERBOSE_LEVEL >= 2) 
+            #if (VERBOSE_LEVEL >= 2)
               if(fr == 4) {
                 sprintf(line,"Not found ID007 --> %d ",fr); print_inlinestr(line,false);
                 sprintf(line,"File: %s \n",dirfile);        print_inlinestr(line,false);
@@ -495,7 +495,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
               }
             #endif
           #endif
-          #if (VERBOSE_LEVEL >= 1) 
+          #if (VERBOSE_LEVEL >= 1)
             print_inlinestr(". Using fallback.",true);
           #endif
           f_close(&fil);
@@ -504,11 +504,11 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
         }
       }
       else {
-        #if (VERBOSE_LEVEL >= 1) 
+        #if (VERBOSE_LEVEL >= 1)
           print_inlinestr("Using fallback.",true);
         #endif
         strcpy(line1, fallback);
-        return 1;        
+        return 1;
       }
     }
 
@@ -521,14 +521,14 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
     f_getsline(line1, (scanning ? min(100,TMP_STR_LENGTH) : TMP_STR_LENGTH), &fil);
     f_close(&fil);
 
-    #if (VERBOSE_LEVEL >= 1) 
+    #if (VERBOSE_LEVEL >= 1)
       print_inlinestr("read:",true);
       print_inlinestr(line1,true);
     #endif
 
     if(stringByteLength(line1) >= TMP_STR_LENGTH-1) {
       strcpy(line1, fallback);
-      #if (VERBOSE_LEVEL >= 1) 
+      #if (VERBOSE_LEVEL >= 1)
         print_inlinestr("ERROR too long file using fallback",true);
       #endif
       return 1;
@@ -546,9 +546,9 @@ void create_filename(char *fn){ //DMCP_BUILD //fn must be in format ".STAT.TSV"
     tmp__32 = getUptimeMs();                                      //KEEP PERSISTENT FILE NAME FOR A PERIOD
     if ( cancelFilename || (mem__32 == 0) || (tmp__32 > mem__32 + 120000) || (stringByteLength(filename_csv) > 10 && !strcompare(filename_csv + (stringByteLength(filename_csv) - 9),fn  ) ) ) {
       //Create file name
-      check_create_dir("DATA");  
+      check_create_dir("DATA");
       make_date_filename(filename_csv,"DATA\\",fn);
-      check_create_dir("DATA");  
+      check_create_dir("DATA");
     }
     mem__32 = tmp__32;
     cancelFilename = false;
@@ -569,7 +569,7 @@ int16_t export_xy_to_file(float x, float y){
 
 
 // /DMCP_BUILD
-int16_t export_append_line_short(char *inputstring){ //DMCP_BUILD 
+int16_t export_append_line_short(char *inputstring){ //DMCP_BUILD
 char line[200];               /* Line buffer */
     FIL fil;                      /* File object */
     int fr;                   /* FatFs return code */
@@ -605,7 +605,7 @@ char line[200];               /* Line buffer */
 
 
     fr = f_puts(inputstring, &fil);
-    #if (VERBOSE_LEVEL >= 1) 
+    #if (VERBOSE_LEVEL >= 1)
       sprintf(line,"wrote %d, %s\n",fr,inputstring);        print_linestr(line,false);
     #endif
     if(fr == 0) {
@@ -627,16 +627,16 @@ char line[200];               /* Line buffer */
     sys_disk_write_enable(0);
 
 
-    #if (VERBOSE_LEVEL >= 1) 
+    #if (VERBOSE_LEVEL >= 1)
       print_linestr("-closed return-",false);
     #endif
 
- 
+
     return 0;
   }
 
 
-int16_t export_append_line(char *inputstring){ //DMCP_BUILD 
+int16_t export_append_line(char *inputstring){ //DMCP_BUILD
 int ix=0;
 char tmp[200];
 int fr;
@@ -671,8 +671,8 @@ int16_t export_string_to_filename(const char line1[TMP_STR_LENGTH], uint8_t mode
   strcpy(dirfile,dirname);
   strcat(dirfile,"/");
   strcat(dirfile,filename);
-    
-  if(mode == APPEND) outfile = fopen(dirfile, "ab"); else outfile = fopen(dirfile, "wb"); 
+
+  if(mode == APPEND) outfile = fopen(dirfile, "ab"); else outfile = fopen(dirfile, "wb");
   if (outfile == NULL) {
     printf("Cannot open ID008: %s %s\n",dirfile,line1);
     return 1;
@@ -681,7 +681,7 @@ int16_t export_string_to_filename(const char line1[TMP_STR_LENGTH], uint8_t mode
   sprintf(tmpString,"%s%s",line1,CSV_NEWLINE);
   fr = fputs(tmpString, outfile);
   if (fr == 0) {
-    sprintf(line,"Write error ID009 --> %d    \n",fr);            
+    sprintf(line,"Write error ID009 --> %d    \n",fr);
     //print_linestr(line,false);
     printf("%s",line1);
     fclose(outfile);
@@ -690,18 +690,18 @@ int16_t export_string_to_filename(const char line1[TMP_STR_LENGTH], uint8_t mode
     printf("Exported to %s: %s\n",dirfile,line1);
     fclose(outfile);
   }
-  return 0;  
+  return 0;
 }
 
 // PC_BUILD
 int16_t import_string_from_filename(char *line1,  char *dirname,   char *filename_short,  char *filename,  char *fallback, bool_t scanning) { //PC_BUILD
 
-  #if (VERBOSE_LEVEL >= 2) 
+  #if (VERBOSE_LEVEL >= 2)
     print_inlinestr("From dir:",false);
     print_inlinestr(dirname,false);
     print_inlinestr(", ",true);
   #endif
-  
+
   char dirfile[200];
   dirfile[0]=0;
   FILE *infile;
@@ -711,7 +711,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,   char *filenam
   strcat(dirfile,"/");
   strcat(dirfile,filename_short);
 
-  #if (VERBOSE_LEVEL >= 1)  
+  #if (VERBOSE_LEVEL >= 1)
     print_inlinestr("1: reading:",false);
     print_inlinestr(dirfile,false);
     print_inlinestr(" ",true);
@@ -720,7 +720,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,   char *filenam
   /* Opens an existing file. */
   infile = fopen(dirfile, "rb");
   if (infile == NULL) {
-    #if (VERBOSE_LEVEL >= 1) 
+    #if (VERBOSE_LEVEL >= 1)
       #ifdef PC_BUILD
         printf("Cannot load ID010 %s\n",dirfile);
       #endif
@@ -731,7 +731,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,   char *filenam
       strcpy(dirfile,dirname);
       strcat(dirfile,"/");
       strcat(dirfile,filename);
-      #if (VERBOSE_LEVEL >= 1) 
+      #if (VERBOSE_LEVEL >= 1)
         print_inlinestr("2: reading:",false);
         print_inlinestr(dirfile,false);
         print_inlinestr(" ",true);
@@ -740,7 +740,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,   char *filenam
       /* Opens an existing file. */
       infile = fopen(dirfile, "rb");
       if (infile == NULL) {
-        #if (VERBOSE_LEVEL >= 1) 
+        #if (VERBOSE_LEVEL >= 1)
           #ifdef PC_BUILD
             printf("Cannot load %s\n",dirfile);
           #endif
@@ -751,7 +751,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,   char *filenam
       }
     }
     else {
-      #if (VERBOSE_LEVEL >= 1) 
+      #if (VERBOSE_LEVEL >= 1)
         #ifdef PC_BUILD
           printf("Cannot load %s\n",dirfile);
         #endif
@@ -762,7 +762,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,   char *filenam
     }
   }
 
-  #if (VERBOSE_LEVEL >= 1) 
+  #if (VERBOSE_LEVEL >= 1)
     print_inlinestr("reading...",false);
   #endif
 
@@ -773,7 +773,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,   char *filenam
     strcat(line1,onechar);
   }
   fclose(infile);
-  #if (VERBOSE_LEVEL >= 1) 
+  #if (VERBOSE_LEVEL >= 1)
     #ifdef PC_BUILD
       printf("Loaded >>> %s\n",dirfile);
     #endif
@@ -781,7 +781,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,   char *filenam
     print_inlinestr(line1,true);
   #endif
 
-  #if (VERBOSE_LEVEL >= 2) 
+  #if (VERBOSE_LEVEL >= 2)
     #ifdef PC_BUILD
       printf("Loaded %s |%s|\n",dirfile,line1);
     #endif
@@ -790,7 +790,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,   char *filenam
 
   if(stringByteLength(line1) >= TMP_STR_LENGTH-1) {
     strcpy(line1, fallback);
-    #if (VERBOSE_LEVEL >= 1) 
+    #if (VERBOSE_LEVEL >= 1)
       print_inlinestr("ERROR too long file using fallback",true);
     #endif
     printf("ERROR too long file using fallback\n");
@@ -820,7 +820,7 @@ int16_t export_append_line(char *inputstring){  //PC_BUILD
     char line[200];               /* Line buffer */
     fr = fputs(inputstring, outfile);
     if (fr == 0) {
-      sprintf(line,"Write error ID012 --> %d %s\n",fr,inputstring);            
+      sprintf(line,"Write error ID012 --> %d %s\n",fr,inputstring);
       //print_linestr(line,false);
       printf("%s",line);
       fclose(outfile);
@@ -829,7 +829,7 @@ int16_t export_append_line(char *inputstring){  //PC_BUILD
       printf("Exported to %s: %s\n",filename_csv,inputstring);
       fclose(outfile);
     }
-    return 0;  
+    return 0;
   }
 
 
@@ -838,7 +838,7 @@ void create_filename(char *fn){  //PC_BUILD //fn must be in format ".STAT.TSV"
     uint32_t tmp__32;                                                 //JM_CSV
     time_t rawTime;
     struct tm *timeInfo;
-    
+
     tmp__32 = getUptimeMs();                                          //KEEP PERSISTENT FILE NAME FOR A PERIOD
     if (cancelFilename || (mem__32 == 0) || (tmp__32 > mem__32 + 120000)  || (stringByteLength(filename_csv) > 10 && !strcompare(filename_csv + (stringByteLength(filename_csv) - 9),fn  ) ) ) {
       //Create file name
@@ -895,7 +895,7 @@ void print_linestr(const char *line1, bool_t line_init) {
        strcat(l1,".");
     }
 
-    if(g_line_y < SCREEN_HEIGHT) { 
+    if(g_line_y < SCREEN_HEIGHT) {
         ixx = showString(l1, &standardFont, (uint32_t) g_line_x, (uint32_t) g_line_y, vmNormal, true, true);
     }
     g_line_y += 20;
@@ -910,7 +910,7 @@ void print_linestr(const char *line1, bool_t line_init) {
 void print_numberstr(const char *line1, bool_t line_init) {     //ONLY N=ASCII NUMBERS AND E AND . //FIXED FONT
 #ifndef TESTSUITE_BUILD
     if(line_init) {g_line_y = 20;}
-    if(g_line_y < SCREEN_HEIGHT) { 
+    if(g_line_y < SCREEN_HEIGHT) {
         int16_t cnt = 0;
         char tt[2];
         while(line1[cnt] != 0 && g_line_x < SCREEN_WIDTH-8 +1) {

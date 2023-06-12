@@ -1140,7 +1140,7 @@ void clearRegister(calcRegister_t regist) {
       if(getSystemFlag(FLAG_POLAR)) {
         reallocateRegister(regist, dtComplex34, COMPLEX34_SIZE, currentAngularMode | amPolar);
       } else {
-        reallocateRegister(regist, dtComplex34, COMPLEX34_SIZE, amNone);        
+        reallocateRegister(regist, dtComplex34, COMPLEX34_SIZE, amNone);
       }
       real34Zero(REGISTER_REAL34_DATA(regist));
       real34Zero(REGISTER_IMAG34_DATA(regist));
@@ -1963,7 +1963,7 @@ void reallocateRegister(calcRegister_t regist, uint32_t dataType, uint16_t dataS
   if((dataType == dtComplex34) && getSystemFlag(FLAG_POLAR)) {
     setRegisterTag(regist, currentAngularMode | amPolar);
   } else {
-    setRegisterTag(regist, tag);    
+    setRegisterTag(regist, tag);
   }
 
 //sprintf(tmpString, "reallocateRegister %d to %s tag=%u (%u bytes including dataLen) done", regist, getDataTypeName(dataType, false, false), tag, dataSizeWithDataLenBlocks);
@@ -1981,7 +1981,7 @@ void fnToReal(uint16_t unusedButMandatoryParameter) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
       convertRealToReal34ResultRegister(&b, REGISTER_X);
       return;
-    }      
+    }
   }
 //  else           //JM Remove comment if we don't want the usual data type error if the complex real part is not 0
 

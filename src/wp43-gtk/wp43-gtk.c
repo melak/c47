@@ -140,7 +140,7 @@
     }
 
     restoreCalc();
-   
+
     //#ifdef INIT_RAMDUMP
     //ramDump();
     refreshScreen();
