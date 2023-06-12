@@ -213,3 +213,9 @@ Added the following:
     21E2 rightwardsdashedarrow                      STD_RIGHT_DASHARROW           "\xa1\xe2"  
     21E3 downwardsdashedarrow                       STD_DOWN_DASHARROW            "\xa1\xe3"  
 
+-------
+2023-06-12 Change both fonts i and j to 
+    $2148 i
+    $2149 j
+
+    

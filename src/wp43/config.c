@@ -215,7 +215,7 @@ void configCommon(uint16_t idx) {
 
 
 void fnSetGapChar (uint16_t charParam) {
-printf(">>>> charParam=%u %u \n", charParam, charParam & 16383);
+  //printf(">>>> charParam=%u %u \n", charParam, charParam & 16383);
   if((charParam & 49152) == 0) {                        //+0 for the left hand separator
     gapItemLeft = charParam & 16383;
   } else 
@@ -225,7 +225,8 @@ printf(">>>> charParam=%u %u \n", charParam, charParam & 16383);
   if((charParam & 49152) == 49152) {                        //+49152 for the radix separator
     gapItemRadix = charParam & 16383;
   }
-//printf("Post: %u %u %u %u %u %u  \n", (uint8_t)gapCharLeft[0], (uint8_t)gapCharLeft[1], (uint8_t)gapCharRight[0], (uint8_t)gapCharRight[1],  (uint8_t)gapCharRadix[0], (uint8_t)gapCharRadix[1]);
+//printf("LT=%s RT=%s RX=%s\n",Lt, Rt, Rx);
+//printf("Post: gapCharL0=%u gapCharL1=%u gapCharR0=%u gapCharR1=%u gapCharRx0=%u gapCharRx1%u  \n", (uint8_t)gapChar1Left[0], (uint8_t)gapChar1Left[1], (uint8_t)gapChar1Right[0], (uint8_t)gapChar1Right[1],  (uint8_t)gapChar1Radix[0], (uint8_t)gapChar1Radix[1]);
 }
 
 
