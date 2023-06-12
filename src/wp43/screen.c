@@ -64,16 +64,16 @@
 #if !defined(TESTSUITE_BUILD)
   #define spc STD_SPACE
   #define spc1 STD_SPACE STD_SPACE_3_PER_EM
-  TO_QSPI static const char *whoStr1 = "C47 Development since 2019" spc "by" spc1 
+  TO_QSPI static const char *whoStr1 = "C47 Development since 2019" spc "by" spc1
                                        "\n"
-                                       "Ben" spc "GB," spc1 
-                                       "D" spc "A" spc "CA," spc1 
-                                       "Dani" spc "CH," spc1 
+                                       "Ben" spc "GB," spc1
+                                       "D" spc "A" spc "CA," spc1
+                                       "Dani" spc "CH," spc1
                                        "Didier" spc "FR," spc1
                                        "\n"
-                                       "H" STD_a_RING "kon" spc "NO," spc1 
+                                       "H" STD_a_RING "kon" spc "NO," spc1
                                        "Jaco" spc "ZA," spc1
-                                       "Martin" spc "FR," spc1 
+                                       "Martin" spc "FR," spc1
                                        "Mihail" spc "JP," spc1
                                        "\n"
                                        "Pauli" spc "AU," spc1
@@ -807,7 +807,7 @@ void underline_softkey(int16_t xSoftkey, int16_t ySoftKey, bool_t dontclear) {
 
   if(fgLN != RB_FGLNOFF) {
 
-//JMUL all changed  vv  
+//JMUL all changed  vv
     if(!dontclear) {                            //JM Recursively call the same routine to clear the previous line
       for(y=0; y<ySoftKey; y++) {
         tmp = ul;
@@ -881,7 +881,7 @@ void FN_handler_StepToG(uint32_t time) {
         showFunctionName(Dyn,0,varCatalogItem); //"SF:G");
         FN_timed_out_to_RELEASE_EXEC = true;
         underline_softkey(FN_key_pressed-38,2, false);
-        fnTimerStart(TO_FN_LONG, TO_FN_LONG, time);          //dr 
+        fnTimerStart(TO_FN_LONG, TO_FN_LONG, time);          //dr
 }
 
 void FN_handler_StepToNOP(void) {
@@ -959,7 +959,7 @@ void Shft_handler() {                        //JM SHIFT NEW vv
       //fnTimerStop(TO_FG_TIMR);                  // ^^
         resetShiftState();                        //force into no shift state, i.e. to wait
         if(HOME3) {
-          #ifdef PC_BUILD          
+          #ifdef PC_BUILD
             jm_show_calc_state("screen.c: Shft_handler: HOME3");
           #endif //PC_BUILD
           if(softmenuStack[0].softmenuId == mm_MNU_HOME) {              //JM shifts    //softmenuStackPointerJM
@@ -984,7 +984,7 @@ void Shft_handler() {                        //JM SHIFT NEW vv
 void LongpressKey_handler() {
   if(fnTimerGetStatus(TO_CL_LONG) == TMR_COMPLETED) {
     if(JM_auto_longpress_enabled != 0) {
-      showFunctionName(JM_auto_longpress_enabled, JM_TO_CL_LONG + 50, "SF:LL");     //Add a marginal amout of time to prevent racing of end conditions. 
+      showFunctionName(JM_auto_longpress_enabled, JM_TO_CL_LONG + 50, "SF:LL");     //Add a marginal amout of time to prevent racing of end conditions.
       JM_auto_longpress_enabled = 0;                                       //showFunctionName must not time out longer than the timer that is started below
 
       //Setup up next long press activation possibility
@@ -1014,7 +1014,7 @@ void Shft_stop() {
   #if !defined(DMCP_BUILD)
     void setBlackPixel(uint32_t x, uint32_t y) {
       //if(y >= (uint32_t)(-6)) return;  //JM allowing allowing -1..-5 for top row text
-    
+
       if(x>=SCREEN_WIDTH || y>=SCREEN_HEIGHT) {
         printf("In function setBlackPixel: x=%u or %d, y=%u or %d outside the screen!\n", x, (int32_t)(x), y, (int32_t)(y) );
         return;
@@ -1028,7 +1028,7 @@ void Shft_stop() {
 
     void setWhitePixel(uint32_t x, uint32_t y) {
       //if(y >= (uint32_t)(-6)) return;  //JM allowing allowing -1..-5 for top row text
-      
+
       if(x>=SCREEN_WIDTH || y>=SCREEN_HEIGHT) {
         printf("In function setWhitePixel: x=%u or %d, y=%u or %d outside the screen!\n", x, (int32_t)(x), y, (int32_t)(y) );
         return;
@@ -1173,7 +1173,7 @@ uint8_t  displaymode = stdNoEnlarge;
           if(videoMode == vmNormal) { // Black pixel for white background
             if(!noShow) setBlackPixel(x+((xGlyph+col) >> miniC), y0+((y-y0) >> miniC));       //JMmini
             if(rep_enlarge == 1) {
-              if(!noShow) setBlackPixel(x+((xGlyph+col) >> miniC), 1+(y0+((y-y0) >> miniC)));       //JMmini              
+              if(!noShow) setBlackPixel(x+((xGlyph+col) >> miniC), 1+(y0+((y-y0) >> miniC)));       //JMmini
             }
           }
           else { // White pixel for black background
@@ -1317,7 +1317,7 @@ uint8_t  displaymode = stdNoEnlarge;
         x = orgX;
         prevX = x;
         y += 20;
-      }  
+      }
     }
     compressString = 0;        //JM compressString
     raiseString = 0;
@@ -1328,11 +1328,11 @@ uint8_t  displaymode = stdNoEnlarge;
   uint32_t showStringEnhanced(const char *string, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, uint8_t compress1, uint8_t raise1, uint8_t noShow1) {
     compressString = compress1;
     raiseString = raise1;
-    noShow = noShow1;    
+    noShow = noShow1;
     return _doShowString(string, font, x, y, NULL, 0, videoMode, showLeadingCols, showEndingCols, DO_LF);
     compressString = 0;
     raiseString = 0;
-    noShow = 0;    
+    noShow = 0;
   }
 
   uint32_t showString(const char *string, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols) {
@@ -1370,7 +1370,7 @@ uint8_t  displaymode = stdNoEnlarge;
   uint32_t showStringC43(const char *string, int mode, int comp, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols ) {
     int combinationFontsM = combinationFonts;
     if(combinationFontsDefault == 0) mode = stdNoEnlarge;
-    
+
     const font_t *font;
     _setStringMode(mode, comp, &font);
     if(font) {
@@ -1379,7 +1379,7 @@ uint8_t  displaymode = stdNoEnlarge;
     else {
       x = 0;
     }
-    
+
     combinationFonts = combinationFontsM; _resetStringMode();
     return x;
   }
@@ -1388,7 +1388,7 @@ uint8_t  displaymode = stdNoEnlarge;
     int combinationFontsM = combinationFonts;
     char *resStr = (char *)string;
     if(combinationFontsDefault == 0) mode = stdNoEnlarge;
-    
+
     const font_t *font;
     noShow = true;
     _setStringMode(mode, comp, &font);
@@ -1398,7 +1398,7 @@ uint8_t  displaymode = stdNoEnlarge;
     else {
       resStr = (char *)string;
     }
-    
+
     combinationFonts = combinationFontsM; _resetStringMode();
     return resStr;
   }
@@ -1407,7 +1407,7 @@ uint8_t  displaymode = stdNoEnlarge;
     int combinationFontsM = combinationFonts;
     uint32_t x = 0;
     if(combinationFontsDefault == 0) mode = stdNoEnlarge;
-    
+
     const font_t *font;
     noShow = true;
     _setStringMode(mode, comp, &font);
@@ -1417,7 +1417,7 @@ uint8_t  displaymode = stdNoEnlarge;
     else {
       x = 0;
     }
-    
+
     combinationFonts = combinationFontsM; _resetStringMode();
     return x;
   }
@@ -1473,9 +1473,9 @@ uint8_t  displaymode = stdNoEnlarge;
         gotoReturn:
         if(_h1 == 0) {
           if(tmpString[1500] != 0) {
-            lcd_fill_rect(0, line_h_offset + line_h1 * 2 - 3,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);          
+            lcd_fill_rect(0, line_h_offset + line_h1 * 2 - 3,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);
           } else {
-            lcd_fill_rect(0,240-3*SOFTMENU_HEIGHT,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);          
+            lcd_fill_rect(0,240-3*SOFTMENU_HEIGHT,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);
           }
         }
     }
@@ -1494,13 +1494,13 @@ uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, co
   bool_t   slc, sec;
   uint32_t  numPixels, orglastlines, tmpxy;
   const    glyph_t *glyph;
-  uint8_t  editlines; 
-  uint8_t  yincr; 
+  uint8_t  editlines;
+  uint8_t  yincr;
   const    font_t *font;
 
 
 //combinationFonts = 0;
- 
+
 
   if(combinationFonts == 2) {
     font = &numericFont;                             //JM ENLARGE
@@ -1542,13 +1542,13 @@ uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, co
 
 
 
-  if(lines == editlines || lg == 0) last_CM = 253; //Force redraw if 
+  if(lines == editlines || lg == 0) last_CM = 253; //Force redraw if
 
   orglastlines = lastline;
 
   if(lastline > y_offset) {
     if(!noshow1) clearScreen_old(false, true,false);
-    x = x_offset; 
+    x = x_offset;
     y = (yincr-1) + y_offset * (yincr-1);
   }
   //****************************************
@@ -1556,7 +1556,7 @@ uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, co
   while(string[ch] != 0) {
 
     //printf("%3d:%3d ",ch,(uint8_t)string[ch]);
-    
+
     if(lg == 1 || (lg == 2 && (string[offset] & 0x80))) {// The string is 1 glyph long
       slc = showLeadingCols;
       sec = showEndingCols;
@@ -1617,17 +1617,17 @@ uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, co
     if(string[ch]== 0) numPixels += 8;
     //printf("±±± lastline=%d string[ch]=%d x=%d numPixels=%d\n", lastline, string[ch], x, numPixels);
 
-    if(x + numPixels > SCREEN_WIDTH-1 && lastline == orglastlines) { 
-      x = x_offset; 
-      y += yincr; 
-      lastline--;
-    } else    
-    if(x + numPixels > SCREEN_WIDTH-1 && lastline > 1) { 
-      x = 1; 
-      y += yincr; 
+    if(x + numPixels > SCREEN_WIDTH-1 && lastline == orglastlines) {
+      x = x_offset;
+      y += yincr;
       lastline--;
     } else
-    if(x + numPixels > SCREEN_WIDTH-1 && lastline <= 1) {   
+    if(x + numPixels > SCREEN_WIDTH-1 && lastline > 1) {
+      x = 1;
+      y += yincr;
+      lastline--;
+    } else
+    if(x + numPixels > SCREEN_WIDTH-1 && lastline <= 1) {
       xCursor = x;
       yCursor = y;
       return x;
@@ -1667,7 +1667,7 @@ void findOffset(void){             //C43 JM
 
 void incOffset(void){             //C43 JM
    if( (int32_t)stringWidthC43(aimBuffer + displayAIMbufferoffset, combinationFonts ,nocompress, true, true) -
-       (int32_t)stringWidthC43(aimBuffer + T_cursorPos, combinationFonts ,nocompress, true, true) 
+       (int32_t)stringWidthC43(aimBuffer + T_cursorPos, combinationFonts ,nocompress, true, true)
        > SCREEN_WIDTH * lines - 45
       )
    {
@@ -1708,7 +1708,7 @@ void force_refresh(uint8_t mode) {
 
 
 uint16_t old_time = 0;
-void printHalfSecUpdate_Integer(uint8_t mode, char *txt, int loop) {  
+void printHalfSecUpdate_Integer(uint8_t mode, char *txt, int loop) {
   char tmps[30];
   uint16_t new_time = (uint16_t)(getUptimeMs());
 
@@ -1795,15 +1795,15 @@ void printHalfSecUpdate_Integer(uint8_t mode, char *txt, int loop) {
 //    if(tmpString[0] != 0) {
 //      strcpy(functionName,tmpString);
 //    }
-//    else 
+//    else
 
     if(item == ITM_XEQ) {
       stringAppend(functionName,arg);
-    } else 
+    } else
 
     if(item == ITM_RCL) {
       stringAppend(functionName,arg);
-    } else 
+    } else
 
     if(item >= ITM_X_P1 && item <= ITM_X_g6) {
       stringAppend(functionName, indexOfItemsXEQM + 8*(item-fnXEQMENUpos));
@@ -1833,7 +1833,7 @@ void printHalfSecUpdate_Integer(uint8_t mode, char *txt, int loop) {
     getGlyphBounds(STD_SUP_f, 0, &numericFont, &fcol, &frow);
     getGlyphBounds(STD_SUP_g, 0, &numericFont, &gcol, &grow);
     lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, (fcol > gcol ? fcol : gcol), (frow > grow ? frow : grow), LCD_SET_VALUE);
-  
+
   showString(padding, &standardFont, /*1*/ 16, Y_POSITION_OF_REGISTER_T_LINE /*+ 6*/, vmNormal, true, true);      //JM
 }
 
@@ -2016,7 +2016,7 @@ void hideFunctionName(void) {
   void displayTemporaryInformationOnX(char *prefix) {
     int16_t       w, prefixWidth;
     uint8_t       savedTempInformation;
-    
+
     prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
     savedTempInformation = temporaryInformation;
     temporaryInformation = TI_NO_INFO;
@@ -2025,25 +2025,25 @@ void hideFunctionName(void) {
     refreshRegisterLine(REGISTER_Y);
     refreshRegisterLine(REGISTER_X);
     temporaryInformation = savedTempInformation;
- 
+
     if (getRegisterDataType(REGISTER_X) == dtReal34) {
         clearRegisterLine(REGISTER_X, true, true);
         if (getSystemFlag(FLAG_FRACT)) {
           fractionToDisplayString(REGISTER_X, tmpString);
         } else {
           real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
-        } 
+        }
         w = stringWidth(tmpString, &numericFont, false, true);
         showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE + 6, vmNormal, true, true);
         showString(tmpString, &numericFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE, vmNormal, false, true);
-    } 
+    }
     else if(getRegisterDataType(REGISTER_X) == dtComplex34) {
         clearRegisterLine(REGISTER_X, true, true);
         complex34ToDisplayString(REGISTER_COMPLEX34_DATA(REGISTER_X), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true, getComplexRegisterAngularMode(REGISTER_X), getComplexRegisterPolarMode(REGISTER_X));
         w = stringWidth(tmpString, &numericFont, false, true);
         showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE + 6, vmNormal, true, true);
         showString(tmpString, &numericFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE, vmNormal, false, true);
-    } 
+    }
     else if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
         clearRegisterLine(REGISTER_X, true, true);
         longIntegerRegisterToDisplayString(REGISTER_X, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - prefixWidth, 50, STD_SPACE_PUNCTUATION, true);
@@ -2061,7 +2061,7 @@ void hideFunctionName(void) {
           w = stringWidth(tmpString, &standardFont, false, true);
           showString(tmpString, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE + 6, vmNormal, false, true);
         }
-    } 
+    }
     else {
         showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE + 6, vmNormal, true, true);
     }
@@ -2074,14 +2074,14 @@ void hideFunctionName(void) {
     bool_t prefixPost = true;
     const uint8_t origDisplayStack = displayStack;
     bool_t distModeActive = false;
-    bool_t baseModeActive = false;    
+    bool_t baseModeActive = false;
 
     char prefix[200], lastBase[12];
 
     baseModeActive = displayStackSHOIDISP != 0 && (lastIntegerBase != 0 || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_BASE);
-    if(baseModeActive && getRegisterDataType(REGISTER_X) == dtShortInteger) { //JMSHOI                   
+    if(baseModeActive && getRegisterDataType(REGISTER_X) == dtShortInteger) { //JMSHOI
       if(displayStack != 4-displayStackSHOIDISP) {                            //JMSHOI
-        fnDisplayStack(4-displayStackSHOIDISP);                               //JMSHOI             
+        fnDisplayStack(4-displayStackSHOIDISP);                               //JMSHOI
       }                                                                       //JMSHOI
     }
 
@@ -2098,7 +2098,7 @@ void hideFunctionName(void) {
       }
     }
 
-    if((calcMode != CM_BUG_ON_SCREEN) && (calcMode != CM_PLOT_STAT) && (calcMode != CM_GRAPH) && (calcMode != CM_LISTXY)) {               //JM      
+    if((calcMode != CM_BUG_ON_SCREEN) && (calcMode != CM_PLOT_STAT) && (calcMode != CM_GRAPH) && (calcMode != CM_LISTXY)) {               //JM
       if(temporaryInformation != TI_SHOW_REGISTER_BIG) {                        //JMSHOW
         clearRegisterLine(regist, true, (regist != REGISTER_Y));
       }                                                                         //JMSHOW
@@ -2531,17 +2531,17 @@ void hideFunctionName(void) {
             prefix[0]=0;
             tmpString[0]=0;
             uint8_t ii = 255;
-            if(r_i != NULL) { 
+            if(r_i != NULL) {
               ii = Y_POSITION_OF_REGISTER_Z_LINE;
               fnDisplayStack(3);
               distModeActive = true;
             }
-            if(r_j != NULL) { 
+            if(r_j != NULL) {
               ii = Y_POSITION_OF_REGISTER_Y_LINE;
               fnDisplayStack(2);
               distModeActive = true;
             }
-            if(r_k != NULL) { 
+            if(r_k != NULL) {
               ii = Y_POSITION_OF_REGISTER_X_LINE;
               fnDisplayStack(1);
               distModeActive = true;
@@ -2554,7 +2554,7 @@ void hideFunctionName(void) {
             }
           }
         }
-        
+
 
         if(lastErrorCode != 0 && regist == errorMessageRegisterLine) {
           if(stringWidth(errorMessages[lastErrorCode], &standardFont, true, true) <= SCREEN_WIDTH - 1) {
@@ -2624,7 +2624,7 @@ void hideFunctionName(void) {
 
         showStringEdC43(lines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, Y_POSITION_OF_NIM_LINE - 3, vmNormal, true, true, false);  //display up to the cursor
 
-        if(T_cursorPos == tmplen) cursorEnabled = true; else cursorEnabled = false; 
+        if(T_cursorPos == tmplen) cursorEnabled = true; else cursorEnabled = false;
         if(combinationFonts == 2) {
           cursorFont = &numericFont;                             //JM ENLARGE
         } else {
@@ -3443,7 +3443,7 @@ void hideFunctionName(void) {
 
           //JM else if(getRegisterDataType(regist) == dtComplex34) {                                                                                                      //JM EE Removed and replaced with the below
           //JM complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION);   //JM EE Removed and replaced with the below
-        else if(getRegisterDataType(regist) == dtComplex34) { 
+        else if(getRegisterDataType(regist) == dtComplex34) {
           if(temporaryInformation == TI_SOLVER_VARIABLE) {
             if(regist == REGISTER_X) {
               memcpy(prefix, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0]);
@@ -3633,7 +3633,7 @@ void hideFunctionName(void) {
 //          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
           shortIntegerToDisplayString(regist, tmpString, true);
           showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
-  
+
           //JM SHOIDISP // use the top part of the screen for HEX and BIN    //JM vv SHOIDISP
           if(baseModeActive && lastErrorCode == 0) {
             if(displayStack == 1){
@@ -3650,7 +3650,7 @@ void hideFunctionName(void) {
             if(displayStack == 1 || displayStack == 2){
               copySourceRegisterToDestRegister(REGISTER_Z,TEMP_REGISTER_1);
               copySourceRegisterToDestRegister(REGISTER_X,REGISTER_Z);
-              if(displayStack == 2) setRegisterTag(REGISTER_Z,  !bcdDisplay ? 2 : 10); else 
+              if(displayStack == 2) setRegisterTag(REGISTER_Z,  !bcdDisplay ? 2 : 10); else
                 if(displayStack == 1) setRegisterTag(REGISTER_Z, !bcdDisplay ? 8 : 2);
               shortIntegerToDisplayString(REGISTER_Z, tmpString, true);
               if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
@@ -3672,7 +3672,7 @@ void hideFunctionName(void) {
             }
             if(displayStack == 3) lcd_fill_rect(0, Y_POSITION_OF_REGISTER_Z_LINE - 2, SCREEN_WIDTH, 1, 0xFF); else
               if(displayStack == 2) lcd_fill_rect(0, Y_POSITION_OF_REGISTER_Y_LINE - 2, SCREEN_WIDTH, 1, 0xFF); else
-                if(displayStack == 1) lcd_fill_rect(0, Y_POSITION_OF_REGISTER_X_LINE - 2, SCREEN_WIDTH, 1, 0xFF);            
+                if(displayStack == 1) lcd_fill_rect(0, Y_POSITION_OF_REGISTER_X_LINE - 2, SCREEN_WIDTH, 1, 0xFF);
           }                                                                 //JM ^^
         }
 //
@@ -3877,8 +3877,8 @@ void hideFunctionName(void) {
       }
     }
 
-    if(getRegisterDataType(REGISTER_X) == dtReal34Matrix || 
-       getRegisterDataType(REGISTER_X) == dtComplex34Matrix || 
+    if(getRegisterDataType(REGISTER_X) == dtReal34Matrix ||
+       getRegisterDataType(REGISTER_X) == dtComplex34Matrix ||
        calcMode == CM_MIM ||
        distModeActive || baseModeActive) {
       displayStack = origDisplayStack;
@@ -3987,7 +3987,7 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
 #endif
 //screenUpdatingMode = 0; //0 is ALL REFRESHES; ~0 is NO REFRESHES
 
-  if(calcMode!=CM_AIM && calcMode!=CM_NIM && calcMode!=CM_PLOT_STAT && calcMode!=CM_GRAPH && calcMode!=CM_LISTXY) {last_CM = 254;}  //JM Force NON-CM_AIM and NON-CM_NIM to refresh to be compatible to 43S 
+  if(calcMode!=CM_AIM && calcMode!=CM_NIM && calcMode!=CM_PLOT_STAT && calcMode!=CM_GRAPH && calcMode!=CM_LISTXY) {last_CM = 254;}  //JM Force NON-CM_AIM and NON-CM_NIM to refresh to be compatible to 43S
 
   switch(calcMode) {
       case CM_FLAG_BROWSER: {
@@ -4079,9 +4079,9 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
         }
 
 
-//	if(last_CM != calcMode) {
-//	  clearScreen_old(true,false,false); 
-//	}
+//  if(last_CM != calcMode) {
+//    clearScreen_old(true,false,false);
+//  }
 
         if(calcMode == CM_ASN_BROWSER) {
           last_CM = calcMode;
@@ -4194,7 +4194,7 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
           //graphPlotstat(plotSelection);
           graph_plotmem();
           if(lastErrorCode != ERROR_NONE) {
-            //printf("lastErrorCode1=%d\n", lastErrorCode); 
+            //printf("lastErrorCode1=%d\n", lastErrorCode);
             //printf(">>>> %d\n",softmenu[softmenuStack[0].softmenuId].menuItem);
             if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_GRAPH) {
               popSoftmenu();
@@ -4548,7 +4548,7 @@ void fnAGraph(uint16_t regist) {
   #endif // !TESTSUITE_BUILD
 }
 
-#ifndef TESTSUITE_BUILD 
+#ifndef TESTSUITE_BUILD
 void clearScreen_old(bool_t clearStatusBar, bool_t clearRegisterLines, bool_t clearSoftkeys) {      //JMOLD
   if(clearStatusBar) {
     lcd_fill_rect(0, 0, SCREEN_WIDTH, 20, 0);

@@ -384,14 +384,14 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
     fnConstantR( 8  /*const_eE     */,  &constNr, &c_temp);
     if (checkForAndChange_(displayString, real34, &c_temp, &tol34,  "e"                                         ,frontSpace)) return_fr;
 
-  	realMultiply(const_root2on2, const_2, &c_temp, &ctxtReal39);
-  	if (checkForAndChange_(displayString, real34, &c_temp, &tol34,  STD_SQUARE_ROOT STD_SUB_2                   ,frontSpace)) return_fr;
+    realMultiply(const_root2on2, const_2, &c_temp, &ctxtReal39);
+    if (checkForAndChange_(displayString, real34, &c_temp, &tol34,  STD_SQUARE_ROOT STD_SUB_2                   ,frontSpace)) return_fr;
 
     fnConstantR( 73 /*const_PHI    */,  &constNr, &c_temp);
     if (checkForAndChange_(displayString, real34, &c_temp, &tol34,  indexOfItems[CST_01+constNr].itemCatalogName,frontSpace)) return_fr;
 
-  	realSquareRoot(const_5, &c_temp, &ctxtReal39);
-  	if (checkForAndChange_(displayString, real34, &c_temp, &tol34,   STD_SQUARE_ROOT STD_SUB_5,frontSpace))                   return_fr;
+    realSquareRoot(const_5, &c_temp, &ctxtReal39);
+    if (checkForAndChange_(displayString, real34, &c_temp, &tol34,   STD_SQUARE_ROOT STD_SUB_5,frontSpace))                   return_fr;
   }
   constantFractionsMode = CF_NORMAL;
 
@@ -424,7 +424,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
           }                                            //counter at first non-'0' or end
 
           if(tmpString100[ii] != 0) {
-            ii = ii + displayFormatDigits; 
+            ii = ii + displayFormatDigits;
             int8_t jj = ii;
             while(tmpString100[jj] != 0 && tmpString100[jj] != 'E') {
               jj++;
@@ -434,14 +434,14 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
                 tmpString100[ii] = tmpString100[jj];
                 jj++; ii++;
               }
-              tmpString100[ii] = 0; 
+              tmpString100[ii] = 0;
             }
           }
         //printf("------- 005 >>>>%s|\n",tmpString100);
         break;
-      } 
+      }
       else {
-        ii++;        
+        ii++;
       }
 
     }
@@ -1196,7 +1196,7 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
       strcat(displayString, STD_SPACE_HAIR);
     }
 
-    if(real34IsZero(&real34)) {       //JM 
+    if(real34IsZero(&real34)) {       //JM
       if(displayString[i] == '-') {
         displayString[0]=0;           // force a zero real not to display the real part
         strcat(displayString, "-");   // re-add the - which could be trailing the real value. Do ot add the +, it is not needed
@@ -1224,7 +1224,7 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
         xcopy(strchr(displayString, '\0'), displayString + i, strlen(displayString + i) + 1);
 //      }
     }
-      
+
     if(!CPXMULT) {                   // 1.0 i
       real34CopyAbs(&imag34, &absimag34);
 //      if(!real34CompareEqual(&absimag34, const34_1)) {     //JM force a |imag|=1 not to display.  Maybe make it part of Exfrac.
@@ -2875,10 +2875,10 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
             }
             source++;
             tmpString[++dest] = 0;
-             
+
             if(stringWidth(tmpString + d, &numericFont, true, true) >= SCREEN_WIDTH -60 && (uint8_t)tmpString[source-2] == 160 && tmpString[source-1]==5) break;
-            if(d>0 && 
-              (    ( !getComplexRegisterPolarMode(SHOWregis) && (tmpString[source]=='+' || tmpString[source]=='-')) || 
+            if(d>0 &&
+              (    ( !getComplexRegisterPolarMode(SHOWregis) && (tmpString[source]=='+' || tmpString[source]=='-')) ||
                    ( (uint8_t)tmpString[source]==162)
               ) ) {
               break;
