@@ -95,10 +95,10 @@
   extern const calcKey_t                 kbd_std_DM42[37];
   extern const calcKey_t                 kbd_std_C43[37];
   extern const calcKey_t                 kbd_std_C43AltA[37];
-  #ifndef SAVE_SPACE_DM42 
+  #ifndef SAVE_SPACE_DM42
     extern const calcKey_t                 kbd_std_D47[37];
     extern const calcKey_t                 kbd_std_N47[37];
-  #endif //SAVE_SPACE_DM42 
+  #endif //SAVE_SPACE_DM42
   extern const font_t                    standardFont, numericFont;
   extern const font_t                   *fontForShortInteger;
   extern const font_t                   *cursorFont;
@@ -290,7 +290,7 @@
   extern char                   indexOfItemsXEQM[18*8];       //JMXEQ
   extern int16_t                fnXEQMENUpos;                 //JMXEQ
   extern uint8_t                last_CM;                      //Do extern !!
-  extern uint8_t                FN_state; // = ST_0_INIT;      
+  extern uint8_t                FN_state; // = ST_0_INIT;
 
   extern uint16_t               glyphRow[NUMBER_OF_GLYPH_ROWS];
   extern uint16_t               freeProgramBytes;

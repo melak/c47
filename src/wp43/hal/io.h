@@ -118,50 +118,50 @@
    * \return FILE_OK if delete succeeded, or FILE_ERROR if not
    */
   int ioFileRemove(ioFilePath_t path, uint32_t *errorNumber);
-  
+
    /**
    * Callback function for Save State File selected file.
    * Called from the DMCP file_selection_screen() dialog.
    *
    * \param[in] path file selected
    * \param[in] file name selected
-   * \param[in] data - unsused 
+   * \param[in] data - unsused
    * \param[out] set tmpFileName with the path file selected
    * \return MRET_SAVESTATE
    */
   int save_statefile(const char * fpath, const char * fname, void * data);
-  
+
    /**
    * Callback function for Load State File selected file.
    * Called from the DMCP file_selection_screen() dialog.
    *
    * \param[in] path file selected
    * \param[in] file name selected
-   * \param[in] data - unsused 
+   * \param[in] data - unsused
    * \param[out] set tmpFileName with the path file selected
    * \return MRET_LOADSTATE
    */
   int load_statefile(const char * fpath, const char * fname, void * data);
-  
+
    /**
    * Callback function for Save Program File selected file.
    * Called from the DMCP file_selection_screen() dialog.
    *
    * \param[in] path file selected
    * \param[in] file name selected
-   * \param[in] data - unsused 
+   * \param[in] data - unsused
    * \param[out] set tmpFileName with the path file selected
    * \return MRET_SAVESTATE
    */
   int save_programfile(const char * fpath, const char * fname, void * data);
-  
+
    /**
    * Callback function for Load Program File selected file.
    * Called from the DMCP file_selection_screen() dialog.
    *
    * \param[in] path file selected
    * \param[in] file name selected
-   * \param[in] data - unsused 
+   * \param[in] data - unsused
    * \param[out] set tmpFileName with the path file selected
    * \return MRET_LOADSTATE
    */

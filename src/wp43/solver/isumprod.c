@@ -67,8 +67,8 @@
     loop = longIntegerModuloUInt(iLoop, 100000);
 
     if(longIntegerCompare(loopTo, iCounter) != 0 &&
-        (longIntegerIsZero(loopStep) || 
-          (longIntegerCompare(loopTo, iCounter) > 0 && longIntegerCompareUInt(loopStep, 0) <=0) || 
+        (longIntegerIsZero(loopStep) ||
+          (longIntegerCompare(loopTo, iCounter) > 0 && longIntegerCompareUInt(loopStep, 0) <=0) ||
           (longIntegerCompare(loopTo, iCounter) < 0 && longIntegerCompareUInt(loopStep, 0) >=0) )
     ) {
       displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, REGISTER_X);

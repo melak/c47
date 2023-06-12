@@ -62,7 +62,7 @@ static void _calculateStringWidth(const char *str, const font_t *font, bool_t wi
     }                                             //JM ^^
 #endif //TESTSUITE_BUILD
 */
-    
+
     glyphId = findGlyph(font, charCode);
     if(glyphId >= 0) {
       glyph = (font->glyphs) + glyphId;

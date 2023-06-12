@@ -127,7 +127,7 @@ static void percentMRR() {
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
   convertRealToReal34ResultRegister(&q, REGISTER_X);
   setRegisterAngularMode(REGISTER_X, amNone);
-  
+
   temporaryInformation = TI_PERC;
 
 }

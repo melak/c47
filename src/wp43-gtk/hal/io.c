@@ -25,7 +25,7 @@ static int create_dir(char * dir) {
   #endif // WIN3
   if (( ret != 0) && (errno != EEXIST)) {
     return -1;
-  } else { 
+  } else {
     return 0;
   }
 }
@@ -34,10 +34,10 @@ int file_selection_screen(const char * title, const char * base_dir, const char 
       GtkFileChooserNative *native;
       static char untitled[16];
       gint res;
-      
+
       strcpy(untitled, "untitled");
       strcat(untitled, ext+1);
-      
+
       if (disp_save) {
         GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
         native = gtk_file_chooser_native_new (title,
@@ -53,13 +53,13 @@ int file_selection_screen(const char * title, const char * base_dir, const char 
                                               "_Load",
                                               "_Cancel");
       }
-          
+
       GtkFileChooser *chooser = GTK_FILE_CHOOSER (native);
 
       if (overwrite_check) {
           gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
       }
-      
+
       gtk_file_chooser_set_current_folder(chooser,base_dir);
       gtk_file_chooser_set_current_name (chooser,untitled);
       GtkFileFilter *filter = gtk_file_filter_new ();
@@ -74,23 +74,23 @@ int file_selection_screen(const char * title, const char * base_dir, const char 
         if (disp_save) {
           char * fe = data+strlen(filename)-4;
           const char * ee = ext+1;
-          if (strcmp(fe,ee) != 0) strcat(data,ee);     //filename doesn't have the expected extension 
-        }       
-        g_free(filename);   
+          if (strcmp(fe,ee) != 0) strcat(data,ee);     //filename doesn't have the expected extension
+        }
+        g_free(filename);
         g_object_unref (native);
         return FILE_OK;
-      } else { 
+      } else {
         g_object_unref (native);
         return FILE_CANCEL;
-      } 
+      }
 }
-                          
+
 
 int _ioFileNameFromFilePath(ioFilePath_t path, char * filename) {
   static char base_dir[200];
   char * current_dir;
   int ret = 0;
-  
+
   switch(path) {
     case ioPathManualSave:
       if (create_dir("./" SAVE_DIR) != 0) return FILE_ERROR;

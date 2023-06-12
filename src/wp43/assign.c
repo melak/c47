@@ -106,7 +106,7 @@ TO_QSPI const calcKey_t kbd_std_WP43[37] = {
 // C43 Layout from Layout_template_automation template: Do not change manually
 //This variable is to store in flash memory
 TO_QSPI const calcKey_t kbd_std_C43[37] = {
-//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
+//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam
 {21,                  ITM_SIGMAPLUS,        ITM_RI,               ITM_TGLFRT,           ITM_NULL,             ITM_A,                ITM_a,                ITM_SIGMA,            ITM_REG_A           },
 {22,                  ITM_1ONX,             ITM_YX,               ITM_HASH_JM,          ITM_NUMBER_SIGN,      ITM_B,                ITM_b,                ITM_CIRCUMFLEX,       ITM_REG_B           },
 {23,                  ITM_SQUAREROOTX,      ITM_SQUARE,           ITM_ms,               ITM_ROOT_SIGN,        ITM_C,                ITM_c,                ITM_ROOT_SIGN,        ITM_REG_C           },
@@ -144,7 +144,7 @@ TO_QSPI const calcKey_t kbd_std_C43[37] = {
 {83,                  ITM_PERIOD,           ITM_SHOW,             -MNU_INFO,            ITM_PERIOD,           ITM_COMMA,            ITM_PERIOD,           ITM_PERIOD,           ITM_PERIOD          },
 {84,                  ITM_RS,               ITM_PR,               -MNU_PFN,             ITM_NULL,             ITM_QUESTION_MARK,    ITM_SLASH,            ITM_SLASH,            ITM_NULL            },
 {85,                  ITM_ADD,              -MNU_CATALOG,         -MNU_IO,              ITM_PLUS,             ITM_SPACE,            ITM_PLUS,             ITM_PLUS,             ITM_ADD             }
-//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
+//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam
 };
 
 
@@ -153,7 +153,7 @@ TO_QSPI const calcKey_t kbd_std_C43[37] = {
 // C47 Layout from Layout_template_automation template: Do not change manually
 //This variable is to store in flash memory
 TO_QSPI const calcKey_t kbd_std[37] = { //C47 Layout, in the default position without suffix, kbd_std
-//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
+//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam
 {21,                  ITM_SIGMAPLUS,        ITM_RI,               ITM_TGLFRT,           ITM_NULL,             ITM_A,                ITM_a,                ITM_SIGMA,            ITM_REG_A           },
 {22,                  ITM_1ONX,             ITM_YX,               ITM_HASH_JM,          ITM_NUMBER_SIGN,      ITM_B,                ITM_b,                ITM_CIRCUMFLEX,       ITM_REG_B           },
 {23,                  ITM_SQUAREROOTX,      ITM_SQUARE,           ITM_ms,               ITM_ROOT_SIGN,        ITM_C,                ITM_c,                ITM_ROOT_SIGN,        ITM_REG_C           },
@@ -191,13 +191,13 @@ TO_QSPI const calcKey_t kbd_std[37] = { //C47 Layout, in the default position wi
 {83,                  ITM_PERIOD,           ITM_SHOW,             -MNU_INFO,            ITM_PERIOD,           ITM_COMMA,            ITM_PERIOD,           ITM_PERIOD,           ITM_PERIOD          },
 {84,                  ITM_RS,               ITM_PR,               -MNU_TEST,            ITM_NULL,             ITM_QUESTION_MARK,    ITM_SLASH,            ITM_SLASH,            ITM_NULL            },
 {85,                  ITM_ADD,              -MNU_CATALOG,         -MNU_CONST,           ITM_PLUS,             ITM_SPACE,            ITM_PLUS,             ITM_PLUS,             ITM_ADD             }
-//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
+//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam
 };
 
 
 //This variable is to store in flash memory
 TO_QSPI const calcKey_t kbd_std_C43AltA[37] = {
-  //keyID,   primary,           fShifted,          gShifted,          keyLblAim,         primaryAim,        fShiftedAim,       gShiftedAim,       primaryTam         
+  //keyID,   primary,           fShifted,          gShifted,          keyLblAim,         primaryAim,        fShiftedAim,       gShiftedAim,       primaryTam
       {21,   ITM_USERMODE,      ITM_RI,            ITM_TGLFRT,        ITM_NULL,          ITM_A,             ITM_a,             ITM_SIGMA,          ITM_REG_A          },
       {22,   ITM_1ONX,          ITM_YX,            ITM_HASH_JM,       ITM_NUMBER_SIGN,   ITM_B,             ITM_b,             ITM_CIRCUMFLEX,     ITM_REG_B          },
       {23,   ITM_SQUAREROOTX,   ITM_SQUARE,        ITM_ms,            ITM_ROOT_SIGN,     ITM_C,             ITM_c,             ITM_ROOT_SIGN,      ITM_REG_C          },
@@ -241,13 +241,13 @@ TO_QSPI const calcKey_t kbd_std_C43AltA[37] = {
       {83,   ITM_PERIOD,        ITM_SHOW,          -MNU_INFO,         ITM_PERIOD,        ITM_COMMA,         ITM_PERIOD,        ITM_PERIOD,         ITM_PERIOD         },
       {84,   ITM_RS,            ITM_PR,            -MNU_PFN,          ITM_NULL,          ITM_QUESTION_MARK, ITM_SLASH,         ITM_SLASH,          ITM_NULL           },
       {85,   ITM_ADD,           -MNU_CATALOG,      -MNU_IO,           ITM_PLUS,          ITM_SPACE,         ITM_PLUS,          ITM_PLUS,           ITM_ADD            }
-  //keyID,   primary,           fShifted,          gShifted,          keyLblAim,         primaryAim,        fShiftedAim,       gShiftedAim,       primaryTam         
+  //keyID,   primary,           fShifted,          gShifted,          keyLblAim,         primaryAim,        fShiftedAim,       gShiftedAim,       primaryTam
 };
 
 
 //This variable is to store in flash memory
 TO_QSPI const calcKey_t kbd_std_DM42[37] = {
-  //keyID,   primary,           fShifted,          gShifted,          keyLblAim,         primaryAim,        fShiftedAim,       gShiftedAim,       primaryTam         
+  //keyID,   primary,           fShifted,          gShifted,          keyLblAim,         primaryAim,        fShiftedAim,       gShiftedAim,       primaryTam
       {21,   ITM_SIGMAPLUS,     ITM_SIGMAMINUS,    ITM_TGLFRT,        ITM_NULL,          ITM_A,             ITM_a,             ITM_SIGMA,          ITM_REG_A          },
       {22,   ITM_1ONX,          ITM_YX,            ITM_HASH_JM,       ITM_NUMBER_SIGN,   ITM_B,             ITM_b,             ITM_CIRCUMFLEX,     ITM_REG_B          },
       {23,   ITM_SQUAREROOTX,   ITM_SQUARE,        ITM_ms,            ITM_ROOT_SIGN,     ITM_C,             ITM_c,             ITM_ROOT_SIGN,      ITM_REG_C          },
@@ -291,16 +291,16 @@ TO_QSPI const calcKey_t kbd_std_DM42[37] = {
       {83,   ITM_PERIOD,        ITM_SHOW,          -MNU_INFO,         ITM_PERIOD,        ITM_COMMA,         ITM_PERIOD,        ITM_PERIOD,         ITM_PERIOD         },
       {84,   ITM_RS,            ITM_PR,            -MNU_TEST,         ITM_NULL,          ITM_QUESTION_MARK, ITM_SLASH,         ITM_SLASH,          ITM_NULL           },
       {85,   ITM_ADD,           -MNU_CATALOG,      -MNU_CONST,        ITM_PLUS,          ITM_SPACE,         ITM_PLUS,          ITM_PLUS,           ITM_ADD            }
-  //keyID,   primary,           fShifted,          gShifted,          keyLblAim,         primaryAim,        fShiftedAim,       gShiftedAim,       primaryTam         
+  //keyID,   primary,           fShifted,          gShifted,          keyLblAim,         primaryAim,        fShiftedAim,       gShiftedAim,       primaryTam
 };
 
 
 
-#ifndef SAVE_SPACE_DM42 
+#ifndef SAVE_SPACE_DM42
 // N47 Layout from Layout_template_automation template: Do not change manually
 //This variable is to store in flash memory
 TO_QSPI const calcKey_t kbd_std_N47[37] = {
-//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
+//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam
 {21,                  ITM_sin,              ITM_arcsin,           ITM_TGLFRT,           ITM_NULL,             ITM_A,                ITM_a,                ITM_NULL,             ITM_REG_A           },
 {22,                  ITM_cos,              ITM_arccos,           ITM_HASH_JM,          ITM_NUMBER_SIGN,      ITM_B,                ITM_b,                ITM_NULL,             ITM_REG_B           },
 {23,                  ITM_tan,              ITM_arctan,           ITM_ms,               ITM_NULL,             ITM_C,                ITM_c,                ITM_NULL,             ITM_REG_C           },
@@ -338,19 +338,19 @@ TO_QSPI const calcKey_t kbd_std_N47[37] = {
 {83,                  ITM_PERIOD,           ITM_SHOW,             -MNU_INFO,            ITM_PERIOD,           ITM_COMMA,            ITM_PERIOD,           ITM_PERIOD,           ITM_PERIOD          },
 {84,                  ITM_RS,               ITM_PR,               -MNU_PFN,             ITM_NULL,             ITM_QUESTION_MARK,    ITM_SLASH,            ITM_SLASH,            ITM_NULL            },
 {85,                  ITM_ADD,              -MNU_CATALOG,         -MNU_IO,              ITM_PLUS,             ITM_SPACE,            ITM_PLUS,             ITM_PLUS,             ITM_ADD             }
-//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
+//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam
 };
-#endif //SAVE_SPACE_DM42 
+#endif //SAVE_SPACE_DM42
 
 
 
 
 
-#ifndef SAVE_SPACE_DM42 
+#ifndef SAVE_SPACE_DM42
 // D47 Layout from Layout_template_automation template: Do not change manually
 //This variable is to store in flash memory
 TO_QSPI const calcKey_t kbd_std_D47[37] = {
-//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
+//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam
 {21,                  ITM_LN,               ITM_EXP,              ITM_TGLFRT,           ITM_NULL,             ITM_A,                ITM_a,                ITM_NULL,             ITM_REG_A           },
 {22,                  ITM_LOG10,            ITM_10x,              ITM_HASH_JM,          ITM_NUMBER_SIGN,      ITM_B,                ITM_b,                ITM_NULL,             ITM_REG_B           },
 {23,                  ITM_SQUAREROOTX,      ITM_SQUARE,           ITM_ms,               ITM_ROOT_SIGN,        ITM_C,                ITM_c,                ITM_NULL,             ITM_REG_C           },
@@ -388,9 +388,9 @@ TO_QSPI const calcKey_t kbd_std_D47[37] = {
 {83,                  ITM_PERIOD,           ITM_SHOW,             -MNU_INFO,            ITM_PERIOD,           ITM_COMMA,            ITM_PERIOD,           ITM_PERIOD,           ITM_PERIOD          },
 {84,                  ITM_RS,               ITM_PR,               -MNU_PFN,             ITM_NULL,             ITM_QUESTION_MARK,    ITM_SLASH,            ITM_SLASH,            ITM_NULL            },
 {85,                  ITM_ADD,              -MNU_CATALOG,         -MNU_IO,              ITM_PLUS,             ITM_SPACE,            ITM_PLUS,             ITM_PLUS,             ITM_ADD             }
-//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
+//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam
 };
-#endif //SAVE_SPACE_DM42 
+#endif //SAVE_SPACE_DM42
 
 
 

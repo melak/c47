@@ -184,7 +184,7 @@ int load_statefile(const char * fpath, const char * fname, void * data) {
   //lcd_puts(t24, "Are you sure to load this file?");
   lcd_puts(t24, "Press [ENTER] to confirm.");
   lcd_refresh();
-  
+
   wait_for_key_release(-1);
 
   for(;;) {

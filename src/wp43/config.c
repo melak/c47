@@ -1093,7 +1093,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     while(ix<18) {
       indexOfItemsXEQM[+8*ix]=0;
       strcpy(indexOfItemsXEQM +8*ix, indexOfItems[fnXEQMENUpos+ix].itemSoftmenuName);
-      ix++;    
+      ix++;
     }
 
 
@@ -1119,10 +1119,10 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     #if !defined(TESTSUITE_BUILD)
       showSoftmenu(-MNU_MyMenu);                                   //this removes the false start on MyMenu error
     #endif // !TESTSUITE_BUILD
-    fnUserJM(USER_KRESET);                                      //JM USER    
+    fnUserJM(USER_KRESET);                                      //JM USER
     temporaryInformation = TI_NO_INFO;
     refreshScreen();
-    
+
 //    kbd_usr[0].primary     = ITM_CC;                         //JM CPX TEMP DEFAULT        //JM note. over-writing the content of setupdefaults
 //    kbd_usr[0].gShifted    = KEY_TYPCON_UP;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
 //    kbd_usr[0].fShifted    = KEY_TYPCON_DN;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
@@ -1219,7 +1219,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     fnClearFlag(FLAG_USER);
     fnRefreshState();
 
-  
+
   }
 }
 

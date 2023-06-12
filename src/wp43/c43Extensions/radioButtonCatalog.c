@@ -678,7 +678,7 @@ void add_digitglyph_to_tmp2(char* tmp2, int16_t xx) {
 void use_base_glyphs(char* tmp1, int16_t xx) {              // Needs non-local variable tmp2
   char tmp2[16];
   tmp1[0] = 0;
-  
+
   if(xx <= 16) {
     add_digitglyph_to_tmp2(tmp2, xx);
     stringAppend(tmp1 + stringByteLength(tmp1), tmp2);
@@ -698,7 +698,7 @@ void use_base_glyphs(char* tmp1, int16_t xx) {              // Needs non-local v
     add_digitglyph_to_tmp2(tmp2, xx / 1000);     stringAppend(tmp1 + stringByteLength(tmp1), tmp2);                  //9876 > 9
     add_digitglyph_to_tmp2(tmp2, (xx % 1000) / 100);     stringAppend(tmp1 + stringByteLength(tmp1), tmp2);          //876  > 8
     add_digitglyph_to_tmp2(tmp2, ((xx % 1000) % 100) / 10);   stringAppend(tmp1 + stringByteLength(tmp1), tmp2);     //76   > 7
-    add_digitglyph_to_tmp2(tmp2, ((xx % 1000) % 100) % 10);   stringAppend(tmp1 + stringByteLength(tmp1), tmp2);     //6  
+    add_digitglyph_to_tmp2(tmp2, ((xx % 1000) % 100) % 10);   stringAppend(tmp1 + stringByteLength(tmp1), tmp2);     //6
   }
   else {
     snprintf(tmp1, 12, "%d", xx);

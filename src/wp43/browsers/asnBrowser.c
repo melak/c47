@@ -84,9 +84,9 @@
       showKey(Name, xx*pixelsPerSoftKey, xx*pixelsPerSoftKey+pixelsPerSoftKey, YOFF+yy*SOFTMENU_HEIGHT, YOFF+(yy+1)*SOFTMENU_HEIGHT, xx == 5, (kk > 0 || Name[0] == 0) ? vmNormal : vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
 
       if(fnAsnDisplayUSER &&
-          ( ((page == 1) && (kbd_std[key].primary == kbd_usr[key].primary)  ) || 
-            ((page == 3) && (kbd_std[key].fShifted == kbd_usr[key].fShifted)) || 
-            ((page == 2) && (kbd_std[key].gShifted == kbd_usr[key].gShifted))  
+          ( ((page == 1) && (kbd_std[key].primary == kbd_usr[key].primary)  ) ||
+            ((page == 3) && (kbd_std[key].fShifted == kbd_usr[key].fShifted)) ||
+            ((page == 2) && (kbd_std[key].gShifted == kbd_usr[key].gShifted))
            )
         ) {
         greyOutBox(xx*pixelsPerSoftKey, xx*pixelsPerSoftKey+pixelsPerSoftKey, YOFF+yy*SOFTMENU_HEIGHT, YOFF+(yy+1)*SOFTMENU_HEIGHT);

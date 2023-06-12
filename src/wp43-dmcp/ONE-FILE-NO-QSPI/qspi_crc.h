@@ -22,7 +22,7 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  The software and related material is released as “NOMAS”  (NOt MAnufacturer Supported). 
+  The software and related material is released as “NOMAS”  (NOt MAnufacturer Supported).
   1. Info is released to assist customers using, exploring and extending the product
   2. Do NOT contact the manufacturer with questions, seeking support, etc. regarding
      NOMAS material as no support is implied or committed-to by the Manufacturer

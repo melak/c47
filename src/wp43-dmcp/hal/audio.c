@@ -17,7 +17,7 @@
 #include "hal/audio.h"
 
 #include <stdio.h>
-#include <dmcp.h> 
+#include <dmcp.h>
 
 void audioTone(uint32_t frequency) {
   start_buzzer_freq(frequency);
