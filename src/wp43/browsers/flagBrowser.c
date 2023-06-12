@@ -265,7 +265,7 @@
               real34Subtract(&x34, REGISTER_REAL34_DATA(REGISTER_X), &x34);
             }
             strcat(tmpString + CHARS_PER_LINE * line, "  ULP of reg X = 10");
-            supNumberToDisplayString(real34GetExponent(&x34), tmpString + CHARS_PER_LINE * line + strlen(tmpString + CHARS_PER_LINE * line), NULL, false, NULL);
+            supNumberToDisplayString(real34GetExponent(&x34), tmpString + CHARS_PER_LINE * line + strlen(tmpString + CHARS_PER_LINE * line), NULL, false);
           }
           break;
         }
