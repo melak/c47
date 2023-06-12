@@ -2044,7 +2044,7 @@ void hideFunctionName(void) {
         if (getSystemFlag(FLAG_FRACT)) {
           fractionToDisplayString(REGISTER_X, tmpString);
         } else {
-          real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
+          real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, true);
         } 
         w = stringWidth(tmpString, &numericFont, false, true);
         showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE + 6, vmNormal, true, true);
@@ -2052,14 +2052,14 @@ void hideFunctionName(void) {
     } 
     else if(getRegisterDataType(REGISTER_X) == dtComplex34) {
         clearRegisterLine(REGISTER_X, true, true);
-        complex34ToDisplayString(REGISTER_COMPLEX34_DATA(REGISTER_X), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true, getComplexRegisterAngularMode(REGISTER_X), getComplexRegisterPolarMode(REGISTER_X));
+        complex34ToDisplayString(REGISTER_COMPLEX34_DATA(REGISTER_X), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, true, getComplexRegisterAngularMode(REGISTER_X), getComplexRegisterPolarMode(REGISTER_X));
         w = stringWidth(tmpString, &numericFont, false, true);
         showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE + 6, vmNormal, true, true);
         showString(tmpString, &numericFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE, vmNormal, false, true);
     } 
     else if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
         clearRegisterLine(REGISTER_X, true, true);
-        longIntegerRegisterToDisplayString(REGISTER_X, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - prefixWidth, 50, STD_SPACE_PUNCTUATION, true);
+        longIntegerRegisterToDisplayString(REGISTER_X, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - prefixWidth, 50, true);
         w = stringWidth(tmpString, &numericFont, false, true);
         showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE + 6, vmNormal, true, true);
         if(w <= SCREEN_WIDTH-prefixWidth) {
