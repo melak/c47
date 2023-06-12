@@ -103,7 +103,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
       }
     } else {
       strcpy(lastTemp, indexOfItems[lastFunc].itemCatalogName);
-    } 
+    }
     return lastTemp;
   }
 
@@ -116,7 +116,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
       }
     } else {
       strcpy(lastTemp, indexOfItems[lastFunc].itemSoftmenuName);
-    } 
+    }
     return lastTemp;
   }
 
@@ -125,7 +125,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
     lastParam = param;
     if(func >= CST_01 && func <= CST_79) {
       temporaryInformation = TI_LAST_CONST_CATNAME;
-    } 
+    }
     //else {                                                 //Removed code for TI of any last command
     //  temporaryInformation = TI_LAST_FUNC_CATNAME;
     //}
@@ -135,7 +135,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
     if(func != ITM_CLX) { //JM Do not reset for backspace, because the timers need to run after the first action, CLX
       resetKeytimers();  //JM
     }
-    if(func != ITM_DRG) { //JM Reset DRG cycling flag for any command except DRG 
+    if(func != ITM_DRG) { //JM Reset DRG cycling flag for any command except DRG
       DRG_Cycling = 0;  //JM
     }
 
@@ -194,7 +194,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 */
 
     screenUpdatingMode = SCRUPD_AUTO;
-    } 
+    }
     else {
       force_refresh(timed); //Added this to enable 0.5 second refresh during running
       #if defined (PC_BUILD) && VERBOSE_LEVEL > -1
@@ -208,17 +208,17 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 
     if(lastErrorCode == ERROR_NONE) {
       switch (softmenu[softmenuStack[0].softmenuId].menuItem) {
-    	  case -MNU_CONVE :
-    		case -MNU_CONVP :
-    		case -MNU_CONVFP:
-    		case -MNU_CONVM :
-    		case -MNU_CONVX :
-    		case -MNU_CONVV :
-    		case -MNU_CONVA :
+        case -MNU_CONVE :
+        case -MNU_CONVP :
+        case -MNU_CONVFP:
+        case -MNU_CONVM :
+        case -MNU_CONVX :
+        case -MNU_CONVV :
+        case -MNU_CONVA :
         case -MNU_CONVS :
         case -MNU_CONVANG :
-    		case -MNU_UNITCONV : 
-    		case -MNU_MISC : { 
+        case -MNU_UNITCONV :
+        case -MNU_MISC : {
           errorMessage[0]=0;
           strcat(errorMessage,indexOfItems[func].itemCatalogName);
           temporaryInformation = TI_NO_INFO;
@@ -241,7 +241,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
           errorMessage[j] = 0;
           break;
         default: break;
-      	}
+        }
       }
     }
 
@@ -1062,7 +1062,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void graph_stat                 (uint16_t unusedButMandatoryParameter) {}
   void fnSafeReset                (uint16_t unusedButMandatoryParameter) {}
   void fnSetBCD                   (uint16_t unusedButMandatoryParameter) {}
-  void fnLongPressSwitches        (uint16_t unusedButMandatoryParameter) {} 
+  void fnLongPressSwitches        (uint16_t unusedButMandatoryParameter) {}
   void fnSetSI_All                (uint16_t unusedButMandatoryParameter) {}
   void fnJulianToDateTime         (uint16_t unusedButMandatoryParameter) {}
   void fnDateTimeToJulian         (uint16_t unusedButMandatoryParameter) {}

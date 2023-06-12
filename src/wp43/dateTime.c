@@ -5,7 +5,7 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * 43S is distributed in the ho	pe that it will be useful,
+ * 43S is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -523,7 +523,7 @@ void fnDateTimeToJulian(uint16_t unusedButMandatoryParameter) {
       real34Subtract(REGISTER_REAL34_DATA(REGISTER_X), const34_1on2, REGISTER_REAL34_DATA(REGISTER_X));                      //handle 0.5 offset
       adjustResult(REGISTER_X, true, true, REGISTER_X, REGISTER_Y, -1);
     }
-  } 
+  }
 }
 
 

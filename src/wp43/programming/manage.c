@@ -744,7 +744,7 @@ void pemAlpha(int16_t item) {
           item +=  (ITM_ALPHA <= item && item <= ITM_OMEGA) ? (ITM_alpha - ITM_ALPHA) : (ITM_qoppa - ITM_QOPPA);
         }
     }
- 	if ((nextChar == NC_NORMAL) || ((item != ITM_DOWN_ARROW) && (item != ITM_UP_ARROW))) {
+ if ((nextChar == NC_NORMAL) || ((item != ITM_DOWN_ARROW) && (item != ITM_UP_ARROW))) {
       item = convertItemToSubOrSup(item, nextChar);
       int32_t inputCharLength = stringByteLength(indexOfItems[item].itemSoftmenuName);
       if(len < (256 - inputCharLength) && stringGlyphLength(aimBuffer) < 196) {
