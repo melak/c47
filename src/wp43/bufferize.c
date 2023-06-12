@@ -1910,7 +1910,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
 
     if((numDigits - nth) % GROUPWIDTH_LEFT == 1 || GROUPWIDTH_LEFT == 1) {
       char tt[4];
-      if(SEPARATOR_LEFT[1]!=1) {strcat(tt,SEPARATOR_LEFT);} 
+      if(SEPARATOR_LEFT[1]!=1) {strcpy(tt,SEPARATOR_LEFT);} 
       else {tt[0] = SEPARATOR_LEFT[0]; tt[1] = 0;} 
       strcpy(displayBuffer, tt);
       return 2;
@@ -1932,7 +1932,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
 
     if(nth % GROUPWIDTH_RIGHT == GROUPWIDTH_RIGHT - 1) {
       char tt[4];
-      if(SEPARATOR_RIGHT[1]!=1) {strcat(tt,SEPARATOR_RIGHT);} 
+      if(SEPARATOR_RIGHT[1]!=1) {strcpy(tt,SEPARATOR_RIGHT);} 
       else {tt[0] = SEPARATOR_RIGHT[0]; tt[1] = 0;} 
       strcpy(displayBuffer, tt);
       return 2;

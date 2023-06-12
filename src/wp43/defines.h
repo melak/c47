@@ -268,7 +268,6 @@
 
 #define REAL34_WIDTH_TEST 0 // For debugging real34 ALL 0 formating. Use UP/DOWN to shrink or enlarge the available space. The Z register holds the available width.
 
-
 //*************************
 //* Other defines         *
 //*************************
@@ -1244,8 +1243,8 @@ typedef enum {
 
 #define Lt                                   (gapItemLeft  == 0 ? (char*) "\1\1\0" : (char*)indexOfItems[gapItemLeft ].itemSoftmenuName) // Actual separator character
 #define Rt                                   (gapItemRight == 0 ? (char*) "\1\1\0" : (char*)indexOfItems[gapItemRight].itemSoftmenuName) // Actual separator character
-#define Rx                                   (gapItemRadix == 0 ? (char*) "\1\1\0" : (char*)indexOfItems[gapItemRadix].itemSoftmenuName) // Actual separator character
-#define gapChar1Left                         (Lt[0] != 0 && (Lt[1] == 0 || (Lt[1] != 0 && Lt[2] == 0)) ? \
+#define Rx                                   ((char*)indexOfItems[gapItemRadix].itemSoftmenuName) // Actual separator character
+#define gapChar1Left                         (Lt[0] != 0 && Lt[1] == 0 && Lt[2] == 0 ? \
                                                 ( Lt[0] == ','  ? (char*) ",\1\0"  :   \
                                                   Lt[0] == '.'  ? (char*) ".\1\0"  :   \
                                                   Lt[0] == '\'' ? (char*) "\'\1\0" :   \

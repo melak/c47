@@ -1481,7 +1481,8 @@ uint8_t  displaymode = stdNoEnlarge;
         return;
         gotoReturn:
         if(_h1 == 0) {
-          if(tmpString[1500] != 0) {
+          if(temporaryInformation == TI_SHOW_REGISTER_BIG && tmpString[1200] != 0) {}
+          else if(tmpString[1500] != 0) {
             lcd_fill_rect(0, line_h_offset + line_h1 * 2 - 3,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);          
           } else {
             lcd_fill_rect(0,240-3*SOFTMENU_HEIGHT,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);          
