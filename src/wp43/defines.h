@@ -1242,30 +1242,30 @@ typedef enum {
 #define RADIX34_MARK_STRING                  (gapChar1Radix)
 
 
-#define Lt                                   (gapItemLeft  == 0 ?  (char*) "\1\1\0" : (char*)indexOfItems[gapItemLeft].itemSoftmenuName) // "\0" 
-#define Rt                                   (gapItemRight == 0 ?  (char*) "\1\1\0" : (char*)indexOfItems[gapItemRight].itemSoftmenuName)// "\0"
-#define Rx                                   (gapItemRadix == 0 ?  (char*) "\1\1\0" : (char*)indexOfItems[gapItemRadix].itemSoftmenuName)// "\0"
+#define Lt                                   (gapItemLeft  == 0 ? (char*) "\1\1\0" : (char*)indexOfItems[gapItemLeft ].itemSoftmenuName) // Actual separator character
+#define Rt                                   (gapItemRight == 0 ? (char*) "\1\1\0" : (char*)indexOfItems[gapItemRight].itemSoftmenuName) // Actual separator character
+#define Rx                                   (gapItemRadix == 0 ? (char*) "\1\1\0" : (char*)indexOfItems[gapItemRadix].itemSoftmenuName) // Actual separator character
 #define gapChar1Left                         (Lt[0] != 0 && Lt[1] == 0 && Lt[2] == 0 ? \
-                                                ( Lt[0] == ',' ? (char*) ",\1\0" : \
-                                                  Lt[0] == '.' ? (char*) ".\1\0" : \
-                                                  Lt[0] == '\'' ? (char*) "\'\1\0" : \
-                                                  Lt[0] == '_' ? (char*) "_\1\0" : Lt ) : Lt )  //set second character to skip character 0x01
+                                                ( Lt[0] == ','  ? (char*) ",\1\0"  :   \
+                                                  Lt[0] == '.'  ? (char*) ".\1\0"  :   \
+                                                  Lt[0] == '\'' ? (char*) "\'\1\0" :   \
+                                                  Lt[0] == '_'  ? (char*) "_\1\0"  : Lt ) : Lt )  //set second character to skip character 0x01
 #define gapChar1Right                        (Rt[0] != 0 && Rt[1] == 0 && Rt[2] == 0 ? \
-                                                ( Rt[0] == ',' ? (char*) ",\1\0" : \
-                                                  Rt[0] == '.' ? (char*) ".\1\0" : \
-                                                  Rt[0] == '\'' ? (char*) "\'\1\0" : \
-                                                  Rt[0] == '_' ? (char*) "_\1\0" : Rt ) : Rt )  //set second character to skip character 0x01
+                                                ( Rt[0] == ','  ? (char*) ",\1\0"  :   \
+                                                  Rt[0] == '.'  ? (char*) ".\1\0"  :   \
+                                                  Rt[0] == '\'' ? (char*) "\'\1\0" :   \
+                                                  Rt[0] == '_'  ? (char*) "_\1\0"  : Rt ) : Rt )  //set second character to skip character 0x01
 #define gapChar1Radix                        (Rx[0] != 0 && Rx[1] == 0 && Rx[2] == 0 ? \
-                                                ( Rx[0] == ',' ? (char*) ",\1\0" : \
-                                                  Rx[0] == '.' ? (char*) ".\1\0" : \
-                                                  Rx[0] == '\'' ? (char*) "\'\1\0" : \
-                                                  Rx[0] == '_' ? (char*) "_\1\0" : Rx ) : Rx )  //set second character to skip character 0x01
+                                                ( Rx[0] == ','  ? (char*) ",\1\0"  :   \
+                                                  Rx[0] == '.'  ? (char*) ".\1\0"  :   \
+                                                  Rx[0] == '\'' ? (char*) "\'\1\0" :   \
+                                                  Rx[0] == '_'  ? (char*) "_\1\0"  : Rx ) : Rx )  //set second character to skip character 0x01
 
 #define SEPARATOR_LEFT                       (gapChar1Left)
 #define SEPARATOR_RIGHT                      (gapChar1Right)
 #define checkHP                              (significantDigits == 10 && displayStack == 1 && exponentHideLimit == 12 && exponentLimit == 99 && Input_Default == ID_DP)
 #define DOUBLING                             6u  // 8=is double; 7 is 1.75*; 6=1.5*; 5=1.25* 
-#define GROUPWIDTH_LEFT                      ((uint16_t)grpGroupingLeft)
+#define GROUPWIDTH_LEFT                      (grpGroupingLeft)
 #define GROUPWIDTH_LEFT1                     ((grpGroupingGr1Left        == 0 ? (uint16_t)grpGroupingLeft : (uint16_t)grpGroupingGr1Left))
 #define GROUPWIDTH_LEFT1X                    (grpGroupingGr1LeftOverflow)  
 #define GROUP1_OVFL(digitCount, exp)         ( (grpGroupingGr1LeftOverflow > 0 && exp == GROUPWIDTH_LEFT1 && digitCount+1 == GROUPWIDTH_LEFT1  ? grpGroupingGr1LeftOverflow:0 ) )

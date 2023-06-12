@@ -124,46 +124,50 @@ void configCommon(uint16_t idx) {
 
 #if !defined(TESTSUITE_BUILD)
   void fnSetHP35(uint16_t unusedButMandatoryParameter) {
-    fnKeyExit(0);
-    fnClrMod(0);
-    fnClearStack(0);
-    fnPi(0);
+    fnKeyExit(0);                            //Clear pending key input
+    fnClrMod(0);                             //Get out of NIM or BASE
+    fnClearStack(0);                         //Clear stack
+    fnPi(0);                                 //Put pi on X
 
-    fnInDefault(ID_DP);                      //ID, if changed, also set the conditions for checkHP in defines.h 
-    fnDisplayFormatSigFig(9);
-    jm_BASE_SCREEN = false;
-    SH_BASE_HOME = false;
-    exponentHideLimit = 12;                  //ID, if changed, also set the conditions for checkHP in defines.h
-    exponentLimit     = 99;                  //ID, if changed, also set the conditions for checkHP in defines.h
-    significantDigits = 10;                  //ID, if changed, also set the conditions for checkHP in defines.h
-    displayStack = cachedDisplayStack = 1;   //ID, if changed, also set the conditions for checkHP in defines.h
-    currentAngularMode = amDegree;
-    SetSetting(SS_4);
-    SetSetting(ITM_CPXRES0);
-    SetSetting(ITM_SPCRES0);
-    fneRPN(0); //RPN
-    setFGLSettings(RB_FGLNOFF); //fgLine OFF
-    temporaryInformation = TI_NO_INFO;
+    fnInDefault(ID_DP);                      //Change to Real input only :                                     ID, if changed, also set the conditions for checkHP in defines.h 
+    fnDisplayFormatSigFig(9);                //SIG 9
+    jm_BASE_SCREEN = false;                  //Switch off base = MyMenu
+    SH_BASE_HOME = false;                    //Ensure base = HOME is off
+    exponentHideLimit = 12;                  //Set the '0' limit to 2 digits more than the 10 digit display :  ID, if changed, also set the conditions for checkHP in defines.h
+    exponentLimit     = 99;                  //Set the exponent limit the same as HP35, i.e. 99                ID, if changed, also set the conditions for checkHP in defines.h
+    significantDigits = 10;                  //SDIGS = 10                                                      ID, if changed, also set the conditions for checkHP in defines.h
+    displayStack = cachedDisplayStack = 1;   //Change to single stack register display                         ID, if changed, also set the conditions for checkHP in defines.h
+    currentAngularMode = amDegree;           //Set to DEG
+    SetSetting(SS_4);                        //SSTACK4
+    SetSetting(ITM_CPXRES0);                 //Clear CPXRES
+    SetSetting(ITM_SPCRES0);                 //Clear SPCRES
+    fneRPN(0);                               //RPN
+    setFGLSettings(RB_FGLNOFF);              //fgLine OFF
+    temporaryInformation = TI_NO_INFO;       //Clear any pending TI
 
-    grpGroupingLeft   =  3;
-    groupingGap                = grpGroupingLeft;               //legacy function displays use IPGAP
-    grpGroupingRight   =  3;
-    grpGroupingGr1Left =  0;
-    grpGroupingGr1LeftOverflow = 0;
-    fnSetGapChar(ITM_NULL);
-    fnSetGapChar(ITM_NULL+32768);
-    fnSetGapChar(ITM_WDOT+49152);
+    grpGroupingLeft   =  3;                  //IPGRP 3
+    groupingGap = grpGroupingLeft;           //Set legacy function displays to use IPGAP
+    grpGroupingRight   =  3;                 //FPGRP 3
+    grpGroupingGr1Left =  0;                 //IPGRP1 0
+    grpGroupingGr1LeftOverflow = 0;          //IPGRP1x 0
+    fnSetGapChar(ITM_NULL);                  //IPART nil
+    fnSetGapChar(ITM_NULL+32768);            //FPART nil
+    fnSetGapChar(ITM_WDOT+49152);            //RADIX WDOT
+    kbd_usr[8].gShifted = ITM_Rup;          //Replace x-rt-y with Rup
+    fnSetFlag(FLAG_USER);                    //Set USER mode
+    fnRefreshState();
     refreshScreen();
   }
 
 
-  void fnHP35JM(void){
-    fneRPN(1); //eRPN
-    setFGLSettings(RB_FGLNFUL); //fgLine OFF
-    clearSystemFlag(FLAG_HPRP);
-    SetSetting(SS_8);
-    SetSetting(ITM_CPXRES1);
-    SetSetting(ITM_SPCRES1);
+  void fnHP35JM(uint16_t unusedButMandatoryParameter){
+    fnSetHP35(0);
+    fneRPN(1);                               //eRPN
+    setFGLSettings(RB_FGLNFUL);              //fgLine FULL
+    clearSystemFlag(FLAG_HPRP);              //Clear HP Rect/Polar
+    SetSetting(SS_8);                        //SSTACK 8
+    SetSetting(ITM_CPXRES1);                 //Set CPXRES
+    SetSetting(ITM_SPCRES1);                 //Set SPCRES
   }
 
 
@@ -196,6 +200,9 @@ void configCommon(uint16_t idx) {
     grpGroupingRight           = configSettings[CFG_DFLT].gprr ;
     fnSetGapChar (32768+configSettings[CFG_DFLT].gapr);
     fnSetGapChar (49152+configSettings[CFG_DFLT].gaprx);
+    if(kbd_usr[8].gShifted == ITM_Rup) kbd_usr[18].gShifted = ITM_xTH_ROOT;     //Ensure x-rt-y is rerstore
+    fnClearFlag(FLAG_USER);                    //Set USER mode
+    fnRefreshState();
 
     fnDrop(0);
     fnDrop(0);
@@ -207,7 +214,7 @@ void configCommon(uint16_t idx) {
 
 
 void fnSetGapChar (uint16_t charParam) {
-printf(">>>> charParam=%u %u \n", charParam, charParam & 16383);
+  //printf(">>>> charParam=%u %u \n", charParam, charParam & 16383);
   if((charParam & 49152) == 0) {                        //+0 for the left hand separator
     gapItemLeft = charParam & 16383;
   } else 
@@ -217,7 +224,8 @@ printf(">>>> charParam=%u %u \n", charParam, charParam & 16383);
   if((charParam & 49152) == 49152) {                        //+49152 for the radix separator
     gapItemRadix = charParam & 16383;
   }
-//printf("Post: %u %u %u %u %u %u  \n", (uint8_t)gapCharLeft[0], (uint8_t)gapCharLeft[1], (uint8_t)gapCharRight[0], (uint8_t)gapCharRight[1],  (uint8_t)gapCharRadix[0], (uint8_t)gapCharRadix[1]);
+//printf("LT=%s RT=%s RX=%s\n",Lt, Rt, Rx);
+//printf("Post: gapCharL0=%u gapCharL1=%u gapCharR0=%u gapCharR1=%u gapCharRx0=%u gapCharRx1%u  \n", (uint8_t)gapChar1Left[0], (uint8_t)gapChar1Left[1], (uint8_t)gapChar1Right[0], (uint8_t)gapChar1Right[1],  (uint8_t)gapChar1Radix[0], (uint8_t)gapChar1Radix[1]);
 }
 
 

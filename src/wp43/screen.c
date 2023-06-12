@@ -1783,9 +1783,9 @@ void printHalfSecUpdate_Integer(uint8_t mode, char *txt, int loop) {
     prefixWidth = showString(prefix, &standardFont, 19 + (17+28), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(rowReg - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
 
     if(getRegisterDataType(reg) == dtLongInteger) {
-      longIntegerRegisterToDisplayString(reg, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - prefixWidth, 50, SEPARATOR_LEFT, true);
+      longIntegerRegisterToDisplayString(reg, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - prefixWidth, 50, true);
     } else if(getRegisterDataType(reg) == dtReal34) {
-      real34ToDisplayString(REGISTER_REAL34_DATA(reg), getRegisterAngularMode(reg), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, SEPARATOR_LEFT, true);
+      real34ToDisplayString(REGISTER_REAL34_DATA(reg), getRegisterAngularMode(reg), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, true);
     }
 
 
@@ -2154,7 +2154,7 @@ void hideFunctionName(void) {
 
           else if(getRegisterDataType(REGISTER_L) == dtLongInteger) {
             strcat(string1, "long integer = ");
-            longIntegerRegisterToDisplayString(REGISTER_L, string2, sizeof(string2), SCREEN_WIDTH, 50, SEPARATOR_LEFT, true);
+            longIntegerRegisterToDisplayString(REGISTER_L, string2, sizeof(string2), SCREEN_WIDTH, 50, true);
           }
 
           else if(getRegisterDataType(REGISTER_L) == dtTime) {
@@ -3450,7 +3450,7 @@ void hideFunctionName(void) {
             }
                                                                        //JM EE ^
 
-          real34ToDisplayString(REGISTER_REAL34_DATA(regist), getRegisterAngularMode(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, SEPARATOR_LEFT, true);
+          real34ToDisplayString(REGISTER_REAL34_DATA(regist), getRegisterAngularMode(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, true);
 
           w = stringWidth(tmpString, &numericFont, false, true);
           lineWidth = w;
@@ -3538,7 +3538,7 @@ void hideFunctionName(void) {
                                                                        //JM EE ^
 
 
-          complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS,true, SEPARATOR_LEFT, true, getComplexRegisterAngularMode(regist), getComplexRegisterPolarMode(regist));
+          complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS,true, true, getComplexRegisterAngularMode(regist), getComplexRegisterPolarMode(regist));
 
           w = stringWidth(tmpString, &numericFont, false, true);
           lineWidth = w;
@@ -3726,7 +3726,7 @@ void hideFunctionName(void) {
           if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
             viewRegName(prefix, &prefixWidth);
           }
-          longIntegerRegisterToDisplayString(regist, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - prefixWidth, 50, SEPARATOR_LEFT, true);          //JMms added prefix   //JM added last parameter: Allow LARGELI
+          longIntegerRegisterToDisplayString(regist, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - prefixWidth, 50, true);          //JMms added prefix   //JM added last parameter: Allow LARGELI
 
           if(temporaryInformation == TI_DAY_OF_WEEK) {
             if(regist == REGISTER_X) {

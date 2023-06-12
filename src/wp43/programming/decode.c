@@ -510,7 +510,7 @@ static void decodeLiteral(uint8_t *literalAddress) {
     //}
 
     case BINARY_REAL34: {
-      real34ToDisplayString((real34_t *)literalAddress, amNone, tmpString, &standardFont, 9999, 34, false, STD_SPACE_PUNCTUATION, false);
+      real34ToDisplayString((real34_t *)literalAddress, amNone, tmpString, &standardFont, 9999, 34, false, false);
       break;
     }
 
@@ -518,7 +518,7 @@ static void decodeLiteral(uint8_t *literalAddress) {
       complex34_t complexLiteral;
       xcopy(VARIABLE_REAL34_DATA(&complexLiteral), literalAddress     , 16);
       xcopy(VARIABLE_IMAG34_DATA(&complexLiteral), literalAddress + 16, 16);
-      complex34ToDisplayString(&complexLiteral, tmpString, &standardFont, 9999, 34, false, STD_SPACE_PUNCTUATION, false, currentAngularMode, getSystemFlag(FLAG_POLAR));
+      complex34ToDisplayString(&complexLiteral, tmpString, &standardFont, 9999, 34, false, false, currentAngularMode, getSystemFlag(FLAG_POLAR));
       break;
     }
 
