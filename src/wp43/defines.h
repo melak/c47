@@ -1233,7 +1233,7 @@ typedef enum {
 
 #define Lt                                   (gapItemLeft  == 0 ? (char*) "\1\1\0" : (char*)indexOfItems[gapItemLeft ].itemSoftmenuName) // Actual separator character
 #define Rt                                   (gapItemRight == 0 ? (char*) "\1\1\0" : (char*)indexOfItems[gapItemRight].itemSoftmenuName) // Actual separator character
-#define Rx                                   (gapItemRadix == 0 ? (char*) "\1\1\0" : (char*)indexOfItems[gapItemRadix].itemSoftmenuName) // Actual separator character
+#define Rx                                   ((char*)indexOfItems[gapItemRadix].itemSoftmenuName) // Actual separator character
 #define gapChar1Left                         (Lt[0] != 0 && Lt[1] == 0 && Lt[2] == 0 ? \
                                                 ( Lt[0] == ','  ? (char*) ",\1\0"  :   \
                                                   Lt[0] == '.'  ? (char*) ".\1\0"  :   \
