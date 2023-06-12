@@ -1245,21 +1245,19 @@ typedef enum {
 #define Lt                                   (gapItemLeft  == 0 ? (char*) "\1\1\0" : (char*)indexOfItems[gapItemLeft ].itemSoftmenuName) // Actual separator character
 #define Rt                                   (gapItemRight == 0 ? (char*) "\1\1\0" : (char*)indexOfItems[gapItemRight].itemSoftmenuName) // Actual separator character
 #define Rx                                   (gapItemRadix == 0 ? (char*) "\1\1\0" : (char*)indexOfItems[gapItemRadix].itemSoftmenuName) // Actual separator character
-#define gapChar1Left                         (Lt[0] != 0 && Lt[1] == 0 && Lt[2] == 0 ? \
+#define gapChar1Left                         (Lt[0] != 0 && (Lt[1] == 0 || (Lt[1] != 0 && Lt[2] == 0)) ? \
                                                 ( Lt[0] == ','  ? (char*) ",\1\0"  :   \
                                                   Lt[0] == '.'  ? (char*) ".\1\0"  :   \
                                                   Lt[0] == '\'' ? (char*) "\'\1\0" :   \
                                                   Lt[0] == '_'  ? (char*) "_\1\0"  : Lt ) : Lt )  //set second character to skip character 0x01
-#define gapChar1Right                        (Rt[0] != 0 && Rt[1] == 0 && Rt[2] == 0 ? \
+#define gapChar1Right                        (Rt[0] != 0 && (Rt[1] == 0 || (Rt[1] != 0 && Rt[2] == 0)) ? \
                                                 ( Rt[0] == ','  ? (char*) ",\1\0"  :   \
                                                   Rt[0] == '.'  ? (char*) ".\1\0"  :   \
                                                   Rt[0] == '\'' ? (char*) "\'\1\0" :   \
                                                   Rt[0] == '_'  ? (char*) "_\1\0"  : Rt ) : Rt )  //set second character to skip character 0x01
-#define gapChar1Radix                        (Rx[0] != 0 && Rx[1] == 0 && Rx[2] == 0 ? \
+#define gapChar1Radix                        (Rx[0] != 0 && (Rx[1] == 0 || (Rx[1] != 0 && Rx[2] == 0)) ? \
                                                 ( Rx[0] == ','  ? (char*) ",\1\0"  :   \
-                                                  Rx[0] == '.'  ? (char*) ".\1\0"  :   \
-                                                  Rx[0] == '\'' ? (char*) "\'\1\0" :   \
-                                                  Rx[0] == '_'  ? (char*) "_\1\0"  : Rx ) : Rx )  //set second character to skip character 0x01
+                                                  Rx[0] == '.'  ? (char*) ".\1\0"  : Rx ) : Rx )  //set second character to skip character 0x01
 
 #define SEPARATOR_LEFT                       (gapChar1Left)
 #define SEPARATOR_RIGHT                      (gapChar1Right)

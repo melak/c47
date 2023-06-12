@@ -558,14 +558,8 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
         /* Multiply */
         else if((!inLabel) && (compareChar(strPtr, STD_CROSS) == 0 || compareChar(strPtr, STD_DOT) == 0)) {
           _addSpace(&bufPtr, &strWidth, &doubleBytednessHistory);
-          //if(getSystemFlag(FLAG_MULTx)) {
-          //  *bufPtr       = STD_CROSS[0];
-          //  *(bufPtr + 1) = STD_CROSS[1];
-          //}
-          //else {
-            *bufPtr       = STD_DOT[0];
-            *(bufPtr + 1) = STD_DOT[1];
-          //}
+          *bufPtr       = PRODUCT_SIGN[0];
+          *(bufPtr + 1) = PRODUCT_SIGN[1];
           *(bufPtr + 2) = 0;
           strWidth += stringWidth(bufPtr, &standardFont, true, true);
           *(bufPtr + 2) = STD_SPACE_PUNCTUATION[0];
