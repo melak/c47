@@ -85,7 +85,7 @@ void fnLnP1(uint16_t unusedButMandatoryParameter) {
 /**********************************************************************
  * For |z| small, we use the series expansion:
  *
- *	log(1+z) = z - z^2/2 + z^3/3 - z^4/4 + ...
+ *  log(1+z) = z - z^2/2 + z^3/3 - z^4/4 + ...
  *
  * Thresholding |z| against 1e-6, means each term after the first will produce
  * approximately six more digits.

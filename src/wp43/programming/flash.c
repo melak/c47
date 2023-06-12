@@ -48,7 +48,7 @@ static void save(const void *buffer, uint32_t size, void *stream) {
     f_write(stream, buffer, size, &bytesWritten);
   #else // !DMCP_BUILD
     fwrite(buffer, 1, size, stream);
-    
+
   #endif // DMCP_BUILD
 }
 
@@ -81,7 +81,7 @@ static void seek(uint32_t pos, void *stream) {
     #endif // WIN3
     if (( ret != 0) && (errno != EEXIST)) {
       return -1;
-    } else { 
+    } else {
       return 0;
     }
   }
@@ -451,8 +451,8 @@ void initFlashPgmLibrary(void) {
   #else // !DMCP_BUILD
     FILE *ppgm_fp;
 
-    
-	#if defined(PC_BUILD)
+
+  #if defined(PC_BUILD)
       if (create_dir(FLASH_PGM_DIR) != 0) return;
     #endif // PC_BUILD
     LIBDATA = fopen(FLASH_PGM_DIR "/" FLASH_PGM_FILE, "wb");

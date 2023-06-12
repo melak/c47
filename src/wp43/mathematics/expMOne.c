@@ -107,7 +107,7 @@ void expM1Complex(const real_t *real, const real_t *imag, real_t *resReal, real_
   /* Complex (e^z)-1.
    *
    * With a bit of algebra it can be shown that:
-   *	e^z - 1 = -exp(z/2) * 2*i*sin(i*z/2)
+   *  e^z - 1 = -exp(z/2) * 2*i*sin(i*z/2)
    * which has no obvious accuracy issues inherent here.
    *
    * The negation and multiplication by i are simplified to negates and swaps.

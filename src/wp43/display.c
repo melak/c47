@@ -325,23 +325,23 @@ void real34ToDisplayString(const real34_t *real34, uint32_t tag, char *displaySt
       angle34ToDisplayString2(real34, tag, displayString, displayHasNDigits, limitExponent, frontSpace);
     }
 
-    while(stringWidth(displayString, font, true, true) > maxWidth) {
-      if(displayFormat == DF_ALL) {
-        if(displayHasNDigits == 2) {
-          break;
-        }
-        displayHasNDigits--;
+  while(stringWidth(displayString, font, true, true) > maxWidth) {
+    if(displayFormat == DF_ALL) {
+      if(displayHasNDigits == 2) {
+        break;
       }
-      else {
-        if(displayFormatDigits == 0) {
-          break;
-        }
-        displayFormatDigits--;
+      displayHasNDigits--;
+    }
+    else {
+      if(displayFormatDigits == 0) {
+        break;
       }
+      displayFormatDigits--;
+    }
 
-      if(updateDisplayValueX) {
-        displayValueX[0] = 0;
-      }
+    if(updateDisplayValueX) {
+      displayValueX[0] = 0;
+    }
 
       if(tag == amNone) {
         real34ToDisplayString2(real34, displayString, displayHasNDigits, limitExponent, false, frontSpace);
@@ -463,7 +463,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
               tmpString100[ii] = 0; 
             }
           }
-          //printf("------- 005 >>>>%s|\n",tmpString100);
+        //printf("------- 005 >>>>%s|\n",tmpString100);
         break;
       } 
       else {
@@ -694,6 +694,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
             displayValueX[valueIndex++] = '0';
           }
         }
+
         // Significant digits
         for(digitPointer=firstDigit; digitPointer<firstDigit+min(displayHasNDigits - 1 - exponent, numDigits); digitPointer++, digitCount--) {
           if(digitCount != 0 && GROUPWIDTH_RIGHT != 0 && digitCount%(uint16_t)GROUPWIDTH_RIGHT == 0) {
@@ -795,7 +796,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
         bcd[digitToRound]++;
       }
 
-      // Transfer the carry
+      // Transfert the carry
       while(bcd[digitToRound] == 10) {
         bcd[digitToRound--] = 0;
         if(displayFormat == DF_SF) numDigits--;

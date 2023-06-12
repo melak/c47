@@ -86,7 +86,7 @@ void capture_sequence(char *origin, uint16_t item) {
       case  ITM_PERIOD:   ll[0]=46; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break; //.
       case  ITM_EXPONENT: ll[0]=69; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break; //E
       default: { strcpy(ll,indexOfItems[item].itemSoftmenuName);
-               }  
+               }
     }
 
     if(line1[0]==0) sprintf(line1, " %4d //%10s",item,ll);
@@ -105,7 +105,7 @@ void runkey(int16_t item){
 char tmp[2];
 tmp[0]=0;
 executeFunction(tmp, item);
-*/  
+*/
 
 
   if(item < 0) {
@@ -119,9 +119,9 @@ executeFunction(tmp, item);
       hideFunctionName();         //Clear in case activated during process
       runFunction(item);
 //      #ifdef DMCP_BUILD
-//        lcd_forced_refresh(); // Just redraw from LCD buffer    
+//        lcd_forced_refresh(); // Just redraw from LCD buffer
 //      #endif
-    } 
+    }
   }
 
   #endif
@@ -345,7 +345,7 @@ TO_QSPI const function_t indexOfFunctions[] = {
               {ITM_PRINTERSTK,                "PRN"},
               {ITM_UNIT,                      "UNIT"},
               {ITM_M_NEW,                     "M.NEW"},
-              
+
               {ITM_ADD,                       "PLUS"},
               {ITM_SUB,                       "MIN"},
               {ITM_MULT,                      "MULT"},
@@ -514,7 +514,7 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
         #endif // DMCP_BUILD
 
                                                    //If !gotlabels, means it is a scouting pass/parse to find and mark the goto labels M1-M4
-      while(!gotlabels || (gotlabels && exec) ){   //scheme to use for label scouting and name processing in "false", and to do a two parse exec 
+      while(!gotlabels || (gotlabels && exec) ){   //scheme to use for label scouting and name processing in "false", and to do a two parse exec
         #ifdef PC_BUILD_VERBOSE1
           #ifdef PC_BUILD
             printf("\n------Starting parse ------- Indexes: M1:%d M2:%d M3:%d M4:%d   EXEC:%d\n",ix_m1, ix_m2, ix_m3, ix_m4, exec);
@@ -537,10 +537,10 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
 
       {
 
-  //			if( (inputstring[ix]==13 || inputstring[ix]==10) && (aa[0]==13 || aa[0]==10) ) {
-  	//			ix++;
-  		//	} else 
-  			{
+  //if( (inputstring[ix]==13 || inputstring[ix]==10) && (aa[0]==13 || aa[0]==10) ) {
+  //  ix++;
+  //} else
+  {
           strcpy(bb,aa);
           aa[0] = inputstring[ix];
           aa[1] = 0;
@@ -556,7 +556,7 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
             case 13:
             case 10:
             case 44:
-            case 0 : if( //COMMAND WORD START DETECTION +-*/ 0-9; A-Z; %; >; (; a-z; . 
+            case 0 : if( //COMMAND WORD START DETECTION +-*/ 0-9; A-Z; %; >; (; a-z; .
                       (       aa[0]=='*' //42 // *
                           ||  aa[0]=='+' //43 // +
                           ||  aa[0]=='-' //45 // -
@@ -578,7 +578,7 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
                         }
             default:;
           }
-          
+
           if(state_comments && (aa[0] == 13 || aa[0] == 10)) {
              #ifdef PC_BUILD_VERBOSE0
                #ifdef PC_BUILD
@@ -609,7 +609,7 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
             case 10: //lf
             case 8 : //tab
             case ',': //,
-            case ' ': 
+            case ' ':
   //print_linestr(commandnumber,false);
                      #ifdef PC_BUILD_VERBOSE0
                        #ifdef PC_BUILD
@@ -617,14 +617,14 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
                        #endif
                      #endif
                      if(state_commands){
-                        state_commands = false;                // Waiting for delimiter to close off and send command number: nnn<                 
+                        state_commands = false;                // Waiting for delimiter to close off and send command number: nnn<
                         #ifdef PC_BUILD_VERBOSE0
                           #ifdef PC_BUILD
                             printf("\nCommand/number detected:(tempjm=%d)(gotoinprogress=%d) %45s ",temporaryInformation,gotoinprogress,commandnumber);
                           #endif
                         #endif
   //print_linestr(commandnumber,false);
-                        
+
                         //DSZ:
                         if(!(gotoinprogress != 11 || (gotoinprogress == 11 && (temporaryInformation == TI_FALSE)))) {     //If DEC results in 0, then 'true'.    It is now the command that may or may not be skipped
                             //......IS NOT DSZ.... OR               DSZ    with REG NOT ZERO
@@ -643,12 +643,12 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
   // RETURN reacts to execution parse only              RETURN
 
                         if(checkindexes(&commno, commandnumber, exec)) {
-                        	sprintf(commandnumber,"%d", commno);
-  				                #ifdef PC_BUILD_VERBOSE0
-  				                  #ifdef PC_BUILD
+                          sprintf(commandnumber,"%d", commno);
+                          #ifdef PC_BUILD_VERBOSE0
+                            #ifdef PC_BUILD
                               printf("## no:%i",commno);
-  				                  #endif
-  				                #endif
+                            #endif
+                          #endif
                         } else
                         if (strcompare(commandnumber,"DSZ"    )) {sprintf(commandnumber,"%d", ITM_DEC); gotoinprogress = 9;}      else //EXPECTING FOLLOWING OPERAND "nn"
                          if (strcompare(commandnumber,"ISZ"   )) {sprintf(commandnumber,"%d", ITM_INC); gotoinprogress = 9;}       else //EXPECTING FOLLOWING OPERAND "nn"
@@ -658,26 +658,26 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
                                  #if (VERBOSE_LEVEL > 0)
                                    print_linestr("->XEQLBL",false);
                                  #endif
-                                 xeqlblinprogress =  1; 
+                                 xeqlblinprogress =  1;
                                  starttoken = 1;
                               } else //EXPECTING 2 OPERANDS nn XXXXXX
                                if (strcompare(commandnumber,"GTO"   ))    {
                                     #ifdef PC_BUILD
                                       printf("   >>> Loop GTO Jump %d:go\n",loopnumber++);
                                     #endif
-  	                                if(exec) {
-  	                              	  go = true; 
-  	                              	  gotoinprogress = 1;
-  	                                  force_refresh(timed);
-  	                                }
+                                    if(exec) {
+                                      go = true;
+                                      gotoinprogress = 1;
+                                      force_refresh(timed);
+                                    }
                               } else
                                if (strcompare(commandnumber,"GSB"   ))    {
                                     #ifdef PC_BUILD
                                       printf("   >>> Sub  GSB Jump %d\n",loopnumber++);
                                     #endif
                                     if(exec) {
-                                      go = true; 
-                                      gotoinprogress = 1; 
+                                      go = true;
+                                      gotoinprogress = 1;
                                       ix_m = ix;
                                       force_refresh(timed);
                                       #ifdef PC_BUILD
@@ -687,7 +687,7 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
                                } else
                                 if (strcompare(commandnumber,"RTN"))       {
                                     if(exec) {
-                                      ix = ix_m+2; 
+                                      ix = ix_m+2;
                                       ix_m = 0;
                                       force_refresh(timed);
                                       #ifdef PC_BUILD
@@ -697,8 +697,8 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
                                } else
                                  if (strcompare(commandnumber,"GTO_SZ"))    {
                                      if(exec) {
-                                       go = (temporaryInformation == TI_FALSE); 
-                                       gotoinprogress = 1; 
+                                       go = (temporaryInformation == TI_FALSE);
+                                       gotoinprogress = 1;
                                      }
                                  } else
                                    if (strcompare(commandnumber,"END"))       {
@@ -710,7 +710,7 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
                                           }
                                       } else
   //         END ELSE
-                                     { 
+                                     {
                                        ii = 0;
                                        while(commandnumber[ii]!=0 && ((commandnumber[ii]<='9' && commandnumber[ii]>='0') || commandnumber[ii]>='.' || commandnumber[ii]>='E' ) ) {
                                          ii++;
@@ -733,7 +733,7 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
                         if(starttoken == 0) {                  //if not started with XEQLBL or XEQC43, immediately abandon program mode
                           goto exec_exit;
                         }
-                        
+
                         //printf("   gotoinprogress = %5d; xeqlblinprogress = %5d; commandnumber = %10s\n",gotoinprogress,xeqlblinprogress,commandnumber);
 
 
@@ -746,7 +746,7 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
 
                           case 2:                  //GOTO IN PROGRESS: if arriving from DSZ / 1, witho9ut M1-M4, waste the commandd, zero, and pass around
                             if(strcompare(commandnumber,"M1") && exec && go && (ix_m1 !=0)) ix = ix_m1; else
-                            if(strcompare(commandnumber,"M2") && exec && go && (ix_m2 !=0)) ix = ix_m2; else 
+                            if(strcompare(commandnumber,"M2") && exec && go && (ix_m2 !=0)) ix = ix_m2; else
                             if(strcompare(commandnumber,"M3") && exec && go && (ix_m3 !=0)) ix = ix_m3; else
                             if(strcompare(commandnumber,"M4") && exec && go && (ix_m4 !=0)) ix = ix_m4;
                             gotoinprogress = 0;
@@ -775,7 +775,7 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
                             if(no>=1 && no <=18) {
                               xeqlblinprogress = 3;
                               commandnumber[0]=0;   //Processed
-                            } 
+                            }
                             else {
                               xeqlblinprogress = 0;
                               commandnumber[0]=0;   //Processed
@@ -820,7 +820,7 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
                             flipPixel(indic_x, indic_y-1);
                           break;
   //HERE DEFAULT !!
-  //NOT IN PROGRESS                        
+  //NOT IN PROGRESS
                           default:                 //NOT IN PROGRESS
                             no = atoi(commandnumber);       //Will force all unknown commands to have no number, and invalid command and RETURN MARK etc. to 0
                             //printf("   Command send %s EXEC=%d no=%d ",commandnumber,exec,no);
@@ -830,7 +830,7 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
                               if(indic_x==SCREEN_WIDTH) {indic_x=0;indic_y--;indic_y--;}
 
                               if(exec) {
-                                runkey(no); 
+                                runkey(no);
                                 //printf("   -->%d sent ",no);
                               } else {
                                 //printf("   -->%d not sent ",no);
@@ -883,18 +883,18 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
     exec_exit:
     exec = false;     //exec must run, and ensure it runs only once.
   #endif //TESTSUITE_BUILD
-  	running_program_jm = false;
-  	#ifdef PC_BUILD_VERBOSE0
-  	  #ifdef PC_BUILD
-  		   	printf("##++ END Exiting\n");
-  	  #endif
-  	#endif
-  	return;                              
+    running_program_jm = false;
+    #ifdef PC_BUILD_VERBOSE0
+      #ifdef PC_BUILD
+        printf("##++ END Exiting\n");
+      #endif
+    #endif
+    return;
 #endif //SAVE_SPACE_DM42_2
 }
 
 
- 
+
 void replaceFF(char* FF, char* line2) {
   int16_t ix =0;
   if(FF[0]>='0' && FF[0]<='9' && FF[1]>='0' && FF[1]<='9' && FF[2]==0) {
@@ -919,7 +919,7 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
   char fn_long[200];      //Long file name
   char fn_short[16];      //standard file name
 
-  #if (VERBOSE_LEVEL >= 1) 
+  #if (VERBOSE_LEVEL >= 1)
     char tmp[400];          //Messages
   #endif
 
@@ -933,15 +933,15 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
   strcpy(fn_long, "");
   strcpy(fallback,"XEQM01:HELP;");
 
-  #if (VERBOSE_LEVEL >= 1) 
-    strcpy(tmp,fn_short); 
-    strcat(tmp," A: Loading XEQMENU mapping"); 
+  #if (VERBOSE_LEVEL >= 1)
+    strcpy(tmp,fn_short);
+    strcat(tmp," A: Loading XEQMENU mapping");
     print_linestr(tmp,false);
   #endif
 
   import_string_from_filename(line1,pgmpath,fn_short,fn_long,fallback,!SCAN);
 
-  #if (VERBOSE_LEVEL >= 1) 
+  #if (VERBOSE_LEVEL >= 1)
    sprintf(tmp, " B: XEQMENU mapping Loaded: %u bytes.\n",(uint16_t)stringByteLength(line1) );
    print_linestr(tmp,false);
   #endif
@@ -961,7 +961,7 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
   strcat(fn_short,nn);
   strcpy(fn_long,fn_short);
 
-                                            //Find XEQMnn in the replacement token file         
+                                            //Find XEQMnn in the replacement token file
   while(line1[ix] != 0 && ix+6<stringByteLength(line1)) {
      if(line1[ix]=='X' && line1[ix+1]=='E' && line1[ix+2]=='Q' && line1[ix+3]=='M' && line1[ix+4]==nn[0] && line1[ix+5]==nn[1] && line1[ix+6]==':') {
        ix = ix + 7;
@@ -970,74 +970,74 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
           if(line1[ix] == ';' ) {line1[ix]=0; strcpy(fn_long,line1 + iy); break;}     //Replace file name with content from replacement string
           ix++;
        }
-     } 
+     }
      ix++;
   }
   strcat(fn_short,".TXT");                        //Add .TXT
   strcat(fn_long,".TXT");                         //Add .TXT
 
-  #if (VERBOSE_LEVEL >= 1) 
+  #if (VERBOSE_LEVEL >= 1)
     sprintf(tmp," C: Trying %s then %s.",fn_short,fn_long);
     print_linestr(tmp,false);
   #endif
 
   line1[0]=0;                                     //Clear incoming/outgoing string data
 
-  //printf(">>> original name:|%s|, replacement file name:|%s|\n",fn_short,fn_long);           
+  //printf(">>> original name:|%s|, replacement file name:|%s|\n",fn_short,fn_long);
   if(selection==1) {
     sprintf(fallback,"XEQLBL 01 HELP ALPHA \"I\" CASE \"n directory \" CASE \"PROGRAMS\" CASEDN \" create \" CASEUP \"XEQM\" CASEDN \"NN\" CASEUP \".TXT\" EXIT ");
-  } 
+  }
   else {
     sprintf(fallback,"XEQLBL %s X%s ",nn,nn);
   }
 
-  #if (VERBOSE_LEVEL >= 2) 
+  #if (VERBOSE_LEVEL >= 2)
     sprintf(tmp,"  Fallback:%s",fallback); print_linestr(tmp,false);
   #endif
 
-  import_string_from_filename(line1,pgmpath,fn_short,fn_long,fallback,scanning); 
+  import_string_from_filename(line1,pgmpath,fn_short,fn_long,fallback,scanning);
 
-  #if (VERBOSE_LEVEL >= 1) 
+  #if (VERBOSE_LEVEL >= 1)
    sprintf(tmp, " D: PGM Loaded: %u bytes.\n",(uint16_t)stringByteLength(line1) );
    print_linestr(tmp,false);
   #endif
 
-  replaceFF(nn,line1); 
+  replaceFF(nn,line1);
 
-  #if (VERBOSE_LEVEL >= 1) 
+  #if (VERBOSE_LEVEL >= 1)
    sprintf(tmp, " E: FF: %u bytes.\n",(uint16_t)stringByteLength(line1) );
    print_linestr(tmp,false);
    print_linestr(line1,false);
   #endif
 
 
-  #if (VERBOSE_LEVEL >= 2) 
+  #if (VERBOSE_LEVEL >= 2)
     #ifdef DMCP_BUILD
       press_key();
     #endif
   #endif
 
 
-  #if (VERBOSE_LEVEL >= 1) 
+  #if (VERBOSE_LEVEL >= 1)
     clearScreen_old(false, true, true);
   #endif
 
   displaywords(line1);       //output  is  in  tmpString
 
-  strcpy(line1,tmpString);  
-  #if (VERBOSE_LEVEL >= 2) 
+  strcpy(line1,tmpString);
+  #if (VERBOSE_LEVEL >= 2)
     #ifdef DMCP_BUILD
       press_key();
     #endif
   #endif
 
-  #if (VERBOSE_LEVEL >= 1) 
+  #if (VERBOSE_LEVEL >= 1)
     clearScreen_old(false, true, true);
   #endif
 
   execute_string(line1,exec, scanning);
 
-  #if (VERBOSE_LEVEL >= 2) 
+  #if (VERBOSE_LEVEL >= 2)
     #ifdef DMCP_BUILD
       press_key();
       clearScreen_old(false, true, true);
@@ -1074,7 +1074,7 @@ void XEQMENU_loadAllfromdisk(void) {
       print_inlinestr("Loading XEQM:",false);
 
       char line[XEQ_STR_LENGTH_LONG];
-      
+
       char tmp[2];
       tmp[1]=0;
       uint8_t ix = 1;
@@ -1123,7 +1123,7 @@ char line1[TMP_STR_LENGTH];
     "X<>Y "
     "TICKS "
     "X<>Y - "
-    "\"10.0\" / "    
+    "\"10.0\" / "
     "RETURN "
     "ABCDEFGHIJKLMNOPQ!@#$%^&*()\n"
     );
@@ -1137,7 +1137,7 @@ char line1[TMP_STR_LENGTH];
 
 void fnXEQMSAVE (uint16_t XEQM_no) {                                  //X-REGISTER TO DISK
 #ifndef SAVE_SPACE_DM42_2
-  char tt[40]; 
+  char tt[40];
   if(getRegisterDataType(REGISTER_X) == dtString) {
     xcopy(tmpString + TMP_STR_LENGTH/2, REGISTER_STRING_DATA(REGISTER_X), stringByteLength(REGISTER_STRING_DATA(REGISTER_X))+1);
     tt[0]=0;
@@ -1175,9 +1175,9 @@ void fnXEQMLOAD (uint16_t XEQM_no) {                                  //DISK to 
     #endif
     ix++;
   }
-  //printf(">>> loaded: utf:%s\n",line1);  
+  //printf(">>> loaded: utf:%s\n",line1);
   utf8ToString((uint8_t *)line1,line1 + TMP_STR_LENGTH/2);
-  //ix = 0;while (ix!=20) {printf("%d ",line1[ix]);ix++;}  printf(">>> loaded: str:%s\n",line1 + TMP_STR_LENGTH/2);  
+  //ix = 0;while (ix!=20) {printf("%d ",line1[ix]);ix++;}  printf(">>> loaded: str:%s\n",line1 + TMP_STR_LENGTH/2);
   int16_t len = stringByteLength(line1 + TMP_STR_LENGTH/2);
   liftStack();
   reallocateRegister(REGISTER_X, dtString, TO_BLOCKS(len), amNone);
@@ -1207,10 +1207,10 @@ void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
   if(calcMode == CM_AIM && getRegisterDataType(REGISTER_Y) == dtString) {
     //printf(">>> !@# stringByteLength(REGISTER_STRING_DATA(REGISTER_Y))=%d; AIM_BUFFER_LENGTH=%d\n",stringByteLength(REGISTER_STRING_DATA(REGISTER_Y)),AIM_BUFFER_LENGTH);
     if(stringByteLength(REGISTER_STRING_DATA(REGISTER_Y)) < AIM_BUFFER_LENGTH) {
-      if(eRPN) {      //JM NEWERPN 
+      if(eRPN) {      //JM NEWERPN
         setSystemFlag(FLAG_ASLIFT);            //JM NEWERPN OVERRIDE SLS, AS ERPN ENTER ALWAYS HAS SLS SET
-      }                                        //JM NEWERPN 
-      strcpy(aimBuffer, REGISTER_STRING_DATA(REGISTER_Y)); 
+      }                                        //JM NEWERPN
+      strcpy(aimBuffer, REGISTER_STRING_DATA(REGISTER_Y));
       T_cursorPos = stringByteLength(aimBuffer);
       fnDrop(0);
 /*      refreshRegisterLine(REGISTER_T);
@@ -1225,9 +1225,9 @@ void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
   if(calcMode == CM_AIM && (getRegisterDataType(REGISTER_Y) == dtReal34 || getRegisterDataType(REGISTER_Y) == dtComplex34  || getRegisterDataType(REGISTER_Y) == dtLongInteger   || getRegisterDataType(REGISTER_Y) == dtShortInteger    || getRegisterDataType(REGISTER_Y) == dtTime   || getRegisterDataType(REGISTER_Y) == dtDate)) {
     if(stringByteLength(REGISTER_STRING_DATA(REGISTER_Y)) < AIM_BUFFER_LENGTH) {
 
-      if(eRPN) {      //JM NEWERPN 
+      if(eRPN) {      //JM NEWERPN
         setSystemFlag(FLAG_ASLIFT);            //JM NEWERPN OVERRIDE SLS, AS ERPN ENTER ALWAYS HAS SLS SET
-      }                                        //JM NEWERPN 
+      }                                        //JM NEWERPN
 
       char tmp[2];
       tmp[0]=0;
@@ -1237,7 +1237,7 @@ void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
       xcopy(REGISTER_STRING_DATA(REGISTER_X), tmp, len);
       addition[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();//Convert Y number to string in X REGISTER
       adjustResult(REGISTER_X, false, false, -1, -1, -1);                          //Copy X string to Aimbuffer
-      strcpy(aimBuffer, REGISTER_STRING_DATA(REGISTER_X)); 
+      strcpy(aimBuffer, REGISTER_STRING_DATA(REGISTER_X));
 
       T_cursorPos = stringByteLength(aimBuffer);
       fnDrop(0);
@@ -1250,9 +1250,9 @@ void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
 
   else if (calcMode == CM_NORMAL && getRegisterDataType(REGISTER_X) == dtString) {
     if(stringByteLength(REGISTER_STRING_DATA(REGISTER_X)) < AIM_BUFFER_LENGTH) {
-      if(eRPN) {      //JM NEWERPN 
+      if(eRPN) {      //JM NEWERPN
         setSystemFlag(FLAG_ASLIFT);            //JM NEWERPN OVERRIDE SLS, AS ERPN ENTER ALWAYS HAS SLS SET
-      }                                        //JM NEWERPN 
+      }                                        //JM NEWERPN
       strcpy(aimBuffer, REGISTER_STRING_DATA(REGISTER_X));
       T_cursorPos = stringByteLength(aimBuffer);
       fnDrop(0);
@@ -1261,9 +1261,9 @@ void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
         calcModeAim(NOPARAM); // Alpha Input Mode
         showSoftmenu(-MNU_ALPHA);
       #endif
-    } 
+    }
 //    else {
-//    	printf(">>> !@# stringByteLength(REGISTER_STRING_DATA(REGISTER_Y))=%d; AIM_BUFFER_LENGTH=%d\n",stringByteLength(REGISTER_STRING_DATA(REGISTER_Y)),AIM_BUFFER_LENGTH);
+//      printf(">>> !@# stringByteLength(REGISTER_STRING_DATA(REGISTER_Y))=%d; AIM_BUFFER_LENGTH=%d\n",stringByteLength(REGISTER_STRING_DATA(REGISTER_Y)),AIM_BUFFER_LENGTH);
 //    }
   }
   else if (calcMode == CM_NORMAL && getRegisterDataType(REGISTER_X) != dtString) {
@@ -1271,9 +1271,9 @@ void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
     line1[0]=0;
     strcpy(line1," ");
     int16_t len = stringByteLength(line1);
-    if(eRPN) {      //JM NEWERPN 
+    if(eRPN) {      //JM NEWERPN
       setSystemFlag(FLAG_ASLIFT);            //JM NEWERPN OVERRIDE SLS, AS ERPN ENTER ALWAYS HAS SLS SET
-    }                                        //JM NEWERPN 
+    }                                        //JM NEWERPN
     liftStack();
     reallocateRegister(REGISTER_X, dtString, TO_BLOCKS(len), amNone);
     strcpy(REGISTER_STRING_DATA(REGISTER_X),line1);
@@ -1288,9 +1288,9 @@ void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
 
 
 void fnXEQMexecute(char *line1) {
-  displaywords(line1); 
+  displaywords(line1);
   execute_string(line1,!EXEC,  !SCAN); //Run to catch all label names
-  execute_string(line1, EXEC,  !SCAN); //Run to execute   
+  execute_string(line1, EXEC,  !SCAN); //Run to execute
 }
 
 
