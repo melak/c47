@@ -1075,7 +1075,7 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
         if(compareString(STD_pi, strPtr, CMP_NAME) == 0) { // check for pi
           return;
         }
-        if(compareString(STD_i, strPtr, CMP_NAME) == 0 || compareString(STD_j, strPtr, CMP_NAME) == 0) { // check for i
+        if(compareString(STD_i, strPtr, CMP_NAME) == 0 || compareString(STD_j, strPtr, CMP_NAME) == 0 || compareString(STD_op_i, strPtr, CMP_NAME) == 0 || compareString(STD_op_j, strPtr, CMP_NAME) == 0) { // check for i
           return;
         }
         while(*bufPtr != 0) { // check for duplicates
@@ -1139,7 +1139,7 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
           fnDrop(NOPARAM);
           return;
         }
-        if(compareString(STD_i, strPtr, CMP_NAME) == 0 || compareString(STD_j, strPtr, CMP_NAME) == 0) { // check for i
+        if(compareString(STD_i, strPtr, CMP_NAME) == 0 || compareString(STD_j, strPtr, CMP_NAME) == 0 || compareString(STD_op_i, strPtr, CMP_NAME) == 0 || compareString(STD_op_j, strPtr, CMP_NAME) == 0) { // check for i
           runFunction(ITM_op_j);
           _pushNumericStack(mvarBuffer, const34_0, const34_1);
           fnDrop(NOPARAM);

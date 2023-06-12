@@ -1661,9 +1661,10 @@ bool_t isFunctionItemAMenu(int16_t item) {
 static  char FF[16];
 static char *changeItoJ(int16_t item) {
   stringAppend(FF,indexOfItems[item%10000].itemSoftmenuName);
-  //printf(">>>> %u %u %u %u %u %s %u %u\n", (uint8_t)(FF[0]), (uint8_t)(FF[1]), (uint8_t)(FF[2]), (uint8_t)(FF[3]), (uint8_t)(FF[4]), FF , (uint8_t)(STD_SUP_i[0]), (uint8_t)(STD_SUP_i[1]));
+  //printf(">>>> changeItoJ: %i %u %u %u %u %u %s %u %u\n", item, (uint8_t)(FF[0]), (uint8_t)(FF[1]), (uint8_t)(FF[2]), (uint8_t)(FF[3]), (uint8_t)(FF[4]), FF , (uint8_t)(STD_SUP_i[0]), (uint8_t)(STD_SUP_i[1]));
   if (getSystemFlag(FLAG_CPXj)) {
-    if (item == ITM_op_j && FF[1] == STD_op_i[1]) {
+    if ((item == ITM_op_j || item == ITM_op_j_SIGN) && FF[1] == STD_op_i[1]) {
+      //printf(">>>> changed: %u %u %u %u %u %s %u %u\n", (uint8_t)(FF[0]), (uint8_t)(FF[1]), (uint8_t)(FF[2]), (uint8_t)(FF[3]), (uint8_t)(FF[4]), FF , (uint8_t)(STD_SUP_i[0]), (uint8_t)(STD_SUP_i[1]));
       FF[1]++;
     }
     if (item == ITM_EE_EXP_TH && FF[2] == STD_SUP_i[1]) {
