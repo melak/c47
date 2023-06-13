@@ -170,7 +170,7 @@ void fnGetInlineTestBsToX(uint16_t unusedButMandatoryParameter) {
   longInteger_t mem;
   longIntegerInit(mem);
   liftStack();
-  
+
   itoa(testBitset, snum, 10);
   stringToLongInteger(snum,10,mem);
 

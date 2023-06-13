@@ -8,7 +8,7 @@ TICKS RCL 00 - 10 /
 ALPHA CASEDN " s" EXIT
 +
 ALPHA "The program ran for " EXIT
-X<>Y + 
+X<>Y +
 RETURN
 
 LBL M1

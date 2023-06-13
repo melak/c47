@@ -26,13 +26,13 @@
 #include <stdint.h>
 
 void fnEulersFormula(uint16_t unusedButMandatoryParameter);
-  
+
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
 void eulersFormulaError  (void);
   #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
 #define eulersFormulaError typeError
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  
+
 void eulersFormulaCplx       (void);
 void eulersFormulaReal       (void);
 void eulersFormulaLongint    (void);

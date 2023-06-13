@@ -101,7 +101,7 @@
     nextChar = NC_NORMAL;
     numLock = false;
 
-    if(!tam.mode && calcMode != CM_ASSIGN) {
+    if(!tam.mode && calcMode != CM_ASSIGN && calcMode != CM_PEM) {
       calcMode = CM_AIM;
       liftStack();
 
@@ -218,9 +218,11 @@
         closeNim();
       }
       if(calcMode != CM_PEM || !getSystemFlag(FLAG_ALPHA)) {
-        alphaCase = AC_UPPER;
-        nextChar = NC_NORMAL;
-        numLock = false;
+        if(calcMode != CM_AIM && calcMode != CM_EIM) {
+          alphaCase = AC_UPPER;
+          nextChar = NC_NORMAL;
+          numLock = false;
+        }
 
 
         clearSystemFlag(FLAG_ALPHA);

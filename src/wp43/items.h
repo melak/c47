@@ -1724,7 +1724,7 @@
 #define ITM_STDDEVPOP               1674
 #define ITM_RANI                    1675
 #define ITM_PRINTERX                1676
-#define ITM_1677                    1677
+#define ITM_HELP                    1677
 #define ITM_GETRANGE                1678
 #define ITM_M1X                     1679
 #define ITM_XMOD                    1680
@@ -1914,7 +1914,7 @@
 #define CHR_case                    1858
 #define ITM_BASE_HOME               1859
 #define MNU_MISC                    1860
-#define MNU_1861                    1861
+#define ITM_N_KEY_HLP               1861
 #define ITM_DTtoJ                   1862
 #define ITM_JtoDT                   1863
 #define ITM_DSPCYCLE                1864
@@ -2215,8 +2215,13 @@
 #define ITM_GAP_L                   2159
 #define ITM_GAP_RX                  2160
 #define ITM_GAP_R                   2161
+#define ITM_ASIN_SIGN               2162
+#define ITM_ACOS_SIGN               2163
+#define ITM_ATAN_SIGN               2164
+#define ITM_op_j_SIGN               2165
+#define ITM_poly_SIGN               2166
 
-#define LAST_ITEM                   2162
+#define LAST_ITEM                   2167
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
@@ -2227,28 +2232,28 @@ char *lastFuncCatalogName(void);
 char *lastFuncSoftmenuName(void);
 
 void reallyRunFunction(int16_t func, uint16_t param);
-  
+
 /**
  * Runs a function.
  *
  * \param[in] func Index in the indexOfItems area of the function to run
  */
 void runFunction      (int16_t func);
-  
+
 ///**
 // * Dummy function for a function (part of an item) to be coded.
 // *
 // * \param[in] unusedButMandatoryParameter
 // */
 //void fnToBeCoded      (void);
-  
+
 /**
  * Dummy function for an item to be coded.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void itemToBeCoded    (uint16_t unusedButMandatoryParameter);
-  
+
 /**
  * No OPeration.
  *

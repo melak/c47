@@ -29,11 +29,11 @@
 
 #include "realType.h"
 
-realContext_t ctxtReal34, ctxtReal39, ctxtReal51, ctxtReal1071;
+realContext_t ctxtReal34, ctxtReal39, ctxtReal51, ctxtReal75, ctxtReal1071;
 
 char whiteSpace[50], temp[10000];
 char defines[1000000], externalDeclarations[1000000]; // .h file
-char realArray[1000000], realPointerDeclarations[1000000], real34PointerDeclarations[1000000], real51PointerDeclarations[1000000], real1071PointerDeclarations[1000000]; // .c file
+char realArray[1000000], realPointerDeclarations[1000000], real34PointerDeclarations[1000000], real51PointerDeclarations[1000000], real75PointerDeclarations[1000000], real1071PointerDeclarations[1000000]; // .c file
 FILE *constantsC, *constantsH;
 int  idx, c;
 
@@ -178,6 +178,44 @@ void generateConstantArray51(char *name, char *value) {
 }
 
 
+void generateConstantArray75(char *name, char *value) {
+  real_t real75;
+
+  #if defined(DEBUG)
+    printf("generateConstantArray75: %-10.10s = %s\n", name, value);
+  #endif // DEBUG
+
+  memset(&real75, 0, sizeof(real_t));
+  stringToReal(value, (real_t *)&real75, &ctxtReal75);
+
+  strcpy(whiteSpace, "                                        ");
+  whiteSpace[13 - strlen(name)] = 0;
+
+  strcat(externalDeclarations, "  extern const real_t * const const_");
+  strcat(externalDeclarations, name);
+  strcat(externalDeclarations, ";\n");
+
+  strcat(real75PointerDeclarations, "TO_QSPI const real_t * const const_");
+  strcat(real75PointerDeclarations, name);
+  strcat(real75PointerDeclarations, whiteSpace);
+  strcat(real75PointerDeclarations, " = (real_t *)(constants + ");
+  sprintf(temp, "%5d)", idx);
+  idx += sizeof(real_t);
+  strcat(real75PointerDeclarations, temp);
+  strcat(real75PointerDeclarations, ";\n");
+
+  strcat(realArray, "  ");
+  for(uint32_t i=0; i<sizeof(real_t); i++) {
+    sprintf(temp, "0x%02x,", *(((uint8_t *)(&real75)) + i));
+    strcat(realArray, temp);
+  }
+
+  strcat(realArray, "  // const_");
+  strcat(realArray, name);
+  strcat(realArray, "\n");
+}
+
+
 void generateConstantArray1071(char *name, char *value) {
   real1071_t real1071;
 
@@ -231,98 +269,98 @@ void generateAllConstants(void) {
   generateConstantArray("aEarth",        "+1.495979000000000000000000000000000000000000000000000000e+11"); c++;   // cnst003
   generateConstantArray("c",             "+2.997924580000000000000000000000000000000000000000000000e+08"); c++;   // cnst004 per definition
   generateConstantArray("c1",            "+3.741771852192758011367155555929985138219953097124061418e-16"); c++;   // cnst005
-   
+
   generateConstantArray("c2",            "+1.438776877503933802146671601543911595199069423148099191e-02"); c++;   // cnst006
   generateConstantArray("e",             "+1.602176634000000000000000000000000000000000000000000000e-19"); c++;   // cnst007 per definition
   generateConstantArray("eE",            "+2.718281828459045235360287471352662497757247093699959575e+00"); c++;   // cnst008 math constant e
   generateConstantArray("F",             "+9.648533212331001840000000000000000000000000000000000000e+04"); c++;   // cnst009
   generateConstantArray("Falpha",        "+2.502907875095892822283902873218215786381271376727149977e+00"); c++;   // cnst010 math constant Falpha
   generateConstantArray("Fdelta",        "+4.669201609102990671853203820466201617258185577475768633e+00"); c++;   // cnst011 math constant Fdelta
-   
+
   generateConstantArray("G",             "+6.674300000000000000000000000000000000000000000000000000e-11"); c++;   // cnst012
   generateConstantArray("G0",            "+7.748091729863650646680823323308763943587286047673370920e-05"); c++;   // cnst013
   generateConstantArray("GC",            "+9.159655941772190150546035149323841107741493742816721343e-01"); c++;   // cnst014 math constant Catalan
   generateConstantArray("ge",            "-2.002319304362560000000000000000000000000000000000000000e+00"); c++;   // cnst015
   generateConstantArray("GM",            "+3.986004418000000000000000000000000000000000000000000000e+14"); c++;   // cnst016
   generateConstantArray("gEarth",        "+9.806650000000000000000000000000000000000000000000000000e+00"); c++;   // cnst017 per definition
-   
-   
+
+
   generateConstantArray("Planck",        "+6.626070150000000000000000000000000000000000000000000000e-34"); c++;   // cnst018
   generateConstantArray("PlanckOn2pi",   "+1.054571817646156391262428003302280744722826330020413122e-34"); c++;   // cnst019
   generateConstantArray("k",             "+1.380649000000000000000000000000000000000000000000000000e-23"); c++;   // cnst020 per definition
   generateConstantArray("KJ",            "+4.835978484169836324476582850545281353533511866004014461e+14"); c++;   // cnst021
   generateConstantArray("lPL",           "+1.616255000000000000000000000000000000000000000000000000e-35"); c++;   // cnst022
   generateConstantArray("me",            "+9.109383701500000000000000000000000000000000000000000000e-31"); c++;   // cnst023
-   
+
   generateConstantArray("MMoon",         "+7.349000000000000000000000000000000000000000000000000000e+22"); c++;   // cnst024
   generateConstantArray("mn",            "+1.674927498040000000000000000000000000000000000000000000e-27"); c++;   // cnst025
   generateConstantArray("mnOnmp",        "+1.001378418980000000000000000000000000000000000000000000e+00"); c++;   // cnst026
   generateConstantArray("mp",            "+1.672621923690000000000000000000000000000000000000000000e-27"); c++;   // cnst027
   generateConstantArray("mPL",           "+2.176435000000000000000000000000000000000000000000000000e-08"); c++;   // cnst028
   generateConstantArray("mpOnme",        "+1.836152673430000000000000000000000000000000000000000000e+03"); c++;   // cnst029
-   
+
   generateConstantArray("mu",            "+1.660539066600000000000000000000000000000000000000000000e-27"); c++;   // cnst030
   generateConstantArray("muc2",          "+1.492418085600000000000000000000000000000000000000000000e-10"); c++;   // cnst031
   generateConstantArray("mmu",           "+1.883531627000000000000000000000000000000000000000000000e-28"); c++;   // cnst032
   generateConstantArray("mSun",          "+1.989100000000000000000000000000000000000000000000000000e+30"); c++;   // cnst033
   generateConstantArray("mEarth",        "+5.973600000000000000000000000000000000000000000000000000e+24"); c++;   // cnst034
   generateConstantArray("NA",            "+6.022140760000000000000000000000000000000000000000000000e+23"); c++;   // cnst035 per definition
-   
-   
+
+
   generateConstantArray("NaN",           "Not a number"                                                 ); c++;   // cnst036
   generateConstantArray("p0",            "+1.013250000000000000000000000000000000000000000000000000e+05"); c++;   // cnst037 per definition
   generateConstantArray("R",             "+8.314462618153240000000000000000000000000000000000000000e+00"); c++;   // cnst038
   generateConstantArray("re",            "+2.817940326200000000000000000000000000000000000000000000e-15"); c++;   // cnst039
   generateConstantArray("RK",            "+2.581280745930450666004551670608744304245727322140342177e+04"); c++;   // cnst040
   generateConstantArray("RMoon",         "+1.737530000000000000000000000000000000000000000000000000e+06"); c++;   // cnst041
-   
+
   generateConstantArray("RInfinity",     "+1.097373156816000000000000000000000000000000000000000000e+07"); c++;   // cnst042
   generateConstantArray("RSun",          "+6.960000000000000000000000000000000000000000000000000000e+08"); c++;   // cnst043
   generateConstantArray("REarth",        "+6.371010000000000000000000000000000000000000000000000000e+06"); c++;   // cnst044
   generateConstantArray("Sa",            "+6.378137000000000000000000000000000000000000000000000000e+06"); c++;   // cnst045 per definition
   generateConstantArray("Sb",            "+6.356752314200000000000000000000000000000000000000000000e+06"); c++;   // cnst046
   generateConstantArray("Se2",           "+6.694379990140000000000000000000000000000000000000000000e-03"); c++;   // cnst047
-   
-   
+
+
   generateConstantArray("Sep2",          "+6.739496742280000000000000000000000000000000000000000000e-03"); c++;   // cnst048
   generateConstantArray("Sfm1",          "+2.982572235630000000000000000000000000000000000000000000e+02"); c++;   // cnst049 per definition
   generateConstantArray("T0",            "+2.731500000000000000000000000000000000000000000000000000e+02"); c++;   // cnst050 per definition
   generateConstantArray("TP",            "+1.416785000000000000000000000000000000000000000000000000e+32"); c++;   // cnst051
   generateConstantArray("tPL",           "+5.391245000000000000000000000000000000000000000000000000e-44"); c++;   // cnst052
   generateConstantArray("Vm",            "+2.241396954501413773501110288675055514433752775721687639e-02"); c++;   // cnst053
-   
+
   generateConstantArray("Z0",            "+3.767303134617706554681984004203193082686235083524186552e+02"); c++;   // cnst054 mu0 * c
   generateConstantArray("alpha",         "+7.297352569300000000000000000000000000000000000000000000e-03"); c++;   // cnst055
   generateConstantArray("gamma",         "+6.674300000000000000000000000000000000000000000000000000e-11"); c++;   // cnst056 gamma = gEarth --> is this duplicate constant needed?
   generateConstantArray("gammaEM",       "+5.772156649015328606065120900824024310421593359399235988e-01"); c++;   // cnst057 math constant Euler-Mascheroni
   generateConstantArray("gammap",        "+2.675221874400000000000000000000000000000000000000000000e+08"); c++;   // cnst058
   generateConstantArray("DELTAvcs",      "+9.192631770000000000000000000000000000000000000000000000e+09"); c++;   // cnst059 per definition
-   
+
   generateConstantArray("epsilon0",      "+8.854187812800000000000000000000000000000000000000000000e-12"); c++;   // cnst060
   generateConstantArray("lambdaC",       "+2.426310238670000000000000000000000000000000000000000000e-12"); c++;   // cnst061
   generateConstantArray("lambdaCn",      "+1.319590905810000000000000000000000000000000000000000000e-15"); c++;   // cnst062
   generateConstantArray("lambdaCp",      "+1.321409855390000000000000000000000000000000000000000000e-15"); c++;   // cnst063
   generateConstantArray("mu0",           "+1.256637062120000000000000000000000000000000000000000000e-06"); c++;   // cnst064
   generateConstantArray("muB",           "+9.274010078000000000000000000000000000000000000000000000e-24"); c++;   // cnst065
-   
+
   generateConstantArray("mue",           "-9.284764704300000000000000000000000000000000000000000000e-24"); c++;   // cnst066
   generateConstantArray("mueOnmuB",      "-1.001159652181280000000000000000000000000000000000000000e+00"); c++;   // cnst067
   generateConstantArray("mun",           "-9.662365000000000000000000000000000000000000000000000000e-27"); c++;   // cnst068
   generateConstantArray("mup",           "+1.410606797360000000000000000000000000000000000000000000e-26"); c++;   // cnst069
   generateConstantArray("muu",           "+5.050783746100000000000000000000000000000000000000000000e-27"); c++;   // cnst070
   generateConstantArray("mumu",          "-4.490448300000000000000000000000000000000000000000000000e-26"); c++;   // cnst071
-   
-   
+
+
   generateConstantArray("sigmaB",        "+5.670374419184429453970996731889230875840122970291303682e-08"); c++;   // cnst072
   generateConstantArray("PHI",           "+1.618033988749894848204586834365638117720309179805762862e+00"); c++;   // cnst073 math constant phi = (1 + sqrt(5)) / 2
   generateConstantArray("PHI0",          "+2.067833848461929323081115412147497340171545654934323552e-15"); c++;   // cnst074
   generateConstantArray("omega",         "+7.292115000000000000000000000000000000000000000000000000e-05"); c++;   // cnst075
   generateConstantArray("minusInfinity", "-9.999999999999999999999999999999999999999999999999999999e+9999"); c++; // cnst076 math "constant"
   generateConstantArray("plusInfinity",  "+9.999999999999999999999999999999999999999999999999999999e+9999"); c++; // cnst077 math "constant"
- 
-  generateConstantArray("0",             "0"); c++;                                                               // cnst078 
- 
-  // All the formulas are 100% exact conversion formulas 
+
+  generateConstantArray("0",             "0"); c++;                                                               // cnst078
+
+  // All the formulas are 100% exact conversion formulas
   generateConstantArray("PointToMm",     "+3.527777777777777777777777777777777777777777777777777778e-01");        // cnst079       mm     = pt × 0.0254 / 72 × 1000
   generateConstantArray("InchToMm",      "+2.540000000000000000000000000000000000000000000000000000e+01");        // cnst080       mm     = inch × 0.0254 × 1000
   generateConstantArray("FtToM",         "+3.048000000000000000000000000000000000000000000000000000e-01");        // cnst081       m      = ft × 12 × 0.0254
@@ -343,15 +381,15 @@ void generateAllConstants(void) {
   generateConstantArray("FenToM",        "+3.000000000000000000000000000000000000000000000000000000e+02");        // cnst096       m      = fēn / 300
   generateConstantArray("MiToM",         "+1.609344000000000000000000000000000000000000000000000000e+03");        // cnst097       m      = mile × 63360 × 0.0254
   generateConstantArray("NmiToM",        "+1.852000000000000000000000000000000000000000000000000000e+03");        // cnst098       m      = nmi × 1852
-         
+
   generateConstantArray("Kmphmps",       "+2.777777777777777777777777777777777777777777777777777777e-01");        // cnst099      mps      =  Kmph  * 0.277...   // 2.5/9
-  generateConstantArray("RpmDegps",      "+6.000000000000000000000000000000000000000000000000000000e+00");        // cnst100     Degps    =  Rpm * 6  
+  generateConstantArray("RpmDegps",      "+6.000000000000000000000000000000000000000000000000000000e+00");        // cnst100     Degps    =  Rpm * 6
   generateConstantArray("Mphmps",        "+4.470400000000000000000000000000000000000000000000000000e-01");        // cnst101     mps      =  Mph  * 0.44704     //11.176/25
   generateConstantArray("RpmRadps",      "+1.047197551196597746154214461093167628065723133125035274e-01");        // cnst102     Radps    =  Rpm  * 0.1047   // pi/30
-  generateConstantArray("DegRad",        "+1.745329251994329576923690768488612713442871888541725456e-02");        // cnst103     Rad      =  Deg  * pi / 180 
+  generateConstantArray("DegRad",        "+1.745329251994329576923690768488612713442871888541725456e-02");        // cnst103     Rad      =  Deg  * pi / 180
   generateConstantArray("DegGrad",       "+1.111111111111111111111111111111111111111111111111111111e+00");        // cnst104     Grad     =  Deg  * 10 / 9
   generateConstantArray("GradRad",       "+1.570796326794896619231321691639751442098584699687552910e-02");        // cnst105     Rad      =  Grad * pi / 200
-       
+
   generateConstantArray("AccreToHa",     "+4.046856422400000000000000000000000000000000000000000000e-01");        // cnst106      ha     = acre × 0.0254² × 12² × 43560 / 10000
   generateConstantArray("AccreusToHa",   "+4.046872609874252006568529266090790246096621225500515517e-01");        // cnst107      ha     = acreus × (1200 / 3937)² × 43560 / 10000
   generateConstantArray("MuToM2",        "+1.500000000000000000000000000000000000000000000000000000e-03");        // cnst108      m²     = mǔ / 0.0015
@@ -361,7 +399,7 @@ void generateAllConstants(void) {
   generateConstantArray("GalukToL",      "+4.546090000000000000000000000000000000000000000000000000e+00");        // cnst112      l      = galuk × 4.54609e-3 × 1000
   generateConstantArray("QuartToL",      "+1.136522500000000000000000000000000000000000000000000000e+00");        // cnst113      l      = quart × 4.54609e-3 / 4 × 1000
   generateConstantArray("BarrelToM3",    "+1.589872949280000000000000000000000000000000000000000000e-01");        // cnst114      m³     = barrel × 42 × 231 × 0.0254³
-       
+
   generateConstantArray("CaratToG",      "+2.000000000000000000000000000000000000000000000000000000e-01");        // cnst115      g      = carat × 0.0002 × 1000
   generateConstantArray("OzToG",         "+2.834952312500000000000000000000000000000000000000000000e+01");        // cnst116      g      = oz × (0.45359237 / 16) × 1000
   generateConstantArray("TrozToG",       "+3.110347680000000000000000000000000000000000000000000000e+01");        // cnst117      g      = tr.oz × 0.45359237 × 175 / 12 × 1000
@@ -371,33 +409,33 @@ void generateAllConstants(void) {
   generateConstantArray("CwtToKg",       "+5.080234544000000000000000000000000000000000000000000000e+01");        // cnst121      kg     = cwt × 112 × 0.45359237       (cwt = long hundredweight)
   generateConstantArray("ShorttonToKg",  "+9.071847400000000000000000000000000000000000000000000000e+02");        // cnst122      kg     = short ton × 2000 × 0.45359237
   generateConstantArray("TonToKg",       "+1.016046908800000000000000000000000000000000000000000000e+03");        // cnst123      kg     = ton × 2240 × 0.45359237
-       
+
   generateConstantArray("CalToJ",        "+4.186800000000000000000000000000000000000000000000000000e+00");        // cnst124      joule  = calorie × 4.1868
   generateConstantArray("BtuToJ",        "+1.055055852620000000000000000000000000000000000000000000e+03");        // cnst125      joule  = Btu × 1055.05585262
   generateConstantArray("WhToJ",         "+3.600000000000000000000000000000000000000000000000000000e+03");        // cnst126      joule  = Wh × 3600
-       
+
   generateConstantArray("LbfToN",        "+4.448221615260500000000000000000000000000000000000000000e+00");        // cnst127      newton = lbf × 9.80665 × 0.45359237
-       
+
   generateConstantArray("TorrToPa",      "+1.333223684210526315789473684210526315789473684210526316e+02");        // cnst128      pascal = torr × 101325 / 760
-  #if (MMHG_PA_133_3224 == 1)       
+  #if (MMHG_PA_133_3224 == 1)
     generateConstantArray("MmhgToPa",    "+1.333224000000000000000000000000000000000000000000000000e+02");        // cnst129      pascal = mm.Hg × 133.3224
     generateConstantArray("InhgToPa",    "+3.386388960000000000000000000000000000000000000000000000e+03");        // cnst130      pascal = in.Hg × 133.3224 × 25.4
-  #else // (MMHG_PA_133_3224 == 0)       
+  #else // (MMHG_PA_133_3224 == 0)
     generateConstantArray("MmhgToPa",    "+1.333223874150000000000000000000000000000000000000000000e+02");// cnst              pascal = mm.Hg × 13.5951 × 9.80665
     generateConstantArray("InhgToPa",    "+3.386388640341000000000000000000000000000000000000000000e+03");// cnst              pascal = in.Hg × 13.5951 × 9.80665 × 2.54
-  #endif // (MMHG_PA_133_3224 == 1)       
+  #endif // (MMHG_PA_133_3224 == 1)
   generateConstantArray("PsiToPa",       "+6.894757293168361336722673445346890693781387562775125550e+03");        // cnst131      pascal = psi × 0.45359237 × 9.80665 / 0.0254²
   generateConstantArray("BarToPa",       "+1.000000000000000000000000000000000000000000000000000000e+05");        // cnst132      pascal = bar  × 100000
   generateConstantArray("AtmToPa",       "+1.013250000000000000000000000000000000000000000000000000e+05");        // cnst133      pascal = atm × 101325
-       
+
   generateConstantArray("HpmToW",        "+7.354987500000000000000000000000000000000000000000000000e+02");        // cnst134      watt   = HPM × 75 × 9.80665
   generateConstantArray("HpukToW",       "+7.456998715822702200000000000000000000000000000000000000e+02");        // cnst135      watt   = HPUK × 550 × 0.3048 × 9.80665 × 0.45359237
   generateConstantArray("HpeToW",        "+7.460000000000000000000000000000000000000000000000000000e+02");        // cnst136      watt   = HPE × 746
-       
+
   generateConstantArray("YearToS",       "+3.155695200000000000000000000000000000000000000000000000e+07");        // cnst137      second = year  × (365.2425 × 24 × 3600)
-       
+
   generateConstantArray("LbfftToNm",     "+1.355817948331400400000000000000000000000000000000000000e+00");        // cnst138      Nm = lbf×ft × 9.80665 × 0.45359237 × 12 × 0.0254
-       
+
   generateConstantArray("_108",          "-1.080000000000000000000000000000000000000000000000000000e+02");        // cnst139
   generateConstantArray("_4",            "-4.000000000000000000000000000000000000000000000000000000e+00");        // cnst140
   generateConstantArray("_1",            "-1.000000000000000000000000000000000000000000000000000000e+00");        // cnst141
@@ -427,7 +465,7 @@ void generateAllConstants(void) {
   generateConstantArray("3piOn4",        "+2.356194490192344928846982537459627163147877049531329366e+00");        // cnst165
   generateConstantArray("3",             "+3.000000000000000000000000000000000000000000000000000000e+00");        // cnst166
   generateConstantArray("pi",            "+3.141592653589793238462643383279502884197169399375105821e+00");        // cnst167
-       
+
   generateConstantArray("4",             "+4.000000000000000000000000000000000000000000000000000000e+00");        // cnst168
   generateConstantArray("3piOn2",        "+4.712388980384689857693965074919254326295754099062658731e+00");        // cnst169
   generateConstantArray("5",             "+5.000000000000000000000000000000000000000000000000000000e+00");        // cnst170
@@ -544,20 +582,20 @@ void generateAllConstants(void) {
   generateConstantArray51("gammaC28",      "-0.000000000001515686855682081535390179935440192138970398946754350022046202956603870401666503058594"); // cnst235
   generateConstantArray51("gammaC29",      "+0.000000000000000003727184110478268994444830355775133199862144652804253659035860755294511160286895"); // cnst236
 
-  // Array angle180
-  generateConstantArray51("pi_51",         "+3.141592653589793238462643383279502884197169399375105821e+00"); // cnst237
-  generateConstantArray51("200",           "+2.000000000000000000000000000000000000000000000000000000e+02"); // cnst238
-  generateConstantArray51("180",           "+1.800000000000000000000000000000000000000000000000000000e+02"); // cnst239
+  // Array angle180 - these three *must* be contiguious
+  generateConstantArray75("pi_75",         "+3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825e+00"); // cnst237
+  generateConstantArray75("200",           "+2.000000000000000000000000000000000000000000000000000000e+02"); // cnst238
+  generateConstantArray75("180",           "+1.800000000000000000000000000000000000000000000000000000e+02"); // cnst239
 
-  // Array angle90
-  generateConstantArray51("piOn2_51",      "+1.570796326794896619231321691639751442098584699687552910e+00"); // cnst240
-  generateConstantArray51("100",           "+1.000000000000000000000000000000000000000000000000000000e+02"); // cnst241
-  generateConstantArray51("90",            "+9.000000000000000000000000000000000000000000000000000000e+01"); // cnst242
+  // Array angle90 - these three *must* be contiguious
+  generateConstantArray75("piOn2_75",      "+1.570796326794896619231321691639751442098584699687552910487472296153908203143104499314017412e+00"); // cnst240
+  generateConstantArray75("100",           "+1.000000000000000000000000000000000000000000000000000000e+02"); // cnst241
+  generateConstantArray75("90",            "+9.000000000000000000000000000000000000000000000000000000e+01"); // cnst242
 
-  // Array angle45
-  generateConstantArray51("piOn4_51",      "+7.853981633974483096156608458198757210492923498437764552e-01"); // cnst243
-  generateConstantArray51("50",            "+5.000000000000000000000000000000000000000000000000000000e+01"); // cnst244
-  generateConstantArray51("45",            "+4.500000000000000000000000000000000000000000000000000000e+01"); // cnst245
+  // Array angle45 - these three *must* be contiguious
+  generateConstantArray75("piOn4_75",      "+7.85398163397448309615660845819875721049292349843776455243736148076954101571552249657008706e-01"); // cnst243
+  generateConstantArray75("50",            "+5.000000000000000000000000000000000000000000000000000000e+01"); // cnst244
+  generateConstantArray75("45",            "+4.500000000000000000000000000000000000000000000000000000e+01"); // cnst245
 
   generateConstantArray1071("2pi",       "+6.2831853071795864769252867665590057683943387987502116419498891846156328125724179972560696506842341359" //   101
                                             "6429617302656461329418768921910116446345071881625696223490056820540387704221111928924589790986076392" //   201
@@ -819,11 +857,14 @@ int main(int argc, char* argv[]) {
   decContextDefault(&ctxtReal34,   DEC_INIT_DECQUAD);
   decContextDefault(&ctxtReal39,   DEC_INIT_DECQUAD);
   decContextDefault(&ctxtReal51,   DEC_INIT_DECQUAD);
+  decContextDefault(&ctxtReal75,   DEC_INIT_DECQUAD);
   decContextDefault(&ctxtReal1071, DEC_INIT_DECQUAD);
   ctxtReal39.digits = 39;
   ctxtReal39.traps  = 0;
   ctxtReal51.digits = 51;
   ctxtReal51.traps  = 0;
+  ctxtReal75.digits = 75;
+  ctxtReal75.traps  = 0;
   ctxtReal1071.digits  = 1071;
   ctxtReal1071.traps   = 0;
 
@@ -892,6 +933,8 @@ int main(int argc, char* argv[]) {
   fprintf(constantsC, "%s", realPointerDeclarations);
   fprintf(constantsC, "\n");
   fprintf(constantsC, "%s", real51PointerDeclarations);
+  fprintf(constantsC, "\n");
+  fprintf(constantsC, "%s", real75PointerDeclarations);
   fprintf(constantsC, "\n");
   fprintf(constantsC, "%s", real1071PointerDeclarations);
   fprintf(constantsC, "\n");

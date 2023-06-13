@@ -46,9 +46,9 @@ const font_t          *fontForShortInteger;
 const font_t          *cursorFont;
 TO_QSPI const char     digits[17] = "0123456789ABCDEF";
 real51_t               const *gammaLanczosCoefficients;
-real51_t               const *angle180;
-real51_t               const *angle90;
-real51_t               const *angle45;
+real_t               const *angle180;
+real_t               const *angle90;
+real_t               const *angle45;
 void                   (*confirmedFunction)(uint16_t);
 
 // Variables stored in RAM
@@ -238,7 +238,7 @@ uint8_t                fgLN = 0;
 char                   indexOfItemsXEQM[18*8];       //JMXEQ
 int16_t                fnXEQMENUpos;                 //JMXEQ
 uint8_t                last_CM = 255;                //Do extern !!
-uint8_t                FN_state; // = ST_0_INIT;      
+uint8_t                FN_state; // = ST_0_INIT;
 
 int16_t                exponentSignLocation;
 int16_t                denominatorLocation;
@@ -331,7 +331,7 @@ bool_t temporaryFlagRect;
   #ifdef JMSHOWCODES                                        //JM Test
     int8_t            telltale_pos;                         //JM Test
     int8_t            telltale_lastkey;                     //JM Test
-  #endif //JMSHOWCODES                                      //JM Test 
+  #endif //JMSHOWCODES                                      //JM Test
 #ifdef BUFFER_CLICK_DETECTION
   uint32_t            timeStampKey;                         //dr - internal keyBuffer POC
 #endif //BUFFER_CLICK_DETECTION
@@ -563,7 +563,7 @@ bool_t temporaryFlagRect;
 
     backToDMCP = false;
 
-    lcd_forced_refresh();                                   //JM 
+    lcd_forced_refresh();                                   //JM
   //previousRefresh = sys_current_ms();
     nextScreenRefresh = sys_current_ms() + SCREEN_REFRESH_PERIOD;
   //now = sys_current_ms();
@@ -645,7 +645,7 @@ bool_t temporaryFlagRect;
             strcat(snum, " ");
             for(int8_t i = TMR_NUMBER -1; i>=0; i--) {
               char digit[2] = "_";
-              if(fnTimerGetStatus(i) == TMR_RUNNING) { itoa(i, digit, 16); } 
+              if(fnTimerGetStatus(i) == TMR_RUNNING) { itoa(i, digit, 16); }
               strcat(snum, digit);
             }
             showString(snum, &standardFont, 20, 40, vmNormal, false, false);
@@ -878,8 +878,8 @@ bool_t temporaryFlagRect;
           currentVolumeSetting = get_beep_volume();
         }
       }
-   
-    #ifdef JMSHOWCODES 
+
+    #ifdef JMSHOWCODES
       fnDisplayStack(1);
       //Show key codes
       if(sys_last_key()!=telltale_lastkey) {

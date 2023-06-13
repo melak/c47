@@ -85,7 +85,7 @@ TO_QSPI const int16_t menu_CLK[]         = { ITM_DATE,                      ITM_
 
                                              ITM_DATE,                      ITM_TIME,                   ITM_TDISP,                ITM_DMY,               ITM_MDY,                     ITM_YMD,
                                              ITM_SD,                        ITM_ST,                     ITM_WDAY,                 ITM_DAY,               ITM_MONTH,                   ITM_YEAR,
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_SECOND,            ITM_MINUTE,                  ITM_HR_DEG,    
+                                             ITM_CLK12,                     ITM_CLK24,                  ITM_NULL,                 ITM_SECOND,            ITM_MINUTE,                  ITM_HR_DEG, 
 
                                              ITM_GET_JUL_GREG,              ITM_JUL_GREG,               ITM_JUL_GREG_1582,        ITM_JUL_GREG_1752,     ITM_JUL_GREG_1873,           ITM_JUL_GREG_1949             };    
 
@@ -100,7 +100,6 @@ TO_QSPI const int16_t menu_CLR[]         = { ITM_CLSIGMA,                   ITM_
 TO_QSPI const int16_t menu_CPX[]         = { ITM_RE,                        ITM_IM,                     ITM_MAGNITUDE,            ITM_ARG,               ITM_REexIM,                  ITM_CC,                      //JM re-arranged menu. CPX menu
                                              KEY_COMPLEX,                   ITM_CONJ,                   ITM_DOT_PROD,             ITM_CROSS_PROD,        ITM_op_j,                    ITM_UNITV,                                          //JM re-arranged menu. CPX menu
                                              ITM_CPXI,                      ITM_CPXJ,                   ITM_CXtoRE,               ITM_REtoCX,            ITM_RECT,                    ITM_POLAR                     };    //JM re-arranged menu
-
 
 TO_QSPI const int16_t menu_DISP[]        = { ITM_FIX,                       ITM_SCI,                    ITM_ENG,                  ITM_ALL,               ITM_SIGFIG,                  ITM_UNIT,
                                              ITM_GAP_L,                     ITM_GAP_RX,                 ITM_GAP_R,                ITM_NULL,              ITM_RECT,                    ITM_POLAR,
@@ -157,8 +156,8 @@ TO_QSPI const int16_t menu_FLAGS[]       = { ITM_SF,                        ITM_
 
 TO_QSPI const int16_t menu_INFO[]        = { ITM_SSIZE,                     ITM_MEM,                    ITM_RMODEQ,               ITM_ISM,               ITM_WSIZEQ,                  ITM_KTYP,
                                              ITM_LocRQ,                     ITM_FLASH,                  ITM_ULP,                  ITM_NEIGHB,            ITM_SDIGS,                   ITM_BATT,
-                                             ITM_WHO,                       ITM_VERS,                   ITM_M_DIMQ,               ITM_PMINFINITY,        ITM_ALPHAPOS,                ITM_ALPHALENG,                 
-                                             ITM_GETRANGE,                  ITM_GETHIDE,                ITM_GET_JUL_GREG,         ITM_NULL,              ITM_SH_ERPN,                 ITM_BESTFQ                      };    //JM INFO
+                                             ITM_HELP,                      ITM_WHO,                    ITM_VERS,                 ITM_PMINFINITY,        ITM_ALPHAPOS,                ITM_ALPHALENG,                 
+                                             ITM_GETRANGE,                  ITM_GETHIDE,                ITM_GET_JUL_GREG,         ITM_M_DIMQ,            ITM_SH_ERPN,                 ITM_BESTFQ                      };    //JM INFO
         
 
 TO_QSPI const int16_t menu_INTS[]        = { ITM_A,                         ITM_B,                      ITM_C,                    ITM_D,                 ITM_E,                       ITM_F,
@@ -566,13 +565,13 @@ TO_QSPI const int16_t menu_TamLblAlpha[] = { ITM_INDIRECTION,               -MNU
                                              ITM_NULL,                      ITM_NULL,                  -MNU_MyAlpha,             -MNU_ALPHA_OMEGA,      -MNU_ALPHADOT,               -MNU_ALPHAMATH                 };   //JM
 
 
-
-TO_QSPI const int16_t menu_Eim[]         = { ITM_EQ_LEFT,                   ITM_CIRCUMFLEX,             ITM_COLON,                CHR_num,               CHR_case,                    ITM_EQ_RIGHT,
-                                             ITM_ALOG_SYMBOL,               ITM_ROOT_SIGN,              ITM_LEFT_PARENTHESIS,     ITM_RIGHT_PARENTHESIS, ITM_EQUAL,                  -MNU_CATALOG,
+ 
+TO_QSPI const int16_t menu_Eim[]         = { ITM_EQ_LEFT,                   ITM_CIRCUMFLEX,             ITM_ROOT_SIGN,            CHR_num,               CHR_case,                    ITM_EQ_RIGHT,
+                                             ITM_COLON,                     ITM_VERTICAL_BAR,           ITM_LEFT_PARENTHESIS,     ITM_RIGHT_PARENTHESIS, ITM_EQUAL,                  -MNU_CATALOG,
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                     
 
-                                             ITM_VERTICAL_BAR,              ITM_DELTA,                  ITM_pi,                   ITM_SIN_SIGN,          ITM_COS_SIGN,                ITM_TAN_SIGN,
-                                             ITM_SIGMA,                     ITM_CIRCUMFLEX,             ITM_ROOT_SIGN,            ITM_LG_SIGN,           ITM_LN_SIGN,                 ITM_alpha                     };
+                                             ITM_ALOG_SYMBOL,               ITM_op_j_SIGN,              ITM_pi,                   ITM_SIN_SIGN,          ITM_COS_SIGN,                ITM_TAN_SIGN,
+                                             ITM_poly_SIGN,                 ITM_LG_SIGN,                ITM_LN_SIGN,              ITM_ASIN_SIGN,          ITM_ACOS_SIGN,                ITM_ATAN_SIGN               };
 
 TO_QSPI const int16_t menu_Timer[]       = { ITM_TIMER_ADD,                 ITM_NULL,                   ITM_NULL,                 ITM_TIMER_0_1S,        ITM_NULL,                    ITM_TIMER_RESET               };
 
@@ -604,7 +603,7 @@ TO_QSPI const int16_t menu_Inl_Tst[]     = { ITM_TEST,                      ITM_
 //#endif
 
 
-TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_N_KEY_CC,               ITM_N_KEY_GSH,            ITM_N_KEY_MM,          ITM_N_KEY_DRG,               ITM_NULL,       //JM USER NAORMAL MODE
+TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_N_KEY_CC,               ITM_N_KEY_GSH,            ITM_N_KEY_MM,          ITM_N_KEY_DRG,               ITM_N_KEY_HLP,  //JM USER NAORMAL MODE
                                              ITM_N_KEY_PRGM,                ITM_N_KEY_USER,             ITM_N_KEY_HOME,           ITM_N_KEY_SIGMA,       ITM_N_KEY_SNAP,              ITM_NULL,       //JM USER NAORMAL MODE
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_USER_COPY,         ITM_SH_NORM_E,               ITM_GET_NORM_E                };    //JM USER NAORMAL MODE
   
@@ -849,6 +848,7 @@ TO_QSPI const softmenu_t softmenu[] = {
 /* 138 */  {.menuItem = -MNU_INL_TST,     .numItems = sizeof(menu_Inl_Tst       )/sizeof(int16_t), .softkeyItem = menu_Inl_Tst        },
 /* 139 */  {.menuItem =  0,               .numItems = 0,                                           .softkeyItem = NULL                }
 };
+
 
 dynamicSoftmenu_t dynamicSoftmenu[NUMBER_OF_DYNAMIC_SOFTMENUS] = {
 /*   0 */  {.menuItem = -MNU_MyMenu,  .numItems = 0, .menuContent = NULL},
@@ -1382,6 +1382,7 @@ bool_t maxfgLines(int16_t y) {
       displayBugScreen(errorMessage);
       return;
     }
+
     showKey(label, x1, x2, y1, y2, xSoftkey == 5, videoMode, topLine, bottomLine, showCb, showValue, showText);
   }
 
@@ -1423,11 +1424,11 @@ char label1[30];
 if(xSoftkey == 0 || xSoftkey == 2 || xSoftkey == 4) {
   xx1 = x1; xx2 = x2;
   label0[0]=0;
-  strcat(label0,labelSM1);
+  stringAppend(label0 + stringByteLength(label0),labelSM1);
 
 }
   char sample[4];
-  strcpy(sample, STD_RIGHT_ARROW);
+  stringAppend(sample, STD_RIGHT_ARROW);
   int16_t i = 0;
   while (label0[i+1] != 0) {
     if(sample[0] == label0[i] && sample[1] == label0[i+1]) {
@@ -1437,7 +1438,7 @@ if(xSoftkey == 0 || xSoftkey == 2 || xSoftkey == 4) {
     i++;
   }
 
-  strcpy(sample, STD_LEFT_ARROW);
+  stringAppend(sample, STD_LEFT_ARROW);
   i = 0;
   while (label0[i+1] != 0) {
     if(sample[0] == label0[i] && sample[1] == label0[i+1]) {
@@ -1452,10 +1453,10 @@ if(xSoftkey == 0 || xSoftkey == 2 || xSoftkey == 4) {
 
 if(xSoftkey == 1 || xSoftkey == 3 || xSoftkey == 5) {
   label1[0]=0;
-  strcat(label1,labelSM1);
+  stringAppend(label1 + stringByteLength(label1), labelSM1);
 
 
-  strcpy(sample, STD_RIGHT_ARROW);
+  stringAppend(sample, STD_RIGHT_ARROW);
   i = 0;
   while (label1[i+1] != 0) {
     if(sample[0] == label1[i] && sample[1] == label1[i+1]) {
@@ -1466,7 +1467,7 @@ if(xSoftkey == 1 || xSoftkey == 3 || xSoftkey == 5) {
   }
 
 
-  strcpy(sample, STD_LEFT_ARROW);
+  stringAppend(sample, STD_LEFT_ARROW);
   i = 0;
   while (label1[i+1] != 0) {
     if(sample[0] == label1[i] && sample[1] == label1[i+1]) {
@@ -1484,7 +1485,6 @@ if(xSoftkey == 1 || xSoftkey == 3 || xSoftkey == 5) {
 
 
 void showKey2(const char *label0, const char *label1, int16_t x1, int16_t x2, int16_t y1, int16_t y2, bool_t rightMostSlot, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText) {
-  #define CS 1
   #define YY -100
   int16_t Text0   ;
   int16_t Arr0    ;
@@ -1496,10 +1496,10 @@ void showKey2(const char *label0, const char *label1, int16_t x1, int16_t x2, in
   float   space1=0;
 
 
-  int16_t w1 = showStringEnhanced(label0,          &standardFont, 0, y1+YY, videoMode, false, false, CS, 0, 1);
-  int16_t w2 = showStringEnhanced(STD_RIGHT_ARROW, &standardFont, 0, y1+YY, videoMode, false, false, CS, 0, 1);
-  int16_t w3 = showStringEnhanced(STD_LEFT_ARROW,  &standardFont, 0, y1+YY, videoMode, false, false, CS, 0, 1);
-  int16_t w4 = showStringEnhanced(label1,          &standardFont, 0, y1+YY, videoMode, false, false, CS, 0, 1);
+  int16_t w1 = showStringEnhanced(label0,          &standardFont, 0, y1+YY, videoMode, false, false, DO_compress, NO_raise, NO_Show, NO_LF);
+  int16_t w2 = showStringEnhanced(STD_RIGHT_ARROW, &standardFont, 0, y1+YY, videoMode, false, false, DO_compress, NO_raise, NO_Show, NO_LF);
+  int16_t w3 = showStringEnhanced(STD_LEFT_ARROW,  &standardFont, 0, y1+YY, videoMode, false, false, DO_compress, NO_raise, NO_Show, NO_LF);
+  int16_t w4 = showStringEnhanced(label1,          &standardFont, 0, y1+YY, videoMode, false, false, DO_compress, NO_raise, NO_Show, NO_LF);
 
 
   midpoint = (x2 - x1) / 2;
@@ -1528,10 +1528,10 @@ void showKey2(const char *label0, const char *label1, int16_t x1, int16_t x2, in
   // Clear inside the frame
   lcd_fill_rect(x1 + 1, y1 + 1, min(x2, SCREEN_WIDTH) - x1 - 1, min(y2, SCREEN_HEIGHT) - y1 - 1, (videoMode == vmNormal ? LCD_SET_VALUE : LCD_EMPTY_VALUE));
 
-  showStringEnhanced(label0,          &standardFont, Text0 + (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, CS, 0, 0);
-  showStringEnhanced(STD_RIGHT_ARROW, &standardFont, Arr0 +  (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, CS, 0, 0);
-  showStringEnhanced(label1,          &standardFont, Text1 + (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, CS, 0, 0);
-  showStringEnhanced(STD_LEFT_ARROW,  &standardFont, Arr1 +  (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, CS, 0, 0);
+  showStringEnhanced(label0,          &standardFont, Text0 + (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, DO_compress, NO_raise, DO_Show, NO_LF);
+  showStringEnhanced(STD_RIGHT_ARROW, &standardFont, Arr0 +  (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, DO_compress, NO_raise, DO_Show, NO_LF);
+  showStringEnhanced(label1,          &standardFont, Text1 + (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, DO_compress, NO_raise, DO_Show, NO_LF);
+  showStringEnhanced(STD_LEFT_ARROW,  &standardFont, Arr1 +  (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, DO_compress, NO_raise, DO_Show, NO_LF);
 
 
   // Draw the frame
@@ -1651,6 +1651,7 @@ bool_t isFunctionItemAMenu(int16_t item) {
          item == ITM_EQ_NEW    ||
          item == ITM_VARMNU    ||
          item == ITM_SIM_EQ    ||
+         item == ITM_DELITM    ||
          item == ITM_M_EDI;
          /*item == ITM_PLOT_CENTRL ||  CENTRL does not bring up a new menu - it is the same menu therefore not inverted */
          /*|| (item == ITM_TIMER)*/       //JMvv colour PLOT in reverse font to appear to be menus
@@ -1659,10 +1660,11 @@ bool_t isFunctionItemAMenu(int16_t item) {
 
 static  char FF[16];
 static char *changeItoJ(int16_t item) {
-  strcpy(FF, indexOfItems[item%10000].itemSoftmenuName);
-  //printf(">>>> %u %u %u %u %u %s %u %u\n", (uint8_t)(FF[0]), (uint8_t)(FF[1]), (uint8_t)(FF[2]), (uint8_t)(FF[3]), (uint8_t)(FF[4]), FF , (uint8_t)(STD_SUP_i[0]), (uint8_t)(STD_SUP_i[1]));
+  stringAppend(FF,indexOfItems[item%10000].itemSoftmenuName);
+  //printf(">>>> changeItoJ: %i %u %u %u %u %u %s %u %u\n", item, (uint8_t)(FF[0]), (uint8_t)(FF[1]), (uint8_t)(FF[2]), (uint8_t)(FF[3]), (uint8_t)(FF[4]), FF , (uint8_t)(STD_SUP_i[0]), (uint8_t)(STD_SUP_i[1]));
   if (getSystemFlag(FLAG_CPXj)) {
-    if (item == ITM_op_j && FF[1] == STD_op_i[1]) {
+    if ((item == ITM_op_j || item == ITM_op_j_SIGN) && FF[1] == STD_op_i[1]) {
+      //printf(">>>> changed: %u %u %u %u %u %s %u %u\n", (uint8_t)(FF[0]), (uint8_t)(FF[1]), (uint8_t)(FF[2]), (uint8_t)(FF[3]), (uint8_t)(FF[4]), FF , (uint8_t)(STD_SUP_i[0]), (uint8_t)(STD_SUP_i[1]));
       FF[1]++;
     }
     if (item == ITM_EE_EXP_TH && FF[2] == STD_SUP_i[1]) {
@@ -1678,7 +1680,7 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
   * vm = (itemNr < 0) || (isFunctionItemAMenu(itemNr%10000)) ? vmReverse : vmNormal;
   * showCb = NOVAL;
   * showValue = NOVAL;
-  strcpy(itemName,NOTEXT);
+  stringAppend(itemName,NOTEXT);
   showText[0]=0;
 
   if(itemNr > 0) { 
@@ -1688,24 +1690,24 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
     switch(itemNr%10000) {
 
       case ITM_DSPCYCLE:switch (* showValue) {
-                          case 32700 : strcat(showText, "ALL" ); *showValue = NOVAL; break;
-                          case 32701 : strcat(showText, "FIX" ); *showValue = NOVAL; break;
-                          case 32702 : strcat(showText, "SCI" ); *showValue = NOVAL; break;
-                          case 32703 : strcat(showText, "ENG" ); *showValue = NOVAL; break;
-                          case 32704 : strcat(showText, "SIG" ); *showValue = NOVAL; break; 
-                          case 32705 : strcat(showText, "UNIT"); *showValue = NOVAL; break;
+                          case 32700 : stringAppend(showText + stringByteLength(showText), "ALL" ); *showValue = NOVAL; break;
+                          case 32701 : stringAppend(showText + stringByteLength(showText), "FIX" ); *showValue = NOVAL; break;
+                          case 32702 : stringAppend(showText + stringByteLength(showText), "SCI" ); *showValue = NOVAL; break;
+                          case 32703 : stringAppend(showText + stringByteLength(showText), "ENG" ); *showValue = NOVAL; break;
+                          case 32704 : stringAppend(showText + stringByteLength(showText), "SIG" ); *showValue = NOVAL; break; 
+                          case 32705 : stringAppend(showText + stringByteLength(showText), "UNIT"); *showValue = NOVAL; break;
                           default: break;
                         } 
                         break;
-      case ITM_GAP_L  : if(gapItemLeft == ITM_NULL) strcat(showText, "\1\1"); 
-                        else strcat(showText,  indexOfItems[gapItemLeft].itemSoftmenuName);  //  gapCharLeft); 
+      case ITM_GAP_L  : if(gapItemLeft == ITM_NULL) stringAppend(showText + stringByteLength(showText), "\1\1"); 
+                        else stringAppend(showText + stringByteLength(showText),  indexOfItems[gapItemLeft].itemSoftmenuName);  //  gapCharLeft); 
                         *showValue = NOVAL; 
                         break;
-      case ITM_GAP_RX : strcat(showText,  indexOfItems[gapItemRadix].itemSoftmenuName);  //  gapCharRadix); 
+      case ITM_GAP_RX : stringAppend(showText + stringByteLength(showText),  indexOfItems[gapItemRadix].itemSoftmenuName);  //  gapCharRadix); 
                         *showValue = NOVAL; 
                         break;
-      case ITM_GAP_R  : if(gapItemRight == ITM_NULL) strcat(showText, "\1\1"); 
-                        else strcat(showText, indexOfItems[gapItemRight].itemSoftmenuName);  //  gapCharRight); 
+      case ITM_GAP_R  : if(gapItemRight == ITM_NULL) stringAppend(showText + stringByteLength(showText), "\1\1"); 
+                        else stringAppend(showText + stringByteLength(showText), indexOfItems[gapItemRight].itemSoftmenuName);  //  gapCharRight); 
                         *showValue = NOVAL; 
                         break;
       case ITM_GRP_L  : *showValue = grpGroupingLeft; 
@@ -1721,21 +1723,21 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
 
     
     if(itemNr%10000 == 9999) {
-      strcpy(itemName, indexOfItems[!getSystemFlag(FLAG_MULTx) ? ITM_DOT : ITM_CROSS].itemSoftmenuName);
+      stringAppend(itemName, indexOfItems[!getSystemFlag(FLAG_MULTx) ? ITM_DOT : ITM_CROSS].itemSoftmenuName);
       //printf("WWW1: itemName=%s, 0:%i 1:%i, ItemNr=%i \n",itemName, (uint8_t) itemName[0], (uint8_t) itemName[1], itemNr);
       return;
     } else {
 
       if(itemNr%10000 >= ITM_X_P1 && itemNr%10000 <= ITM_X_g6) {
-        strcpy(itemName, indexOfItemsXEQM + 8*(itemNr%10000-fnXEQMENUpos));
+        stringAppend(itemName, indexOfItemsXEQM + 8*(itemNr%10000-fnXEQMENUpos));
       } else {
-        strcpy(itemName, changeItoJ(itemNr));
+        stringAppend(itemName, changeItoJ(itemNr));
       }
       //printf("WWW2: itemName=%s, ItemNr=%i \n",itemName,itemNr);
       return;
     }
   } else if(itemNr < 0) { //itemNr >= 0
-    strcpy(itemName, indexOfItems[-itemNr%10000].itemSoftmenuName);
+    stringAppend(itemName, indexOfItems[-itemNr%10000].itemSoftmenuName);
     //printf("WWW3: itemName=%s, ItemNr=%i \n",itemName,itemNr);
     return;
   }
@@ -1775,10 +1777,10 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
     if(tam.mode == TM_KEY && !tam.keyInputFinished) {
       for(y=0; y<=2; y++) {
         for(x=0; x<6; x++) {
-          strcpy(tmp1," ");
+          stringAppend(tmp1," ");
           if(1+x+y*6>9) {
             tmp1[0]='1';
-            strcat(tmp1," ");
+            stringAppend(tmp1 + stringByteLength(tmp1), " ");
             tmp1[1] = (int)(48+(1+x+y*6) % 10);
           } else {
             tmp1[0] = (int)((48+1+x+y*6));            
@@ -1852,7 +1854,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
 
     char itemName[16];
     char showText[16];
-    showText[0]=0;                                  //strcat(showText, NOTEXT); not working, hence clearing the string
+    showText[0]=0;
     videoMode_t vm = vmNormal;
     int8_t showCb = NOVAL;
     int16_t showValue = NOVAL;
@@ -1879,7 +1881,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
                 showCb = NOVAL;
                 showValue = NOVAL;
                 int16_t itemNr = userMenuItems[x + 6*y].item;
-                strcpy(itemName,(char *)ptr);
+                stringAppend(itemName,(char *)ptr);
                 //printf(">>>> %u %u %s %s \n", x, y, itemName, userMenuItems[x + 6*y].argumentName);
                 switch(-softmenu[m].menuItem) {
                   case MNU_MENUS: {
@@ -1943,6 +1945,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
           }
           changeSoftKey(softmenu[m].menuItem, item, itemName, &vm, &showCb, &showValue, showText);
 
+
           if(item < 0) { // item is softmenu name
             int16_t menu = 0;
             while(softmenu[menu].menuItem != 0) {
@@ -1961,16 +1964,25 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
             else if(softmenu[menu].menuItem == -MNU_ALPHA_OMEGA && alphaCase == AC_LOWER) {
                 showSoftkey(indexOfItems[MNU_alpha_omega].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
             }
-            else if(softmenu[menu].menuItem == -MNU_INL_TST) {
-                #ifdef INLINE_TEST
-                  showSoftkey(itemName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
-                #else  //!INLINE_TEST
-                  showSoftkey(/*STD_omicron*/STD_SPACE_3_PER_EM, x, y-currentFirstItem/6, vmNormal, false, false, NOVAL, NOVAL, NOTEXT);
-                #endif //!INLINE_TEST
+            else if(softmenu[menu].menuItem == -MNU_ALPHAINTL && alphaCase == AC_UPPER) {
+                showSoftkey(indexOfItems[MNU_ALPHAINTL].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
+            }
+            else if(softmenu[menu].menuItem == -MNU_ALPHAINTL && alphaCase == AC_LOWER) {
+                showSoftkey(indexOfItems[MNU_ALPHAintl].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
             }
             else {
-                //MAIN SOFTMENU DISPLAY
-                showSoftkey(itemName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
+              #ifdef INLINE_TEST
+                if(softmenu[menu].menuItem == -MNU_INL_TST) {
+                  showSoftkey(/*STD_omicron*/STD_SPACE_3_PER_EM, x, y-currentFirstItem/6, vmNormal, false, false, NOVAL, NOVAL, NOTEXT);
+                }
+                else {
+              #endif
+              //MAIN SOFTMENU DISPLAY
+              showSoftkey(indexOfItems[-softmenu[menu].menuItem].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
+              #ifdef INLINE_TEST
+                }
+              #endif
+
             }
           } //softmenu
 
@@ -1984,6 +1996,10 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
               }
             }
           }                                                                      //JM^^
+
+          else if(softmenu[m].menuItem == -MNU_ALPHA && calcMode == CM_PEM && item%10000 == ITM_ASSIGN) {
+            // do nothing
+          }
 
           else if(item > 0 && indexOfItems[item%10000].itemSoftmenuName[0] != 0) { // softkey
             // item : +10000 -> no top line
@@ -2002,7 +2018,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
             else {
               if( (softmenu[m].menuItem == -MNU_FCNS || softmenu[m].menuItem  == -MNU_CONST) || //CONST is a normal menu not a catalog, but we expect the catalog to be treated as a catalog. //The same could be a problem with any of the generated catalogs (MNU_SYSFL, MNU_alpha_INTL, MNU_alpha_intl, )
                  ((softmenu[m].menuItem == -MNU_IO   || softmenu[m].menuItem  == -MNU_PFN  ) && (item == ITM_STOCFG || item == ITM_RCLCFG))) { //do not display "Config"
-                strcpy(itemName,indexOfItems[item%10000].itemCatalogName);
+                stringAppend(itemName,indexOfItems[item%10000].itemCatalogName);
               }
               showSoftkey(itemName, x, y-currentFirstItem/6, vm, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
             }
@@ -2351,13 +2367,32 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
 
 
 char *dynmenuGetLabel(int16_t menuitem) {
+  return dynmenuGetLabelWithDup(menuitem, NULL);
+}
+
+
+
+char *dynmenuGetLabelWithDup(int16_t menuitem, int16_t *dupNum) {
+  if(dupNum) {
+    *dupNum = 0;
+  }
   if(menuitem < 0 || menuitem >= dynamicSoftmenu[softmenuStack[0].softmenuId].numItems) {
     return "";
   }
   char *labelName = (char *)dynamicSoftmenu[softmenuStack[0].softmenuId].menuContent;
+  char *prevLabelName = labelName;
   while(menuitem > 0) {
     labelName += stringByteLength(labelName) + 1;
     menuitem--;
+    if(dupNum) {
+      if(compareString(labelName, prevLabelName, CMP_BINARY) == 0) {
+        ++(*dupNum);
+      }
+      else {
+        prevLabelName = labelName;
+        *dupNum = 0;
+      }
+    }
   }
   return labelName;
 }

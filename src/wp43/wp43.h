@@ -95,10 +95,10 @@
   extern const calcKey_t                 kbd_std_DM42[37];
   extern const calcKey_t                 kbd_std_C43[37];
   extern const calcKey_t                 kbd_std_C43AltA[37];
-  #ifndef SAVE_SPACE_DM42 
+  #ifndef SAVE_SPACE_DM42
     extern const calcKey_t                 kbd_std_D47[37];
     extern const calcKey_t                 kbd_std_N47[37];
-  #endif //SAVE_SPACE_DM42 
+  #endif //SAVE_SPACE_DM42
   extern const font_t                    standardFont, numericFont;
   extern const font_t                   *fontForShortInteger;
   extern const font_t                   *cursorFont;
@@ -112,9 +112,9 @@
   extern void                            (*confirmedFunction)(uint16_t);
   extern const softmenu_t                softmenu[];
   extern real51_t                 const *gammaLanczosCoefficients;
-  extern real51_t                 const *angle180;
-  extern real51_t                 const *angle90;
-  extern real51_t                 const *angle45;
+  extern real_t                 const *angle180;
+  extern real_t                 const *angle90;
+  extern real_t                 const *angle45;
 
   // Variables stored in RAM
   extern bool_t                 fnAsnDisplayUSER;
@@ -302,7 +302,7 @@ extern uint16_t               gapItemRadix;
   extern char                   indexOfItemsXEQM[18*8];       //JMXEQ
   extern int16_t                fnXEQMENUpos;                 //JMXEQ
   extern uint8_t                last_CM;                      //Do extern !!
-  extern uint8_t                FN_state; // = ST_0_INIT;      
+  extern uint8_t                FN_state; // = ST_0_INIT;
 
   // Variables from jm.h
   extern bool_t                 eRPN;                         //JM eRPN Create a flag to enable or disable eRPN. See bufferize.c

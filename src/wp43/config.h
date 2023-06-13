@@ -32,7 +32,7 @@ enum {
 
 void     configCommon          (uint16_t idx);
 void     showSoftmenu          (int16_t id);  //JM repeat here to make DMCP compile
-void     fnShowVersion         (uint8_t option); 
+void     fnShowVersion         (uint8_t option);
 extern const enum rounding roundingModeTable[7];
 
 /********************************************//**
@@ -118,6 +118,14 @@ void     fnIntegerMode         (uint16_t mode);
 void     fnWho                 (uint16_t unusedButMandatoryParameter);
 
 /********************************************//**
+ * \brief Displays help info based on the current menu
+ *
+ *
+ * \param[in] unusedButMandatoryParameter uint16_t
+ ***********************************************/
+void     fnHelp                 (uint16_t unusedButMandatoryParameter);
+
+/********************************************//**
  * \brief Displays the version of this software
  *
  * \param[in] unusedButMandatoryParameter uint16_t
@@ -200,7 +208,7 @@ void     fnGetSignificantDigits(uint16_t unusedButMandatoryParameter);
  *
  * \param[in] unusedButMandatoryParameter uint16_t
  ***********************************************/
-void     fnSetSignificantDigits(uint16_t unusedButMandatoryParameter);
+void     fnSetSignificantDigits(uint16_t S);
 
 /********************************************//**
  * \brief Sets the rounding mode
@@ -223,6 +231,9 @@ void     fnAngularMode         (uint16_t angularMode);
  ***********************************************/
 void     fnFractionType        (uint16_t unusedButMandatoryParameter);
 
+
+void getHelp(char * text);
+
 #define  loadAutoSav           true
 #define  doNotLoadAutoSav      false
 void     resetOtherConfigurationStuff(void);
@@ -235,8 +246,8 @@ void     fnClAll               (uint16_t confirmation);
 void     backToSystem          (uint16_t confirmation);
 void     runDMCPmenu           (uint16_t confirmation);
 void     activateUSBdisk       (uint16_t confirmation);
-void     fnRange               (uint16_t unusedButMandatoryParameter);
+void     fnRange               (uint16_t R);
 void     fnGetRange            (uint16_t unusedButMandatoryParameter);
-void     fnHide                (uint16_t digits);
+void     fnHide                (uint16_t H);
 void     fnGetHide             (uint16_t unusedButMandatoryParameter);
 #endif // !CONFIG_H

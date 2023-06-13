@@ -325,23 +325,23 @@ void real34ToDisplayString(const real34_t *real34, uint32_t tag, char *displaySt
       angle34ToDisplayString2(real34, tag, displayString, displayHasNDigits, limitExponent, frontSpace);
     }
 
-    while(stringWidth(displayString, font, true, true) > maxWidth) {
-      if(displayFormat == DF_ALL) {
-        if(displayHasNDigits == 2) {
-          break;
-        }
-        displayHasNDigits--;
+  while(stringWidth(displayString, font, true, true) > maxWidth) {
+    if(displayFormat == DF_ALL) {
+      if(displayHasNDigits == 2) {
+        break;
       }
-      else {
-        if(displayFormatDigits == 0) {
-          break;
-        }
-        displayFormatDigits--;
+      displayHasNDigits--;
+    }
+    else {
+      if(displayFormatDigits == 0) {
+        break;
       }
+      displayFormatDigits--;
+    }
 
-      if(updateDisplayValueX) {
-        displayValueX[0] = 0;
-      }
+    if(updateDisplayValueX) {
+      displayValueX[0] = 0;
+    }
 
       if(tag == amNone) {
         real34ToDisplayString2(real34, displayString, displayHasNDigits, limitExponent, false, frontSpace);
@@ -463,7 +463,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
               tmpString100[ii] = 0; 
             }
           }
-          //printf("------- 005 >>>>%s|\n",tmpString100);
+        //printf("------- 005 >>>>%s|\n",tmpString100);
         break;
       } 
       else {
@@ -687,18 +687,19 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
         for(digitCount=0, i=exponent+1; i<0; i++, digitCount--) {
           if(digitCount != 0 && GROUPWIDTH_RIGHT != 0 && digitCount%(uint16_t)GROUPWIDTH_RIGHT == 0) {
             xcopy(displayString + charIndex,  SEPARATOR_RIGHT, SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
-            charIndex +=  (SEPARATOR_RIGHT, SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
+            charIndex +=  ( SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
           }
           displayString[charIndex++] = '0';
           if(updateDisplayValueX) {
             displayValueX[valueIndex++] = '0';
           }
         }
+
         // Significant digits
         for(digitPointer=firstDigit; digitPointer<firstDigit+min(displayHasNDigits - 1 - exponent, numDigits); digitPointer++, digitCount--) {
           if(digitCount != 0 && GROUPWIDTH_RIGHT != 0 && digitCount%(uint16_t)GROUPWIDTH_RIGHT == 0) {
             xcopy(displayString + charIndex, SEPARATOR_RIGHT,  SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
-            charIndex +=  (SEPARATOR_RIGHT, SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
+            charIndex +=  ( SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
           }
           displayString[charIndex++] = '0' + bcd[digitPointer];
           if(updateDisplayValueX) {
@@ -795,7 +796,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
         bcd[digitToRound]++;
       }
 
-      // Transfer the carry
+      // Transfert the carry
       while(bcd[digitToRound] == 10) {
         bcd[digitToRound--] = 0;
         if(displayFormat == DF_SF) numDigits--;
@@ -856,7 +857,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
         for(digitCount=0, i=exponent+1; i<0; i++, digitCount--) {
           if(digitCount!=0 && GROUPWIDTH_RIGHT!=0 && digitCount%(uint16_t)GROUPWIDTH_RIGHT==0) {
             xcopy(displayString + charIndex, SEPARATOR_RIGHT,  SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
-            charIndex +=  (SEPARATOR_RIGHT, SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
+            charIndex +=  ( SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
           }
           displayString[charIndex++] = '0';
           if(updateDisplayValueX) {
@@ -868,7 +869,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
         for(digitPointer=firstDigit; digitPointer<=lastDigit; digitPointer++, digitCount--) {
           if(digitCount!=0 && GROUPWIDTH_RIGHT!=0 && digitCount%(uint16_t)GROUPWIDTH_RIGHT==0) {
             xcopy(displayString + charIndex, SEPARATOR_RIGHT,  SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
-            charIndex +=  (SEPARATOR_RIGHT, SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
+            charIndex +=  ( SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
           }
           displayString[charIndex++] = '0' + bcd[digitPointer];
           if(updateDisplayValueX) {
@@ -880,7 +881,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
         for(i=1; i<=(int16_t)displayFormatDigits_Active+exponent+1-numDigits; i++, digitCount--) {   //JM SIGFIGNEW hackpoint
           if(GROUPWIDTH_RIGHT!=0 && digitCount%(uint16_t)GROUPWIDTH_RIGHT==0) {
             xcopy(displayString + charIndex, SEPARATOR_RIGHT,  SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
-            charIndex +=  (SEPARATOR_RIGHT, SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
+            charIndex +=  ( SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
           }
           displayString[charIndex++] = '0';
           if(updateDisplayValueX) {
@@ -1006,7 +1007,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
     for(digitCount=-1, digitPointer=firstDigit+1; digitPointer<firstDigit+min(numDigits, digitsToDisplay+1); digitPointer++, digitCount--) {
       if(!firstDigitAfterPeriod && GROUPWIDTH_RIGHT!=0 && modulo(digitCount, (uint16_t)GROUPWIDTH_RIGHT) == (uint16_t)GROUPWIDTH_RIGHT - 1) {
         xcopy(displayString + charIndex, SEPARATOR_RIGHT,  SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
-        charIndex +=  (SEPARATOR_RIGHT, SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
+        charIndex +=  ( SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
       }
       else {
         firstDigitAfterPeriod = false;
@@ -1022,7 +1023,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
     for(digitPointer=0; digitPointer<=digitsToDisplay-numDigits; digitPointer++, digitCount--) {
       if(!firstDigitAfterPeriod && GROUPWIDTH_RIGHT!=0 && modulo(digitCount, (uint16_t)GROUPWIDTH_RIGHT) == (uint16_t)GROUPWIDTH_RIGHT - 1) {
         xcopy(displayString + charIndex, SEPARATOR_RIGHT,  SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
-        charIndex +=  (SEPARATOR_RIGHT, SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
+        charIndex +=  ( SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
       }
       else {
         firstDigitAfterPeriod = false;
@@ -1128,7 +1129,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
     for(digitCount=-1, digitPointer=firstDigit; digitPointer<firstDigit+min(numDigits, digitsToDisplay+1); digitPointer++, digitCount--) {
       if(!firstDigitAfterPeriod && GROUPWIDTH_RIGHT!=0 && modulo(digitCount, (uint16_t)GROUPWIDTH_RIGHT) == (uint16_t)GROUPWIDTH_RIGHT - 1) {
         xcopy(displayString + charIndex, SEPARATOR_RIGHT,  SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
-        charIndex +=  (SEPARATOR_RIGHT, SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
+        charIndex +=  ( SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
       }
       else {
         firstDigitAfterPeriod = false;
@@ -1144,7 +1145,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
     for(digitPointer=0; digitPointer<=digitsToDisplay-max(0, numDigits); digitPointer++, digitCount--) {
       if(!firstDigitAfterPeriod && GROUPWIDTH_RIGHT!=0 && modulo(digitCount, (uint16_t)GROUPWIDTH_RIGHT) == (uint16_t)GROUPWIDTH_RIGHT - 1) {
         xcopy(displayString + charIndex, SEPARATOR_RIGHT,  SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
-        charIndex +=  (SEPARATOR_RIGHT, SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
+        charIndex +=  ( SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
       }
       else {
         firstDigitAfterPeriod = false;

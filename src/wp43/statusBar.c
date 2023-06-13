@@ -24,6 +24,7 @@
 #include "items.h"
 #include "hal/gui.h"
 #include "c43Extensions/jm.h"
+#include "c43Extensions/keyboardTweak.h"
 #include "plotstat.h"
 #include "screen.h"
 #include "softmenus.h"
@@ -34,7 +35,7 @@
 
 
 #if !defined(TESTSUITE_BUILD)
-  
+
   void refreshStatusBar(void) {
     if(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR) {
       switch(calcMode) {
@@ -182,12 +183,12 @@
           str40[y++] = 0xa4;
           str40[y++] = str20[x++] + 0x8F;
           str40[y] = 0;
-        } 
+        }
         else if(str20[x]>='0' && str20[x]<='9') {
           str40[y++] = 0xa0;
           str40[y++] = str20[x++] + 0x50;
           str40[y] = 0;
-        } 
+        }
         else {
           str40[y++] = str20[x++];
           str40[y] = 0;
@@ -208,7 +209,7 @@ void showFracMode(void) {
 
   if(lastIntegerBase > 0 && lastIntegerBase <= 16) {                               //JMvv HEXKEYS
     str20[0]=0;
-    
+
     if(lastIntegerBase>=2 && lastIntegerBase<=16){
       if(topHex) {
         x = showString("#KEY", &standardFont, X_FRAC_MODE, 0 , vmNormal, true, true);//-4 looks good
@@ -217,15 +218,15 @@ void showFracMode(void) {
         x = showString("-",    &standardFont, x,  2 , vmNormal, true, true);         //-4 looks good
         strcpy(str20,"F"); conv(str20, str40);
         x = showString(str40,  &standardFont, x, -4 , vmNormal, true, true);         //-4 looks good
-      } 
+      }
       else {
         x = showString("#BASE", &standardFont, X_FRAC_MODE, 0, vmNormal, true, true); //-4 looks good
       }
     }
     return;
   }                                                                                //JM^^
-    
-    
+
+
     x = X_FRAC_MODE;                    //vJM
     char divStr[10];
     if(getSystemFlag(FLAG_FRACT) || (constantFractions && constantFractionsOn)) {
@@ -336,53 +337,53 @@ void showFracMode(void) {
 
   void showHideAlphaMode(void) {
     int status=0;
-    if(calcMode == CM_AIM || calcMode == CM_EIM || (catalog && catalog != CATALOG_MVAR) || (tam.mode != 0 && tam.alpha)) {
+    if(calcMode == CM_AIM || calcMode == CM_EIM || (catalog && catalog != CATALOG_MVAR) || (tam.mode != 0 && tam.alpha) || ((calcMode == CM_PEM || calcMode == CM_ASSIGN) && getSystemFlag(FLAG_ALPHA))) {
       if(numLock && !shiftF && !shiftG) {
           if(alphaCase == AC_UPPER)                  { status = 3 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); } else
           if(alphaCase == AC_LOWER)                  { status = 6 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); }
         } else
           if(alphaCase == AC_LOWER && shiftF){
-            setSystemFlag(FLAG_alphaCAP);              status = 12 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); //A	
+            setSystemFlag(FLAG_alphaCAP);              status = 12 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); //A
           } else
-    		    if(alphaCase == AC_UPPER && shiftF){
-    		      clearSystemFlag(FLAG_alphaCAP);          status = 18 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0);   //a	
-    		    } else //at this point shiftF is false
-    		      if(alphaCase == AC_UPPER)  { //UPPER
-    		        setSystemFlag(FLAG_alphaCAP);
-    		        if(shiftG)                           { status =  3 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); } else
-    		        if(!shiftG && !shiftF && !numLock)   { status = 12 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); }
-    		      } else
-    		        if(alphaCase == AC_LOWER)  { //LOWER
-    				      clearSystemFlag(FLAG_alphaCAP);
-    				      if(shiftG)                         { status =  3 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); } else
-    				      if(!shiftG && !shiftF && !numLock) { status = 18 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); }
-    				    }
+            if(alphaCase == AC_UPPER && shiftF){
+              clearSystemFlag(FLAG_alphaCAP);          status = 18 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0);   //a
+            } else //at this point shiftF is false
+              if(alphaCase == AC_UPPER)  { //UPPER
+                setSystemFlag(FLAG_alphaCAP);
+                if(shiftG)                           { status =  3 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); } else
+                if(!shiftG && !shiftF && !numLock)   { status = 12 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); }
+              } else
+                if(alphaCase == AC_LOWER)  { //LOWER
+                  clearSystemFlag(FLAG_alphaCAP);
+                  if(shiftG)                         { status =  3 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); } else
+                  if(!shiftG && !shiftF && !numLock) { status = 18 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); }
+                }
 
       if(status >0 && status <=18) {
         showGlyphCode(' ',    &standardFont, X_ALPHA_MODE, 0, vmNormal, true, true); // is 0+0+10 pixel wide
         switch(status) {
           case  1: showString(STD_SUB_N, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub    // STD_ALPHA is 0+9+2 pixel wide
-          case  2: showString(STD_SUB_N, &standardFont, X_ALPHA_MODE,-11, vmNormal, true, false); break; //sup   
+          case  2: showString(STD_SUB_N, &standardFont, X_ALPHA_MODE,-11, vmNormal, true, false); break; //sup
           case  3: showString(STD_num,   &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
-        
-          case  4: showString(STD_SUB_n, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub   
-          case  5: showString(STD_SUB_n, &standardFont, X_ALPHA_MODE,-11, vmNormal, true, false); break; //sup   
+
+          case  4: showString(STD_SUB_n, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub
+          case  5: showString(STD_SUB_n, &standardFont, X_ALPHA_MODE,-11, vmNormal, true, false); break; //sup
           case  6: showString(STD_n,     &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
-          
-//          case  7: showString(STD_SIGMA, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //sub   
-//          case  8: showString(STD_SIGMA, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //sup   
+
+//          case  7: showString(STD_SIGMA, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //sub
+//          case  8: showString(STD_SIGMA, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //sup
 //          case  9: showString(STD_SIGMA, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
-          
-          case 10: showString(STD_SUB_A, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub   
+
+          case 10: showString(STD_SUB_A, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub
           case 11: showString(STD_SUB_A, &standardFont, X_ALPHA_MODE, -11, vmNormal, true, false); break; //sup   //not possible
           case 12: showString(STD_A    , &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
-    
-//          case 13: showString(STD_sigma, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //sub   
-//          case 14: showString(STD_sigma, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //sup   
+
+//          case 13: showString(STD_sigma, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //sub
+//          case 14: showString(STD_sigma, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //sup
 //          case 15: showString(STD_sigma, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
-          
-          case 16: showString(STD_SUB_a, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub   
-          case 17: showString(STD_SUB_a, &standardFont, X_ALPHA_MODE, -11, vmNormal, true, false); break; //sup    //not possible 
+
+          case 16: showString(STD_SUB_a, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub
+          case 17: showString(STD_SUB_a, &standardFont, X_ALPHA_MODE, -11, vmNormal, true, false); break; //sup    //not possible
           case 18: showString(STD_a    , &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
           default:;
         }
@@ -441,14 +442,14 @@ void showFracMode(void) {
 
   void light_ASB_icon(void) {
     lcd_fill_rect(X_ALPHA_MODE,18,9,2,0xFF);
-    showString(asmBuffer, &standardFont, X_ALPHA_MODE+30, 0, vmNormal, true, false); 
+    showString(asmBuffer, &standardFont, X_ALPHA_MODE+30, 0, vmNormal, true, false);
     force_refresh(force);
   }
 
 
   void kill_ASB_icon(void) {
     lcd_fill_rect(X_ALPHA_MODE,18,9,2,0);
-    showString("    ", &standardFont, X_ALPHA_MODE+30, 0, vmNormal, true, false); 
+    showString("    ", &standardFont, X_ALPHA_MODE+30, 0, vmNormal, true, false);
     force_refresh(force);
   }
 
@@ -495,12 +496,9 @@ void showHideUserMode(void) {
   if(getSystemFlag(FLAG_USER)) {
     showGlyph(STD_USER_MODE, &standardFont, X_USER_MODE, 0, vmNormal, false, false); // STD_USER_MODE is 0+12+2 pixel wide
   }
-  #ifndef DMCP_BUILD
-    if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
-    if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
-  #endif //!TESTSUITE_BUILD
+  refreshModeGui(); //JM refreshModeGui
 }
-  
+
 
 
   #if defined(DMCP_BUILD)

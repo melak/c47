@@ -24,8 +24,9 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
- #define VERSION1 "0.108.9-03"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
+#define VERSION1 "0.108.9-07"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
+//2023-06-12-0.108.9-07-Snapshot-Test-version ()
 
   #undef SAVE_SPACE_DM42
   #undef SAVE_SPACE_DM42_0
@@ -59,9 +60,7 @@
 
 //THESE ARE DMCP COMPILE OPTIONS
   #ifndef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT WHILE NOT USING QSPI
-    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
-    #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers; 
-    #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
+    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S)
     #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
     #define SAVE_SPACE_DM42_6  //001648 bytes: ELEC functions
     #define SAVE_SPACE_DM42_7  //002144 bytes: KEYS USER_DM42; USER_C43ALTA; USER_C43_ALT;
@@ -79,11 +78,10 @@
 
   #ifdef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT INTO AVAILABLE FLASH EVEN WHILE USING QSPI
     #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
-//    #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers; 
-//    #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
-    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
-//    #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
-//   #define SAVE_SPACE_DM42_16   //           without Norml
+    #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
+//    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
+    #define SAVE_SPACE_DM42_15       //           without all distributions, i.e. binomial, cauchy, chi
+//    #define SAVE_SPACE_DM42_16       //           without Norml
   #endif
 #endif
 
@@ -269,6 +267,7 @@
 
 #define REAL34_WIDTH_TEST 0 // For debugging real34 ALL 0 formating. Use UP/DOWN to shrink or enlarge the available space. The Z register holds the available width.
 
+
 //*************************
 //* Other defines         *
 //*************************
@@ -326,7 +325,7 @@
 #define ERROR_WRITE_PROTECTED_SYSTEM_FLAG         32
 #define ERROR_STRING_WOULD_BE_TOO_LONG            33
 #define ERROR_EMPTY_STRING                        34
-#define ERROR_NO_BACKUP_DATA                      35
+#define ERROR_CANNOT_READ_FILE                    35
 #define ERROR_UNDEF_SOURCE_VAR                    36
 #define ERROR_WRITE_PROTECTED_VAR                 37
 #define ERROR_NO_MATRIX_INDEXED                   38
@@ -345,8 +344,11 @@
 #define ERROR_NO_GLOBAL_LABEL                     51
 #define ERROR_INVALID_DATA_TYPE_FOR_POLAR_RECT    52
 #define ERROR_BAD_INPUT                           53 // This error is not in ReM and cannot occur (theoretically).
+#define ERROR_NO_PROGRAM_SPECIFIED                54
 
-#define NUMBER_OF_ERROR_CODES                     54
+#define ERROR_CANNOT_WRITE_FILE                   55
+
+#define NUMBER_OF_ERROR_CODES                     56
 #define SIZE_OF_EACH_ERROR_MESSAGE                48
 
 #define NUMBER_OF_BUG_SCREEN_MESSAGES             10
@@ -888,6 +890,13 @@ typedef enum {
 #define TI_DISP_JULIAN                            81
 #define TI_FROM_DATEX                             82
 #define TI_LAST_CONST_CATNAME                     83
+#define TI_PROGRAM_LOADED                         84    //DL
+#define TI_PROGRAMS_RESTORED                      85    //DL
+#define TI_REGISTERS_RESTORED                     86    //DL
+#define TI_SETTINGS_RESTORED                      87    //DL
+#define TI_SUMS_RESTORED                          88    //DL
+#define TI_VARIABLES_RESTORED                     89    //DL
+#define TI_HELP                                   90
 
 
 // Register browser mode
@@ -1054,6 +1063,7 @@ typedef enum {
 #define KEY_AUTOREPEAT_PERIOD                    200 // in milliseconds
 #define TIMER_APP_PERIOD                         100 // in milliseconds
 #define RAM_SIZE                               16384 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
+#define RAM_SIZE_IN_BLOCKS                     16384 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
 //#define RAM_SIZE                                3072 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
 
 #define CONFIG_SIZE            TO_BLOCKS(sizeof(dtConfigDescriptor_t))
@@ -1239,16 +1249,14 @@ typedef enum {
                                                   Lt[0] == '.'  ? (char*) ".\1\0"  :   \
                                                   Lt[0] == '\'' ? (char*) "\'\1\0" :   \
                                                   Lt[0] == '_'  ? (char*) "_\1\0"  : Lt ) : Lt )  //set second character to skip character 0x01
-#define gapChar1Right                        (Rt[0] != 0 && Rt[1] == 0 && Rt[2] == 0 ? \
+#define gapChar1Right                        (Rt[0] != 0 && (Rt[1] == 0 || (Rt[1] != 0 && Rt[2] == 0)) ? \
                                                 ( Rt[0] == ','  ? (char*) ",\1\0"  :   \
                                                   Rt[0] == '.'  ? (char*) ".\1\0"  :   \
                                                   Rt[0] == '\'' ? (char*) "\'\1\0" :   \
                                                   Rt[0] == '_'  ? (char*) "_\1\0"  : Rt ) : Rt )  //set second character to skip character 0x01
-#define gapChar1Radix                        (Rx[0] != 0 && Rx[1] == 0 && Rx[2] == 0 ? \
+#define gapChar1Radix                        (Rx[0] != 0 && (Rx[1] == 0 || (Rx[1] != 0 && Rx[2] == 0)) ? \
                                                 ( Rx[0] == ','  ? (char*) ",\1\0"  :   \
-                                                  Rx[0] == '.'  ? (char*) ".\1\0"  :   \
-                                                  Rx[0] == '\'' ? (char*) "\'\1\0" :   \
-                                                  Rx[0] == '_'  ? (char*) "_\1\0"  : Rx ) : Rx )  //set second character to skip character 0x01
+                                                  Rx[0] == '.'  ? (char*) ".\1\0"  : Rx ) : Rx )  //set second character to skip character 0x01
 
 #define SEPARATOR_LEFT                       (gapChar1Left)
 #define SEPARATOR_RIGHT                      (gapChar1Right)

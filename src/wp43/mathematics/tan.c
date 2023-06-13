@@ -62,7 +62,7 @@ void longIntegerAngleReduction(calcRegister_t regist, angularMode_t angularMode,
   }
 
   if(oneTurn == 0) {
-    convertLongIntegerRegisterToReal(regist, reducedAngle, &ctxtReal39);
+    convertLongIntegerRegisterToReal(regist, reducedAngle, &ctxtReal75);
   }
   else {
     longInteger_t angle;
@@ -119,7 +119,7 @@ void tanLonI(void) {
   else {
     longIntegerAngleReduction(REGISTER_X, currentAngularMode, &tan);
   }
-  WP34S_Cvt2RadSinCosTan(&tan, currentAngularMode, &sin, &cos, &tan, &ctxtReal39);
+  WP34S_Cvt2RadSinCosTan(&tan, currentAngularMode, &sin, &cos, &tan, &ctxtReal75);
   if(realIsZero(&sin)) {
      realSetPositiveSign(&tan);
   }
@@ -166,10 +166,10 @@ void tanReal(void) {
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &tan);
 
     if(xAngularMode == amNone && currentAngularMode == amMultPi) {
-      realMultiply(&tan, const_pi, &tan, &ctxtReal39);
+      realMultiply(&tan, const_pi, &tan, &ctxtReal75);
     }
 
-    WP34S_Cvt2RadSinCosTan(&tan, (xAngularMode == amNone ? currentAngularMode : xAngularMode), &sin, &cos, &tan, &ctxtReal39);
+    WP34S_Cvt2RadSinCosTan(&tan, (xAngularMode == amNone ? currentAngularMode : xAngularMode), &sin, &cos, &tan, &ctxtReal75);
     if(realIsZero(&sin)) {
        realSetPositiveSign(&tan);
     }

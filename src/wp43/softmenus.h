@@ -51,19 +51,19 @@ void     fnExitAllMenus         (uint16_t unusedButMandatoryParameter);
    */
   bool_t isFunctionItemAMenu(int16_t item);
   void   showSoftmenuCurrentPart(void);
-    
+
   /**
    * Displays a softmenu.
    *
    * \param[in] id ID of softmenu
    */
   void   showSoftmenu           (int16_t id);
-    
+
   /**
    * Pops a softmenu from the softmenu stack.
    */
   void   popSoftmenu            (void);
-    
+
   void   setCatalogLastPos      (void);
   bool_t currentSoftmenuScrolls (void);
   bool_t isAlphabeticSoftmenu   (void);
@@ -75,5 +75,6 @@ void     fnExitAllMenus         (uint16_t unusedButMandatoryParameter);
 
 #endif // !TESTSUITE_BUILD
 char    *dynmenuGetLabel        (int16_t menuitem);
+char    *dynmenuGetLabelWithDup (int16_t menuitem, int16_t *dupNum);
 void     fnDumpMenus            (uint16_t unusedButMandatoryParameter);  //JM
 #endif // !SOFTMENUS_H

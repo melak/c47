@@ -285,13 +285,13 @@ const char * getRegisterTagName(calcRegister_t regist, bool_t padWithBlanks) {
 
     case dtComplex34: {
       if (getComplexRegisterPolarMode(regist)) {
-        return "Polar   "; 
+        return "Polar   ";
       }
       else {
-        return "Rect    "; 
+        return "Rect    ";
       }
     }
-    
+
     case dtString:
     case dtReal34Matrix:
     case dtComplex34Matrix:
