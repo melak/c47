@@ -230,7 +230,7 @@ void supNumberToDisplayString(int32_t supNumber, char *displayString, char *disp
       displayString[1] = STD_SUP_0[1];
       displayString[1] += digit;
 
-      if(insertGap && greaterThan9999 && supNumber > 0 && GROUPWIDTH_LEFT != 0 && ((++digitCount) % GROUPWIDTH_LEFT) == 0) {
+      if(insertGap && greaterThan9999 && supNumber > 0 && !GROUPLEFT_DISABLED && ((++digitCount) % GROUPWIDTH_LEFT) == 0) {
         if(SEPARATOR_LEFT[1]!=1) {
           xcopy(displayString + 2, displayString, stringByteLength(displayString) + 1);
           displayString[0] = SEPARATOR_LEFT[0];
@@ -671,7 +671,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
         // Zeros before first significant digit
         for(digitCount=0, i=exponent+1; i<0; i++, digitCount--) {
-          if(digitCount != 0 && GROUPWIDTH_RIGHT != 0 && digitCount%(uint16_t)GROUPWIDTH_RIGHT == 0) {
+          if(digitCount != 0 && !GROUPRIGHT_DISABLED && digitCount%(uint16_t)GROUPWIDTH_RIGHT == 0) {
             xcopy(displayString + charIndex,  SEPARATOR_RIGHT, SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
             charIndex +=  ( SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
           }
@@ -683,7 +683,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
         // Significant digits
         for(digitPointer=firstDigit; digitPointer<firstDigit+min(displayHasNDigits - 1 - exponent, numDigits); digitPointer++, digitCount--) {
-          if(digitCount != 0 && GROUPWIDTH_RIGHT != 0 && digitCount%(uint16_t)GROUPWIDTH_RIGHT == 0) {
+          if(digitCount != 0 && !GROUPRIGHT_DISABLED && digitCount%(uint16_t)GROUPWIDTH_RIGHT == 0) {
             xcopy(displayString + charIndex, SEPARATOR_RIGHT,  SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
             charIndex +=  ( SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
           }
@@ -704,7 +704,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
             xcopy(displayString + charIndex, SEPARATOR_(digitCount), 2);
 //^^GRP handling
 
-//          if(digitCount != -1 && digitCount != exponent && GROUPWIDTH_LEFT != 0 && modulo(digitCount, (uint16_t)GROUPWIDTH_LEFT) == (uint16_t)GROUPWIDTH_LEFT - 1) {
+//          if(digitCount != -1 && digitCount != exponent && !GROUPLEFT_DISABLED && modulo(digitCount, (uint16_t)GROUPWIDTH_LEFT) == (uint16_t)GROUPWIDTH_LEFT - 1) {
   //          xcopy(displayString + charIndex, SEPARATOR_LEFT, 2);
             charIndex += 2;
           }
@@ -841,7 +841,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 //WHY is THIS . and displayValueX
         // Zeros before first significant digit
         for(digitCount=0, i=exponent+1; i<0; i++, digitCount--) {
-          if(digitCount!=0 && GROUPWIDTH_RIGHT!=0 && digitCount%(uint16_t)GROUPWIDTH_RIGHT==0) {
+          if(digitCount!=0 && !GROUPRIGHT_DISABLED && digitCount%(uint16_t)GROUPWIDTH_RIGHT==0) {
             xcopy(displayString + charIndex, SEPARATOR_RIGHT,  SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
             charIndex +=  ( SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
           }
@@ -853,7 +853,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
         // Significant digits
         for(digitPointer=firstDigit; digitPointer<=lastDigit; digitPointer++, digitCount--) {
-          if(digitCount!=0 && GROUPWIDTH_RIGHT!=0 && digitCount%(uint16_t)GROUPWIDTH_RIGHT==0) {
+          if(digitCount!=0 && !GROUPRIGHT_DISABLED && digitCount%(uint16_t)GROUPWIDTH_RIGHT==0) {
             xcopy(displayString + charIndex, SEPARATOR_RIGHT,  SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
             charIndex +=  ( SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
           }
@@ -865,7 +865,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
         // Zeros after last significant digit
         for(i=1; i<=(int16_t)displayFormatDigits_Active+exponent+1-numDigits; i++, digitCount--) {   //JM SIGFIGNEW hackpoint
-          if(GROUPWIDTH_RIGHT!=0 && digitCount%(uint16_t)GROUPWIDTH_RIGHT==0) {
+          if(!GROUPRIGHT_DISABLED && digitCount%(uint16_t)GROUPWIDTH_RIGHT==0) {
             xcopy(displayString + charIndex, SEPARATOR_RIGHT,  SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
             charIndex +=  ( SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
           }
@@ -991,7 +991,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
     // Significant digits
     for(digitCount=-1, digitPointer=firstDigit+1; digitPointer<firstDigit+min(numDigits, digitsToDisplay+1); digitPointer++, digitCount--) {
-      if(!firstDigitAfterPeriod && GROUPWIDTH_RIGHT!=0 && modulo(digitCount, (uint16_t)GROUPWIDTH_RIGHT) == (uint16_t)GROUPWIDTH_RIGHT - 1) {
+      if(!firstDigitAfterPeriod && !GROUPRIGHT_DISABLED && modulo(digitCount, (uint16_t)GROUPWIDTH_RIGHT) == (uint16_t)GROUPWIDTH_RIGHT - 1) {
         xcopy(displayString + charIndex, SEPARATOR_RIGHT,  SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
         charIndex +=  ( SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
       }
@@ -1007,7 +1007,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
     // The ending zeros
     for(digitPointer=0; digitPointer<=digitsToDisplay-numDigits; digitPointer++, digitCount--) {
-      if(!firstDigitAfterPeriod && GROUPWIDTH_RIGHT!=0 && modulo(digitCount, (uint16_t)GROUPWIDTH_RIGHT) == (uint16_t)GROUPWIDTH_RIGHT - 1) {
+      if(!firstDigitAfterPeriod && !GROUPRIGHT_DISABLED && modulo(digitCount, (uint16_t)GROUPWIDTH_RIGHT) == (uint16_t)GROUPWIDTH_RIGHT - 1) {
         xcopy(displayString + charIndex, SEPARATOR_RIGHT,  SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
         charIndex +=  ( SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
       }
@@ -1113,7 +1113,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
     // Digits after radix mark
     for(digitCount=-1, digitPointer=firstDigit; digitPointer<firstDigit+min(numDigits, digitsToDisplay+1); digitPointer++, digitCount--) {
-      if(!firstDigitAfterPeriod && GROUPWIDTH_RIGHT!=0 && modulo(digitCount, (uint16_t)GROUPWIDTH_RIGHT) == (uint16_t)GROUPWIDTH_RIGHT - 1) {
+      if(!firstDigitAfterPeriod && !GROUPRIGHT_DISABLED && modulo(digitCount, (uint16_t)GROUPWIDTH_RIGHT) == (uint16_t)GROUPWIDTH_RIGHT - 1) {
         xcopy(displayString + charIndex, SEPARATOR_RIGHT,  SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
         charIndex +=  ( SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
       }
@@ -1129,7 +1129,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
     // The ending zeros
     for(digitPointer=0; digitPointer<=digitsToDisplay-max(0, numDigits); digitPointer++, digitCount--) {
-      if(!firstDigitAfterPeriod && GROUPWIDTH_RIGHT!=0 && modulo(digitCount, (uint16_t)GROUPWIDTH_RIGHT) == (uint16_t)GROUPWIDTH_RIGHT - 1) {
+      if(!firstDigitAfterPeriod && !GROUPRIGHT_DISABLED && modulo(digitCount, (uint16_t)GROUPWIDTH_RIGHT) == (uint16_t)GROUPWIDTH_RIGHT - 1) {
         xcopy(displayString + charIndex, SEPARATOR_RIGHT,  SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
         charIndex +=  ( SEPARATOR_RIGHT[0]!=1 ? (SEPARATOR_RIGHT[1]!=1 ? 2 : 1) : 0);
       }
@@ -1626,7 +1626,7 @@ str3[j] = 0;
     digit = 0;
   }
 
-  if(GROUPWIDTH_LEFT == 0) {
+  if(GROUPLEFT_DISABLED) {
     gap = 0;
   }
   else {
@@ -1954,8 +1954,8 @@ void longIntegerRegisterToDisplayString(calcRegister_t regist, char *displayStri
   else {maxWidth = max_Width - 8;}                          //JM align longints
 
   exponentShift = (longIntegerBits(lgInt) - 1) * 0.3010299956639811952137;
-  exponentStep = (GROUPWIDTH_LEFT  == 0 && SEPARATOR_LEFT[0]==1 && SEPARATOR_LEFT[1]==1 ? 1 : GROUPWIDTH_LEFT);
-  exponentStep1= (GROUPWIDTH_LEFT1 == 0 && SEPARATOR_LEFT[0]==1 && SEPARATOR_LEFT[1]==1 ? 1 : GROUPWIDTH_LEFT1);
+  exponentStep = (GROUPWIDTH_LEFT  == 0 && SEPARATOR_LEFT[0]==1 && SEPARATOR_LEFT[1]==1 ? 1 : GROUPWIDTH_LEFT);   //TOCHECK
+  exponentStep1= (GROUPWIDTH_LEFT1 == 0 && SEPARATOR_LEFT[0]==1 && SEPARATOR_LEFT[1]==1 ? 1 : GROUPWIDTH_LEFT1);  //TOCHECK
 
   exponentShift = ((exponentShift-exponentStep1) / exponentStep  + 1) * exponentStep;
   exponentShiftLimit = ((maxExp-exponentStep1) / exponentStep + 1) * exponentStep;
@@ -1992,7 +1992,7 @@ void longIntegerRegisterToDisplayString(calcRegister_t regist, char *displayStri
   longIntegerFree(lgInt);
 
 //IPGRP IPGRP1 IPGRP1x handling
-  if(GROUPWIDTH_LEFT > 0 || GROUPWIDTH_LEFT1 > 0 || SEPARATOR_LEFT[0]!=1 || SEPARATOR_LEFT[1]!=1) {
+  if(!GROUPLEFT_DISABLED || GROUPWIDTH_LEFT1 > 0) {
 
     //Handle IPGRP1, bearing in mind with a negative number, the digits start one deeper 
     int16_t len = strlen(displayString);
@@ -2036,7 +2036,7 @@ void longIntegerRegisterToDisplayString(calcRegister_t regist, char *displayStri
     char exponentString[14], lastRemovedDigit;
     int16_t lastChar, stringStep, tenExponent;
 
-    stringStep = (GROUPWIDTH_LEFT == 0 ? 1 : GROUPWIDTH_LEFT + 2);
+    stringStep = (GROUPLEFT_DISABLED ? 1 : GROUPWIDTH_LEFT + 2);
     tenExponent = exponentStep + exponentShift;
     lastChar = strlen(displayString) - stringStep;
     lastRemovedDigit = displayString[lastChar + 2];
@@ -2074,13 +2074,13 @@ void longIntegerRegisterToDisplayString(calcRegister_t regist, char *displayStri
           xcopy(displayString + lastChar + 1, displayString + lastChar, strlen(displayString) + 1);
           displayString[lastChar] = '1';
           if(SEPARATOR_LEFT[1]!=1) {
-            if(GROUPWIDTH_LEFT != 0 && displayString[lastChar + GROUPWIDTH_LEFT + 2] == SEPARATOR_LEFT[1]) { // We need to insert a new goup SEPARATOR_LEFT
+            if(!GROUPLEFT_DISABLED && displayString[lastChar + GROUPWIDTH_LEFT + 2] == SEPARATOR_LEFT[1]) { // We need to insert a new goup SEPARATOR_LEFT
               xcopy(displayString + lastChar + 3, displayString + lastChar + 1, strlen(displayString));
               displayString[lastChar + 1] = SEPARATOR_LEFT[0];
               displayString[lastChar + 2] = SEPARATOR_LEFT[1];
             }
           } else if(SEPARATOR_LEFT[0]!=1){
-            if(GROUPWIDTH_LEFT != 0 && displayString[lastChar + GROUPWIDTH_LEFT + 1] == SEPARATOR_LEFT[0]) { // We need to insert a new goup SEPARATOR_LEFT
+            if(!GROUPLEFT_DISABLED && displayString[lastChar + GROUPWIDTH_LEFT + 1] == SEPARATOR_LEFT[0]) { // We need to insert a new goup SEPARATOR_LEFT
               xcopy(displayString + lastChar + 2, displayString + lastChar + 1, strlen(displayString));
               displayString[lastChar + 1] = SEPARATOR_LEFT[0];
             }            
@@ -2504,14 +2504,14 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
       source = 0;
       dest = 0;
 
-      if(groupingGap == 0) {
+      if(GROUPLEFT_DISABLED) {
         maxWidth = SCREEN_WIDTH - stringWidth("0", &standardFont, true, true);
       }
       else {
         char tt[4]; tt[0]=0;
         if(SEPARATOR_LEFT[1]!=1) {strcpy(tt,SEPARATOR_LEFT);} 
         else if(SEPARATOR_LEFT[0]!=1){tt[0] = SEPARATOR_LEFT[0]; tt[1] = 0;} 
-        maxWidth = SCREEN_WIDTH - stringWidth("0", &standardFont, true, true)*groupingGap - stringWidth(tt, &standardFont, true, true);
+        maxWidth = SCREEN_WIDTH - stringWidth("0", &standardFont, true, true)*GROUPWIDTH_LEFT - stringWidth(tt, &standardFont, true, true);
       }
 
       for(d=0; d<=1800 ; d+=300) {
@@ -2524,7 +2524,7 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
             }
             source++;
             tmpString[++dest] = 0;
-          } while(source < last && groupingGap > 0 && (errorMessage[source] != SEPARATOR_LEFT[0] || errorMessage[source + 1] != SEPARATOR_LEFT[1]));
+          } while(source < last && !GROUPLEFT_DISABLED && (errorMessage[source] != SEPARATOR_LEFT[0] || errorMessage[source + 1] != SEPARATOR_LEFT[1]));
         }
       }
 
@@ -2682,7 +2682,7 @@ static void SHOW_reset(void){
 
 static void checkAndEat(int16_t *source, int16_t last, int16_t *dest) {
   uint8_t ix;
-  if(*source < last && GROUPWIDTH_LEFT!=0) {                  //Not in the last line
+  if(*source < last && !GROUPLEFT_DISABLED) {                  //Not in the last line
     for(ix=0; ix<=3; ix++) {
       if(!(tmpString[(*dest)-2] & 0x80)) {(*dest)--; (*source)--;} //Eat away characters at the end to line up the last space
     }
@@ -2791,7 +2791,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
 
         { //printf("2: %d\n",stringGlyphLength(tmpString + 2100));
           temporaryInformation = TI_SHOW_REGISTER_BIG;
-          if(GROUPWIDTH_LEFT == 0 || (SEPARATOR_LEFT[0]==1 && SEPARATOR_LEFT[1]==1) ) {
+          if(GROUPLEFT_DISABLED) {
             maxWidth = SCREEN_WIDTH - stringWidth("00", &numericFont, true, true);
           }
           else {              //not 0x0101:
@@ -2815,7 +2815,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
               tmpString[++dest] = 0;
             }
 
-            while (source < last && GROUPWIDTH_LEFT!=0 && !(SEPARATOR_LEFT[0]==1 && SEPARATOR_LEFT[1]==1) && !(tmpString[dest-2] & 0x80)) //Not in the last line. Eat away characters at the end to line up the last space.
+            while (source < last && !GROUPLEFT_DISABLED && !(tmpString[dest-2] & 0x80)) //Not in the last line. Eat away characters at the end to line up the last space.
               {
                 dest--;
                 source--;
@@ -2826,7 +2826,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
 
             tmpString[dest] = 0;
             //printf("last:%u %u\n",(uint8_t)tmpString[dest+0], (uint8_t)tmpString[dest+1]);
-            if((SEPARATOR_LEFT[0]!=1 && SEPARATOR_LEFT[0]!=1) && !(source < last) && GROUPWIDTH_LEFT!=0 && (tmpString[dest+0] != 0) && !(tmpString[dest+0] == SEPARATOR_LEFT[0] && (tmpString[dest+1] == SEPARATOR_LEFT[1] || SEPARATOR_LEFT[0] == 1) )) {               //Last line
+            if((SEPARATOR_LEFT[0]!=1 && SEPARATOR_LEFT[0]!=1) && !(source < last) && !GROUPLEFT_DISABLED && (tmpString[dest+0] != 0) && !(tmpString[dest+0] == SEPARATOR_LEFT[0] && (tmpString[dest+1] == SEPARATOR_LEFT[1] || SEPARATOR_LEFT[0] == 1) )) {               //Last line
               tmpString[dest+0] = SEPARATOR_LEFT[0]; //0xa0;       //Add a space to the very end to space last line nicely.
               if(SEPARATOR_LEFT[1]!=1) {
                 tmpString[dest+1] = SEPARATOR_LEFT[1]; //0x05;
@@ -2859,7 +2859,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
 
           //printf("1: %d\n",stringGlyphLength(tmpString + 2100));
 
-          if(GROUPWIDTH_LEFT == 0 || (SEPARATOR_LEFT[0]==1 && SEPARATOR_LEFT[1]==1) ) {
+          if(GROUPLEFT_DISABLED) {
             maxWidth = SCREEN_WIDTH - stringWidth("0", &standardFont, true, true);
           }
           else {
@@ -2882,7 +2882,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
                 tmpString[++dest] = 0;
                 if((SEPARATOR_LEFT[0]==1 && SEPARATOR_LEFT[1]==1) && stringWidth(tmpString + d, &standardFont, true, true) >= maxWidth - 20) break;
               }
-            while(source < last && GROUPWIDTH_LEFT > 0 && (errorMessage[source] != SEPARATOR_LEFT[0] || (SEPARATOR_LEFT[1]==1 ? false : errorMessage[source + 1] != SEPARATOR_LEFT[1])) ); //the text and digits cannot be 0x01 so additional logic not needed.
+            while(source < last && !GROUPLEFT_DISABLED && (errorMessage[source] != SEPARATOR_LEFT[0] || (SEPARATOR_LEFT[1]==1 ? false : errorMessage[source + 1] != SEPARATOR_LEFT[1])) ); //the text and digits cannot be 0x01 so additional logic not needed.
 
             }
           }

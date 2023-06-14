@@ -1545,6 +1545,14 @@ uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, co
       last_CM = 253; //Force redraw
     }
 
+    if(checkHP) {
+      lines = 1;
+      y_offset = 1;
+      last_CM = 253; //Force redraw
+      editlines = 1;
+      yincr = 1;
+    }
+
 
 
 
@@ -1837,7 +1845,7 @@ void printHalfSecUpdate_Integer(uint8_t mode, char *txt, int loop) {
   if(running_program_jm) return;                             //JM
   showFunctionNameCounter = delayInMs;
   stringAppend(padding,functionName);                              //JM
-  stringAppend(padding + stringByteLength(padding),"    ");                                    //JM
+  stringAppend(padding + stringByteLength(padding),"     ");                                    //JM
   if(stringWidth(padding, &standardFont, true, true) + 1 /*JM 20*/ + lineTWidth > SCREEN_WIDTH) {                //JM T-Register clearing
     clearRegisterLine(REGISTER_T, true, false);
   }
@@ -2634,8 +2642,7 @@ void hideFunctionName(void) {
         int16_t tmplen = stringByteLength(aimBuffer);
         if(T_cursorPos > tmplen) {T_cursorPos = tmplen;}     //Do range checking in case the cursor starts off outside of range
         if(T_cursorPos < 0)      {T_cursorPos = tmplen;}     //Do range checking in case the cursor starts off outside of range
-
-        showStringEdC43(lines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, Y_POSITION_OF_NIM_LINE - 3, vmNormal, true, true, false);  //display up to the cursor
+        showStringEdC43(lines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, Y_POSITION_OF_NIM_LINE - 3 - checkHPoffset, vmNormal, true, true, false);  //display up to the cursor
 
         if(T_cursorPos == tmplen) cursorEnabled = true; else cursorEnabled = false; 
         if(combinationFonts == 2) {
@@ -3551,7 +3558,7 @@ void hideFunctionName(void) {
           w = stringWidthWithLimitC43(REGISTER_STRING_DATA(regist), stdnumEnlarge, nocompress, SCREEN_WIDTH, false, true);
           if(regist == REGISTER_X && w<SCREEN_WIDTH) {
             lineWidth = w; //slighly incorrect if special characters are there as well.
-            showStringC43(REGISTER_STRING_DATA(regist), stdnumEnlarge, nocompress, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, false, true);
+            showStringC43(REGISTER_STRING_DATA(regist), stdnumEnlarge, nocompress, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6 - checkHPoffset, vmNormal, false, true);
           } else                                                                   //JM
         #endif
 
@@ -3559,7 +3566,7 @@ void hideFunctionName(void) {
             //This is for X
             if(regist == REGISTER_X && (w = stringWidthWithLimitC43(REGISTER_STRING_DATA(regist), numHalf, nocompress, SCREEN_WIDTH, false, true)) < SCREEN_WIDTH) {
               lineWidth = w;
-              showStringC43(REGISTER_STRING_DATA(regist), numHalf, nocompress, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, false, true);
+              showStringC43(REGISTER_STRING_DATA(regist), numHalf, nocompress, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6 - checkHPoffset, vmNormal, false, true);
             } else                                                                   //JM
           #endif
 
@@ -3567,7 +3574,7 @@ void hideFunctionName(void) {
               //This is for Y, Z & T
               if(regist >= REGISTER_Y && regist <= REGISTER_T && (w = stringWidthWithLimitC43(REGISTER_STRING_DATA(regist), numHalf, nocompress, SCREEN_WIDTH, false, true)) < SCREEN_WIDTH) {
                 lineWidth = w;
-                showStringC43(REGISTER_STRING_DATA(regist), numHalf, nocompress, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, false, true);
+                showStringC43(REGISTER_STRING_DATA(regist), numHalf, nocompress, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6 - checkHPoffset, vmNormal, false, true);
               } else                                                                   //JM
             #endif
           //JM ^^ large fonts
@@ -3587,7 +3594,7 @@ void hideFunctionName(void) {
                 showString(tmpString, &standardFont, prefixWidth     , Y_POSITION_OF_REGISTER_T_LINE - 3, vmNormal, false, true);
               }
               else {
-                showString(tmpString, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - 3, vmNormal, false, true);
+                showString(tmpString, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - 3 - checkHPoffset, vmNormal, false, true);
               }
 
               w = stringByteLength(tmpString);
@@ -3602,7 +3609,7 @@ void hideFunctionName(void) {
                 showString(tmpString, &standardFont, prefixWidth     , Y_POSITION_OF_REGISTER_T_LINE + 18, vmNormal, false, true);
               }
               else {
-                showString(tmpString, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE + 18, vmNormal, false, true);
+                showString(tmpString, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE + 18 - checkHPoffset, vmNormal, false, true);
               }
             }
             else {
@@ -3611,7 +3618,7 @@ void hideFunctionName(void) {
               xcopy(tmpStrW, STD_ELLIPSIS, 3);
               w = stringWidth(tmpString, &standardFont, false, true);
               lineWidth = w;
-              showString(tmpString, &standardFont, SCREEN_WIDTH - w, baseY + 6, vmNormal, false, true);
+              showString(tmpString, &standardFont, SCREEN_WIDTH - w, baseY + 6 - checkHPoffset, vmNormal, false, true);
             }
           }
           else {
@@ -3620,7 +3627,7 @@ void hideFunctionName(void) {
               showString(REGISTER_STRING_DATA(regist), &standardFont, prefixWidth     , baseY + TEMPORARY_INFO_OFFSET, vmNormal, false, true);
             }
             else {
-              showString(REGISTER_STRING_DATA(regist), &standardFont, SCREEN_WIDTH - w, baseY + 6                    , vmNormal, false, true);
+              showString(REGISTER_STRING_DATA(regist), &standardFont, SCREEN_WIDTH - w, baseY + 6                    - checkHPoffset, vmNormal, false, true);
             }
           }
         }

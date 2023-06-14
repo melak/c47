@@ -60,7 +60,7 @@
 #endif
 
 #include "wp43.h"
-#define BACKUP_VERSION                     781  // save lastDenominator
+#define BACKUP_VERSION                     781  // save new gap settings
 #define OLDEST_COMPATIBLE_BACKUP_VERSION   779  // save running app
 #define configFileVersion                  10000005 // arbitrary starting point version 10 000 001. Allowable values are 10000000 to 20000000
 #define VersionAllowed                     10000005 // This code will not autoload versions earlier than this
@@ -2341,7 +2341,7 @@ int32_t stringToInt32(const char *str) {
           else if(strcmp(aimBuffer, "currentAngularMode") == 0) {
             currentAngularMode = stringToUint8(tmpString);
           }
-          else if(strcmp(aimBuffer, "groupingGap") == 0) {
+          else if(strcmp(aimBuffer, "groupingGap") == 0) {             //backwards compatible loading old config files
             configCommon(CFG_DFLT);
             grpGroupingLeft = stringToUint8(tmpString);                //Changed from groupingGap to remain compatible
             grpGroupingRight = grpGroupingLeft;

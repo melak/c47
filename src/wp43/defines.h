@@ -1258,6 +1258,8 @@ typedef enum {
                                                 ( Rx[0] == ','  ? (char*) ",\1\0"  :   \
                                                   Rx[0] == '.'  ? (char*) ".\1\0"  : Rx ) : Rx )  //set second character to skip character 0x01
 
+#define GROUPLEFT_DISABLED                   (GROUPWIDTH_LEFT == 0 || gapItemLeft == 0)
+#define GROUPRIGHT_DISABLED                  (GROUPWIDTH_RIGHT == 0 || gapItemRight == 0)
 #define SEPARATOR_LEFT                       (gapChar1Left)
 #define SEPARATOR_RIGHT                      (gapChar1Right)
 #define checkHP                              (significantDigits == 10 && displayStack == 1 && exponentHideLimit == 12 && exponentLimit == 99 && Input_Default == ID_DP)

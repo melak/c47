@@ -1898,7 +1898,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
 
 
   static int16_t insertGapIP(char *displayBuffer, int16_t numDigits, int16_t nth) {
-    if(GROUPWIDTH_LEFT == 0 || (SEPARATOR_LEFT[0]==1 && SEPARATOR_LEFT[1]==1)) {
+    if(GROUPLEFT_DISABLED) {
       return 0; // no gap when none is required!
     }
     if(numDigits <= GROUPWIDTH_LEFT) {
@@ -1920,7 +1920,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
   }
 
   static int16_t insertGapFP(char *displayBuffer, int16_t numDigits, int16_t nth) {
-    if(GROUPWIDTH_RIGHT == 0 || (SEPARATOR_RIGHT[0]==1 && SEPARATOR_RIGHT[1]==1)) {
+    if(GROUPRIGHT_DISABLED) {
       return 0; // no gap when none is required!
     }
     if(numDigits <= GROUPWIDTH_RIGHT) {
