@@ -1902,7 +1902,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       return 0; // no gap when none is required!
     }
     if(numDigits <= GROUPWIDTH_LEFT) {
-      return 0; // there are less than groupingGap digits
+      return 0; // there are less than GROUPWIDTH_LEFT digits
     }
     if(nth + 1 == numDigits) {
       return 0; // no gap after the last digit
@@ -1924,7 +1924,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       return 0; // no gap when none is required!
     }
     if(numDigits <= GROUPWIDTH_RIGHT) {
-      return 0; // there are less than groupingGap digits
+      return 0; // there are less than GROUPWIDTH_LEFT digits
     }
     if(nth + 1 == numDigits) {
       return 0; // no gap after the last digit
@@ -1951,15 +1951,15 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     }
     buffer++;
 
-    int16_t groupingGapM = groupingGap;                       //JMGAP vv
+    int16_t GROUPWIDTH_LEFTM = GROUPWIDTH_LEFT;                       //JMGAP vv
     switch(nimNumberPart) {
-      case NP_INT_10:                    // +12345 longint; Do not change groupingGap. Leave at user setting, default 3.
-      case NP_INT_BASE:                  // +123AB#16.    ; Change groupinggap from user selection to this table, for entry
+      case NP_INT_10:                    // +12345 longint; Do not change GROUPWIDTH_LEFT. Leave at user setting, default 3.
+      case NP_INT_BASE:                  // +123AB#16.    ; Change GROUPWIDTH_LEFT from user selection to this table, for entry
         switch(lastIntegerBase) {
-          case  0:groupingGap = groupingGapM; break;
-          case  2:groupingGap = 4; break;
-          case  3:groupingGap = 3; break;
-          case  4:groupingGap = 2; break;
+          case  0:GROUPWIDTH_LEFT = GROUPWIDTH_LEFTM; break;
+          case  2:GROUPWIDTH_LEFT = 4; break;
+          case  3:GROUPWIDTH_LEFT = 3; break;
+          case  4:GROUPWIDTH_LEFT = 2; break;
           case  5:
           case  6:
           case  7:
@@ -1970,13 +1970,13 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case 12:
           case 13:
           case 14:
-          case 15:groupingGap = 3; break;
-          case 16:groupingGap = 2; break;
+          case 15:GROUPWIDTH_LEFT = 3; break;
+          case 16:GROUPWIDTH_LEFT = 2; break;
           default:break;
         }
         break;
       case NP_INT_16:                    // +123AB.       ; Change to 2 for hex.
-        groupingGap = 2;
+        GROUPWIDTH_LEFT = 2;
         break;
       default:
         break;
@@ -1990,7 +1990,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       dest += insertGapIP(displayBuffer + dest, numDigits, source);
     }
 
-    groupingGap = groupingGapM;                               //JMGAP
+    GROUPWIDTH_LEFT = GROUPWIDTH_LEFTM;                               //JMGAP
     displayBuffer[dest] = 0;
 
     if(nimNumberPart == NP_REAL_FLOAT_PART || nimNumberPart == NP_REAL_EXPONENT) {

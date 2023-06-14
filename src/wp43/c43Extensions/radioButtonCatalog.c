@@ -585,10 +585,6 @@ int16_t fnItemShowValue(int16_t item) {
     result = displayStackSHOIDISP;
     break;
 
-  case ITM_GAP:     //  215
-    result = groupingGap;
-    break;
-
   case ITM_FIX:     //  185
     if(displayFormat == DF_FIX) {
       result = displayFormatDigits;

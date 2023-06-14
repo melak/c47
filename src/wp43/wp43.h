@@ -195,15 +195,9 @@
   extern char                   oldTime[8];
   extern char                   dateTimeString[12];
   extern char                   displayValueX[DISPLAY_VALUE_LEN];
-//  extern char                   gapCharLeft[3];
-//  extern char                   gapCharRight[3];
-//  extern char                   gapCharRadix[3];
-extern uint16_t               gapItemLeft;
-extern uint16_t               gapItemRight;
-extern uint16_t               gapItemRadix;
-
-
-
+  extern uint16_t               gapItemLeft;
+  extern uint16_t               gapItemRight;
+  extern uint16_t               gapItemRadix;
   extern uint8_t                numScreensStandardFont;
   extern uint8_t                currentAsnScr;
   extern uint8_t                currentFntScr;
@@ -216,7 +210,6 @@ extern uint16_t               gapItemRadix;
   extern uint8_t                significantDigits;
   extern uint8_t                shortIntegerMode;
   extern uint8_t                previousCalcMode;
-  extern uint8_t                groupingGap;
   extern uint8_t                grpGroupingLeft;
   extern uint8_t                grpGroupingGr1LeftOverflow;
   extern uint8_t                grpGroupingGr1Left;

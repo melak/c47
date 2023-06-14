@@ -378,7 +378,6 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnDisplayFormatSci          (uint16_t unusedButMandatoryParameter) {}
   void fnDisplayFormatEng          (uint16_t unusedButMandatoryParameter) {}
   void fnDisplayFormatDsp          (uint16_t unusedButMandatoryParameter) {}
-  void fnDisplayFormatGap          (uint16_t unusedButMandatoryParameter) {}
   void fnDisplayFormatTime         (uint16_t unusedButMandatoryParameter) {}
   void fnArccos                    (uint16_t unusedButMandatoryParameter) {}
   void fnArccosh                   (uint16_t unusedButMandatoryParameter) {}
@@ -2609,7 +2608,10 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1474 */  { fnFreeFlashMemory,            NOPARAM,                     "FLASH?",                                      "FLASH?",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1475 */  { fn1stDeriv,                   TM_LABEL,                    "f'(x)",                                       "f'(x)",                                       (0 << TAM_MAX_BITS) |    99, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_LABEL        },
 /* 1476 */  { fn2ndDeriv,                   TM_LABEL,                    "f\"(x)",                                      "f\"(x)",                                      (0 << TAM_MAX_BITS) |    99, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_LABEL        },
-/* 1477 */  { fnDisplayFormatGap,           TM_VALUE,                    "GAP",                                         "GAP",                                         (0 << TAM_MAX_BITS) | DSP_MAX, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NUMBER_8     },
+
+
+//Note the PTP parameter which is needed to maintain the existing base of programs
+/* 1477 */  { itemToBeCoded,                NOPARAM,                     "1481",                                        "1481",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_NUMBER_8     },
 /* 1478 */  { fnGd,                         NOPARAM,                     "g" STD_SUB_d,                                 "g" STD_SUB_d,                                 (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_ENABLED  | PTP_NONE         },
 /* 1479 */  { fnInvGd,                      NOPARAM,                     "g" STD_SUB_d STD_SUP_MINUS_1,                 "g" STD_SUB_d STD_SUP_MINUS_1,                 (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_ENABLED  | PTP_NONE         },
 /* 1480 */  { fnAngularMode,                amGrad,                      "GRAD",                                        "GRAD",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },

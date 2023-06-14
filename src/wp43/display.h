@@ -29,7 +29,6 @@ void fnDisplayFormatSci                (uint16_t displayFormatN);
 void fnDisplayFormatEng                (uint16_t displayFormatN);
 void fnDisplayFormatAll                (uint16_t displayFormatN);
 void fnDisplayFormatDsp                (uint16_t displayFormatN);
-void fnDisplayFormatGap                (uint16_t gap);
 void fnDisplayFormatTime               (uint16_t displayFormatN);
 void fnDisplayFormatSigFig             (uint16_t displayFormatN);
 void fnDisplayFormatUnit               (uint16_t displayFormatN);

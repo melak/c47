@@ -113,7 +113,6 @@ void configCommon(uint16_t idx) {
 
   fnSetGapChar (0 + configSettings[idx].gapl);
   grpGroupingLeft            = configSettings[idx].gprl ;
-  groupingGap                = grpGroupingLeft;               //legacy function displays use IPGAP
   grpGroupingGr1LeftOverflow = configSettings[idx].gpr1x;
   grpGroupingGr1Left         = configSettings[idx].gpr1 ;
   grpGroupingRight           = configSettings[idx].gprr ;
@@ -146,7 +145,6 @@ void configCommon(uint16_t idx) {
     temporaryInformation = TI_NO_INFO;       //Clear any pending TI
 
     grpGroupingLeft   =  3;                  //IPGRP 3
-    groupingGap = grpGroupingLeft;           //Set legacy function displays to use IPGAP
     grpGroupingRight   =  3;                 //FPGRP 3
     grpGroupingGr1Left =  0;                 //IPGRP1 0
     grpGroupingGr1LeftOverflow = 0;          //IPGRP1x 0
@@ -194,7 +192,6 @@ void configCommon(uint16_t idx) {
 
     fnSetGapChar (0 + configSettings[CFG_DFLT].gapl);
     grpGroupingLeft            = configSettings[CFG_DFLT].gprl ;
-    groupingGap                = grpGroupingLeft;               //legacy function displays use IPGAP
     grpGroupingGr1LeftOverflow = configSettings[CFG_DFLT].gpr1x;
     grpGroupingGr1Left         = configSettings[CFG_DFLT].gpr1 ;
     grpGroupingRight           = configSettings[CFG_DFLT].gprr ;
@@ -294,7 +291,6 @@ void fnSettingsToXEQ            (uint16_t unusedButMandatoryParameter) {
 
 void fnSettingsDispFormatGrpL   (uint16_t param) {
    grpGroupingLeft = param;
-   groupingGap = param;         //Legacy function displays use IPGRP, for NIM et al
 }
 void fnSettingsDispFormatGrp1Lo  (uint16_t param) {
    grpGroupingGr1LeftOverflow = param;
@@ -1105,7 +1101,6 @@ void resetOtherConfigurationStuff(void) {
   shortIntegerMode = SIM_2COMPL;                              //64:2
   fnSetWordSize(64);
 
-  groupingGap = 3;
   grpGroupingLeft   = 3;
   grpGroupingGr1Left= 0;
   grpGroupingGr1Left= 0;

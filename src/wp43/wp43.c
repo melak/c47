@@ -141,7 +141,6 @@ uint8_t                shortIntegerWordSize;
 uint8_t                significantDigits;
 uint8_t                shortIntegerMode;
 uint8_t                previousCalcMode;
-uint8_t                groupingGap;
 uint8_t                grpGroupingLeft;
 uint8_t                grpGroupingGr1LeftOverflow;
 uint8_t                grpGroupingGr1Left;

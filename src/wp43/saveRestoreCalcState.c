@@ -60,7 +60,7 @@
 #endif
 
 #include "wp43.h"
-#define BACKUP_VERSION                     780  // save lastDenominator
+#define BACKUP_VERSION                     781  // save lastDenominator
 #define OLDEST_COMPATIBLE_BACKUP_VERSION   779  // save running app
 #define configFileVersion                  10000005 // arbitrary starting point version 10 000 001. Allowable values are 10000000 to 20000000
 #define VersionAllowed                     10000005 // This code will not autoload versions earlier than this
@@ -99,7 +99,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
 
 #if defined(PC_BUILD)
   void saveCalc(void) {
-    //uint8_t  compatibility_u8 = 0;           //defaults to use when settings are removed
+    uint8_t  compatibility_u8 = 0;           //defaults to use when settings are removed
     bool_t   compatibility_bool = false;     //defaults to use when settings are removed
     uint32_t backupVersion = BACKUP_VERSION;
     uint32_t ramSize       = RAM_SIZE;
@@ -192,7 +192,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
     save(&significantDigits,                  sizeof(significantDigits));
     save(&shortIntegerMode,                   sizeof(shortIntegerMode));
     save(&currentAngularMode,                 sizeof(currentAngularMode));
-    save(&groupingGap,                        sizeof(groupingGap));
+    save(&compatibility_u8,                   sizeof(compatibility_u8));
     save(&roundingMode,                       sizeof(roundingMode));
     save(&calcMode,                           sizeof(calcMode));
     save(&nextChar,                           sizeof(nextChar));
@@ -398,6 +398,14 @@ static uint32_t restore(void *buffer, uint32_t size) {
     save(&LongPressF,                         sizeof(LongPressF));                //JM
     save(&currentAsnScr,                      sizeof(currentAsnScr));             //JM
 
+    save(&gapItemLeft,                        sizeof(gapItemLeft));               //JM
+    save(&gapItemRight,                       sizeof(gapItemRight));              //JM
+    save(&gapItemRadix,                       sizeof(gapItemRadix));              //JM
+    save(&grpGroupingLeft,                    sizeof(grpGroupingLeft));           //JM
+    save(&grpGroupingGr1LeftOverflow,         sizeof(grpGroupingGr1LeftOverflow));//JM
+    save(&grpGroupingGr1Left,                 sizeof(grpGroupingGr1Left));        //JM
+    save(&grpGroupingRight,                   sizeof(grpGroupingRight));          //JM
+
     ioFileClose();
     printf("End of calc's backup\n");
   }
@@ -406,7 +414,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
 
   void restoreCalc(void) {
     printf("RestoreCalc\n");
-    //uint8_t  compatibility_u8;        //defaults to use when settings are removed
+    uint8_t  compatibility_u8;        //defaults to use when settings are removed
       bool_t   compatibility_bool;      //defaults to use when settings are removed
     uint32_t backupVersion, ramSize, ramPtr;
     int ret;
@@ -426,6 +434,9 @@ static uint32_t restore(void *buffer, uint32_t size) {
     }
 
     restore(&backupVersion,                      sizeof(backupVersion));
+    if(backupVersion < 781) {
+      configCommon(CFG_DFLT);
+    }
     restore(&ramSize,                            sizeof(ramSize));
     if(backupVersion > BACKUP_VERSION || backupVersion < OLDEST_COMPATIBLE_BACKUP_VERSION || ramSize != RAM_SIZE) {
       ioFileClose();
@@ -509,7 +520,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
       restore(&significantDigits,                  sizeof(significantDigits));
       restore(&shortIntegerMode,                   sizeof(shortIntegerMode));
       restore(&currentAngularMode,                 sizeof(currentAngularMode));
-      restore(&groupingGap,                        sizeof(groupingGap));
+      restore(&compatibility_u8,                   sizeof(compatibility_u8));
       restore(&roundingMode,                       sizeof(roundingMode));
       restore(&calcMode,                           sizeof(calcMode));
       restore(&nextChar,                           sizeof(nextChar));
@@ -706,6 +717,18 @@ static uint32_t restore(void *buffer, uint32_t size) {
       restore(&LongPressM,                         sizeof(LongPressM));               //JM
       restore(&LongPressF,                         sizeof(LongPressF));               //JM
       restore(&currentAsnScr,                      sizeof(currentAsnScr));            //JM
+
+      if(backupVersion >= 781) {
+        restore(&gapItemLeft,                        sizeof(gapItemLeft));               //JM
+        restore(&gapItemRight,                       sizeof(gapItemRight));              //JM
+        restore(&gapItemRadix,                       sizeof(gapItemRadix));              //JM
+        restore(&grpGroupingLeft,                    sizeof(grpGroupingLeft));           //JM
+        restore(&grpGroupingGr1LeftOverflow,         sizeof(grpGroupingGr1LeftOverflow));//JM
+        restore(&grpGroupingGr1Left,                 sizeof(grpGroupingGr1Left));        //JM
+        restore(&grpGroupingRight,                   sizeof(grpGroupingRight));          //JM
+      } else {
+        
+      }
 
       ioFileClose();
       printf("End of calc's restoration\n");
@@ -1236,7 +1259,19 @@ flushBufferCnt = 0;
   save(tmpString, strlen(tmpString));
   sprintf(tmpString, "currentAngularMode\n%" PRIu8 "\n", (uint8_t)currentAngularMode);
   save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "groupingGap\n%" PRIu8 "\n", groupingGap);
+  sprintf(tmpString, " gapItemLeft\n%" PRIu16 "\n", gapItemLeft);
+  save(tmpString, strlen(tmpString));
+  sprintf(tmpString, " gapItemRight\n%" PRIu16 "\n", gapItemRight);
+  save(tmpString, strlen(tmpString));
+  sprintf(tmpString, " gapItemRadix\n%" PRIu16 "\n", gapItemRadix);
+  save(tmpString, strlen(tmpString));
+  sprintf(tmpString, " grpGroupingLeft\n%" PRIu8 "\n", grpGroupingLeft);
+  save(tmpString, strlen(tmpString));
+  sprintf(tmpString, " grpGroupingGr1LeftOverflow\n%" PRIu8 "\n", grpGroupingGr1LeftOverflow);
+  save(tmpString, strlen(tmpString));
+  sprintf(tmpString, " grpGroupingGr1Left\n%" PRIu8 "\n", grpGroupingGr1Left);
+  save(tmpString, strlen(tmpString));
+  sprintf(tmpString, " grpGroupingRight\n%" PRIu8 "\n", grpGroupingRight);  
   save(tmpString, strlen(tmpString));
   sprintf(tmpString, "roundingMode\n%" PRIu8 "\n", roundingMode);
   save(tmpString, strlen(tmpString));
@@ -2307,7 +2342,30 @@ int32_t stringToInt32(const char *str) {
             currentAngularMode = stringToUint8(tmpString);
           }
           else if(strcmp(aimBuffer, "groupingGap") == 0) {
-            groupingGap = stringToUint8(tmpString);
+            configCommon(CFG_DFLT);
+            grpGroupingLeft = stringToUint8(tmpString);                //Changed from groupingGap to remain compatible
+            grpGroupingRight = grpGroupingLeft;
+          }
+          else if(strcmp(aimBuffer, "gapItemLeft") == 0) {
+            roundingMode = stringToUint16(tmpString);
+          }
+          else if(strcmp(aimBuffer, "gapItemRight") == 0) {
+            roundingMode = stringToUint16(tmpString);
+          }
+          else if(strcmp(aimBuffer, "gapItemRadix") == 0) {
+            roundingMode = stringToUint16(tmpString);
+          }
+          else if(strcmp(aimBuffer, "grpGroupingLeft") == 0) {
+            roundingMode = stringToUint8(tmpString);
+          }
+          else if(strcmp(aimBuffer, "grpGroupingGr1LeftOverflow") == 0) {
+            roundingMode = stringToUint8(tmpString);
+          }
+          else if(strcmp(aimBuffer, "grpGroupingGr1Left") == 0) {
+            roundingMode = stringToUint8(tmpString);
+          }
+          else if(strcmp(aimBuffer, "grpGroupingRight") == 0) {
+            roundingMode = stringToUint8(tmpString);
           }
           else if(strcmp(aimBuffer, "roundingMode") == 0) {
             roundingMode = stringToUint8(tmpString);

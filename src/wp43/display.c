@@ -157,20 +157,6 @@ void fnDisplayFormatDsp(uint16_t displayFormatN) {
 
 
 /********************************************//**
- * \brief Sets the GAP in number represemtation and refreshes the stack
- *
- * \param[in] gap uint16_t
- * \return void
- ***********************************************/
-void fnDisplayFormatGap(uint16_t gap) {
-  if(gap == 1 || gap == 2) {
-    gap = 0;
-  }
-  groupingGap = gap;
-}
-
-
-/********************************************//**
  * \brief Sets the display format for time and refreshes the stack
  *
  * \param[in] displayFormatN uint16_t Display format

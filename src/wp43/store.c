@@ -382,7 +382,13 @@ void fnStoreConfig(uint16_t regist) {
   storeToDtConfigDescriptor(shortIntegerWordSize);
   storeToDtConfigDescriptor(displayFormat);
   storeToDtConfigDescriptor(displayFormatDigits);
-  storeToDtConfigDescriptor(groupingGap);
+  storeToDtConfigDescriptor(gapItemLeft);
+  storeToDtConfigDescriptor(gapItemRight);
+  storeToDtConfigDescriptor(gapItemRadix);
+  storeToDtConfigDescriptor(grpGroupingLeft);
+  storeToDtConfigDescriptor(grpGroupingGr1LeftOverflow);
+  storeToDtConfigDescriptor(grpGroupingGr1Left);
+  storeToDtConfigDescriptor(grpGroupingRight);
   storeToDtConfigDescriptor(currentAngularMode);
   storeToDtConfigDescriptor(lrSelection);
   storeToDtConfigDescriptor(lrChosen);

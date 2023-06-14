@@ -172,7 +172,13 @@ typedef struct {
   uint8_t       shortIntegerWordSize;
   uint8_t       displayFormat;
   uint8_t       displayFormatDigits;
-  uint8_t       groupingGap;
+  uint16_t        gapItemLeft;
+  uint16_t        gapItemRight;
+  uint16_t        gapItemRadix;
+  uint8_t         grpGroupingLeft;
+  uint8_t         grpGroupingGr1LeftOverflow;
+  uint8_t         grpGroupingGr1Left;
+  uint8_t         grpGroupingRight;
   uint8_t       displayStack;
   uint8_t       roundingMode;
   uint8_t       timeDisplayFormatDigits;
