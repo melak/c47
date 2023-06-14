@@ -1176,20 +1176,23 @@ uint8_t  displaymode = stdNoEnlarge;
         }
 
         if(byte & 0x80 && !noShow) {// MSB set
+          uint32_t x1 = x+((((doubling * (xGlyph+col)) >> miniC)) >> 2);
+          uint32_t x2;
+          uint32_t y1 = y0+((y-y0) >> miniC);
+          uint32_t y2;
+          if(x1 != 0) x2 = x1 - 1;
+          if(y1 != SCREEN_WIDTH-1) y2 = y1 + 1;
           if(videoMode == vmNormal) { // Black pixel for white background
-                            setBlackPixel(   x+((((doubling * (xGlyph+col)) >> miniC)) >> 2),    y0+((y-y0) >> miniC));       //JMmini
-            if(numDouble)   setBlackPixel(-1+x+((((doubling * (xGlyph+col)) >> miniC)) >> 2),    y0+((y-y0) >> miniC));       //JMmini
-            if(rep_enlarge) {
-                            setBlackPixel(   x+((((doubling * (xGlyph+col)) >> miniC)) >> 2), 1+(y0+((y-y0) >> miniC)));       //JMmini              
-              if(numDouble) setBlackPixel(-1+x+((((doubling * (xGlyph+col)) >> miniC)) >> 2), 1+(y0+((y-y0) >> miniC)));       //JMmini              
+                              setBlackPixel(x1,y1);
+            if(numDouble)     setBlackPixel(x2,y1);
+            if(rep_enlarge) { setBlackPixel(x1,y2);
+              if(numDouble)   setBlackPixel(x2,y2);
             }
-          }
-          else { // White pixel for black background
-                            setWhitePixel(   x+((((doubling * (xGlyph+col)) >> miniC)) >> 2),    y0+((y-y0) >> miniC));       //JMmini
-            if(numDouble)   setWhitePixel(-1+x+((((doubling * (xGlyph+col)) >> miniC)) >> 2),    y0+((y-y0) >> miniC));       //JMmini
-            if(rep_enlarge) {
-                            setWhitePixel(   x+((((doubling * (xGlyph+col)) >> miniC)) >> 2), 1+(y0+((y-y0) >> miniC)));       //JMmini
-              if(numDouble) setWhitePixel(-1+x+((((doubling * (xGlyph+col)) >> miniC)) >> 2), 1+(y0+((y-y0) >> miniC)));       //JMmini
+          } else { // White pixel for black background
+                              setWhitePixel(x1,y1);
+            if(numDouble)     setWhitePixel(x2,y1);
+            if(rep_enlarge) { setWhitePixel(x1,y2);
+              if(numDouble)   setWhitePixel(x2,y2);
             }
           }
         }
