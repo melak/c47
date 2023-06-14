@@ -204,7 +204,7 @@
   font-family: C43__StandardFont;
   font-style:  normal;
   font-weight: normal;
-  font-size:   18px;  
+  font-size:   18px;
   padding:     0px;
   /* JM removed "text-decoration: underline;" and changed from "background:  $bezelBackground;" */
 }
@@ -216,7 +216,7 @@
   font-family: C43__StandardFont;
   font-style:  normal;
   font-weight: normal;
-  font-size:   18px;  
+  font-size:   18px;
   padding:     0px;
   /* JM added label; changed from "background:  $bezelBackground;" */
 }

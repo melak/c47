@@ -48,67 +48,99 @@ TO_QSPI static const char bugScreenUnknownFormulaParserMode[] = "In function _pa
     uint16_t opCode;
     uint16_t unused;
   } functionAlias_t;
-  
+
   TO_QSPI static const functionAlias_t functionAlias[] = {
     //name                                   opCode           padding
-    { "ACOSH",                               ITM_arcosh,      0}, // Inverse hyperbolic cosine
-    { "ASINH",                               ITM_arsinh,      0}, // Inverse hyperbolic sine
-    { "ATAN2",                               ITM_atan2,       0}, // Binary arctangent
-    { "ATANH",                               ITM_artanh,      0}, // Inverse hyperbolic tangent
-    { "CEIL",                                ITM_CEIL,        0}, // Ceiling function
-    { "COS",                                 ITM_cos,         0}, // Cosine
-    { "COSH",                                ITM_cosh,        0}, // Hyperbolic cosine
-    { "EXP",                                 ITM_EXP,         0}, // Natural exponential
-    { "FLOOR",                               ITM_FLOOR,       0}, // Floor function
-    { "gd",                                  ITM_GD,          0}, // Gudermannian function
-    { "gd" STD_SUP_MINUS_1,                  ITM_GDM1,        0}, // Inverse Gudermannian function
-    { "gd" STD_SUP_MINUS STD_SUP_1,          ITM_GDM1,        0}, // Inverse Gudermannian function
-    { "g" STD_SUB_d STD_SUP_MINUS_1,         ITM_GDM1,        0}, // Inverse Gudermannian function
-    { "g" STD_SUB_d STD_SUP_MINUS STD_SUP_1, ITM_GDM1,        0}, // Inverse Gudermannian function
-    { "LB",                                  ITM_LOG2,        0}, // Binary logarithm
-    { "LG",                                  ITM_LOG10,       0}, // Common logarithm
-    { "LN",                                  ITM_LN,          0}, // Natural logarithm
-    { "LOG10",                               ITM_LOG10,       0}, // Common logarithm
-    { "log10",                               ITM_LOG10,       0}, // Common logarithm
-    { "log" STD_SUB_1 STD_SUB_0,             ITM_LOG10,       0}, // Common logarithm
-    { "LOG2",                                ITM_LOG2,        0}, // Binary logarithm
-    { "log2",                                ITM_LOG2,        0}, // Binary logarithm
-    { "log" STD_SUB_2,                       ITM_LOG2,        0}, // Binary logarithm
-    { "MAX",                                 ITM_Max,         0}, // Maximum
-    { "MIN",                                 ITM_Min,         0}, // Minimum
-    { "SIN",                                 ITM_sin,         0}, // Sine
+
+
+//    { "SIN",                                 ITM_sin,         0}, // Sine
+    { "sin",                                 ITM_sin,         0}, // C47 Sine
+    { "asin",                                ITM_arcsin,      0}, // C47 Inverse sin
+    { "arsin",                               ITM_arcsin,      0}, // C47 Inverse sin
+    { "arcsin",                              ITM_arcsin,      0}, // C47 Inverse sin
+
+//    { "COS",                                 ITM_cos,         0}, // Cosine
+    { "cos",                                 ITM_cos,         0}, // C47 Cosine
+    { "acos",                                ITM_arccos,      0}, // C47 Inverse cos
+    { "arcos",                               ITM_arccos,      0}, // C47 Inverse cos
+    { "arccos",                              ITM_arccos,      0}, // C47 Inverse cos
+
+//    { "TAN",                                 ITM_tan,         0}, // Tangent
+    { "tan",                                 ITM_tan,         0}, // C47 Tangent
+    { "atan",                                ITM_arctan,      0}, // C47 Inverse tan
+    { "artan",                               ITM_arctan,      0}, // C47 Inverse tan
+    { "arctan",                              ITM_arctan,      0}, // C47 Inverse tan
+
     { "SINH",                                ITM_sinh,        0}, // Hyperbolic sine
-    { "TAN",                                 ITM_tan,         0}, // Tangent
+//    { "sinh",                                ITM_sinh,        0}, // C47 Hyperbolic sine
+    { "ASINH",                               ITM_arsinh,      0}, // Inverse hyperbolic sine
+    { "asinh",                               ITM_arsinh,      0}, // C47 Inverse hyperbolic sine
+    { "arcsinh",                             ITM_arsinh,      0}, // C47 Inverse hyperbolic sine
+//    { "arsinh",                              ITM_arsinh,      0}, // C47 Inverse hyperbolic sine
+
+    { "COSH",                                ITM_cosh,        0}, // Hyperbolic cosine
+//    { "cosh",                                ITM_cosh,        0}, // C47 Hyperbolic cosine
+    { "ACOSH",                               ITM_arcosh,      0}, // Inverse hyperbolic cosine
+    { "acosh",                               ITM_arcosh,      0}, // C47 Inverse hyperbolic cosine
+    { "arccosh",                             ITM_arcosh,      0}, // C47 Inverse hyperbolic cosine
+//    { "arcosh",                              ITM_arcosh,      0}, // C47 Inverse hyperbolic cosine
+
     { "TANH",                                ITM_tanh,        0}, // Hyperbolic tangent
+//    { "tanh",                                ITM_tanh,        0}, // C47 Hyperbolic tangent
+    { "ATANH",                               ITM_artanh,      0}, // Inverse hyperbolic tangent
+    { "atanh",                               ITM_artanh,      0}, // C47 Inverse hyperbolic tangent
+    { "arctanh",                             ITM_artanh,      0}, // C47 Inverse hyperbolic tangent
+//    { "artanh",                              ITM_artanh,      0}, // C47 Inverse hyperbolic tangent
+
+//    { "ATAN2",                               ITM_atan2,       0}, // Binary arctangent
+    { "atan2",                               ITM_atan2,       0}, // C47 Binary arctangent
+
+    { "CEIL",                                ITM_CEIL,        0}, // Ceiling function
+//    { "ceil",                                ITM_CEIL,        0}, // C47 Ceiling function
+//    { "EXP",                                 ITM_EXP,         0}, // Natural exponential
+    { "exp",                                 ITM_EXP,         0}, // C47 Natural exponential
+    { "FLOOR",                               ITM_FLOOR,       0}, // Floor function
+//    { "floor",                               ITM_FLOOR,       0}, // C47 Floor function
+    { "g" STD_SUB_d STD_SUP_MINUS STD_SUP_1, ITM_GDM1,        0}, // Inverse Gudermannian function
+    { "g" STD_SUB_d STD_SUP_MINUS_1,         ITM_GDM1,        0}, // Inverse Gudermannian function
+    { "gd" STD_SUP_MINUS STD_SUP_1,          ITM_GDM1,        0}, // Inverse Gudermannian function
+    { "gd" STD_SUP_MINUS_1,                  ITM_GDM1,        0}, // Inverse Gudermannian function
+    { "gd",                                  ITM_GD,          0}, // Gudermannian function
+    { "g" STD_SUB_d,                         ITM_GD,          0}, // C47 Gudermannian function
+//    { "LB",                                  ITM_LOG2,        0}, // Binary logarithm
+    { "lB",                                  ITM_LOG2,        0}, // C47 Binary logarithm
+    { "lb",                                  ITM_LOG2,        0}, // C47 Binary logarithm
+//    { "LG",                                  ITM_LOG10,       0}, // Common logarithm
+    { "LG2",                                 ITM_LOG2,        0}, // C47 Binary logarithm
+    { "lg",                                  ITM_LOG10,       0}, // C47 Common logarithm
+//    { "LN",                                  ITM_LN,          0}, // Natural logarithm
+    { "ln",                                  ITM_LN,          0}, // C47 Natural logarithm
+    { "LOG" STD_SUB_1 STD_SUB_0,             ITM_LOG10,       0}, // C47 Common logarithm
+    { "LOG" STD_SUB_2,                       ITM_LOG2,        0}, // C47 Binary logarithm
+//    { "LOG",                                 ITM_LOG10,       0}, // C47 Common logarithm
+    { "LOG10",                               ITM_LOG10,       0}, // Common logarithm
+    { "LOG2",                                ITM_LOG2,        0}, // Binary logarithm
+    { "log" STD_SUB_1 STD_SUB_0,             ITM_LOG10,       0}, // Common logarithm
+    { "log" STD_SUB_2,                       ITM_LOG2,        0}, // Binary logarithm
+    { "log10",                               ITM_LOG10,       0}, // Common logarithm
+    { "log",                                 ITM_LOG10,       0}, // C47 Common logarithm
+    { "log2",                                ITM_LOG2,        0}, // Binary logarithm
+    { "MAX",                                 ITM_Max,         0}, // Maximum
+//    { "max",                                 ITM_Max,         0}, // C47 Maximum
+    { "MIN",                                 ITM_Min,         0}, // Minimum
+//    { "min",                                 ITM_Min,         0}, // C47 Minimum
     { "W" STD_SUP_MINUS STD_SUP_1,           ITM_WM1,         0}, // Inverse function of Lambert's W
+    { "W" STD_SUP_MINUS_1,                   ITM_WM1,         0}, // C47 Inverse function of Lambert's W
     { STD_GAMMA,                             ITM_GAMMAX,      0}, // Gamma function
-    { STD_zeta,                              ITM_zetaX,       0}, // Riemann zeta function
     { STD_SQUARE_ROOT,                       ITM_SQUAREROOTX, 0}, // Square root (available through f SQRT in EIM)
-
-
-    { "acosh",                               ITM_arcosh,      0}, // JM C43 Inverse hyperbolic cosine
-    { "asinh",                               ITM_arsinh,      0}, // JM C43 Inverse hyperbolic sine
-    { "atan2",                               ITM_atan2,       0}, // JM C43 Binary arctangent
-    { "atanh",                               ITM_artanh,      0}, // JM C43 Inverse hyperbolic tangent
-    { "cos",                                 ITM_cos,         0}, // JM C43 Cosine
-    { "cosh",                                ITM_cosh,        0}, // JM C43 Hyperbolic cosine
-    { "exp",                                 ITM_EXP,         0}, // JM C43 Natural exponential
-    { "lb",                                  ITM_LOG2,        0}, // JM C43 Binary logarithm
-    { "lg",                                  ITM_LOG10,       0}, // JM C43 Common logarithm
-    { "ln",                                  ITM_LN,          0}, // JM C43 Natural logarithm
-    { "LOG",                                 ITM_LOG10,       0}, // JM C43 Common logarithm
-    { "LOG" STD_SUB_1 STD_SUB_0,             ITM_LOG10,       0}, // JM C43 Common logarithm
-    { "LG2",                                 ITM_LOG2,        0}, // JM C43 Binary logarithm
-    { "lB",                                  ITM_LOG2,        0}, // JM C43 Binary logarithm
-    { "LOG" STD_SUB_2,                       ITM_LOG2,        0}, // JM C43 Binary logarithm
-    { "sin",                                 ITM_sin,         0}, // JM C43 Sine
-    { "sinh",                                ITM_sinh,        0}, // JM C43 Hyperbolic sine
-    { "tan",                                 ITM_tan,         0}, // JM C43 Tangent
-    { "tanh",                                ITM_tanh,        0}, // JM C43 Hyperbolic tangent
+    { STD_zeta,                              ITM_zetaX,       0}, // Riemann zeta function
 
     { "",                                    0,               0}  // Sentinel
   };
 #endif // !TESTSUITE_BUILD
+
+//Note: i, j and 𝝿 are special characters
+//Note ARCSIN, ASIN, etc. will work from the items table
 
 
 void fnEqNew(uint16_t unusedButMandatoryParameter) {
@@ -816,6 +848,7 @@ static void _runMonadicFunction(char *mvarBuffer, uint16_t item) {
   }
 
   runFunction(item);
+  temporaryInformation = TI_NO_INFO;
 
   if(getRegisterDataType(REGISTER_X) == dtComplex34) {
     _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X));
@@ -1042,6 +1075,9 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
         if(compareString(STD_pi, strPtr, CMP_NAME) == 0) { // check for pi
           return;
         }
+        if(compareString(STD_i, strPtr, CMP_NAME) == 0 || compareString(STD_j, strPtr, CMP_NAME) == 0) { // check for i
+          return;
+        }
         while(*bufPtr != 0) { // check for duplicates
           if(compareString(bufPtr, strPtr, CMP_NAME) == 0) {
             return;
@@ -1100,6 +1136,12 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
         if(compareString(STD_pi, strPtr, CMP_NAME) == 0) { // check for pi
           runFunction(ITM_CONSTpi);
           _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), const34_0);
+          fnDrop(NOPARAM);
+          return;
+        }
+        if(compareString(STD_i, strPtr, CMP_NAME) == 0 || compareString(STD_j, strPtr, CMP_NAME) == 0) { // check for i
+          runFunction(ITM_op_j);
+          _pushNumericStack(mvarBuffer, const34_0, const34_1);
           fnDrop(NOPARAM);
           return;
         }
@@ -1266,7 +1308,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
         return;
         }
 
-        case '(': 
+        case '(':
         if(bufPtr != buffer) {
           *(bufPtr++) = 0;
           ++strPtr;
@@ -1291,7 +1333,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
           }
         }
         /* fallthrough */
-        
+
 
       case '=':
       case '+':
@@ -1301,7 +1343,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
       case '^':
       case '!':
       case ':':
-        case '|': 
+        case '|':
         if(equalAppeared && (*strPtr == '=')) {
           displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
           #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -1421,7 +1463,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
         inExponent = false;
         exponentSignCanOccur = false;
         break;
-        
+
 
         default: {
         if(afterSpace) {

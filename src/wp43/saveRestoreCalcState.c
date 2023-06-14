@@ -23,6 +23,7 @@
 #include "error.h"
 #include "flags.h"
 #include "hal/gui.h"
+#include "hal/io.h"
 #include "items.h"
 #include "c43Extensions/addons.h"
 #include "c43Extensions/xeqm.h"
@@ -76,165 +77,23 @@ Current version defaults all non-loaded settings from previous version files cor
 
 #if !defined(TESTSUITE_BUILD)
   #define START_REGISTER_VALUE 1000  // was 1522, why?
-  #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
   static uint32_t loadedVersion = 0;
 #endif //TESTSUITE_BUILD
   uint16_t flushBufferCnt = 0;
 
 
-//DMCP file selection call back functions
-
-#if defined(DMCP_BUILD)
-//
-int save_statefile(const char * fpath, const char * fname, void * data) {
-
-  lcd_puts(t24,"Saving state ...");
-  lcd_puts(t24, fname);  lcd_refresh();
-
-  // Store the state file name
-  strcpy(data, fpath);
-  set_reset_state_file(fpath);
-
-  // Exit with appropriate code to save state file save
-  return MRET_SAVESTATE;
-}
-
-int load_statefile(const char * fpath, const char * fname, void * data) {
-
-  // 'Sure' dialog
-  lcd_puts(t24, "");
-  lcd_puts(t24, "WARNING: Current calculator state");
-  lcd_puts(t24, "will be lost.");
-  lcd_puts(t24, "");
-  lcd_puts(t24, "");
-  //lcd_puts(t24, "Are you sure to load this file?");
-  lcd_puts(t24, "Press [ENTER] to confirm.");
-  lcd_refresh();
-  
-  wait_for_key_release(-1);
-
-  for(;;) {
-    int k1 = runner_get_key(NULL);
-    if ( IS_EXIT_KEY(k1) )
-      return 0; // Continue the selection screen
-    if ( is_menu_auto_off() )
-      return MRET_EXIT; // Leave selection screen
-    if ( k1 == KEY_ENTER )
-      break; // Proceed with loadName
-  }
-
-  lcd_putsRAt(t24, 6, "  Loading ...");
-  lcd_refresh_wait();
-
-  // Store the state file name
-  strcpy(data, fpath);
-  set_reset_state_file(fpath);
-
-  // Exit with appropriate code to load state file
-  return MRET_LOADSTATE;
-}
-#endif // DMCP_BUILD
-
-
-//GTK file selection dialog function
- 
-#if defined(PC_BUILD)
-  int file_selection_screen(const char * title, const char * base_dir, const char * ext, int disp_save, int overwrite_check, void * data) {
-      GtkFileChooserNative *native;
-      gint res;
-
-      if (disp_save) {
-        GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
-        native = gtk_file_chooser_native_new (title,
-                                              GTK_WINDOW(frmCalc),
-                                              action,
-                                              "_Save",
-                                              "_Cancel");
-      } else{
-        GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
-        native = gtk_file_chooser_native_new (title,
-                                              GTK_WINDOW(frmCalc),
-                                              action,
-                                              "_Load",
-                                              "_Cancel");
-      }
-          
-      GtkFileChooser *chooser = GTK_FILE_CHOOSER (native);
-
-      if (overwrite_check) {
-          gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
-      }     
-      gtk_file_chooser_set_current_folder(chooser,base_dir);
-      if (disp_save) {
-        gtk_file_chooser_set_current_name (chooser,"untitled"STATE_EXT);
-      }
-      GtkFileFilter *filter = gtk_file_filter_new ();
-      gtk_file_filter_add_pattern (filter, ext);
-      gtk_file_chooser_add_filter(chooser, filter);
-      res = gtk_native_dialog_run (GTK_NATIVE_DIALOG (native));
-      if (res == GTK_RESPONSE_ACCEPT)
-      {
-        char *filename;
-        filename = gtk_file_chooser_get_filename (chooser);
-        strcpy(data, filename);
-        if (disp_save) {
-          char * fe = data+strlen(filename)-4;
-          const char * ee = ext+1;
-          if (strcmp(fe,ee) != 0) strcat(data,ee);     //filename doesn't have the expected extension 
-        }       
-        g_free(filename);   
-        g_object_unref (native);
-        return 1;
-      } else { 
-        g_object_unref (native);
-        return 0;
-      } 
-  }
-
-  static int create_dir(char * dir) {
-    int ret;
-    #if defined(WIN32)
-      ret = mkdir( dir );
-    #else
-      ret = mkdir( dir, 0775);
-    #endif // WIN3
-    if (( ret != 0) && (errno != EEXIST)) {
-      return -1;
-    } else { 
-      return 0;
-    }
-  }
-#endif // PC_BUILD
-
-
 #if !defined(TESTSUITE_BUILD)
-  static char     *tmpRegisterString = NULL;
-  static uint32_t totalBytesWritten = 0;
-  static char     fileName[40];
-  static void save(const void *buffer, uint32_t size, void *stream) {
-    hourGlassIconEnabled = true;
-    #if defined(DMCP_BUILD)
-      UINT bytesWritten;
-      f_write(stream, buffer, size, &bytesWritten);
-    #else // !DMCP_BUILD
-      fwrite(buffer, 1, size, stream);
-    #endif // DMCP_BUILD
-    totalBytesWritten += size;
+  static char *tmpRegisterString = NULL;
+
+  static void save(const void *buffer, uint32_t size) {
+    ioFileWrite(buffer, size);
   }
-//#endif //TESTSUITE_BUILD
-
-
-static uint32_t restore(void *buffer, uint32_t size, void *stream) {
-  hourGlassIconEnabled = true;
-  #if defined(DMCP_BUILD)
-    UINT bytesRead;
-    f_read(stream, buffer, size, &bytesRead);
-    return(bytesRead);
-  #else // !DMCP_BUILD
-    return(fread(buffer, 1, size, stream));
-  #endif // DMCP_BUILD
-}
 #endif //TESTSUITE_BUILD
+
+
+static uint32_t restore(void *buffer, uint32_t size) {
+  return ioFileRead(buffer, size);
+}
 
 
 
@@ -245,12 +104,17 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     uint32_t backupVersion = BACKUP_VERSION;
     uint32_t ramSize       = RAM_SIZE;
     uint32_t ramPtr;
-    FILE *ppgm_fp;
+    int ret;
 
-    BACKUP = fopen("backup.bin", "wb");
-    if(BACKUP == NULL) {
-      printf("Cannot save calc's memory in file backup.bin!\n");
-      exit(0);
+    ret = ioFileOpen(ioPathBackup, ioModeWrite);
+
+    if(ret != FILE_OK ) {
+      if(ret == FILE_CANCEL ) {
+        return;
+      } else {
+        printf("Cannot save calc's memory in file backup.bin!\n");
+        exit(0);
+      }
     }
 
     if(calcMode == CM_CONFIRMATION) {
@@ -260,222 +124,222 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
 
     printf("Begin of calc's backup\n");
 
-    save(&backupVersion,                      sizeof(backupVersion),                      BACKUP);
-    save(&ramSize,                            sizeof(ramSize),                            BACKUP);
-    save(ram,                                 TO_BYTES(RAM_SIZE),                         BACKUP);
-    save(freeMemoryRegions,                   sizeof(freeMemoryRegions),                  BACKUP);
-    save(&numberOfFreeMemoryRegions,          sizeof(numberOfFreeMemoryRegions),          BACKUP);
-    save(globalFlags,                         sizeof(globalFlags),                        BACKUP);
-    save(errorMessage,                        ERROR_MESSAGE_LENGTH,                       BACKUP);
-    save(aimBuffer,                           AIM_BUFFER_LENGTH,                          BACKUP);
-    save(nimBufferDisplay,                    NIM_BUFFER_LENGTH,                          BACKUP);
-    save(tamBuffer,                           TAM_BUFFER_LENGTH,                          BACKUP);
-    save(asmBuffer,                           sizeof(asmBuffer),                          BACKUP);
-    save(oldTime,                             sizeof(oldTime),                            BACKUP);
-    save(dateTimeString,                      sizeof(dateTimeString),                     BACKUP);
-    save(softmenuStack,                       sizeof(softmenuStack),                      BACKUP);
-    save(globalRegister,                      sizeof(globalRegister),                     BACKUP);
-    save(savedStackRegister,                  sizeof(savedStackRegister),                 BACKUP);
-    save(kbd_usr,                             sizeof(kbd_usr),                            BACKUP);
-    save(userMenuItems,                       sizeof(userMenuItems),                      BACKUP);
-    save(userAlphaItems,                      sizeof(userAlphaItems),                     BACKUP);
-    save(&tam.mode,                           sizeof(tam.mode),                           BACKUP);
-    save(&tam.function,                       sizeof(tam.function),                       BACKUP);
-    save(&tam.alpha,                          sizeof(tam.alpha),                          BACKUP);
-    save(&tam.currentOperation,               sizeof(tam.currentOperation),               BACKUP);
-    save(&tam.dot,                            sizeof(tam.dot),                            BACKUP);
-    save(&tam.indirect,                       sizeof(tam.indirect),                       BACKUP);
-    save(&tam.digitsSoFar,                    sizeof(tam.digitsSoFar),                    BACKUP);
-    save(&tam.value,                          sizeof(tam.value),                          BACKUP);
-    save(&tam.min,                            sizeof(tam.min),                            BACKUP);
-    save(&tam.max,                            sizeof(tam.max),                            BACKUP);
-    save(&rbrRegister,                        sizeof(rbrRegister),                        BACKUP);
-    save(&numberOfNamedVariables,             sizeof(numberOfNamedVariables),             BACKUP);
+    save(&backupVersion,                      sizeof(backupVersion));
+    save(&ramSize,                            sizeof(ramSize));
+    save(ram,                                 TO_BYTES(RAM_SIZE));
+    save(freeMemoryRegions,                   sizeof(freeMemoryRegions));
+    save(&numberOfFreeMemoryRegions,          sizeof(numberOfFreeMemoryRegions));
+    save(globalFlags,                         sizeof(globalFlags));
+    save(errorMessage,                        ERROR_MESSAGE_LENGTH);
+    save(aimBuffer,                           AIM_BUFFER_LENGTH);
+    save(nimBufferDisplay,                    NIM_BUFFER_LENGTH);
+    save(tamBuffer,                           TAM_BUFFER_LENGTH);
+    save(asmBuffer,                           sizeof(asmBuffer));
+    save(oldTime,                             sizeof(oldTime));
+    save(dateTimeString,                      sizeof(dateTimeString));
+    save(softmenuStack,                       sizeof(softmenuStack));
+    save(globalRegister,                      sizeof(globalRegister));
+    save(savedStackRegister,                  sizeof(savedStackRegister));
+    save(kbd_usr,                             sizeof(kbd_usr));
+    save(userMenuItems,                       sizeof(userMenuItems));
+    save(userAlphaItems,                      sizeof(userAlphaItems));
+    save(&tam.mode,                           sizeof(tam.mode));
+    save(&tam.function,                       sizeof(tam.function));
+    save(&tam.alpha,                          sizeof(tam.alpha));
+    save(&tam.currentOperation,               sizeof(tam.currentOperation));
+    save(&tam.dot,                            sizeof(tam.dot));
+    save(&tam.indirect,                       sizeof(tam.indirect));
+    save(&tam.digitsSoFar,                    sizeof(tam.digitsSoFar));
+    save(&tam.value,                          sizeof(tam.value));
+    save(&tam.min,                            sizeof(tam.min));
+    save(&tam.max,                            sizeof(tam.max));
+    save(&rbrRegister,                        sizeof(rbrRegister));
+    save(&numberOfNamedVariables,             sizeof(numberOfNamedVariables));
     ramPtr = TO_WP43MEMPTR(allNamedVariables);
-    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+    save(&ramPtr,                             sizeof(ramPtr));
     ramPtr = TO_WP43MEMPTR(allFormulae);
-    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+    save(&ramPtr,                             sizeof(ramPtr));
     ramPtr = TO_WP43MEMPTR(userMenus);
-    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+    save(&ramPtr,                             sizeof(ramPtr));
     ramPtr = TO_WP43MEMPTR(userKeyLabel);
-    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+    save(&ramPtr,                             sizeof(ramPtr));
     ramPtr = TO_WP43MEMPTR(statisticalSumsPointer);
-    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+    save(&ramPtr,                             sizeof(ramPtr));
     ramPtr = TO_WP43MEMPTR(savedStatisticalSumsPointer);
-    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+    save(&ramPtr,                             sizeof(ramPtr));
     ramPtr = TO_WP43MEMPTR(labelList);
-    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+    save(&ramPtr,                             sizeof(ramPtr));
     ramPtr = TO_WP43MEMPTR(flashLabelList);
-    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+    save(&ramPtr,                             sizeof(ramPtr));
     ramPtr = TO_WP43MEMPTR(programList);
-    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+    save(&ramPtr,                             sizeof(ramPtr));
     ramPtr = TO_WP43MEMPTR(flashProgramList);
-    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+    save(&ramPtr,                             sizeof(ramPtr));
     ramPtr = TO_WP43MEMPTR(currentSubroutineLevelData);
-    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
-    save(&xCursor,                            sizeof(xCursor),                            BACKUP);
-    save(&yCursor,                            sizeof(yCursor),                            BACKUP);
-    save(&firstGregorianDay,                  sizeof(firstGregorianDay),                  BACKUP);
-    save(&denMax,                             sizeof(denMax),                             BACKUP);
-    save(&lastDenominator,                    sizeof(lastDenominator),                    BACKUP);
-    save(&currentRegisterBrowserScreen,       sizeof(currentRegisterBrowserScreen),       BACKUP);
-    save(&currentFntScr,                      sizeof(currentFntScr),                      BACKUP);
-    save(&currentFlgScr,                      sizeof(currentFlgScr),                      BACKUP);
-    save(&displayFormat,                      sizeof(displayFormat),                      BACKUP);
-    save(&displayFormatDigits,                sizeof(displayFormatDigits),                BACKUP);
-    save(&timeDisplayFormatDigits,            sizeof(timeDisplayFormatDigits),            BACKUP);
-    save(&shortIntegerWordSize,               sizeof(shortIntegerWordSize),               BACKUP);
-    save(&significantDigits,                  sizeof(significantDigits),                  BACKUP);
-    save(&shortIntegerMode,                   sizeof(shortIntegerMode),                   BACKUP);
-    save(&currentAngularMode,                 sizeof(currentAngularMode),                 BACKUP);
-    save(&groupingGap,                        sizeof(groupingGap),                        BACKUP);
-    save(&roundingMode,                       sizeof(roundingMode),                       BACKUP);
-    save(&calcMode,                           sizeof(calcMode),                           BACKUP);
-    save(&nextChar,                           sizeof(nextChar),                           BACKUP);
-    save(&alphaCase,                          sizeof(alphaCase),                          BACKUP);
-    save(&hourGlassIconEnabled,               sizeof(hourGlassIconEnabled),               BACKUP);
-    save(&watchIconEnabled,                   sizeof(watchIconEnabled),                   BACKUP);
-    save(&serialIOIconEnabled,                sizeof(serialIOIconEnabled),                BACKUP);
-    save(&printerIconEnabled,                 sizeof(printerIconEnabled),                 BACKUP);
-    save(&programRunStop,                     sizeof(programRunStop),                     BACKUP);
-    save(&entryStatus,                        sizeof(entryStatus),                        BACKUP);
-    save(&cursorEnabled,                      sizeof(cursorEnabled),                      BACKUP);
-    save(&cursorFont,                         sizeof(cursorFont),                         BACKUP);
-    save(&rbr1stDigit,                        sizeof(rbr1stDigit),                        BACKUP);
-    save(&shiftF,                             sizeof(shiftF),                             BACKUP);
-    save(&shiftG,                             sizeof(shiftG),                             BACKUP);
-    save(&rbrMode,                            sizeof(rbrMode),                            BACKUP);
-    save(&showContent,                        sizeof(showContent),                        BACKUP);
-    save(&numScreensNumericFont,              sizeof(numScreensNumericFont),              BACKUP);
-    save(&numLinesNumericFont,                sizeof(numLinesNumericFont),                BACKUP);
-    save(&numLinesStandardFont,               sizeof(numLinesStandardFont),               BACKUP);
-    save(&numScreensStandardFont,             sizeof(numScreensStandardFont),             BACKUP);
-    save(&previousCalcMode,                   sizeof(previousCalcMode),                   BACKUP);
-    save(&lastErrorCode,                      sizeof(lastErrorCode),                      BACKUP);
-    save(&nimNumberPart,                      sizeof(nimNumberPart),                      BACKUP);
-    save(&displayStack,                       sizeof(displayStack),                       BACKUP);
-    save(&hexDigits,                          sizeof(hexDigits),                          BACKUP);
-    save(&errorMessageRegisterLine,           sizeof(errorMessageRegisterLine),           BACKUP);
-    save(&shortIntegerMask,                   sizeof(shortIntegerMask),                   BACKUP);
-    save(&shortIntegerSignBit,                sizeof(shortIntegerSignBit),                BACKUP);
-    save(&temporaryInformation,               sizeof(temporaryInformation),               BACKUP);
-    save(&glyphNotFound,                      sizeof(glyphNotFound),                      BACKUP);
-    save(&funcOK,                             sizeof(funcOK),                             BACKUP);
-    save(&screenChange,                       sizeof(screenChange),                       BACKUP);
-    save(&exponentSignLocation,               sizeof(exponentSignLocation),               BACKUP);
-    save(&denominatorLocation,                sizeof(denominatorLocation),                BACKUP);
-    save(&imaginaryExponentSignLocation,      sizeof(imaginaryExponentSignLocation),      BACKUP);
-    save(&imaginaryMantissaSignLocation,      sizeof(imaginaryMantissaSignLocation),      BACKUP);
-    save(&lineTWidth,                         sizeof(lineTWidth),                         BACKUP);
-    save(&lastIntegerBase,                    sizeof(lastIntegerBase),                    BACKUP);
-    save(&wp43MemInBlocks,                    sizeof(wp43MemInBlocks),                    BACKUP);
-    save(&gmpMemInBytes,                      sizeof(gmpMemInBytes),                      BACKUP);
-    save(&catalog,                            sizeof(catalog),                            BACKUP);
-    save(&lastCatalogPosition,                sizeof(lastCatalogPosition),                BACKUP);
-    save(&lgCatalogSelection,                 sizeof(lgCatalogSelection),                 BACKUP);
-    save(displayValueX,                       sizeof(displayValueX),                      BACKUP);
-    save(&pcg32_global,                       sizeof(pcg32_global),                       BACKUP);
-    save(&exponentLimit,                      sizeof(exponentLimit),                      BACKUP);
-    save(&exponentHideLimit,                  sizeof(exponentHideLimit),                  BACKUP);
-    save(&keyActionProcessed,                 sizeof(keyActionProcessed),                 BACKUP);
-    save(&systemFlags,                        sizeof(systemFlags),                        BACKUP);
-    save(&savedSystemFlags,                   sizeof(savedSystemFlags),                   BACKUP);
-    save(&thereIsSomethingToUndo,             sizeof(thereIsSomethingToUndo),             BACKUP);
+    save(&ramPtr,                             sizeof(ramPtr));
+    save(&xCursor,                            sizeof(xCursor));
+    save(&yCursor,                            sizeof(yCursor));
+    save(&firstGregorianDay,                  sizeof(firstGregorianDay));
+    save(&denMax,                             sizeof(denMax));
+    save(&lastDenominator,                    sizeof(lastDenominator));
+    save(&currentRegisterBrowserScreen,       sizeof(currentRegisterBrowserScreen));
+    save(&currentFntScr,                      sizeof(currentFntScr));
+    save(&currentFlgScr,                      sizeof(currentFlgScr));
+    save(&displayFormat,                      sizeof(displayFormat));
+    save(&displayFormatDigits,                sizeof(displayFormatDigits));
+    save(&timeDisplayFormatDigits,            sizeof(timeDisplayFormatDigits));
+    save(&shortIntegerWordSize,               sizeof(shortIntegerWordSize));
+    save(&significantDigits,                  sizeof(significantDigits));
+    save(&shortIntegerMode,                   sizeof(shortIntegerMode));
+    save(&currentAngularMode,                 sizeof(currentAngularMode));
+    save(&groupingGap,                        sizeof(groupingGap));
+    save(&roundingMode,                       sizeof(roundingMode));
+    save(&calcMode,                           sizeof(calcMode));
+    save(&nextChar,                           sizeof(nextChar));
+    save(&alphaCase,                          sizeof(alphaCase));
+    save(&hourGlassIconEnabled,               sizeof(hourGlassIconEnabled));
+    save(&watchIconEnabled,                   sizeof(watchIconEnabled));
+    save(&serialIOIconEnabled,                sizeof(serialIOIconEnabled));
+    save(&printerIconEnabled,                 sizeof(printerIconEnabled));
+    save(&programRunStop,                     sizeof(programRunStop));
+    save(&entryStatus,                        sizeof(entryStatus));
+    save(&cursorEnabled,                      sizeof(cursorEnabled));
+    save(&cursorFont,                         sizeof(cursorFont));
+    save(&rbr1stDigit,                        sizeof(rbr1stDigit));
+    save(&shiftF,                             sizeof(shiftF));
+    save(&shiftG,                             sizeof(shiftG));
+    save(&rbrMode,                            sizeof(rbrMode));
+    save(&showContent,                        sizeof(showContent));
+    save(&numScreensNumericFont,              sizeof(numScreensNumericFont));
+    save(&numLinesNumericFont,                sizeof(numLinesNumericFont));
+    save(&numLinesStandardFont,               sizeof(numLinesStandardFont));
+    save(&numScreensStandardFont,             sizeof(numScreensStandardFont));
+    save(&previousCalcMode,                   sizeof(previousCalcMode));
+    save(&lastErrorCode,                      sizeof(lastErrorCode));
+    save(&nimNumberPart,                      sizeof(nimNumberPart));
+    save(&displayStack,                       sizeof(displayStack));
+    save(&hexDigits,                          sizeof(hexDigits));
+    save(&errorMessageRegisterLine,           sizeof(errorMessageRegisterLine));
+    save(&shortIntegerMask,                   sizeof(shortIntegerMask));
+    save(&shortIntegerSignBit,                sizeof(shortIntegerSignBit));
+    save(&temporaryInformation,               sizeof(temporaryInformation));
+    save(&glyphNotFound,                      sizeof(glyphNotFound));
+    save(&funcOK,                             sizeof(funcOK));
+    save(&screenChange,                       sizeof(screenChange));
+    save(&exponentSignLocation,               sizeof(exponentSignLocation));
+    save(&denominatorLocation,                sizeof(denominatorLocation));
+    save(&imaginaryExponentSignLocation,      sizeof(imaginaryExponentSignLocation));
+    save(&imaginaryMantissaSignLocation,      sizeof(imaginaryMantissaSignLocation));
+    save(&lineTWidth,                         sizeof(lineTWidth));
+    save(&lastIntegerBase,                    sizeof(lastIntegerBase));
+    save(&wp43MemInBlocks,                    sizeof(wp43MemInBlocks));
+    save(&gmpMemInBytes,                      sizeof(gmpMemInBytes));
+    save(&catalog,                            sizeof(catalog));
+    save(&lastCatalogPosition,                sizeof(lastCatalogPosition));
+    save(&lgCatalogSelection,                 sizeof(lgCatalogSelection));
+    save(displayValueX,                       sizeof(displayValueX));
+    save(&pcg32_global,                       sizeof(pcg32_global));
+    save(&exponentLimit,                      sizeof(exponentLimit));
+    save(&exponentHideLimit,                  sizeof(exponentHideLimit));
+    save(&keyActionProcessed,                 sizeof(keyActionProcessed));
+    save(&systemFlags,                        sizeof(systemFlags));
+    save(&savedSystemFlags,                   sizeof(savedSystemFlags));
+    save(&thereIsSomethingToUndo,             sizeof(thereIsSomethingToUndo));
     ramPtr = TO_WP43MEMPTR(beginOfProgramMemory);
-    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // beginOfProgramMemory pointer to block
+    save(&ramPtr,                             sizeof(ramPtr)); // beginOfProgramMemory pointer to block
     ramPtr = (uint32_t)((void *)beginOfProgramMemory -        TO_PCMEMPTR(TO_WP43MEMPTR(beginOfProgramMemory)));
-    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // beginOfProgramMemory offset within block
+    save(&ramPtr,                             sizeof(ramPtr)); // beginOfProgramMemory offset within block
     ramPtr = TO_WP43MEMPTR(firstFreeProgramByte);
-    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // firstFreeProgramByte pointer to block
+    save(&ramPtr,                             sizeof(ramPtr)); // firstFreeProgramByte pointer to block
     ramPtr = (uint32_t)((void *)firstFreeProgramByte - TO_PCMEMPTR(TO_WP43MEMPTR(firstFreeProgramByte)));
-    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // firstFreeProgramByte offset within block
+    save(&ramPtr,                             sizeof(ramPtr)); // firstFreeProgramByte offset within block
     ramPtr = TO_WP43MEMPTR(firstDisplayedStep.ram);
-    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // firstDisplayedStep pointer to block
+    save(&ramPtr,                             sizeof(ramPtr)); // firstDisplayedStep pointer to block
     ramPtr = (uint32_t)((void *)firstDisplayedStep.ram - TO_PCMEMPTR(TO_WP43MEMPTR(firstDisplayedStep.ram)));
-    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // firstDisplayedStep offset within block
+    save(&ramPtr,                             sizeof(ramPtr)); // firstDisplayedStep offset within block
     ramPtr = TO_WP43MEMPTR(currentStep.ram);
-    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // currentStep pointer to block
+    save(&ramPtr,                             sizeof(ramPtr)); // currentStep pointer to block
     ramPtr = (uint32_t)((void *)currentStep.ram - TO_PCMEMPTR(TO_WP43MEMPTR(currentStep.ram)));
-    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // currentStep offset within block
-    save(&freeProgramBytes,                   sizeof(freeProgramBytes),                   BACKUP);
-    save(&firstDisplayedLocalStepNumber,      sizeof(firstDisplayedLocalStepNumber),      BACKUP);
-    save(&numberOfLabels,                     sizeof(numberOfLabels),                     BACKUP);
-    save(&numberOfLabelsInFlash,              sizeof(numberOfLabelsInFlash),              BACKUP);
-    save(&numberOfPrograms,                   sizeof(numberOfPrograms),                   BACKUP);
-    save(&numberOfProgramsInFlash,            sizeof(numberOfProgramsInFlash),            BACKUP);
-    save(&currentLocalStepNumber,             sizeof(currentLocalStepNumber),             BACKUP);
-    save(&currentProgramNumber,               sizeof(currentProgramNumber),               BACKUP);
-    save(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
-    save(&programListEnd,                     sizeof(programListEnd),                     BACKUP);
-    save(&allSubroutineLevels,                sizeof(allSubroutineLevels),                BACKUP);
-    save(&pemCursorIsZerothStep,              sizeof(pemCursorIsZerothStep),              BACKUP);
-    save(&numberOfTamMenusToPop,              sizeof(numberOfTamMenusToPop),              BACKUP);
-    save(&lrSelection,                        sizeof(lrSelection),                        BACKUP);
-    save(&lrSelectionUndo,                    sizeof(lrSelectionUndo),                    BACKUP);
-    save(&lrChosen,                           sizeof(lrChosen),                           BACKUP);
-    save(&lrChosenUndo,                       sizeof(lrChosenUndo),                       BACKUP);
-    save(&lastPlotMode,                       sizeof(lastPlotMode),                       BACKUP);
-    save(&plotSelection,                      sizeof(plotSelection),                      BACKUP);
+    save(&ramPtr,                             sizeof(ramPtr)); // currentStep offset within block
+    save(&freeProgramBytes,                   sizeof(freeProgramBytes));
+    save(&firstDisplayedLocalStepNumber,      sizeof(firstDisplayedLocalStepNumber));
+    save(&numberOfLabels,                     sizeof(numberOfLabels));
+    save(&numberOfLabelsInFlash,              sizeof(numberOfLabelsInFlash));
+    save(&numberOfPrograms,                   sizeof(numberOfPrograms));
+    save(&numberOfProgramsInFlash,            sizeof(numberOfProgramsInFlash));
+    save(&currentLocalStepNumber,             sizeof(currentLocalStepNumber));
+    save(&currentProgramNumber,               sizeof(currentProgramNumber));
+    save(&lastProgramListEnd,                 sizeof(lastProgramListEnd));
+    save(&programListEnd,                     sizeof(programListEnd));
+    save(&allSubroutineLevels,                sizeof(allSubroutineLevels));
+    save(&pemCursorIsZerothStep,              sizeof(pemCursorIsZerothStep));
+    save(&numberOfTamMenusToPop,              sizeof(numberOfTamMenusToPop));
+    save(&lrSelection,                        sizeof(lrSelection));
+    save(&lrSelectionUndo,                    sizeof(lrSelectionUndo));
+    save(&lrChosen,                           sizeof(lrChosen));
+    save(&lrChosenUndo,                       sizeof(lrChosenUndo));
+    save(&lastPlotMode,                       sizeof(lastPlotMode));
+    save(&plotSelection,                      sizeof(plotSelection));
 
-    save(&graph_dx,                           sizeof(graph_dx),                           BACKUP);
-    save(&graph_dy,                           sizeof(graph_dy),                           BACKUP);
-    save(&roundedTicks,                       sizeof(roundedTicks),                       BACKUP);
-    save(&extentx,                            sizeof(extentx),                            BACKUP);
-    save(&extenty,                            sizeof(extenty),                            BACKUP);
-    save(&PLOT_VECT,                          sizeof(PLOT_VECT),                          BACKUP);
-    save(&PLOT_NVECT,                         sizeof(PLOT_NVECT),                         BACKUP);
-    save(&PLOT_SCALE,                         sizeof(PLOT_SCALE),                         BACKUP);
-    save(&Aspect_Square,                      sizeof(Aspect_Square),                      BACKUP);
-    save(&PLOT_LINE,                          sizeof(PLOT_LINE),                          BACKUP);
-    save(&PLOT_CROSS,                         sizeof(PLOT_CROSS),                         BACKUP);
-    save(&PLOT_BOX,                           sizeof(PLOT_BOX),                           BACKUP);
-    save(&PLOT_INTG,                          sizeof(PLOT_INTG),                          BACKUP);
-    save(&PLOT_DIFF,                          sizeof(PLOT_DIFF),                          BACKUP);
-    save(&PLOT_RMS,                           sizeof(PLOT_RMS),                           BACKUP);
-    save(&PLOT_SHADE,                         sizeof(PLOT_SHADE),                         BACKUP);
-    save(&PLOT_AXIS,                          sizeof(PLOT_AXIS),                          BACKUP);
-    save(&PLOT_ZMX,                           sizeof(PLOT_ZMX),                           BACKUP);
-    save(&PLOT_ZMY,                           sizeof(PLOT_ZMY),                           BACKUP);
-    save(&PLOT_ZOOM,                          sizeof(PLOT_ZOOM),                          BACKUP);
-    save(&plotmode,                           sizeof(plotmode),                           BACKUP);
-    save(&tick_int_x,                         sizeof(tick_int_x),                         BACKUP);
-    save(&tick_int_y,                         sizeof(tick_int_y),                         BACKUP);
-    save(&x_min,                              sizeof(x_min),                              BACKUP);
-    save(&x_max,                              sizeof(x_max),                              BACKUP);
-    save(&y_min,                              sizeof(y_min),                              BACKUP);
-    save(&y_max,                              sizeof(y_max),                              BACKUP);
-    save(&xzero,                              sizeof(xzero),                              BACKUP);
-    save(&yzero,                              sizeof(yzero),                              BACKUP);
-    save(&matrixIndex,                        sizeof(matrixIndex),                        BACKUP);
-    save(&currentViewRegister,                sizeof(currentViewRegister),                BACKUP);
-    save(&currentSolverStatus,                sizeof(currentSolverStatus),                BACKUP);
-    save(&currentSolverProgram,               sizeof(currentSolverProgram),               BACKUP);
-    save(&currentSolverVariable,              sizeof(currentSolverVariable),              BACKUP);
-    save(&numberOfFormulae,                   sizeof(numberOfFormulae),                   BACKUP);
-    save(&currentFormula,                     sizeof(currentFormula),                     BACKUP);
-    save(&numberOfUserMenus,                  sizeof(numberOfUserMenus),                  BACKUP);
-    save(&currentUserMenu,                    sizeof(currentUserMenu),                    BACKUP);
-    save(&userKeyLabelSize,                   sizeof(userKeyLabelSize),                   BACKUP);
-    save(&timerCraAndDeciseconds,             sizeof(timerCraAndDeciseconds),             BACKUP);
-    save(&timerValue,                         sizeof(timerValue),                         BACKUP);
-    save(&timerTotalTime,                     sizeof(timerTotalTime),                     BACKUP);
-    save(&currentInputVariable,               sizeof(currentInputVariable),               BACKUP);
-    save(&SAVED_SIGMA_LASTX,                  sizeof(SAVED_SIGMA_LASTX),                  BACKUP);
-    save(&SAVED_SIGMA_LASTY,                  sizeof(SAVED_SIGMA_LASTY),                  BACKUP);
-    save(&SAVED_SIGMA_LAct,                   sizeof(SAVED_SIGMA_LAct),                   BACKUP);
-    save(&currentMvarLabel,                   sizeof(currentMvarLabel),                   BACKUP);
-    save(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
-    save(&plotStatMx,                         sizeof(plotStatMx),                         BACKUP);
-    save(&drawHistogram,                      sizeof(drawHistogram),                      BACKUP);
-    save(&statMx,                             sizeof(statMx),                             BACKUP);
-    save(&lrSelectionHistobackup,             sizeof(lrSelectionHistobackup),             BACKUP);
-    save(&lrChosenHistobackup,                sizeof(lrChosenHistobackup),                BACKUP);
-    save(&loBinR,                             sizeof(loBinR),                             BACKUP);
-    save(&nBins ,                             sizeof(nBins ),                             BACKUP);
-    save(&hiBinR,                             sizeof(hiBinR),                             BACKUP);
-    save(&histElementXorY,                    sizeof(histElementXorY),                    BACKUP);
+    save(&graph_dx,                           sizeof(graph_dx));
+    save(&graph_dy,                           sizeof(graph_dy));
+    save(&roundedTicks,                       sizeof(roundedTicks));
+    save(&extentx,                            sizeof(extentx));
+    save(&extenty,                            sizeof(extenty));
+    save(&PLOT_VECT,                          sizeof(PLOT_VECT));
+    save(&PLOT_NVECT,                         sizeof(PLOT_NVECT));
+    save(&PLOT_SCALE,                         sizeof(PLOT_SCALE));
+    save(&Aspect_Square,                      sizeof(Aspect_Square));
+    save(&PLOT_LINE,                          sizeof(PLOT_LINE));
+    save(&PLOT_CROSS,                         sizeof(PLOT_CROSS));
+    save(&PLOT_BOX,                           sizeof(PLOT_BOX));
+    save(&PLOT_INTG,                          sizeof(PLOT_INTG));
+    save(&PLOT_DIFF,                          sizeof(PLOT_DIFF));
+    save(&PLOT_RMS,                           sizeof(PLOT_RMS));
+    save(&PLOT_SHADE,                         sizeof(PLOT_SHADE));
+    save(&PLOT_AXIS,                          sizeof(PLOT_AXIS));
+    save(&PLOT_ZMX,                           sizeof(PLOT_ZMX));
+    save(&PLOT_ZMY,                           sizeof(PLOT_ZMY));
+    save(&PLOT_ZOOM,                          sizeof(PLOT_ZOOM));
+    save(&plotmode,                           sizeof(plotmode));
+    save(&tick_int_x,                         sizeof(tick_int_x));
+    save(&tick_int_y,                         sizeof(tick_int_y));
+    save(&x_min,                              sizeof(x_min));
+    save(&x_max,                              sizeof(x_max));
+    save(&y_min,                              sizeof(y_min));
+    save(&y_max,                              sizeof(y_max));
+    save(&xzero,                              sizeof(xzero));
+    save(&yzero,                              sizeof(yzero));
+    save(&matrixIndex,                        sizeof(matrixIndex));
+    save(&currentViewRegister,                sizeof(currentViewRegister));
+    save(&currentSolverStatus,                sizeof(currentSolverStatus));
+    save(&currentSolverProgram,               sizeof(currentSolverProgram));
+    save(&currentSolverVariable,              sizeof(currentSolverVariable));
+    save(&numberOfFormulae,                   sizeof(numberOfFormulae));
+    save(&currentFormula,                     sizeof(currentFormula));
+    save(&numberOfUserMenus,                  sizeof(numberOfUserMenus));
+    save(&currentUserMenu,                    sizeof(currentUserMenu));
+    save(&userKeyLabelSize,                   sizeof(userKeyLabelSize));
+    save(&timerCraAndDeciseconds,             sizeof(timerCraAndDeciseconds));
+    save(&timerValue,                         sizeof(timerValue));
+    save(&timerTotalTime,                     sizeof(timerTotalTime));
+    save(&currentInputVariable,               sizeof(currentInputVariable));
+    save(&SAVED_SIGMA_LASTX,                  sizeof(SAVED_SIGMA_LASTX));
+    save(&SAVED_SIGMA_LASTY,                  sizeof(SAVED_SIGMA_LASTY));
+    save(&SAVED_SIGMA_LAct,                   sizeof(SAVED_SIGMA_LAct));
+    save(&currentMvarLabel,                   sizeof(currentMvarLabel));
+    save(&graphVariable,                      sizeof(graphVariable));
+    save(&plotStatMx,                         sizeof(plotStatMx));
+    save(&drawHistogram,                      sizeof(drawHistogram));
+    save(&statMx,                             sizeof(statMx));
+    save(&lrSelectionHistobackup,             sizeof(lrSelectionHistobackup));
+    save(&lrChosenHistobackup,                sizeof(lrChosenHistobackup));
+    save(&loBinR,                             sizeof(loBinR));
+    save(&nBins ,                             sizeof(nBins ));
+    save(&hiBinR,                             sizeof(hiBinR));
+    save(&histElementXorY,                    sizeof(histElementXorY));
 
-    save(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
+    save(&screenUpdatingMode,                 sizeof(screenUpdatingMode));
     for(int y = 0; y < SCREEN_HEIGHT; ++y) {
       uint8_t bmpdata = 0;
       for(int x = 0; x < SCREEN_WIDTH; ++x) {
@@ -484,57 +348,57 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
           bmpdata |= 1;
         }
         if((x % 8) == 7) {
-          save(&bmpdata,                      sizeof(bmpdata),                            BACKUP);
+          save(&bmpdata,                      sizeof(bmpdata));
           bmpdata = 0;
         }
       }
     }
 
-    save(&eRPN,                               sizeof(eRPN),                               BACKUP);    //JM vv
-    save(&HOME3,                              sizeof(HOME3),                              BACKUP);
-    save(&ShiftTimoutMode,                    sizeof(ShiftTimoutMode),                    BACKUP);
-    save(&CPXMULT,                            sizeof(CPXMULT),                            BACKUP);   //JM
-    save(&fgLN,                               sizeof(fgLN),                               BACKUP);
-    save(&SH_BASE_HOME,                       sizeof(SH_BASE_HOME  ),                     BACKUP);
-    save(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR),                    BACKUP);
-    save(&Input_Default,                      sizeof(Input_Default),                      BACKUP);
-    save(&compatibility_bool,                 sizeof(compatibility_bool),                 BACKUP);              //EXTRA
-    save(&jm_BASE_SCREEN,                     sizeof(jm_BASE_SCREEN),                     BACKUP);
-    save(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP),                     BACKUP);
-    save(&jm_temporary,                       sizeof(jm_temporary),                       BACKUP);              //EXTRA
-    save(&graph_xmin,                         sizeof(graph_xmin),                         BACKUP);
-    save(&graph_xmax,                         sizeof(graph_xmax),                         BACKUP);
-    save(&graph_ymin,                         sizeof(graph_ymin),                         BACKUP);
-    save(&graph_ymax,                         sizeof(graph_ymax),                         BACKUP);
-    save(&jm_LARGELI,                         sizeof(jm_LARGELI),                         BACKUP);
-    save(&constantFractions,                  sizeof(constantFractions),                  BACKUP);
-    save(&constantFractionsMode,              sizeof(constantFractionsMode),              BACKUP);
-    save(&constantFractionsOn,                sizeof(constantFractionsOn),                BACKUP);
-    save(&running_program_jm,                 sizeof(running_program_jm),                 BACKUP);
-    save(&indic_x,                            sizeof(indic_x),                            BACKUP);
-    save(&indic_y,                            sizeof(indic_y),                            BACKUP);
-    save(&fnXEQMENUpos,                       sizeof(fnXEQMENUpos),                       BACKUP);
-    save(&indexOfItemsXEQM,                   sizeof(indexOfItemsXEQM),                   BACKUP);
-    save(&T_cursorPos,                        sizeof(T_cursorPos),                        BACKUP);   //JM ^^
-    save(&SHOWregis,                          sizeof(SHOWregis),                          BACKUP);   //JM ^^
-    save(&mm_MNU_HOME,                        sizeof(mm_MNU_HOME),                        BACKUP);   //JM ^^
-    save(&mm_MNU_ALPHA,                       sizeof(mm_MNU_ALPHA),                       BACKUP);   //JM ^^
-    save(&displayStackSHOIDISP,               sizeof(displayStackSHOIDISP),               BACKUP);   //JM ^^
-    save(&ListXYposition,                     sizeof(ListXYposition),                     BACKUP);   //JM ^^
-    save(&numLock,                            sizeof(numLock),                            BACKUP);   //JM ^^
-    save(&DRG_Cycling,                        sizeof(DRG_Cycling),                        BACKUP);   //JM
-    save(&lastFlgScr,                         sizeof(lastFlgScr),                         BACKUP);   //C43 JM
-    save(&displayAIMbufferoffset,             sizeof(displayAIMbufferoffset),             BACKUP);   //C43 JM
-    save(&bcdDisplay,                         sizeof(bcdDisplay),                         BACKUP);   //C43 JM
-    save(&topHex,                             sizeof(topHex),                             BACKUP);   //C43 JM
-    save(&bcdDisplaySign,                     sizeof(bcdDisplaySign),                     BACKUP);   //C43 JM
-    save(&DM_Cycling,                         sizeof(DM_Cycling),                         BACKUP);   //JM
-    save(&SI_All,                             sizeof(SI_All),                             BACKUP);   //JM
-    save(&LongPressM,                         sizeof(LongPressM),                         BACKUP);   //JM
-    save(&LongPressF,                         sizeof(LongPressF),                         BACKUP);   //JM
-    save(&currentAsnScr,                      sizeof(currentAsnScr),                      BACKUP);   //JM
+    save(&eRPN,                               sizeof(eRPN));                      //JM vv
+    save(&HOME3,                              sizeof(HOME3));
+    save(&ShiftTimoutMode,                    sizeof(ShiftTimoutMode));
+    save(&CPXMULT,                            sizeof(CPXMULT));                   //JM
+    save(&fgLN,                               sizeof(fgLN));
+    save(&SH_BASE_HOME,                       sizeof(SH_BASE_HOME  ));
+    save(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR));
+    save(&Input_Default,                      sizeof(Input_Default));
+    save(&compatibility_bool,                 sizeof(compatibility_bool));        //EXTRA
+    save(&jm_BASE_SCREEN,                     sizeof(jm_BASE_SCREEN));
+    save(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP));
+    save(&jm_temporary,                       sizeof(jm_temporary));              //EXTRA
+    save(&graph_xmin,                         sizeof(graph_xmin));
+    save(&graph_xmax,                         sizeof(graph_xmax));
+    save(&graph_ymin,                         sizeof(graph_ymin));
+    save(&graph_ymax,                         sizeof(graph_ymax));
+    save(&jm_LARGELI,                         sizeof(jm_LARGELI));
+    save(&constantFractions,                  sizeof(constantFractions));
+    save(&constantFractionsMode,              sizeof(constantFractionsMode));
+    save(&constantFractionsOn,                sizeof(constantFractionsOn));
+    save(&running_program_jm,                 sizeof(running_program_jm));
+    save(&indic_x,                            sizeof(indic_x));
+    save(&indic_y,                            sizeof(indic_y));
+    save(&fnXEQMENUpos,                       sizeof(fnXEQMENUpos));
+    save(&indexOfItemsXEQM,                   sizeof(indexOfItemsXEQM));
+    save(&T_cursorPos,                        sizeof(T_cursorPos));               //JM ^^
+    save(&SHOWregis,                          sizeof(SHOWregis));                 //JM ^^
+    save(&mm_MNU_HOME,                        sizeof(mm_MNU_HOME));               //JM ^^
+    save(&mm_MNU_ALPHA,                       sizeof(mm_MNU_ALPHA));              //JM ^^
+    save(&displayStackSHOIDISP,               sizeof(displayStackSHOIDISP));      //JM ^^
+    save(&ListXYposition,                     sizeof(ListXYposition));            //JM ^^
+    save(&numLock,                            sizeof(numLock));                   //JM ^^
+    save(&DRG_Cycling,                        sizeof(DRG_Cycling));               //JM
+    save(&lastFlgScr,                         sizeof(lastFlgScr));                //C43 JM
+    save(&displayAIMbufferoffset,             sizeof(displayAIMbufferoffset));    //C43 JM
+    save(&bcdDisplay,                         sizeof(bcdDisplay));                //C43 JM
+    save(&topHex,                             sizeof(topHex));                    //C43 JM
+    save(&bcdDisplaySign,                     sizeof(bcdDisplaySign));            //C43 JM
+    save(&DM_Cycling,                         sizeof(DM_Cycling));                //JM
+    save(&SI_All,                             sizeof(SI_All));                    //JM
+    save(&LongPressM,                         sizeof(LongPressM));                //JM
+    save(&LongPressF,                         sizeof(LongPressF));                //JM
+    save(&currentAsnScr,                      sizeof(currentAsnScr));             //JM
 
-    fclose(BACKUP);
+    ioFileClose();
     printf("End of calc's backup\n");
   }
 
@@ -545,21 +409,26 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     //uint8_t  compatibility_u8;        //defaults to use when settings are removed
       bool_t   compatibility_bool;      //defaults to use when settings are removed
     uint32_t backupVersion, ramSize, ramPtr;
-    FILE *ppgm_fp;
+    int ret;
     uint8_t *loadedScreen = malloc(SCREEN_WIDTH * SCREEN_HEIGHT / 8);
 
     doFnReset(CONFIRMED, loadAutoSav);
-    BACKUP = fopen("backup.bin", "rb");
-    if(BACKUP == NULL) {
-      printf("Cannot restore calc's memory from file backup.bin! Performing RESET\n");
-      refreshScreen();
-      return;
+    ret = ioFileOpen(ioPathBackup, ioModeRead);
+
+    if(ret != FILE_OK ) {
+      if(ret == FILE_CANCEL ) {
+        return;
+      } else {
+        printf("Cannot restore calc's memory from file backup.bin! Performing RESET\n");
+        refreshScreen();
+        return;
+      }
     }
 
-    restore(&backupVersion,                      sizeof(backupVersion),                      BACKUP);
-    restore(&ramSize,                            sizeof(ramSize),                            BACKUP);
+    restore(&backupVersion,                      sizeof(backupVersion));
+    restore(&ramSize,                            sizeof(ramSize));
     if(backupVersion > BACKUP_VERSION || backupVersion < OLDEST_COMPATIBLE_BACKUP_VERSION || ramSize != RAM_SIZE) {
-      fclose(BACKUP);
+      ioFileClose();
       refreshScreen();
 
       printf("Cannot restore calc's memory from file backup.bin! File backup.bin is from incompatible backup version.\n");
@@ -572,279 +441,279 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     else {
       printf("Begin of calc's restoration\n");
 
-      restore(ram,                                 TO_BYTES(RAM_SIZE),                         BACKUP);
-      restore(freeMemoryRegions,                   sizeof(freeMemoryRegions),                  BACKUP);
-      restore(&numberOfFreeMemoryRegions,          sizeof(numberOfFreeMemoryRegions),          BACKUP);
-      restore(globalFlags,                         sizeof(globalFlags),                        BACKUP);
-      restore(errorMessage,                        ERROR_MESSAGE_LENGTH,                       BACKUP);
-      restore(aimBuffer,                           AIM_BUFFER_LENGTH,                          BACKUP);
-      restore(nimBufferDisplay,                    NIM_BUFFER_LENGTH,                          BACKUP);
-      restore(tamBuffer,                           TAM_BUFFER_LENGTH,                          BACKUP);
-      restore(asmBuffer,                           sizeof(asmBuffer),                          BACKUP);
-      restore(oldTime,                             sizeof(oldTime),                            BACKUP);
-      restore(dateTimeString,                      sizeof(dateTimeString),                     BACKUP);
-      restore(softmenuStack,                       sizeof(softmenuStack),                      BACKUP);
-      restore(globalRegister,                      sizeof(globalRegister),                     BACKUP);
-      restore(savedStackRegister,                  sizeof(savedStackRegister),                 BACKUP);
-      restore(kbd_usr,                             sizeof(kbd_usr),                            BACKUP);
-      restore(userMenuItems,                       sizeof(userMenuItems),                      BACKUP);
-      restore(userAlphaItems,                      sizeof(userAlphaItems),                     BACKUP);
-      restore(&tam.mode,                           sizeof(tam.mode),                           BACKUP);
-      restore(&tam.function,                       sizeof(tam.function),                       BACKUP);
-      restore(&tam.alpha,                          sizeof(tam.alpha),                          BACKUP);
-      restore(&tam.currentOperation,               sizeof(tam.currentOperation),               BACKUP);
-      restore(&tam.dot,                            sizeof(tam.dot),                            BACKUP);
-      restore(&tam.indirect,                       sizeof(tam.indirect),                       BACKUP);
-      restore(&tam.digitsSoFar,                    sizeof(tam.digitsSoFar),                    BACKUP);
-      restore(&tam.value,                          sizeof(tam.value),                          BACKUP);
-      restore(&tam.min,                            sizeof(tam.min),                            BACKUP);
-      restore(&tam.max,                            sizeof(tam.max),                            BACKUP);
-      restore(&rbrRegister,                        sizeof(rbrRegister),                        BACKUP);
-      restore(&numberOfNamedVariables,             sizeof(numberOfNamedVariables),             BACKUP);
-      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+      restore(ram,                                 TO_BYTES(RAM_SIZE));
+      restore(freeMemoryRegions,                   sizeof(freeMemoryRegions));
+      restore(&numberOfFreeMemoryRegions,          sizeof(numberOfFreeMemoryRegions));
+      restore(globalFlags,                         sizeof(globalFlags));
+      restore(errorMessage,                        ERROR_MESSAGE_LENGTH);
+      restore(aimBuffer,                           AIM_BUFFER_LENGTH);
+      restore(nimBufferDisplay,                    NIM_BUFFER_LENGTH);
+      restore(tamBuffer,                           TAM_BUFFER_LENGTH);
+      restore(asmBuffer,                           sizeof(asmBuffer));
+      restore(oldTime,                             sizeof(oldTime));
+      restore(dateTimeString,                      sizeof(dateTimeString));
+      restore(softmenuStack,                       sizeof(softmenuStack));
+      restore(globalRegister,                      sizeof(globalRegister));
+      restore(savedStackRegister,                  sizeof(savedStackRegister));
+      restore(kbd_usr,                             sizeof(kbd_usr));
+      restore(userMenuItems,                       sizeof(userMenuItems));
+      restore(userAlphaItems,                      sizeof(userAlphaItems));
+      restore(&tam.mode,                           sizeof(tam.mode));
+      restore(&tam.function,                       sizeof(tam.function));
+      restore(&tam.alpha,                          sizeof(tam.alpha));
+      restore(&tam.currentOperation,               sizeof(tam.currentOperation));
+      restore(&tam.dot,                            sizeof(tam.dot));
+      restore(&tam.indirect,                       sizeof(tam.indirect));
+      restore(&tam.digitsSoFar,                    sizeof(tam.digitsSoFar));
+      restore(&tam.value,                          sizeof(tam.value));
+      restore(&tam.min,                            sizeof(tam.min));
+      restore(&tam.max,                            sizeof(tam.max));
+      restore(&rbrRegister,                        sizeof(rbrRegister));
+      restore(&numberOfNamedVariables,             sizeof(numberOfNamedVariables));
+      restore(&ramPtr,                             sizeof(ramPtr));
       allNamedVariables = TO_PCMEMPTR(ramPtr);
-      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+      restore(&ramPtr,                             sizeof(ramPtr));
       allFormulae = TO_PCMEMPTR(ramPtr);
-      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+      restore(&ramPtr,                             sizeof(ramPtr));
       userMenus = TO_PCMEMPTR(ramPtr);
-      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+      restore(&ramPtr,                             sizeof(ramPtr));
       userKeyLabel = TO_PCMEMPTR(ramPtr);
-      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+      restore(&ramPtr,                             sizeof(ramPtr));
       statisticalSumsPointer = TO_PCMEMPTR(ramPtr);
-      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+      restore(&ramPtr,                             sizeof(ramPtr));
       savedStatisticalSumsPointer = TO_PCMEMPTR(ramPtr);
-      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+      restore(&ramPtr,                             sizeof(ramPtr));
       labelList = TO_PCMEMPTR(ramPtr);
-      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+      restore(&ramPtr,                             sizeof(ramPtr));
       flashLabelList = TO_PCMEMPTR(ramPtr);
-      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+      restore(&ramPtr,                             sizeof(ramPtr));
       programList = TO_PCMEMPTR(ramPtr);
-      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+      restore(&ramPtr,                             sizeof(ramPtr));
       flashProgramList = TO_PCMEMPTR(ramPtr);
-      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+      restore(&ramPtr,                             sizeof(ramPtr));
       currentSubroutineLevelData = TO_PCMEMPTR(ramPtr);
-      restore(&xCursor,                            sizeof(xCursor),                            BACKUP);
-      restore(&yCursor,                            sizeof(yCursor),                            BACKUP);
-      restore(&firstGregorianDay,                  sizeof(firstGregorianDay),                  BACKUP);
-      restore(&denMax,                             sizeof(denMax),                             BACKUP);
+      restore(&xCursor,                            sizeof(xCursor));
+      restore(&yCursor,                            sizeof(yCursor));
+      restore(&firstGregorianDay,                  sizeof(firstGregorianDay));
+      restore(&denMax,                             sizeof(denMax));
       if(backupVersion >= 780) {
-        restore(&lastDenominator,                  sizeof(lastDenominator),                    BACKUP);
+        restore(&lastDenominator,                  sizeof(lastDenominator));
       }
-      restore(&currentRegisterBrowserScreen,       sizeof(currentRegisterBrowserScreen),       BACKUP);
-      restore(&currentFntScr,                      sizeof(currentFntScr),                      BACKUP);
-      restore(&currentFlgScr,                      sizeof(currentFlgScr),                      BACKUP);
-      restore(&displayFormat,                      sizeof(displayFormat),                      BACKUP);
-      restore(&displayFormatDigits,                sizeof(displayFormatDigits),                BACKUP);
-      restore(&timeDisplayFormatDigits,            sizeof(timeDisplayFormatDigits),            BACKUP);
-      restore(&shortIntegerWordSize,               sizeof(shortIntegerWordSize),               BACKUP);
-      restore(&significantDigits,                  sizeof(significantDigits),                  BACKUP);
-      restore(&shortIntegerMode,                   sizeof(shortIntegerMode),                   BACKUP);
-      restore(&currentAngularMode,                 sizeof(currentAngularMode),                 BACKUP);
-      restore(&groupingGap,                        sizeof(groupingGap),                        BACKUP);
-      restore(&roundingMode,                       sizeof(roundingMode),                       BACKUP);
-      restore(&calcMode,                           sizeof(calcMode),                           BACKUP);
-      restore(&nextChar,                           sizeof(nextChar),                           BACKUP);
-      restore(&alphaCase,                          sizeof(alphaCase),                          BACKUP);
-      restore(&hourGlassIconEnabled,               sizeof(hourGlassIconEnabled),               BACKUP);
-      restore(&watchIconEnabled,                   sizeof(watchIconEnabled),                   BACKUP);
-      restore(&serialIOIconEnabled,                sizeof(serialIOIconEnabled),                BACKUP);
-      restore(&printerIconEnabled,                 sizeof(printerIconEnabled),                 BACKUP);
-      restore(&programRunStop,                     sizeof(programRunStop),                     BACKUP);
-      restore(&entryStatus,                        sizeof(entryStatus),                        BACKUP);
-      restore(&cursorEnabled,                      sizeof(cursorEnabled),                      BACKUP);
-      restore(&cursorFont,                         sizeof(cursorFont),                         BACKUP);
-      restore(&rbr1stDigit,                        sizeof(rbr1stDigit),                        BACKUP);
-      restore(&shiftF,                             sizeof(shiftF),                             BACKUP);
-      restore(&shiftG,                             sizeof(shiftG),                             BACKUP);
-      restore(&rbrMode,                            sizeof(rbrMode),                            BACKUP);
-      restore(&showContent,                        sizeof(showContent),                        BACKUP);
-      restore(&numScreensNumericFont,              sizeof(numScreensNumericFont),              BACKUP);
-      restore(&numLinesNumericFont,                sizeof(numLinesNumericFont),                BACKUP);
-      restore(&numLinesStandardFont,               sizeof(numLinesStandardFont),               BACKUP);
-      restore(&numScreensStandardFont,             sizeof(numScreensStandardFont),             BACKUP);
-      restore(&previousCalcMode,                   sizeof(previousCalcMode),                   BACKUP);
-      restore(&lastErrorCode,                      sizeof(lastErrorCode),                      BACKUP);
-      restore(&nimNumberPart,                      sizeof(nimNumberPart),                      BACKUP);
-      restore(&displayStack,                       sizeof(displayStack),                       BACKUP);
-      restore(&hexDigits,                          sizeof(hexDigits),                          BACKUP);
-      restore(&errorMessageRegisterLine,           sizeof(errorMessageRegisterLine),           BACKUP);
-      restore(&shortIntegerMask,                   sizeof(shortIntegerMask),                   BACKUP);
-      restore(&shortIntegerSignBit,                sizeof(shortIntegerSignBit),                BACKUP);
-      restore(&temporaryInformation,               sizeof(temporaryInformation),               BACKUP);
+      restore(&currentRegisterBrowserScreen,       sizeof(currentRegisterBrowserScreen));
+      restore(&currentFntScr,                      sizeof(currentFntScr));
+      restore(&currentFlgScr,                      sizeof(currentFlgScr));
+      restore(&displayFormat,                      sizeof(displayFormat));
+      restore(&displayFormatDigits,                sizeof(displayFormatDigits));
+      restore(&timeDisplayFormatDigits,            sizeof(timeDisplayFormatDigits));
+      restore(&shortIntegerWordSize,               sizeof(shortIntegerWordSize));
+      restore(&significantDigits,                  sizeof(significantDigits));
+      restore(&shortIntegerMode,                   sizeof(shortIntegerMode));
+      restore(&currentAngularMode,                 sizeof(currentAngularMode));
+      restore(&groupingGap,                        sizeof(groupingGap));
+      restore(&roundingMode,                       sizeof(roundingMode));
+      restore(&calcMode,                           sizeof(calcMode));
+      restore(&nextChar,                           sizeof(nextChar));
+      restore(&alphaCase,                          sizeof(alphaCase));
+      restore(&hourGlassIconEnabled,               sizeof(hourGlassIconEnabled));
+      restore(&watchIconEnabled,                   sizeof(watchIconEnabled));
+      restore(&serialIOIconEnabled,                sizeof(serialIOIconEnabled));
+      restore(&printerIconEnabled,                 sizeof(printerIconEnabled));
+      restore(&programRunStop,                     sizeof(programRunStop));
+      restore(&entryStatus,                        sizeof(entryStatus));
+      restore(&cursorEnabled,                      sizeof(cursorEnabled));
+      restore(&cursorFont,                         sizeof(cursorFont));
+      restore(&rbr1stDigit,                        sizeof(rbr1stDigit));
+      restore(&shiftF,                             sizeof(shiftF));
+      restore(&shiftG,                             sizeof(shiftG));
+      restore(&rbrMode,                            sizeof(rbrMode));
+      restore(&showContent,                        sizeof(showContent));
+      restore(&numScreensNumericFont,              sizeof(numScreensNumericFont));
+      restore(&numLinesNumericFont,                sizeof(numLinesNumericFont));
+      restore(&numLinesStandardFont,               sizeof(numLinesStandardFont));
+      restore(&numScreensStandardFont,             sizeof(numScreensStandardFont));
+      restore(&previousCalcMode,                   sizeof(previousCalcMode));
+      restore(&lastErrorCode,                      sizeof(lastErrorCode));
+      restore(&nimNumberPart,                      sizeof(nimNumberPart));
+      restore(&displayStack,                       sizeof(displayStack));
+      restore(&hexDigits,                          sizeof(hexDigits));
+      restore(&errorMessageRegisterLine,           sizeof(errorMessageRegisterLine));
+      restore(&shortIntegerMask,                   sizeof(shortIntegerMask));
+      restore(&shortIntegerSignBit,                sizeof(shortIntegerSignBit));
+      restore(&temporaryInformation,               sizeof(temporaryInformation));
 
-      restore(&glyphNotFound,                      sizeof(glyphNotFound),                      BACKUP);
+      restore(&glyphNotFound,                      sizeof(glyphNotFound));
       glyphNotFound.data   = malloc(38);
       xcopy(glyphNotFound.data, "\xff\xf8\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\xff\xf8", 38);
 
-      restore(&funcOK,                             sizeof(funcOK),                             BACKUP);
-      restore(&screenChange,                       sizeof(screenChange),                       BACKUP);
-      restore(&exponentSignLocation,               sizeof(exponentSignLocation),               BACKUP);
-      restore(&denominatorLocation,                sizeof(denominatorLocation),                BACKUP);
-      restore(&imaginaryExponentSignLocation,      sizeof(imaginaryExponentSignLocation),      BACKUP);
-      restore(&imaginaryMantissaSignLocation,      sizeof(imaginaryMantissaSignLocation),      BACKUP);
-      restore(&lineTWidth,                         sizeof(lineTWidth),                         BACKUP);
-      restore(&lastIntegerBase,                    sizeof(lastIntegerBase),                    BACKUP);
-      restore(&wp43MemInBlocks,                    sizeof(wp43MemInBlocks),                    BACKUP);
-      restore(&gmpMemInBytes,                      sizeof(gmpMemInBytes),                      BACKUP);
-      restore(&catalog,                            sizeof(catalog),                            BACKUP);
-      restore(&lastCatalogPosition,                sizeof(lastCatalogPosition),                BACKUP);
-      restore(&lgCatalogSelection,                 sizeof(lgCatalogSelection),                 BACKUP);
-      restore(displayValueX,                       sizeof(displayValueX),                      BACKUP);
-      restore(&pcg32_global,                       sizeof(pcg32_global),                       BACKUP);
-      restore(&exponentLimit,                      sizeof(exponentLimit),                      BACKUP);
-      restore(&exponentHideLimit,                  sizeof(exponentHideLimit),                  BACKUP);
-      restore(&keyActionProcessed,                 sizeof(keyActionProcessed),                 BACKUP);
-      restore(&systemFlags,                        sizeof(systemFlags),                        BACKUP);
-      restore(&savedSystemFlags,                   sizeof(savedSystemFlags),                   BACKUP);
-      restore(&thereIsSomethingToUndo,             sizeof(thereIsSomethingToUndo),             BACKUP);
-      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // beginOfProgramMemory pointer to block
+      restore(&funcOK,                             sizeof(funcOK));
+      restore(&screenChange,                       sizeof(screenChange));
+      restore(&exponentSignLocation,               sizeof(exponentSignLocation));
+      restore(&denominatorLocation,                sizeof(denominatorLocation));
+      restore(&imaginaryExponentSignLocation,      sizeof(imaginaryExponentSignLocation));
+      restore(&imaginaryMantissaSignLocation,      sizeof(imaginaryMantissaSignLocation));
+      restore(&lineTWidth,                         sizeof(lineTWidth));
+      restore(&lastIntegerBase,                    sizeof(lastIntegerBase));
+      restore(&wp43MemInBlocks,                    sizeof(wp43MemInBlocks));
+      restore(&gmpMemInBytes,                      sizeof(gmpMemInBytes));
+      restore(&catalog,                            sizeof(catalog));
+      restore(&lastCatalogPosition,                sizeof(lastCatalogPosition));
+      restore(&lgCatalogSelection,                 sizeof(lgCatalogSelection));
+      restore(displayValueX,                       sizeof(displayValueX));
+      restore(&pcg32_global,                       sizeof(pcg32_global));
+      restore(&exponentLimit,                      sizeof(exponentLimit));
+      restore(&exponentHideLimit,                  sizeof(exponentHideLimit));
+      restore(&keyActionProcessed,                 sizeof(keyActionProcessed));
+      restore(&systemFlags,                        sizeof(systemFlags));
+      restore(&savedSystemFlags,                   sizeof(savedSystemFlags));
+      restore(&thereIsSomethingToUndo,             sizeof(thereIsSomethingToUndo));
+      restore(&ramPtr,                             sizeof(ramPtr)); // beginOfProgramMemory pointer to block
       beginOfProgramMemory = TO_PCMEMPTR(ramPtr);
-      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // beginOfProgramMemory offset within block
+      restore(&ramPtr,                             sizeof(ramPtr)); // beginOfProgramMemory offset within block
       beginOfProgramMemory += ramPtr;
-      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // firstFreeProgramByte pointer to block
+      restore(&ramPtr,                             sizeof(ramPtr)); // firstFreeProgramByte pointer to block
       firstFreeProgramByte = TO_PCMEMPTR(ramPtr);
-      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // firstFreeProgramByte offset within block
+      restore(&ramPtr,                             sizeof(ramPtr)); // firstFreeProgramByte offset within block
       firstFreeProgramByte += ramPtr;
-      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // firstDisplayedStep pointer to block
+      restore(&ramPtr,                             sizeof(ramPtr)); // firstDisplayedStep pointer to block
       firstDisplayedStep.ram = TO_PCMEMPTR(ramPtr);
-      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // firstDisplayedStep offset within block
+      restore(&ramPtr,                             sizeof(ramPtr)); // firstDisplayedStep offset within block
       firstDisplayedStep.ram += ramPtr;
-      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // currentStep pointer to block
+      restore(&ramPtr,                             sizeof(ramPtr)); // currentStep pointer to block
       currentStep.ram = TO_PCMEMPTR(ramPtr);
-      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // currentStep offset within block
+      restore(&ramPtr,                             sizeof(ramPtr)); // currentStep offset within block
       currentStep.ram += ramPtr;
-      restore(&freeProgramBytes,                   sizeof(freeProgramBytes),                   BACKUP);
-      restore(&firstDisplayedLocalStepNumber,      sizeof(firstDisplayedLocalStepNumber),      BACKUP);
-      restore(&numberOfLabels,                     sizeof(numberOfLabels),                     BACKUP);
-      restore(&numberOfLabelsInFlash,              sizeof(numberOfLabelsInFlash),              BACKUP);
-      restore(&numberOfPrograms,                   sizeof(numberOfPrograms),                   BACKUP);
-      restore(&numberOfProgramsInFlash,            sizeof(numberOfProgramsInFlash),            BACKUP);
-      restore(&currentLocalStepNumber,             sizeof(currentLocalStepNumber),             BACKUP);
-      restore(&currentProgramNumber,               sizeof(currentProgramNumber),               BACKUP);
-      restore(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
-      restore(&programListEnd,                     sizeof(programListEnd),                     BACKUP);
-      restore(&allSubroutineLevels,                sizeof(allSubroutineLevels),                BACKUP);
-      restore(&pemCursorIsZerothStep,              sizeof(pemCursorIsZerothStep),              BACKUP);
-      restore(&numberOfTamMenusToPop,              sizeof(numberOfTamMenusToPop),              BACKUP);
-      restore(&lrSelection,                        sizeof(lrSelection),                        BACKUP);
-      restore(&lrSelectionUndo,                    sizeof(lrSelectionUndo),                    BACKUP);
-      restore(&lrChosen,                           sizeof(lrChosen),                           BACKUP);
-      restore(&lrChosenUndo,                       sizeof(lrChosenUndo),                       BACKUP);
-      restore(&lastPlotMode,                       sizeof(lastPlotMode),                       BACKUP);
-      restore(&plotSelection,                      sizeof(plotSelection),                      BACKUP);
+      restore(&freeProgramBytes,                   sizeof(freeProgramBytes));
+      restore(&firstDisplayedLocalStepNumber,      sizeof(firstDisplayedLocalStepNumber));
+      restore(&numberOfLabels,                     sizeof(numberOfLabels));
+      restore(&numberOfLabelsInFlash,              sizeof(numberOfLabelsInFlash));
+      restore(&numberOfPrograms,                   sizeof(numberOfPrograms));
+      restore(&numberOfProgramsInFlash,            sizeof(numberOfProgramsInFlash));
+      restore(&currentLocalStepNumber,             sizeof(currentLocalStepNumber));
+      restore(&currentProgramNumber,               sizeof(currentProgramNumber));
+      restore(&lastProgramListEnd,                 sizeof(lastProgramListEnd));
+      restore(&programListEnd,                     sizeof(programListEnd));
+      restore(&allSubroutineLevels,                sizeof(allSubroutineLevels));
+      restore(&pemCursorIsZerothStep,              sizeof(pemCursorIsZerothStep));
+      restore(&numberOfTamMenusToPop,              sizeof(numberOfTamMenusToPop));
+      restore(&lrSelection,                        sizeof(lrSelection));
+      restore(&lrSelectionUndo,                    sizeof(lrSelectionUndo));
+      restore(&lrChosen,                           sizeof(lrChosen));
+      restore(&lrChosenUndo,                       sizeof(lrChosenUndo));
+      restore(&lastPlotMode,                       sizeof(lastPlotMode));
+      restore(&plotSelection,                      sizeof(plotSelection));
 
-      restore(&graph_dx,                           sizeof(graph_dx),                           BACKUP);
-      restore(&graph_dy,                           sizeof(graph_dy),                           BACKUP);
-      restore(&roundedTicks,                       sizeof(roundedTicks),                       BACKUP);
-      restore(&extentx,                            sizeof(extentx),                            BACKUP);
-      restore(&extenty,                            sizeof(extenty),                            BACKUP);
-      restore(&PLOT_VECT,                          sizeof(PLOT_VECT),                          BACKUP);
-      restore(&PLOT_NVECT,                         sizeof(PLOT_NVECT),                         BACKUP);
-      restore(&PLOT_SCALE,                         sizeof(PLOT_SCALE),                         BACKUP);
-      restore(&Aspect_Square,                      sizeof(Aspect_Square),                      BACKUP);
-      restore(&PLOT_LINE,                          sizeof(PLOT_LINE),                          BACKUP);
-      restore(&PLOT_CROSS,                         sizeof(PLOT_CROSS),                         BACKUP);
-      restore(&PLOT_BOX,                           sizeof(PLOT_BOX),                           BACKUP);
-      restore(&PLOT_INTG,                          sizeof(PLOT_INTG),                          BACKUP);
-      restore(&PLOT_DIFF,                          sizeof(PLOT_DIFF),                          BACKUP);
-      restore(&PLOT_RMS,                           sizeof(PLOT_RMS),                           BACKUP);
-      restore(&PLOT_SHADE,                         sizeof(PLOT_SHADE),                         BACKUP);
-      restore(&PLOT_AXIS,                          sizeof(PLOT_AXIS),                          BACKUP);
-      restore(&PLOT_ZMX,                           sizeof(PLOT_ZMX),                           BACKUP);
-      restore(&PLOT_ZMY,                           sizeof(PLOT_ZMY),                           BACKUP);
-      restore(&PLOT_ZOOM,                          sizeof(PLOT_ZOOM),                          BACKUP);
-      restore(&plotmode,                           sizeof(plotmode),                           BACKUP);
-      restore(&tick_int_x,                         sizeof(tick_int_x),                         BACKUP);
-      restore(&tick_int_y,                         sizeof(tick_int_y),                         BACKUP);
-      restore(&x_min,                              sizeof(x_min),                              BACKUP);
-      restore(&x_max,                              sizeof(x_max),                              BACKUP);
-      restore(&y_min,                              sizeof(y_min),                              BACKUP);
-      restore(&y_max,                              sizeof(y_max),                              BACKUP);
-      restore(&xzero,                              sizeof(xzero),                              BACKUP);
-      restore(&yzero,                              sizeof(yzero),                              BACKUP);
-      restore(&matrixIndex,                        sizeof(matrixIndex),                        BACKUP);
-      restore(&currentViewRegister,                sizeof(currentViewRegister),                BACKUP);
-      restore(&currentSolverStatus,                sizeof(currentSolverStatus),                BACKUP);
-      restore(&currentSolverProgram,               sizeof(currentSolverProgram),               BACKUP);
-      restore(&currentSolverVariable,              sizeof(currentSolverVariable),              BACKUP);
-      restore(&numberOfFormulae,                   sizeof(numberOfFormulae),                   BACKUP);
-      restore(&currentFormula,                     sizeof(currentFormula),                     BACKUP);
-      restore(&numberOfUserMenus,                  sizeof(numberOfUserMenus),                  BACKUP);
-      restore(&currentUserMenu,                    sizeof(currentUserMenu),                    BACKUP);
-      restore(&userKeyLabelSize,                   sizeof(userKeyLabelSize),                   BACKUP);
-      restore(&timerCraAndDeciseconds,             sizeof(timerCraAndDeciseconds),             BACKUP);
-      restore(&timerValue,                         sizeof(timerValue),                         BACKUP);
-      restore(&timerTotalTime,                     sizeof(timerTotalTime),                     BACKUP);
-      restore(&currentInputVariable,               sizeof(currentInputVariable),               BACKUP);
-      restore(&SAVED_SIGMA_LASTX,                  sizeof(SAVED_SIGMA_LASTX),                  BACKUP);
-      restore(&SAVED_SIGMA_LASTY,                  sizeof(SAVED_SIGMA_LASTY),                  BACKUP);
-      restore(&SAVED_SIGMA_LAct,                   sizeof(SAVED_SIGMA_LAct),                   BACKUP);
-      restore(&currentMvarLabel,                   sizeof(currentMvarLabel),                   BACKUP);
-      restore(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
-      restore(&plotStatMx,                         sizeof(plotStatMx),                         BACKUP);
-      restore(&drawHistogram,                      sizeof(drawHistogram),                      BACKUP);
-      restore(&statMx,                             sizeof(statMx),                             BACKUP);
-      restore(&lrSelectionHistobackup,             sizeof(lrSelectionHistobackup),             BACKUP);
-      restore(&lrChosenHistobackup,                sizeof(lrChosenHistobackup),                BACKUP);
-      restore(&loBinR,                             sizeof(loBinR),                             BACKUP);
-      restore(&nBins ,                             sizeof(nBins ),                             BACKUP);
-      restore(&hiBinR,                             sizeof(hiBinR),                             BACKUP);
-      restore(&histElementXorY,                    sizeof(histElementXorY),                    BACKUP);
+      restore(&graph_dx,                           sizeof(graph_dx));
+      restore(&graph_dy,                           sizeof(graph_dy));
+      restore(&roundedTicks,                       sizeof(roundedTicks));
+      restore(&extentx,                            sizeof(extentx));
+      restore(&extenty,                            sizeof(extenty));
+      restore(&PLOT_VECT,                          sizeof(PLOT_VECT));
+      restore(&PLOT_NVECT,                         sizeof(PLOT_NVECT));
+      restore(&PLOT_SCALE,                         sizeof(PLOT_SCALE));
+      restore(&Aspect_Square,                      sizeof(Aspect_Square));
+      restore(&PLOT_LINE,                          sizeof(PLOT_LINE));
+      restore(&PLOT_CROSS,                         sizeof(PLOT_CROSS));
+      restore(&PLOT_BOX,                           sizeof(PLOT_BOX));
+      restore(&PLOT_INTG,                          sizeof(PLOT_INTG));
+      restore(&PLOT_DIFF,                          sizeof(PLOT_DIFF));
+      restore(&PLOT_RMS,                           sizeof(PLOT_RMS));
+      restore(&PLOT_SHADE,                         sizeof(PLOT_SHADE));
+      restore(&PLOT_AXIS,                          sizeof(PLOT_AXIS));
+      restore(&PLOT_ZMX,                           sizeof(PLOT_ZMX));
+      restore(&PLOT_ZMY,                           sizeof(PLOT_ZMY));
+      restore(&PLOT_ZOOM,                          sizeof(PLOT_ZOOM));
+      restore(&plotmode,                           sizeof(plotmode));
+      restore(&tick_int_x,                         sizeof(tick_int_x));
+      restore(&tick_int_y,                         sizeof(tick_int_y));
+      restore(&x_min,                              sizeof(x_min));
+      restore(&x_max,                              sizeof(x_max));
+      restore(&y_min,                              sizeof(y_min));
+      restore(&y_max,                              sizeof(y_max));
+      restore(&xzero,                              sizeof(xzero));
+      restore(&yzero,                              sizeof(yzero));
+      restore(&matrixIndex,                        sizeof(matrixIndex));
+      restore(&currentViewRegister,                sizeof(currentViewRegister));
+      restore(&currentSolverStatus,                sizeof(currentSolverStatus));
+      restore(&currentSolverProgram,               sizeof(currentSolverProgram));
+      restore(&currentSolverVariable,              sizeof(currentSolverVariable));
+      restore(&numberOfFormulae,                   sizeof(numberOfFormulae));
+      restore(&currentFormula,                     sizeof(currentFormula));
+      restore(&numberOfUserMenus,                  sizeof(numberOfUserMenus));
+      restore(&currentUserMenu,                    sizeof(currentUserMenu));
+      restore(&userKeyLabelSize,                   sizeof(userKeyLabelSize));
+      restore(&timerCraAndDeciseconds,             sizeof(timerCraAndDeciseconds));
+      restore(&timerValue,                         sizeof(timerValue));
+      restore(&timerTotalTime,                     sizeof(timerTotalTime));
+      restore(&currentInputVariable,               sizeof(currentInputVariable));
+      restore(&SAVED_SIGMA_LASTX,                  sizeof(SAVED_SIGMA_LASTX));
+      restore(&SAVED_SIGMA_LASTY,                  sizeof(SAVED_SIGMA_LASTY));
+      restore(&SAVED_SIGMA_LAct,                   sizeof(SAVED_SIGMA_LAct));
+      restore(&currentMvarLabel,                   sizeof(currentMvarLabel));
+      restore(&graphVariable,                      sizeof(graphVariable));
+      restore(&plotStatMx,                         sizeof(plotStatMx));
+      restore(&drawHistogram,                      sizeof(drawHistogram));
+      restore(&statMx,                             sizeof(statMx));
+      restore(&lrSelectionHistobackup,             sizeof(lrSelectionHistobackup));
+      restore(&lrChosenHistobackup,                sizeof(lrChosenHistobackup));
+      restore(&loBinR,                             sizeof(loBinR));
+      restore(&nBins ,                             sizeof(nBins ));
+      restore(&hiBinR,                             sizeof(hiBinR));
+      restore(&histElementXorY,                    sizeof(histElementXorY));
 
-      restore(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
-      restore(loadedScreen,                        SCREEN_WIDTH * SCREEN_HEIGHT / 8,           BACKUP);
+      restore(&screenUpdatingMode,                 sizeof(screenUpdatingMode));
+      restore(loadedScreen,                        SCREEN_WIDTH * SCREEN_HEIGHT / 8);
 
-      restore(&eRPN,                               sizeof(eRPN),                               BACKUP);    //JM vv
-      restore(&HOME3,                              sizeof(HOME3),                              BACKUP);
-      restore(&ShiftTimoutMode,                    sizeof(ShiftTimoutMode),                    BACKUP);
-      restore(&CPXMULT,                            sizeof(CPXMULT),                            BACKUP);   //JM
-      restore(&fgLN,                               sizeof(fgLN),                               BACKUP);
-      restore(&SH_BASE_HOME,                       sizeof(SH_BASE_HOME  ),                     BACKUP);
-      restore(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR),                    BACKUP);
-      restore(&Input_Default,                      sizeof(Input_Default),                      BACKUP);
-      restore(&compatibility_bool,                 sizeof(compatibility_bool),                 BACKUP);
-      restore(&jm_BASE_SCREEN,                     sizeof(jm_BASE_SCREEN),                     BACKUP);
-      restore(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP),                     BACKUP);
-      restore(&jm_temporary,                       sizeof(jm_temporary),                       BACKUP);
-      restore(&graph_xmin,                         sizeof(graph_xmin),                         BACKUP);
-      restore(&graph_xmax,                         sizeof(graph_xmax),                         BACKUP);
-      restore(&graph_ymin,                         sizeof(graph_ymin),                         BACKUP);
-      restore(&graph_ymax,                         sizeof(graph_ymax),                         BACKUP);
-      restore(&jm_LARGELI,                         sizeof(jm_LARGELI),                         BACKUP);
-      restore(&constantFractions,                  sizeof(constantFractions),                  BACKUP);
-      restore(&constantFractionsMode,              sizeof(constantFractionsMode),              BACKUP);
-      restore(&constantFractionsOn,                sizeof(constantFractionsOn),                BACKUP);
-      restore(&running_program_jm,                 sizeof(running_program_jm),                 BACKUP);
-      restore(&indic_x,                            sizeof(indic_x),                            BACKUP);
-      restore(&indic_y,                            sizeof(indic_y),                            BACKUP);
-      restore(&fnXEQMENUpos,                       sizeof(fnXEQMENUpos),                       BACKUP);
-      restore(&indexOfItemsXEQM,                   sizeof(indexOfItemsXEQM),                   BACKUP);
-      restore(&T_cursorPos,                        sizeof(T_cursorPos),                        BACKUP);   //JM ^^
-      restore(&SHOWregis,                          sizeof(SHOWregis),                          BACKUP);   //JM ^^
-      restore(&mm_MNU_HOME,                        sizeof(mm_MNU_HOME),                        BACKUP);   //JM ^^
-      restore(&mm_MNU_ALPHA,                       sizeof(mm_MNU_ALPHA),                       BACKUP);   //JM ^^
-      restore(&displayStackSHOIDISP,               sizeof(displayStackSHOIDISP),               BACKUP);   //JM ^^
-      restore(&ListXYposition,                     sizeof(ListXYposition),                     BACKUP);   //JM ^^
-      restore(&numLock,                            sizeof(numLock),                            BACKUP);   //JM ^^
-      restore(&DRG_Cycling,                        sizeof(DRG_Cycling),                        BACKUP);   //JM
-      restore(&lastFlgScr,                         sizeof(lastFlgScr),                         BACKUP);
-      restore(&displayAIMbufferoffset,             sizeof(displayAIMbufferoffset),             BACKUP);   //C43 JM
-      restore(&bcdDisplay,                         sizeof(bcdDisplay),                         BACKUP);   //C43 JM
-      restore(&topHex,                             sizeof(topHex),                             BACKUP);   //C43 JM
-      restore(&bcdDisplaySign,                     sizeof(bcdDisplaySign),                     BACKUP);   //C43 JM
-      restore(&DM_Cycling,                         sizeof(DM_Cycling),                         BACKUP);   //JM
-      restore(&SI_All,                             sizeof(SI_All),                             BACKUP);   //JM
-      restore(&LongPressM,                         sizeof(LongPressM),                         BACKUP);   //JM
-      restore(&LongPressF,                         sizeof(LongPressF),                         BACKUP);   //JM
-      restore(&currentAsnScr,                      sizeof(currentAsnScr),                      BACKUP);   //JM
+      restore(&eRPN,                               sizeof(eRPN));                     //JM vv
+      restore(&HOME3,                              sizeof(HOME3));
+      restore(&ShiftTimoutMode,                    sizeof(ShiftTimoutMode));
+      restore(&CPXMULT,                            sizeof(CPXMULT));                  //JM
+      restore(&fgLN,                               sizeof(fgLN));
+      restore(&SH_BASE_HOME,                       sizeof(SH_BASE_HOME  ));
+      restore(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR));
+      restore(&Input_Default,                      sizeof(Input_Default));
+      restore(&compatibility_bool,                 sizeof(compatibility_bool));
+      restore(&jm_BASE_SCREEN,                     sizeof(jm_BASE_SCREEN));
+      restore(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP));
+      restore(&jm_temporary,                       sizeof(jm_temporary));
+      restore(&graph_xmin,                         sizeof(graph_xmin));
+      restore(&graph_xmax,                         sizeof(graph_xmax));
+      restore(&graph_ymin,                         sizeof(graph_ymin));
+      restore(&graph_ymax,                         sizeof(graph_ymax));
+      restore(&jm_LARGELI,                         sizeof(jm_LARGELI));
+      restore(&constantFractions,                  sizeof(constantFractions));
+      restore(&constantFractionsMode,              sizeof(constantFractionsMode));
+      restore(&constantFractionsOn,                sizeof(constantFractionsOn));
+      restore(&running_program_jm,                 sizeof(running_program_jm));
+      restore(&indic_x,                            sizeof(indic_x));
+      restore(&indic_y,                            sizeof(indic_y));
+      restore(&fnXEQMENUpos,                       sizeof(fnXEQMENUpos));
+      restore(&indexOfItemsXEQM,                   sizeof(indexOfItemsXEQM));
+      restore(&T_cursorPos,                        sizeof(T_cursorPos));              //JM ^^
+      restore(&SHOWregis,                          sizeof(SHOWregis));                //JM ^^
+      restore(&mm_MNU_HOME,                        sizeof(mm_MNU_HOME));              //JM ^^
+      restore(&mm_MNU_ALPHA,                       sizeof(mm_MNU_ALPHA));             //JM ^^
+      restore(&displayStackSHOIDISP,               sizeof(displayStackSHOIDISP));     //JM ^^
+      restore(&ListXYposition,                     sizeof(ListXYposition));           //JM ^^
+      restore(&numLock,                            sizeof(numLock));                  //JM ^^
+      restore(&DRG_Cycling,                        sizeof(DRG_Cycling));              //JM
+      restore(&lastFlgScr,                         sizeof(lastFlgScr));
+      restore(&displayAIMbufferoffset,             sizeof(displayAIMbufferoffset));   //C43 JM
+      restore(&bcdDisplay,                         sizeof(bcdDisplay));               //C43 JM
+      restore(&topHex,                             sizeof(topHex));                   //C43 JM
+      restore(&bcdDisplaySign,                     sizeof(bcdDisplaySign));           //C43 JM
+      restore(&DM_Cycling,                         sizeof(DM_Cycling));               //JM
+      restore(&SI_All,                             sizeof(SI_All));                   //JM
+      restore(&LongPressM,                         sizeof(LongPressM));               //JM
+      restore(&LongPressF,                         sizeof(LongPressF));               //JM
+      restore(&currentAsnScr,                      sizeof(currentAsnScr));            //JM
 
-      fclose(BACKUP);
+      ioFileClose();
       printf("End of calc's restoration\n");
 
       MY_ALPHA_MENU = mm_MNU_ALPHA;
       setFGLSettings(fgLN);
 
-      if(temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) 
+      if(temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL)
         temporaryInformation = TI_NO_INFO;
 
       if(currentProgramNumber >= (numberOfPrograms - numberOfProgramsInFlash)) {
@@ -947,7 +816,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
 #endif // PC_BUILD
 
 
-char aimBuffer1[400];             //The concurrent use of the global aimBuffer 
+char aimBuffer1[400];             //The concurrent use of the global aimBuffer
                                   //does not work. See tmpString.
                                   //Temporary solution is to use a local variable of sufficient length for the target.
 
@@ -957,7 +826,7 @@ char aimBuffer1[400];             //The concurrent use of the global aimBuffer
     longInteger_t lgInt;
     int16_t sign;
     uint64_t value;
-    uint32_t base; 
+    uint32_t base;
     char *str;
     uint8_t *cfg;
 
@@ -1078,12 +947,12 @@ char aimBuffer1[400];             //The concurrent use of the global aimBuffer
   }
 
 
-  static void saveMatrixElements(calcRegister_t regist, void *stream) {
+  static void saveMatrixElements(calcRegister_t regist) {
     if(getRegisterDataType(regist) == dtReal34Matrix) {
       for(uint32_t element = 0; element < REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows * REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns; ++element) {
         real34ToString(REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + element, tmpString);
         strcat(tmpString, "\n");
-        save(tmpString, strlen(tmpString), stream);
+        save(tmpString, strlen(tmpString));
       }
     }
     else if(getRegisterDataType(regist) == dtComplex34Matrix) {
@@ -1092,7 +961,7 @@ char aimBuffer1[400];             //The concurrent use of the global aimBuffer
         strcat(tmpString, " ");
         real34ToString(VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + element), tmpString + strlen(tmpString));
         strcat(tmpString, "\n");
-        save(tmpString, strlen(tmpString), stream);
+        save(tmpString, strlen(tmpString));
       }
     }
   }
@@ -1116,94 +985,69 @@ void fnSave(uint16_t saveMode) {
 void doSave(uint16_t saveType) {
 flushBufferCnt = 0;
 #if !defined(TESTSUITE_BUILD)
-char tmpString[3000];             //The concurrent use of the global tmpString 
+  ioFilePath_t path;
+  char tmpString[3000];           //The concurrent use of the global tmpString
                                   //as target does not work while the source is at
                                   //tmpRegisterString = tmpString + START_REGISTER_VALUE;
                                   //Temporary solution is to use a local variable of sufficient length for the target.
- 
+
+  int ret;
   calcRegister_t regist;
   uint32_t i;
-  fileName[0] = 0;
   char yy1[35], yy2[35];
 
-  #if defined(DMCP_BUILD)
-    // Don't pass through if the power is insufficient  
-    if ( power_check_screen() ) return;
-    
-    FRESULT result;
-    if(saveType == manualSave) {
-      strcpy(fileName, "SAVFILES\\C47.sav");
-    } else if(saveType == autoSave) {
-      strcpy(fileName, "SAVFILES\\C47auto.sav");
-    } else if(saveType == stateSave) {
-      sys_disk_write_enable(1);
-      check_create_dir(STATE_DIR);
-      sys_disk_write_enable(0);
-      int ret = 0;
-      ret = file_selection_screen("Save Calculator State", STATE_DIR, STATE_EXT, save_statefile, 1, 1, fileName);
-      if (ret == MRET_EXIT) return;
-    }
-    sys_disk_write_enable(1);
-    if((saveType == manualSave)||(saveType == autoSave)) {
-      check_create_dir("SAVFILES");
-    }
-    result = f_open(BACKUP, fileName, FA_CREATE_ALWAYS | FA_WRITE);
-    if(result != FR_OK) {
-      sys_disk_write_enable(0);
+#if defined(DMCP_BUILD)
+  // Don't pass through if the power is insufficient
+  if ( power_check_screen() ) return;
+#endif
+
+  if (saveType == autoSave) {
+    path = ioPathAutoSave;
+  }
+  else if (saveType == manualSave) {
+    path = ioPathManualSave;
+  } else {
+    path = ioPathSaveStateFile;
+  }
+
+  ret = ioFileOpen(path, ioModeWrite);
+
+  if(ret != FILE_OK ) {
+    if(ret == FILE_CANCEL ) {
       return;
-    }
-
-  #else // !DMCP_BUILD
-    FILE *ppgm_fp;
-
-    if(saveType == manualSave) {
-	  #if defined(PC_BUILD)	
-        if (create_dir("SAVFILES") != 0) return;
-	  #endif // PC_BUILD
-      strcpy(fileName,"SAVFILES/C47.sav");
     } else {
-      char * base_dir;
-      int ret = 0;
-      base_dir = g_get_current_dir();
-	  #if defined(PC_BUILD)
-        if (create_dir("." STATE_DIR) != 0) return;
-	  #endif // PC_BUILD
-      strcat(base_dir, STATE_DIR);
-      ret = file_selection_screen("Save State File", base_dir, "*"STATE_EXT, 1, 1, fileName);
-      g_free(base_dir);
-      if (ret == 0) return;
-    }
-    BACKUP = fopen(fileName, "wb");
-    if(BACKUP == NULL) {
-      printf("Cannot SAVE in file %s!\n", fileName);
+      #if !defined(DMCP_BUILD)
+        printf("Cannot SAVE in file C47.sav!\n");
+      #endif
+      displayCalcErrorMessage(ERROR_CANNOT_WRITE_FILE, ERR_REGISTER_LINE, REGISTER_X);
       return;
-    }   
+    }
+  }
 
-  #endif // DMCP_BUILD
   // SAV file version number
   //printHalfSecUpdate_Integer(force+1, "Version",configFileVersion);
   hourGlassIconEnabled = true;
   showHideHourGlass();
 
   sprintf(tmpString, "SAVE_FILE_REVISION\n%" PRIu8 "\n", (uint8_t)0);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   sprintf(tmpString, "C43_save_file_00\n%" PRIu32 "\n", (uint32_t)configFileVersion);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
 
 
   // Global registers
   sprintf(tmpString, "GLOBAL_REGISTERS\n%" PRIu16 "\n", (uint16_t)(FIRST_LOCAL_REGISTER));
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   for(regist=0; regist<FIRST_LOCAL_REGISTER; regist++) {
     registerToSaveString(regist);
     sprintf(tmpString, "R%03" PRId16 "\n%s\n%s\n", regist, aimBuffer1, tmpRegisterString);
-    save(tmpString, strlen(tmpString), BACKUP);
-    saveMatrixElements(regist, BACKUP);
+    save(tmpString, strlen(tmpString));
+    saveMatrixElements(regist);
   }
 
   // Global flags
   strcpy(tmpString, "GLOBAL_FLAGS\n");
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   sprintf(tmpString, "%" PRIu16 " %" PRIu16 " %" PRIu16 " %" PRIu16 " %" PRIu16 " %" PRIu16 " %" PRIu16 "\n",
                        globalFlags[0],
                                    globalFlags[1],
@@ -1212,52 +1056,52 @@ char tmpString[3000];             //The concurrent use of the global tmpString
                                                                        globalFlags[4],
                                                                                    globalFlags[5],
                                                                                                globalFlags[6]);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
 
   // Local registers
   sprintf(tmpString, "LOCAL_REGISTERS\n%" PRIu8 "\n", currentNumberOfLocalRegisters);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   for(i=0; i<currentNumberOfLocalRegisters; i++) {
     registerToSaveString(FIRST_LOCAL_REGISTER + i);
     sprintf(tmpString, "R.%02" PRIu32 "\n%s\n%s\n", i, aimBuffer1, tmpRegisterString);
-    save(tmpString, strlen(tmpString), BACKUP);
-    saveMatrixElements(FIRST_LOCAL_REGISTER + i, BACKUP);
+    save(tmpString, strlen(tmpString));
+    saveMatrixElements(FIRST_LOCAL_REGISTER + i);
   }
 
   // Local flags
   if(currentLocalRegisters) {
     sprintf(tmpString, "LOCAL_FLAGS\n%" PRIu32 "\n", currentLocalFlags->localFlags);
-    save(tmpString, strlen(tmpString), BACKUP);
+    save(tmpString, strlen(tmpString));
   }
 
   // Named variables
   sprintf(tmpString, "NAMED_VARIABLES\n%" PRIu16 "\n", numberOfNamedVariables);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   for(i=0; i<numberOfNamedVariables; i++) {
     registerToSaveString(FIRST_NAMED_VARIABLE + i);
     stringToUtf8((char *)allNamedVariables[i].variableName + 1, (uint8_t *)tmpString);
     sprintf(tmpString + strlen(tmpString), "\n%s\n%s\n", aimBuffer1, tmpRegisterString);
-    save(tmpString, strlen(tmpString), BACKUP);
-    saveMatrixElements(FIRST_NAMED_VARIABLE + i, BACKUP);
+    save(tmpString, strlen(tmpString));
+    saveMatrixElements(FIRST_NAMED_VARIABLE + i);
   }
 
   // Statistical sums
   sprintf(tmpString, "STATISTICAL_SUMS\n%" PRIu16 "\n", (uint16_t)(statisticalSumsPointer ? NUMBER_OF_STATISTICAL_SUMS : 0));
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   for(i=0; i<(statisticalSumsPointer ? NUMBER_OF_STATISTICAL_SUMS : 0); i++) {
     realToString(statisticalSumsPointer + REAL_SIZE * i , tmpRegisterString);
     sprintf(tmpString, "%s\n", tmpRegisterString);
-    save(tmpString, strlen(tmpString), BACKUP);
+    save(tmpString, strlen(tmpString));
   }
 
   // System flags
   UI64toString(systemFlags, yy1);
   sprintf(tmpString, "SYSTEM_FLAGS\n%s\n", yy1);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
 
   // Keyboard assignments
   sprintf(tmpString, "KEYBOARD_ASSIGNMENTS\n37\n");
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   for(i=0; i<37; i++) {
     sprintf(tmpString, "%" PRId16 " %" PRId16 " %" PRId16 " %" PRId16 " %" PRId16 " %" PRId16 " %" PRId16 " %" PRId16 " %" PRId16 "\n",
                          kbd_usr[i].keyId,
@@ -1269,12 +1113,12 @@ char tmpString[3000];             //The concurrent use of the global tmpString
                                                                                                  kbd_usr[i].fShiftedAim,
                                                                                                              kbd_usr[i].gShiftedAim,
                                                                                                                          kbd_usr[i].primaryTam);
-    save(tmpString, strlen(tmpString), BACKUP);
+    save(tmpString, strlen(tmpString));
   }
 
   // Keyboard arguments
   sprintf(tmpString, "KEYBOARD_ARGUMENTS\n");
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
 
   uint32_t num = 0;
   for(i = 0; i < 37 * 6; ++i) {
@@ -1283,20 +1127,20 @@ char tmpString[3000];             //The concurrent use of the global tmpString
     }
   }
   sprintf(tmpString, "%" PRIu32 "\n", num);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
 
   for(i = 0; i < 37 * 6; ++i) {
     if(*(getNthString((uint8_t *)userKeyLabel, i)) != 0) {
       sprintf(tmpString, "%" PRIu32 " ", i);
       stringToUtf8((char *)getNthString((uint8_t *)userKeyLabel, i), (uint8_t *)tmpString + strlen(tmpString));
       strcat(tmpString, "\n");
-      save(tmpString, strlen(tmpString), BACKUP);
+      save(tmpString, strlen(tmpString));
     }
   }
 
   // MyMenu
   sprintf(tmpString, "MYMENU\n18\n");
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   for(i=0; i<18; i++) {
     sprintf(tmpString, "%" PRId16, userMenuItems[i].item);
     if(userMenuItems[i].argumentName[0] != 0) {
@@ -1304,12 +1148,12 @@ char tmpString[3000];             //The concurrent use of the global tmpString
       stringToUtf8(userMenuItems[i].argumentName, (uint8_t *)tmpString + strlen(tmpString));
     }
     strcat(tmpString, "\n");
-    save(tmpString, strlen(tmpString), BACKUP);
+    save(tmpString, strlen(tmpString));
   }
 
   // MyAlpha
   sprintf(tmpString, "MYALPHA\n18\n");
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   for(i=0; i<18; i++) {
     sprintf(tmpString, "%" PRId16, userAlphaItems[i].item);
     if(userAlphaItems[i].argumentName[0] != 0) {
@@ -1317,18 +1161,18 @@ char tmpString[3000];             //The concurrent use of the global tmpString
       stringToUtf8(userAlphaItems[i].argumentName, (uint8_t *)tmpString + strlen(tmpString));
     }
     strcat(tmpString, "\n");
-    save(tmpString, strlen(tmpString), BACKUP);
+    save(tmpString, strlen(tmpString));
   }
 
   // User menus
   sprintf(tmpString, "USER_MENUS\n");
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   sprintf(tmpString, "%" PRIu16 "\n", numberOfUserMenus);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   for(uint32_t j = 0; j < numberOfUserMenus; ++j) {
     stringToUtf8(userMenus[j].menuName, (uint8_t *)tmpString);
     strcat(tmpString, "\n18\n");
-    save(tmpString, strlen(tmpString), BACKUP);
+    save(tmpString, strlen(tmpString));
     for(i=0; i<18; i++) {
       sprintf(tmpString, "%" PRId16, userMenus[j].menuItem[i].item);
       if(userMenus[j].menuItem[i].argumentName[0] != 0) {
@@ -1336,91 +1180,91 @@ char tmpString[3000];             //The concurrent use of the global tmpString
         stringToUtf8(userMenus[j].menuItem[i].argumentName, (uint8_t *)tmpString + strlen(tmpString));
       }
       strcat(tmpString, "\n");
-      save(tmpString, strlen(tmpString), BACKUP);
+      save(tmpString, strlen(tmpString));
     }
   }
 
   // Programs
   uint16_t currentSizeInBlocks = RAM_SIZE - freeMemoryRegions[numberOfFreeMemoryRegions - 1].address - freeMemoryRegions[numberOfFreeMemoryRegions - 1].sizeInBlocks;
   sprintf(tmpString, "PROGRAMS\n%" PRIu16 "\n", currentSizeInBlocks);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
 
   sprintf(tmpString, "%" PRIu32 "\n%" PRIu32 "\n", (uint32_t)TO_WP43MEMPTR(currentStep.ram), (uint32_t)((void *)currentStep.ram - TO_PCMEMPTR(TO_WP43MEMPTR(currentStep.ram)))); // currentStep block pointer + offset within block
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
 
   sprintf(tmpString, "%" PRIu32 "\n%" PRIu32 "\n", (uint32_t)TO_WP43MEMPTR(firstFreeProgramByte), (uint32_t)((void *)firstFreeProgramByte - TO_PCMEMPTR(TO_WP43MEMPTR(firstFreeProgramByte)))); // firstFreeProgramByte block pointer + offset within block
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
 
   sprintf(tmpString, "%" PRIu16 "\n", freeProgramBytes);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
 
   for(i=0; i<currentSizeInBlocks; i++) {
     sprintf(tmpString, "%" PRIu32 "\n", *(((uint32_t *)(beginOfProgramMemory)) + i));
-    save(tmpString, strlen(tmpString), BACKUP);
+    save(tmpString, strlen(tmpString));
   }
-  
+
   // Equations
   sprintf(tmpString, "EQUATIONS\n%" PRIu16 "\n", numberOfFormulae);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
 
   for(i=0; i<numberOfFormulae; i++) {
     stringToUtf8(TO_PCMEMPTR(allFormulae[i].pointerToFormulaData), (uint8_t *)tmpString);
     strcat(tmpString, "\n");
-    save(tmpString, strlen(tmpString), BACKUP);
+    save(tmpString, strlen(tmpString));
   }
 
   // Other configuration stuff
   sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n42\n"); //JM 16+11+14+1
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   sprintf(tmpString, "firstGregorianDay\n%" PRIu32 "\n", firstGregorianDay);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   sprintf(tmpString, "denMax\n%" PRIu32 "\n", denMax);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   sprintf(tmpString, "lastDenominator\n%" PRIu32 "\n", lastDenominator);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   sprintf(tmpString, "displayFormat\n%" PRIu8 "\n", displayFormat);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   sprintf(tmpString, "displayFormatDigits\n%" PRIu8 "\n", displayFormatDigits);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   sprintf(tmpString, "timeDisplayFormatDigits\n%" PRIu8 "\n", timeDisplayFormatDigits);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   sprintf(tmpString, "shortIntegerWordSize\n%" PRIu8 "\n", shortIntegerWordSize);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   sprintf(tmpString, "shortIntegerMode\n%" PRIu8 "\n", shortIntegerMode);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   sprintf(tmpString, "significantDigits\n%" PRIu8 "\n", significantDigits);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   sprintf(tmpString, "currentAngularMode\n%" PRIu8 "\n", (uint8_t)currentAngularMode);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   sprintf(tmpString, "groupingGap\n%" PRIu8 "\n", groupingGap);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   sprintf(tmpString, "roundingMode\n%" PRIu8 "\n", roundingMode);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   sprintf(tmpString, "displayStack\n%" PRIu8 "\n", displayStack);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   UI64toString(pcg32_global.state, yy1);
   UI64toString(pcg32_global.inc, yy2);
   sprintf(tmpString, "rngState\n%s %s\n", yy1, yy2);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   sprintf(tmpString, "exponentLimit\n%" PRId16 "\n", exponentLimit);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   sprintf(tmpString, "exponentHideLimit\n%" PRId16 "\n", exponentHideLimit);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
   sprintf(tmpString, "notBestF\n%" PRIu16 "\n", lrSelection);
-  save(tmpString, strlen(tmpString), BACKUP);
+  save(tmpString, strlen(tmpString));
 //Number 16: digit
 
 //11
-  sprintf(tmpString, "fgLN\n%"                PRIu8 "\n",       (uint8_t)fgLN);                save(tmpString, strlen(tmpString), BACKUP);      //keep save file format by keeping the old setting
-  sprintf(tmpString, "eRPN\n%"                PRIu8 "\n",       (uint8_t)eRPN);                save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "HOME3\n%"               PRIu8 "\n",       (uint8_t)HOME3);               save(tmpString, strlen(tmpString), BACKUP); 
-  sprintf(tmpString, "ShiftTimoutMode\n%"     PRIu8 "\n",       (uint8_t)ShiftTimoutMode);     save(tmpString, strlen(tmpString), BACKUP);           
-  sprintf(tmpString, "CPXMult\n%"             PRIu8 "\n",       (uint8_t)CPXMULT);             save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "SH_BASE_HOME\n%"        PRIu8 "\n",       (uint8_t)SH_BASE_HOME);        save(tmpString, strlen(tmpString), BACKUP);        
-  sprintf(tmpString, "Norm_Key_00_VAR\n%"     PRId16 "\n",      Norm_Key_00_VAR);              save(tmpString, strlen(tmpString), BACKUP);           
-  sprintf(tmpString, "Input_Default\n%"       PRIu8 "\n",       Input_Default);                save(tmpString, strlen(tmpString), BACKUP);         
-  sprintf(tmpString, "jm_BASE_SCREEN\n%"      PRIu8 "\n",       (uint8_t)jm_BASE_SCREEN);      save(tmpString, strlen(tmpString), BACKUP);             
-  sprintf(tmpString, "jm_G_DOUBLETAP\n%"      PRIu8 "\n",       (uint8_t)jm_G_DOUBLETAP);      save(tmpString, strlen(tmpString), BACKUP);          
+  sprintf(tmpString, "fgLN\n%"                PRIu8 "\n",       (uint8_t)fgLN);                save(tmpString, strlen(tmpString));      //keep save file format by keeping the old setting
+  sprintf(tmpString, "eRPN\n%"                PRIu8 "\n",       (uint8_t)eRPN);                save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "HOME3\n%"               PRIu8 "\n",       (uint8_t)HOME3);               save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "ShiftTimoutMode\n%"     PRIu8 "\n",       (uint8_t)ShiftTimoutMode);     save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "CPXMult\n%"             PRIu8 "\n",       (uint8_t)CPXMULT);             save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "SH_BASE_HOME\n%"        PRIu8 "\n",       (uint8_t)SH_BASE_HOME);        save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "Norm_Key_00_VAR\n%"     PRId16 "\n",      Norm_Key_00_VAR);              save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "Input_Default\n%"       PRIu8 "\n",       Input_Default);                save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "jm_BASE_SCREEN\n%"      PRIu8 "\n",       (uint8_t)jm_BASE_SCREEN);      save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "jm_G_DOUBLETAP\n%"      PRIu8 "\n",       (uint8_t)jm_G_DOUBLETAP);      save(tmpString, strlen(tmpString));
 
 
 /*
@@ -1448,55 +1292,50 @@ char tmpString[3000];             //The concurrent use of the global tmpString
   int8_t PLOT_ZMX;
   int8_t PLOT_ZMY;
 
-  sprintf(tmpString, "graph_xmin\n%"                            graph_xmin);                   save(tmpString, strlen(tmpString), BACKUP);      
-  sprintf(tmpString, "graph_xmax\n%"                            graph_xmax);                   save(tmpString, strlen(tmpString), BACKUP);      
-  sprintf(tmpString, "graph_ymin\n%"                            graph_ymin);                   save(tmpString, strlen(tmpString), BACKUP);      
-  sprintf(tmpString, "graph_ymax\n%"                            graph_ymax);                   save(tmpString, strlen(tmpString), BACKUP);      
-  sprintf(tmpString, "graph_dx\n%"                              graph_dx);                     save(tmpString, strlen(tmpString), BACKUP);    
-  sprintf(tmpString, "graph_dy\n%"                              graph_dy);                     save(tmpString, strlen(tmpString), BACKUP);    
-  sprintf(tmpString, "roundedTicks\n%"                          roundedTicks);                 save(tmpString, strlen(tmpString), BACKUP);        
-  sprintf(tmpString, "extentx\n%"                               extentx);                      save(tmpString, strlen(tmpString), BACKUP);   
-  sprintf(tmpString, "extenty\n%"                               extenty);                      save(tmpString, strlen(tmpString), BACKUP);   
-  sprintf(tmpString, "PLOT_VECT\n%"                             PLOT_VECT);                    save(tmpString, strlen(tmpString), BACKUP);     
-  sprintf(tmpString, "PLOT_NVECT\n%"                            PLOT_NVECT);                   save(tmpString, strlen(tmpString), BACKUP);      
-  sprintf(tmpString, "PLOT_SCALE\n%"                            PLOT_SCALE);                   save(tmpString, strlen(tmpString), BACKUP);      
-  sprintf(tmpString, "Aspect_Square\n%"                         Aspect_Square);                save(tmpString, strlen(tmpString), BACKUP);         
-  sprintf(tmpString, "PLOT_LINE\n%"                             PLOT_LINE);                    save(tmpString, strlen(tmpString), BACKUP);     
-  sprintf(tmpString, "PLOT_CROSS\n%"                            PLOT_CROSS);                   save(tmpString, strlen(tmpString), BACKUP);      
-  sprintf(tmpString, "PLOT_BOX\n%"                              PLOT_BOX);                     save(tmpString, strlen(tmpString), BACKUP);    
-  sprintf(tmpString, "PLOT_INTG\n%"                             PLOT_INTG);                    save(tmpString, strlen(tmpString), BACKUP);     
-  sprintf(tmpString, "PLOT_DIFF\n%"                             PLOT_DIFF);                    save(tmpString, strlen(tmpString), BACKUP);     
-  sprintf(tmpString, "PLOT_RMS\n%"                              PLOT_RMS);                     save(tmpString, strlen(tmpString), BACKUP);    
-  sprintf(tmpString, "PLOT_SHADE\n%"                            PLOT_SHADE);                   save(tmpString, strlen(tmpString), BACKUP);      
-  sprintf(tmpString, "PLOT_AXIS\n%"                             PLOT_AXIS);                    save(tmpString, strlen(tmpString), BACKUP);     
-  sprintf(tmpString, "PLOT_ZMX\n%"                              PLOT_ZMX);                     save(tmpString, strlen(tmpString), BACKUP);    
-  sprintf(tmpString, "PLOT_ZMY\n%"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString), BACKUP);    
+  sprintf(tmpString, "graph_xmin\n%"                            graph_xmin);                   save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "graph_xmax\n%"                            graph_xmax);                   save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "graph_ymin\n%"                            graph_ymin);                   save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "graph_ymax\n%"                            graph_ymax);                   save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "graph_dx\n%"                              graph_dx);                     save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "graph_dy\n%"                              graph_dy);                     save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "roundedTicks\n%"                          roundedTicks);                 save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "extentx\n%"                               extentx);                      save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "extenty\n%"                               extenty);                      save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "PLOT_VECT\n%"                             PLOT_VECT);                    save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "PLOT_NVECT\n%"                            PLOT_NVECT);                   save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "PLOT_SCALE\n%"                            PLOT_SCALE);                   save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "Aspect_Square\n%"                         Aspect_Square);                save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "PLOT_LINE\n%"                             PLOT_LINE);                    save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "PLOT_CROSS\n%"                            PLOT_CROSS);                   save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "PLOT_BOX\n%"                              PLOT_BOX);                     save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "PLOT_INTG\n%"                             PLOT_INTG);                    save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "PLOT_DIFF\n%"                             PLOT_DIFF);                    save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "PLOT_RMS\n%"                              PLOT_RMS);                     save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "PLOT_SHADE\n%"                            PLOT_SHADE);                   save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "PLOT_AXIS\n%"                             PLOT_AXIS);                    save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "PLOT_ZMX\n%"                              PLOT_ZMX);                     save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "PLOT_ZMY\n%"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString));
 */
 
 //12
-  sprintf(tmpString, "jm_temporary\n%"          PRIu8 "\n",     (uint8_t)jm_temporary);        save(tmpString, strlen(tmpString), BACKUP);       
-  sprintf(tmpString, "jm_LARGELI\n%"            PRIu8 "\n",     (uint8_t)jm_LARGELI);          save(tmpString, strlen(tmpString), BACKUP);                 
-  sprintf(tmpString, "constantFractions\n%"     PRIu8 "\n",     (uint8_t)constantFractions);   save(tmpString, strlen(tmpString), BACKUP);                 
-  sprintf(tmpString, "constantFractionsMode\n%" PRIu8 "\n",     constantFractionsMode);        save(tmpString, strlen(tmpString), BACKUP);                 
-  sprintf(tmpString, "constantFractionsOn\n%"   PRIu8 "\n",     (uint8_t)constantFractionsOn); save(tmpString, strlen(tmpString), BACKUP);               
-  sprintf(tmpString, "displayStackSHOIDISP\n%"  PRIu8 "\n",     displayStackSHOIDISP);         save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "bcdDisplay\n%"            PRIu8 "\n",     (uint8_t)bcdDisplay);          save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "topHex\n%"                PRIu8 "\n",     (uint8_t)topHex);              save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "bcdDisplaySign\n%"        PRIu8 "\n",     bcdDisplaySign);               save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "DRG_Cycling\n%"           PRIu8 "\n",     DRG_Cycling);                  save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "DM_Cycling\n%"            PRIu8 "\n",     DM_Cycling);                   save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "SI_All\n%"                PRIu8 "\n",     (uint8_t)SI_All);              save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "LongPressM\n%"            PRIu8 "\n",     (uint8_t)LongPressM);          save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "LongPressF\n%"            PRIu8 "\n",     (uint8_t)LongPressF);          save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "lastIntegerBase\n%"       PRIu8 "\n",     (uint8_t)lastIntegerBase);     save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "jm_temporary\n%"          PRIu8 "\n",     (uint8_t)jm_temporary);        save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "jm_LARGELI\n%"            PRIu8 "\n",     (uint8_t)jm_LARGELI);          save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "constantFractions\n%"     PRIu8 "\n",     (uint8_t)constantFractions);   save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "constantFractionsMode\n%" PRIu8 "\n",     constantFractionsMode);        save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "constantFractionsOn\n%"   PRIu8 "\n",     (uint8_t)constantFractionsOn); save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "displayStackSHOIDISP\n%"  PRIu8 "\n",     displayStackSHOIDISP);         save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "bcdDisplay\n%"            PRIu8 "\n",     (uint8_t)bcdDisplay);          save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "topHex\n%"                PRIu8 "\n",     (uint8_t)topHex);              save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "bcdDisplaySign\n%"        PRIu8 "\n",     bcdDisplaySign);               save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "DRG_Cycling\n%"           PRIu8 "\n",     DRG_Cycling);                  save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "DM_Cycling\n%"            PRIu8 "\n",     DM_Cycling);                   save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "SI_All\n%"                PRIu8 "\n",     (uint8_t)SI_All);              save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "LongPressM\n%"            PRIu8 "\n",     (uint8_t)LongPressM);          save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "LongPressF\n%"            PRIu8 "\n",     (uint8_t)LongPressF);          save(tmpString, strlen(tmpString));
+  sprintf(tmpString, "lastIntegerBase\n%"       PRIu8 "\n",     (uint8_t)lastIntegerBase);     save(tmpString, strlen(tmpString));
 //42
 
-  #if defined(DMCP_BUILD)
-    f_close(BACKUP);
-    sys_disk_write_enable(0);
-  #else // !DMCP_BUILD
-    fclose(BACKUP);
-  #endif // DMCP_BUILD
+  ioFileClose();
 
   hourGlassIconEnabled = false;
   temporaryInformation = TI_SAVED;
@@ -1505,20 +1344,18 @@ char tmpString[3000];             //The concurrent use of the global tmpString
 
 
 
-#ifndef TESTSUITE_BUILD
-  static void readLine(void *stream, char *line) {
-    restore(line, 1, stream);
-    while(*line == '\n' || *line == '\r') {
-      restore(line, 1, stream);
-    }
-
-    while(*line != '\n' && *line != '\r') {
-      restore(++line, 1, stream);
-    }
-
-    *line = 0;
+void readLine(char *line) {
+  restore(line, 1);
+  while(*line == '\n' || *line == '\r') {
+    restore(line, 1);
   }
-#endif //TESTSUITE_BUILD
+
+  while(*line != '\n' && *line != '\r') {
+    restore(++line, 1);
+  }
+
+  *line = 0;
+}
 
 
 
@@ -1766,7 +1603,7 @@ int32_t stringToInt32(const char *str) {
   }
 
 
-  static void restoreMatrixData(calcRegister_t regist, void *stream) {
+  static void restoreMatrixData(calcRegister_t regist) {
     #if !defined(TESTSUITE_BUILD)
     uint16_t rows, cols;
     uint32_t i;
@@ -1776,7 +1613,7 @@ int32_t stringToInt32(const char *str) {
       cols = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns;
 
       for(i = 0; i < rows * cols; ++i) {
-        readLine(stream, tmpString);
+        readLine(tmpString);
         stringToReal34(tmpString, REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + i);
       }
     }
@@ -1788,7 +1625,7 @@ int32_t stringToInt32(const char *str) {
       for(i = 0; i < rows * cols; ++i) {
         char *imaginaryPart;
 
-        readLine(stream, tmpString);
+        readLine(tmpString);
         imaginaryPart = tmpString;
           while(*imaginaryPart != ' ') {
             imaginaryPart++;
@@ -1802,7 +1639,7 @@ int32_t stringToInt32(const char *str) {
   }
 
 
-  static void skipMatrixData(char *type, char *value, void *stream) {
+  static void skipMatrixData(char *type, char *value) {
     #if !defined(TESTSUITE_BUILD)
     uint16_t rows, cols;
     uint32_t i;
@@ -1818,14 +1655,14 @@ int32_t stringToInt32(const char *str) {
       cols = stringToUint16(numOfCols);
 
       for(i = 0; i < rows * cols; ++i) {
-        readLine(stream, tmpString);
+        readLine(tmpString);
       }
     }
     #endif // !TESTSUITE_BUILD
   }
 
 
-  static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
+  static bool_t restoreOneSection(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
     int16_t i, numberOfRegs;
     calcRegister_t regist;
     char *str;
@@ -1835,20 +1672,20 @@ int32_t stringToInt32(const char *str) {
 
     hourGlassIconEnabled = true;
     showHideHourGlass();
-    readLine(stream, tmpString);
+    readLine(tmpString);
     #if defined (LOADDEBUG)
       sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
       debugPrintf(0, "-", tmpString);
     #endif //LOADDEBUG
 
     if(strcmp(tmpString, "GLOBAL_REGISTERS") == 0) {
-      readLine(stream, tmpString); // Number of global registers
+      readLine(tmpString); // Number of global registers
       numberOfRegs = stringToInt16(tmpString);
       for(i=0; i<numberOfRegs; i++) {
-        readLine(stream, tmpString); // Register number
+        readLine(tmpString); // Register number
         regist = stringToInt16(tmpString + 1);
-        readLine(stream, aimBuffer); // Register data type
-        readLine(stream, tmpString); // Register value
+        readLine(aimBuffer); // Register data type
+        readLine(tmpString); // Register value
 
         if(loadMode == LM_ALL || (loadMode == LM_REGISTERS && regist < REGISTER_X) || (loadMode == LM_REGISTERS_PARTIAL && regist >= s && regist < (s + n))) {
           #if defined (LOADDEBUG)
@@ -1856,16 +1693,16 @@ int32_t stringToInt32(const char *str) {
             debugPrintf(1, "-", tmpString);
           #endif //LOADDEBUG
           restoreRegister(loadMode == LM_REGISTERS_PARTIAL ? (regist - s + d) : regist, aimBuffer, tmpString);
-          restoreMatrixData(loadMode == LM_REGISTERS_PARTIAL ? (regist - s + d) : regist, stream);
+          restoreMatrixData(loadMode == LM_REGISTERS_PARTIAL ? (regist - s + d) : regist);
         }
         else {
-          skipMatrixData(aimBuffer, tmpString, stream);
+          skipMatrixData(aimBuffer, tmpString);
         }
       }
     }
 
     else if(strcmp(tmpString, "GLOBAL_FLAGS") == 0) {
-      readLine(stream, tmpString); // Global flags
+      readLine(tmpString); // Global flags
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
         #if defined (LOADDEBUG)
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
@@ -1925,7 +1762,7 @@ int32_t stringToInt32(const char *str) {
     }
 
     else if(strcmp(tmpString, "LOCAL_REGISTERS") == 0) {
-      readLine(stream, tmpString); // Number of local registers
+      readLine(tmpString); // Number of local registers
       numberOfRegs = stringToInt16(tmpString);
       if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
         #if defined (LOADDEBUG)
@@ -1941,10 +1778,10 @@ int32_t stringToInt32(const char *str) {
           debugPrintf(3, "B", tmpString);
         #endif //LOADDEBUG
         for(i=0; i<numberOfRegs; i++) {
-          readLine(stream, tmpString); // Register number
+          readLine(tmpString); // Register number
           regist = stringToInt16(tmpString + 2) + FIRST_LOCAL_REGISTER;
-          readLine(stream, aimBuffer); // Register data type
-          readLine(stream, tmpString); // Register value
+          readLine(aimBuffer); // Register data type
+          readLine(tmpString); // Register value
 
           if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
             #if defined (LOADDEBUG)
@@ -1952,10 +1789,10 @@ int32_t stringToInt32(const char *str) {
               debugPrintf(3, "C", tmpString);
             #endif //LOADDEBUG
             restoreRegister(regist, aimBuffer, tmpString);
-            restoreMatrixData(regist, stream);
+            restoreMatrixData(regist);
           }
           else {
-            skipMatrixData(aimBuffer, tmpString, stream);
+            skipMatrixData(aimBuffer, tmpString);
           }
         }
       }
@@ -1966,7 +1803,7 @@ int32_t stringToInt32(const char *str) {
         sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
         debugPrintf(4, "A", tmpString);
       #endif //LOADDEBUG
-      readLine(stream, tmpString); // LOCAL_FLAGS
+      readLine(tmpString); // LOCAL_FLAGS
       if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
         #if defined (LOADDEBUG)
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
@@ -1981,14 +1818,16 @@ int32_t stringToInt32(const char *str) {
         sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
         debugPrintf(20, "A", tmpString);
       #endif //LOADDEBUG
-      readLine(stream, tmpString); // Number of named variables
+      readLine(tmpString); // Number of named variables
       numberOfRegs = stringToInt16(tmpString);
       for(i=0; i<numberOfRegs; i++) {
-        readLine(stream, errorMessage); // Variable name
-        readLine(stream, aimBuffer); // Variable data type
-        readLine(stream, tmpString); // Variable value
+        readLine(errorMessage); // Variable name
+        readLine(aimBuffer); // Variable data type
+        readLine(tmpString); // Variable value
 
-        if(loadMode == LM_ALL || loadMode == LM_NAMED_VARIABLES) {
+        if(loadMode == LM_ALL || loadMode == LM_NAMED_VARIABLES ||
+          (loadMode == LM_SUMS && ((strcmp(errorMessage, "STATS") == 0) || (strcmp(errorMessage, "HISTO") == 0)))) {
+
           #if defined (LOADDEBUG)
             sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
             debugPrintf(20, "B", tmpString);
@@ -1998,21 +1837,21 @@ int32_t stringToInt32(const char *str) {
           regist = findOrAllocateNamedVariable(varName);
           if(regist != INVALID_VARIABLE) {
             restoreRegister(regist, aimBuffer, tmpString);
-            restoreMatrixData(regist, stream);
+            restoreMatrixData(regist);
           }
           else {
-            skipMatrixData(aimBuffer, tmpString, stream);
+            skipMatrixData(aimBuffer, tmpString);
           }
         }
         else {
-          skipMatrixData(aimBuffer, tmpString, stream);
+          skipMatrixData(aimBuffer, tmpString);
         }
       }
     }
 
 
     else if(strcmp(tmpString, "STATISTICAL_SUMS") == 0) {
-      readLine(stream, tmpString); // Number of statistical sums
+      readLine(tmpString); // Number of statistical sums
       numberOfRegs = stringToInt16(tmpString);
       if(numberOfRegs > 0 && (loadMode == LM_ALL || loadMode == LM_SUMS)) {
         #if defined (LOADDEBUG)
@@ -2023,7 +1862,7 @@ int32_t stringToInt32(const char *str) {
         initStatisticalSums();
 
         for(i=0; i<numberOfRegs; i++) {
-          readLine(stream, tmpString); // statistical sum
+          readLine(tmpString); // statistical sum
           if(statisticalSumsPointer) { // likely
             if(loadMode == LM_ALL || loadMode == LM_SUMS) {
               #if defined (LOADDEBUG)
@@ -2038,7 +1877,7 @@ int32_t stringToInt32(const char *str) {
     }
 
     else if(strcmp(tmpString, "SYSTEM_FLAGS") == 0) {
-      readLine(stream, tmpString); // Global flags
+      readLine(tmpString); // Global flags
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
         #if defined (LOADDEBUG)
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
@@ -2049,10 +1888,10 @@ int32_t stringToInt32(const char *str) {
     }
 
     else if(strcmp(tmpString, "KEYBOARD_ASSIGNMENTS") == 0) {
-      readLine(stream, tmpString); // Number of keys
+      readLine(tmpString); // Number of keys
       numberOfRegs = stringToInt16(tmpString);
       for(i=0; i<numberOfRegs; i++) {
-        readLine(stream, tmpString); // key
+        readLine(tmpString); // key
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
           #if defined (LOADDEBUG)
             sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
@@ -2129,7 +1968,7 @@ int32_t stringToInt32(const char *str) {
     }
 
     else if(strcmp(tmpString, "KEYBOARD_ARGUMENTS") == 0) {
-      readLine(stream, tmpString); // Number of keys
+      readLine(tmpString); // Number of keys
       numberOfRegs = stringToInt16(tmpString);
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
         #if defined (LOADDEBUG)
@@ -2142,7 +1981,7 @@ int32_t stringToInt32(const char *str) {
         memset(userKeyLabel,   0, TO_BYTES(TO_BLOCKS(userKeyLabelSize)));
       }
       for(i=0; i<numberOfRegs; i++) {
-        readLine(stream, tmpString); // key
+        readLine(tmpString); // key
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
           #if defined (LOADDEBUG)
             sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
@@ -2169,10 +2008,10 @@ int32_t stringToInt32(const char *str) {
     }
 
     else if(strcmp(tmpString, "MYMENU") == 0) {
-      readLine(stream, tmpString); // Number of keys
+      readLine(tmpString); // Number of keys
       numberOfRegs = stringToInt16(tmpString);
       for(i=0; i<numberOfRegs; i++) {
-        readLine(stream, tmpString); // key
+        readLine(tmpString); // key
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
           #if defined (LOADDEBUG)
             sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
@@ -2198,10 +2037,10 @@ int32_t stringToInt32(const char *str) {
     }
 
     else if(strcmp(tmpString, "MYALPHA") == 0) {
-      readLine(stream, tmpString); // Number of keys
+      readLine(tmpString); // Number of keys
       numberOfRegs = stringToInt16(tmpString);
       for(i=0; i<numberOfRegs; i++) {
-        readLine(stream, tmpString); // key
+        readLine(tmpString); // key
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
           #if defined (LOADDEBUG)
             sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
@@ -2227,10 +2066,10 @@ int32_t stringToInt32(const char *str) {
     }
 
     else if(strcmp(tmpString, "USER_MENUS") == 0) {
-      readLine(stream, tmpString); // Number of keys
+      readLine(tmpString); // Number of keys
       int16_t numberOfMenus = stringToInt16(tmpString);
       for(int32_t j=0; j<numberOfMenus; j++) {
-        readLine(stream, tmpString);
+        readLine(tmpString);
         int16_t target = -1;
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
           #if defined (LOADDEBUG)
@@ -2249,10 +2088,10 @@ int32_t stringToInt32(const char *str) {
           }
         }
 
-        readLine(stream, tmpString);
+        readLine(tmpString);
         numberOfRegs = stringToInt16(tmpString);
         for(i=0; i<numberOfRegs; i++) {
-          readLine(stream, tmpString); // key
+          readLine(tmpString); // key
           if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
             #if defined (LOADDEBUG)
               sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
@@ -2290,7 +2129,7 @@ int32_t stringToInt32(const char *str) {
       uint8_t *oldFirstFreeProgramByte = firstFreeProgramByte;
       uint16_t oldFreeProgramBytes = freeProgramBytes;
 
-      readLine(stream, tmpString); // Number of blocks
+      readLine(tmpString); // Number of blocks
       numberOfBlocks = stringToUint16(tmpString);
       if(loadMode == LM_ALL) {
         resizeProgramMemory(numberOfBlocks);
@@ -2300,11 +2139,11 @@ int32_t stringToInt32(const char *str) {
         oldFirstFreeProgramByte = beginOfProgramMemory + TO_BYTES(oldSizeInBlocks) - oldFreeProgramBytes - 2;
       }
 
-      readLine(stream, tmpString); // currentStep (pointer to block)
+      readLine(tmpString); // currentStep (pointer to block)
       if(loadMode == LM_ALL) {
         currentStep.ram = TO_PCMEMPTR(stringToUint32(tmpString));
       }
-      readLine(stream, tmpString); // currentStep (offset in bytes within block)
+      readLine(tmpString); // currentStep (offset in bytes within block)
       if(loadMode == LM_ALL) {
         currentStep.ram += stringToUint32(tmpString);
       }
@@ -2317,16 +2156,16 @@ int32_t stringToInt32(const char *str) {
         }
       }
 
-      readLine(stream, tmpString); // firstFreeProgramByte (pointer to block)
+      readLine(tmpString); // firstFreeProgramByte (pointer to block)
       if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
         firstFreeProgramByte = TO_PCMEMPTR(stringToUint32(tmpString));
       }
-      readLine(stream, tmpString); // firstFreeProgramByte (offset in bytes within block)
+      readLine(tmpString); // firstFreeProgramByte (offset in bytes within block)
       if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
         firstFreeProgramByte += stringToUint32(tmpString);
       }
 
-      readLine(stream, tmpString); // freeProgramBytes
+      readLine(tmpString); // freeProgramBytes
       if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
         freeProgramBytes = stringToUint16(tmpString);
       }
@@ -2356,7 +2195,7 @@ int32_t stringToInt32(const char *str) {
       }
 
       for(i=0; i<numberOfBlocks; i++) {
-        readLine(stream, tmpString); // One block
+        readLine(tmpString); // One block
         if(loadMode == LM_ALL) {
           *(((uint32_t *)(beginOfProgramMemory)) + i) = stringToUint32(tmpString);
         }
@@ -2382,7 +2221,7 @@ int32_t stringToInt32(const char *str) {
         }
       }
 
-      readLine(stream, tmpString); // Number of formulae
+      readLine(tmpString); // Number of formulae
       formulae = stringToUint16(tmpString);
       if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
         #if defined (LOADDEBUG)
@@ -2399,7 +2238,7 @@ int32_t stringToInt32(const char *str) {
       }
 
       for(i = 0; i < formulae; i++) {
-        readLine(stream, tmpString); // One formula
+        readLine(tmpString); // One formula
         if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
           #if defined (LOADDEBUG)
             sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
@@ -2420,11 +2259,11 @@ int32_t stringToInt32(const char *str) {
         resetOtherConfigurationStuff(); //Ensure all the configuration stuff below is reset prior to loading.
                                         //That ensures if missing settings, that the proper defaults are set.
       }
-      readLine(stream, tmpString); // Number params
+      readLine(tmpString); // Number params
       numberOfRegs = stringToInt16(tmpString);
       for(i=0; i<numberOfRegs; i++) {
-        readLine(stream, aimBuffer); // param
-        readLine(stream, tmpString); // value
+        readLine(aimBuffer); // param
+        readLine(tmpString); // value
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
           #if defined (LOADDEBUG)
             sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
@@ -2502,46 +2341,46 @@ int32_t stringToInt32(const char *str) {
 //        else if(strcmp(aimBuffer, "SigFigMode"                  ) == 0) { }                     //keep save file format by keeping the old setting
           else if(strcmp(aimBuffer, "eRPN"                        ) == 0) { eRPN                  = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "HOME3"                       ) == 0) { HOME3                 = (bool_t)stringToUint8(tmpString) != 0; }
-          else if(strcmp(aimBuffer, "ShiftTimoutMode"             ) == 0) { ShiftTimoutMode       = (bool_t)stringToUint8(tmpString) != 0; }          
+          else if(strcmp(aimBuffer, "ShiftTimoutMode"             ) == 0) { ShiftTimoutMode       = (bool_t)stringToUint8(tmpString) != 0; }
 //        else if(strcmp(aimBuffer, "UNITDisplay"                 ) == 0) { }                     //keep save file format by keeping the old setting
           else if(strcmp(aimBuffer, "CPXMult"                     ) == 0) { CPXMULT               = (bool_t)stringToUint8(tmpString) != 0; }
-          else if(strcmp(aimBuffer, "SH_BASE_HOME"                ) == 0) { SH_BASE_HOME          = (bool_t)stringToUint8(tmpString) != 0; }   
+          else if(strcmp(aimBuffer, "SH_BASE_HOME"                ) == 0) { SH_BASE_HOME          = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "Norm_Key_00_VAR"             ) == 0) { Norm_Key_00_VAR       = stringToUint16(tmpString); }
           else if(strcmp(aimBuffer, "Input_Default"               ) == 0) { Input_Default         = stringToUint8(tmpString); }
           else if(strcmp(aimBuffer, "jm_BASE_SCREEN"              ) == 0) { jm_BASE_SCREEN        = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "jm_G_DOUBLETAP"              ) == 0) { jm_G_DOUBLETAP        = (bool_t)stringToUint8(tmpString) != 0; }
 
   /*
-          else if(strcmp(aimBuffer, "graph_xmin\n"                            graph_xmin);                   save(tmpString, strlen(tmpString), BACKUP);      
-          else if(strcmp(aimBuffer, "graph_xmax\n"                            graph_xmax);                   save(tmpString, strlen(tmpString), BACKUP);      
-          else if(strcmp(aimBuffer, "graph_ymin\n"                            graph_ymin);                   save(tmpString, strlen(tmpString), BACKUP);      
-          else if(strcmp(aimBuffer, "graph_ymax\n"                            graph_ymax);                   save(tmpString, strlen(tmpString), BACKUP);      
-          else if(strcmp(aimBuffer, "graph_dx\n"                              graph_dx);                     save(tmpString, strlen(tmpString), BACKUP);    
-          else if(strcmp(aimBuffer, "graph_dy\n"                              graph_dy);                     save(tmpString, strlen(tmpString), BACKUP);    
-          else if(strcmp(aimBuffer, "roundedTicks\n"                          roundedTicks);                 save(tmpString, strlen(tmpString), BACKUP);        
-          else if(strcmp(aimBuffer, "extentx\n"                               extentx);                      save(tmpString, strlen(tmpString), BACKUP);   
-          else if(strcmp(aimBuffer, "extenty\n"                               extenty);                      save(tmpString, strlen(tmpString), BACKUP);   
-          else if(strcmp(aimBuffer, "PLOT_VECT\n"                             PLOT_VECT);                    save(tmpString, strlen(tmpString), BACKUP);     
-          else if(strcmp(aimBuffer, "PLOT_NVECT\n"                            PLOT_NVECT);                   save(tmpString, strlen(tmpString), BACKUP);      
-          else if(strcmp(aimBuffer, "PLOT_SCALE\n"                            PLOT_SCALE);                   save(tmpString, strlen(tmpString), BACKUP);      
-          else if(strcmp(aimBuffer, "Aspect_Square\n"                         Aspect_Square);                save(tmpString, strlen(tmpString), BACKUP);         
-          else if(strcmp(aimBuffer, "PLOT_LINE\n"                             PLOT_LINE);                    save(tmpString, strlen(tmpString), BACKUP);     
-          else if(strcmp(aimBuffer, "PLOT_CROSS\n"                            PLOT_CROSS);                   save(tmpString, strlen(tmpString), BACKUP);      
-          else if(strcmp(aimBuffer, "PLOT_BOX\n"                              PLOT_BOX);                     save(tmpString, strlen(tmpString), BACKUP);    
-          else if(strcmp(aimBuffer, "PLOT_INTG\n"                             PLOT_INTG);                    save(tmpString, strlen(tmpString), BACKUP);     
-          else if(strcmp(aimBuffer, "PLOT_DIFF\n"                             PLOT_DIFF);                    save(tmpString, strlen(tmpString), BACKUP);     
-          else if(strcmp(aimBuffer, "PLOT_RMS\n"                              PLOT_RMS);                     save(tmpString, strlen(tmpString), BACKUP);    
-          else if(strcmp(aimBuffer, "PLOT_SHADE\n"                            PLOT_SHADE);                   save(tmpString, strlen(tmpString), BACKUP);      
-          else if(strcmp(aimBuffer, "PLOT_AXIS\n"                             PLOT_AXIS);                    save(tmpString, strlen(tmpString), BACKUP);     
-          else if(strcmp(aimBuffer, "PLOT_ZMX\n"                              PLOT_ZMX);                     save(tmpString, strlen(tmpString), BACKUP);    
-          else if(strcmp(aimBuffer, "PLOT_ZMY\n"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString), BACKUP);    
+          else if(strcmp(aimBuffer, "graph_xmin\n"                            graph_xmin);                   save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "graph_xmax\n"                            graph_xmax);                   save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "graph_ymin\n"                            graph_ymin);                   save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "graph_ymax\n"                            graph_ymax);                   save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "graph_dx\n"                              graph_dx);                     save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "graph_dy\n"                              graph_dy);                     save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "roundedTicks\n"                          roundedTicks);                 save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "extentx\n"                               extentx);                      save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "extenty\n"                               extenty);                      save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "PLOT_VECT\n"                             PLOT_VECT);                    save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "PLOT_NVECT\n"                            PLOT_NVECT);                   save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "PLOT_SCALE\n"                            PLOT_SCALE);                   save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "Aspect_Square\n"                         Aspect_Square);                save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "PLOT_LINE\n"                             PLOT_LINE);                    save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "PLOT_CROSS\n"                            PLOT_CROSS);                   save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "PLOT_BOX\n"                              PLOT_BOX);                     save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "PLOT_INTG\n"                             PLOT_INTG);                    save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "PLOT_DIFF\n"                             PLOT_DIFF);                    save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "PLOT_RMS\n"                              PLOT_RMS);                     save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "PLOT_SHADE\n"                            PLOT_SHADE);                   save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "PLOT_AXIS\n"                             PLOT_AXIS);                    save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "PLOT_ZMX\n"                              PLOT_ZMX);                     save(tmpString, strlen(tmpString));
+          else if(strcmp(aimBuffer, "PLOT_ZMY\n"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString));
   */
           else if(strcmp(aimBuffer, "jm_temporary"                ) == 0) { jm_temporary          = (bool_t)stringToUint8(tmpString) != 0; }
-          else if(strcmp(aimBuffer, "jm_LARGELI"                  ) == 0) { jm_LARGELI            = (bool_t)stringToUint8(tmpString) != 0; }         
-          else if(strcmp(aimBuffer, "constantFractions"           ) == 0) { constantFractions     = (bool_t)stringToUint8(tmpString) != 0; }             
-          else if(strcmp(aimBuffer, "constantFractionsMode"       ) == 0) { constantFractionsMode = stringToUint8(tmpString); }      
-          else if(strcmp(aimBuffer, "constantFractionsOn"         ) == 0) { constantFractionsOn   = (bool_t)stringToUint8(tmpString) != 0; }            
-    
+          else if(strcmp(aimBuffer, "jm_LARGELI"                  ) == 0) { jm_LARGELI            = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "constantFractions"           ) == 0) { constantFractions     = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "constantFractionsMode"       ) == 0) { constantFractionsMode = stringToUint8(tmpString); }
+          else if(strcmp(aimBuffer, "constantFractionsOn"         ) == 0) { constantFractionsOn   = (bool_t)stringToUint8(tmpString) != 0; }
+
 
           else if(strcmp(aimBuffer, "displayStackSHOIDISP"        ) == 0) { displayStackSHOIDISP = stringToUint8(tmpString); }
           else if(strcmp(aimBuffer, "bcdDisplay"                  ) == 0) { bcdDisplay           = (bool_t)stringToUint8(tmpString) != 0; }
@@ -2592,63 +2431,40 @@ int32_t stringToInt32(const char *str) {
 void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t loadType) {
   flushBufferCnt = 0;
  #if !defined (TESTSUITE_BUILD)
+  ioFilePath_t path;
+  int ret;
   #if defined (LOADDEBUG)
     char yy[10];
     sprintf(yy, "%d",loadMode);
     debugPrintf(-1, "LoadMode", yy);
-  #endif //PC_BUILD
-  #if defined(DMCP_BUILD)
-    fileName[0] = 0;
-    if(loadType == manualLoad) {
-      strcpy(fileName, "SAVFILES\\C47.sav");
-    } else if(loadType == autoLoad) {
-      strcpy(fileName, "SAVFILES\\C47auto.sav");
-    } else if(loadType == stateLoad) {
-      int ret = 0;
-      ret = file_selection_screen("Load Calculator State", STATE_DIR, STATE_EXT, load_statefile, 0, 0, fileName);
-      if (ret == MRET_EXIT) return;
-    }
-    if(f_open(BACKUP, fileName, FA_READ) != FR_OK) {
-      displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        char errMsg[200];
-        strcpy(errMsg,"In function fnLoad: cannot find or read backup data file ");
-        strcat(errMsg,fileName);
-        moreInfoOnError(errMsg, NULL, NULL, NULL);
-      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      return;
-    }
-  #else // !DMCP_BUILD
-    FILE *ppgm_fp;
-    if(loadType == manualLoad) {
-      if (create_dir("SAVFILES") != 0) return;
-      strcpy(fileName,"SAVFILES/C47.sav");
-    } else {
-      char * base_dir;
-      int ret = 0;
-      base_dir = g_get_current_dir();
-      if (create_dir("." STATE_DIR) != 0) return;
-      strcat(base_dir, STATE_DIR);
-      ret = file_selection_screen("Load State File", base_dir, "*"STATE_EXT, 0, 0, fileName);
-      g_free(base_dir);
-      if (ret == 0) return;
-    }
+  #endif //LOADDEBUG
 
-    if((BACKUP = fopen(fileName, "rb")) == NULL) {
-      displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        moreInfoOnError("In function fnLoad: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
-      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  if (loadType == autoLoad) {
+    path = ioPathAutoSave;
+  }
+  else if (loadType == manualLoad) {
+    path = ioPathManualSave;
+  }
+  else {
+    path = ioPathLoadStateFile;
+  }
+
+  ret = ioFileOpen(path, ioModeRead);
+
+  if(ret != FILE_OK ) {
+    if(ret == FILE_CANCEL ) {
+      return;
+    } else {
+      displayCalcErrorMessage(ERROR_CANNOT_READ_FILE, ERR_REGISTER_LINE, REGISTER_X);
       return;
     }
-  #endif // DMCP_BUILD
+  }
 
   if(loadMode == LM_ALL) {
     while(currentSubroutineLevel > 0) {
       fnReturn(0);
     }
   }
-
 
 
   // SAVE_FILE_REVISION
@@ -2660,47 +2476,100 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
   //  while doing no check on manual loading. This may allow manual loading of older files at risk
   loadedVersion = 0;
   if(loadType == autoLoad && loadMode == LM_ALL) {
-    readLine(BACKUP, tmpString);
+    readLine(tmpString);
     if(strcmp(tmpString, "SAVE_FILE_REVISION") == 0) {
-      readLine(BACKUP, aimBuffer); // internal rev number (ignore now)
-      readLine(BACKUP, aimBuffer); // param
-      readLine(BACKUP, tmpString); // value
+      readLine(aimBuffer); // internal rev number (ignore now)
+      readLine(aimBuffer); // param
+      readLine(tmpString); // value
       if(strcmp(aimBuffer, "C43_save_file_00") == 0) {
         loadedVersion = stringToUint32(tmpString);
         if(loadedVersion < 10000000 || loadedVersion > 20000000) {
           loadedVersion = 0;
         }
-      }    
+      }
     }
   }
 
-  if((((loadType == manualLoad) || (loadType == stateLoad)) && loadMode == LM_ALL) || 
+  if((((loadType == manualLoad) || (loadType == stateLoad)) && loadMode == LM_ALL) ||
     ((loadType == autoLoad) && (loadedVersion >= VersionAllowed) && (loadedVersion <= configFileVersion) && (loadMode == LM_ALL) )) {
-      while(restoreOneSection(BACKUP, loadMode, s, n, d)) {
+      while(restoreOneSection(loadMode, s, n, d)) {
     }
   }
 
 
   lastErrorCode = ERROR_NONE;
 
+  ioFileClose();
+
+    //-------------------------------------------------------------------------------------------------
+  // This is where user is informed about versions incompatibilities and changes to loaded data occur
+  // The code  below is an example of a version mismatch handling
+  // The string passed to show_warning() can be the same if it fits on the HW display (7 lines of ~32
+  // characters and standard ASCII characters), or two differents strings can used as shown below
+  //-------------------------------------------------------------------------------------------------
+  //
+  //Code example:
+  //
+  //if (loadMode == LM_ALL) {
+  //  if(loadedVersion <= 88) { // Program incompatibility
+  //  #if defined(PC_BUILD)
+  //    sprintf(tmpString,"****Program binary incompatibility****\n"
+  //                      "x→α now followed by a destination register\n"
+  //                      "Loaded x→α in RAM will be replaced by NOP\n"
+  //                      "CAVEAT: x→α in Flash will not be replaced so it may cause crash\n");
+  //  #endif // PC_BUILD
+  //  #if defined(DMCP_BUILD)
+  //    sprintf(tmpString,"**Program binary incompatibility**\n"
+  //                      "x->a now uses a destination register\n"
+  //                      "x->a in RAM will be replaced by NOP\n"
+  //                      "CAVEAT: x->a in Flash will not be\n"
+  //                      "replaced so it may cause crash\n");
+  //  #endif // DMCP_BUILD
+  //  #if !defined(TESTSUITE_BUILD)
+  //    show_warning(tmpString);
+  //  #endif // TESTSUITE_BUILD
+  //
+  //    int globalStep = 1;
+  //    uint8_t *step = beginOfProgramMemory;
+  //
+  //    while(!isAtEndOfPrograms(step)) { // .END.
+  //      if(checkOpCodeOfStep(step, ITM_XtoALPHA)) { // x->alpha
+  //        step[0] = (ITM_NOP >> 8) | 0x80;
+  //        step[1] =  ITM_NOP       & 0xff;
+  //        printf("x→α found at global step %d\n", globalStep);
+  //      }
+  //      ++globalStep;
+  //      step = findNextStep(step);
+  //    }
+  //  }
+  //}
+
   #if defined(DMCP_BUILD)
-    f_close(BACKUP);
     sys_timer_disable(TIMER_IDX_REFRESH_SLEEP);
     sys_timer_start(TIMER_IDX_REFRESH_SLEEP,1000);
     fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, JM_TO_KB_ACTV); //PROGRAM_KB_ACTV
-  #else // !DMCP_BUILD
-    fclose(BACKUP);
   #endif //DMCP_BUILD
 
 
   #if !defined(TESTSUITE_BUILD)
     if(loadType == manualLoad && loadMode == LM_ALL) {
       temporaryInformation = TI_BACKUP_RESTORED;
-    } else
-    if((loadType == autoLoad) && (loadedVersion >= VersionAllowed) && (loadedVersion <= configFileVersion) && (loadMode == LM_ALL)) {
+    } else if((loadType == autoLoad) && (loadedVersion >= VersionAllowed) && (loadedVersion <= configFileVersion) && (loadMode == LM_ALL)) {
       temporaryInformation = TI_BACKUP_RESTORED;
     } else if(loadType == stateLoad) {
       temporaryInformation = TI_STATEFILE_RESTORED;
+    } else if (loadMode == LM_PROGRAMS) {
+      temporaryInformation = TI_PROGRAMS_RESTORED;
+    } else if (loadMode == LM_REGISTERS) {
+       temporaryInformation = TI_REGISTERS_RESTORED;
+    } else if (loadMode == LM_REGISTERS) {
+       temporaryInformation = TI_REGISTERS_RESTORED;
+    } else if (loadMode == LM_SYSTEM_STATE) {
+       temporaryInformation = TI_SETTINGS_RESTORED;
+    } else if (loadMode == LM_SUMS) {
+       temporaryInformation = TI_SUMS_RESTORED;
+    } else if (loadMode == LM_NAMED_VARIABLES) {
+       temporaryInformation = TI_VARIABLES_RESTORED;
     }
   #endif // !TESTSUITE_BUILD
 #endif // !TESTSUITE_BUILD

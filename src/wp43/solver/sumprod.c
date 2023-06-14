@@ -80,9 +80,9 @@
     longIntegerFree(iLoop);
 
     if( !real34CompareEqual(&loopTo, &counter) &&
-        (  real34IsZero(&loopStep) || 
-          (real34CompareGreaterThan(&loopTo, &counter) && real34CompareLessEqual(&loopStep, const34_0)) || 
-          (real34CompareLessThan(&loopTo, &counter) && real34CompareGreaterEqual(&loopStep, const34_0))    
+        (  real34IsZero(&loopStep) ||
+          (real34CompareGreaterThan(&loopTo, &counter) && real34CompareLessEqual(&loopStep, const34_0)) ||
+          (real34CompareLessThan(&loopTo, &counter) && real34CompareGreaterEqual(&loopStep, const34_0))
         )
       ) {
       displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, REGISTER_X);
@@ -145,7 +145,7 @@
             else {
               realAdd(&resultR, &resultX, &resultR, &ctxtReal75);
               realAdd(&resultRi, &resultXi, &resultRi, &ctxtReal75);
-            }            
+            }
           }
 
 

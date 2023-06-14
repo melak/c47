@@ -150,7 +150,7 @@ void fnPvect (uint16_t unusedButMandatoryParameter) {
   PLOT_SHADE    = false;
   fnRefreshState();                //jm
   fnPlotSQ(0);
-}    
+}
 
 void fnPNvect (uint16_t unusedButMandatoryParameter) {
   PLOT_NVECT = !PLOT_NVECT;
@@ -161,13 +161,13 @@ void fnPNvect (uint16_t unusedButMandatoryParameter) {
   PLOT_SHADE    = false;
   fnRefreshState();                //jm
   fnPlotSQ(0);
-}    
+}
 
 void fnScale (uint16_t unusedButMandatoryParameter) {
   PLOT_SCALE = !PLOT_SCALE;
   fnRefreshState();                //jm
   fnPlotSQ(0);
-}    
+}
 
 void fnPshade (uint16_t unusedButMandatoryParameter) {
   PLOT_SHADE = !PLOT_SHADE;
@@ -176,7 +176,7 @@ void fnPshade (uint16_t unusedButMandatoryParameter) {
   PLOT_NVECT      = false;
  fnRefreshState();                //jm
   fnPlotSQ(0);
-}    
+}
 
 void fnPx (uint16_t unusedButMandatoryParameter) {
   extentx = !extentx;
@@ -373,18 +373,18 @@ void fnListXY(uint16_t unusedButMandatoryParameter) {
 //###################################################################################
 
 
-    
+
   void convertDigits(char * refstr, uint16_t ii, uint16_t * oo, char * outstr) {
     switch (refstr[ii]) {
-      case '0': 
-      case '1': 
-      case '2': 
-      case '3': 
-      case '4': 
-      case '5': 
-      case '6': 
-      case '7': 
-      case '8': 
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
       case '9': outstr[(*oo)++] = 0xa0; outstr[(*oo)++] = refstr[ii] + (0x80 - 48); break; //.
       case 'x': outstr[(*oo)++] = 0xa4; outstr[(*oo)++] = 0xb3; break; //x ok
       case 'y': outstr[(*oo)++] = 0xa4; outstr[(*oo)++] = 0xb4; break; //y ok
@@ -414,13 +414,13 @@ void graph_text(void){
         int32_t n;
         eformat_eng2(ss,"(",x_max,2,"");
         eformat_eng2(tt,radixProcess("#"),y_max,2,")");
-        strcat(tt,ss);                   
+        strcat(tt,ss);
         ypos += 38;
         n = showString(padEquals(ss), &standardFont,160-2 - stringWidth(tt, &standardFont, false, false), ypos, vmNormal, false, false);
-        
+
         eformat_eng2(ss,radixProcess("#"),y_max,2,")");
         showString(padEquals(ss), &standardFont,n+3,       ypos, vmNormal, false, false);
-        
+
         ypos += 19;
         eformat_eng2(ss,"(",x_min,2,""); n = showString(padEquals(ss), &standardFont,1, ypos, vmNormal, false, false);
         eformat_eng2(ss,radixProcess("#"),y_min,2,")");
@@ -464,8 +464,8 @@ void graph_text(void){
     minnx = SCREEN_WIDTH-SCREEN_HEIGHT_GRAPH;
   }
   tmpString[0]=0;                                  //If the axis is on the edge supress it, and label accordingly
-  uint8_t axisdisp = 
-           (!( yzero == SCREEN_HEIGHT_GRAPH-1  || yzero == minny) ? 2:0) + 
+  uint8_t axisdisp =
+           (!( yzero == SCREEN_HEIGHT_GRAPH-1  || yzero == minny) ? 2:0) +
            (!(  xzero == SCREEN_WIDTH-1        || xzero == minnx) ? 1:0) ;
   switch( axisdisp )  {
     case 0: strcpy(tmpString,"          "); break;
@@ -494,7 +494,7 @@ void graph_text(void){
     plotline((uint16_t)(ii-17),(uint8_t)(ypos-2+sp),(uint16_t)(ii-11),(uint8_t)(ypos-2+sp));
   }
   ypos += 48 + 2*19;
-  
+
 
 
   if(PLOT_INTG && !invalid_intg) {
@@ -545,15 +545,15 @@ void graph_plotmem(void) {
       int16_t cnt1;
       cnt1 = drawMxN();
       printf("Stored values\n");
-      for (i = 0; i < cnt1; ++i) { 
+      for (i = 0; i < cnt1; ++i) {
         printf("i = %3u x = %9f; y = %9f\n",i,grf_x(i),grf_y(i));
       }
     #endif //STATDEBUG
 
   uint16_t cnt, ix, statnum;
-  uint16_t xo, xn, xN; 
+  uint16_t xo, xn, xN;
   uint8_t yo, yn, yN;
-  float x; 
+  float x;
   float y;
   float sx, sy;
   float ddx = FLoatingMax;
@@ -576,7 +576,7 @@ void graph_plotmem(void) {
     else {statnum = drawMxN();}
     #ifdef STATDEBUG
       printf("points n=%d\n",statnum);
-    #endif 
+    #endif
   }
 
   if(statnum >= 2) {
@@ -596,7 +596,7 @@ void graph_plotmem(void) {
     y_min = FLoatingMax;
     y_max = FLoatingMin;
     #ifdef STATDEBUG
-    printf("Axis0: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);   
+    printf("Axis0: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
     #endif
     if(plotmode != _VECT) {
 
@@ -609,19 +609,19 @@ void graph_plotmem(void) {
 /**/        inty = inty_off;                                                          //  integral starting constant co-incides with graph
             if(PLOT_RMS) rmsy = fabs(grf_y(0));
 /**/
-/**/        for (ix = 0; (ix < statnum); ++ix) { 
+/**/        for (ix = 0; (ix < statnum); ++ix) {
 /**/          if(ix !=0){
 /**/            ddx = grf_x(ix) - grf_x(ix-1);                                            //used in DIFF and INT
 /**/            if(ddx<=0) {                                                              //Cannot get slop or area if x is not growing in positive dierection
-/**/      		    x_min = FLoatingMax;
-/**/      		    x_max = FLoatingMin;
-/**/      		    y_min = FLoatingMax;
-/**/      		    y_max = FLoatingMin;
-/**/      		    invalid_diff = true;
-/**/                invalid_intg = true;
-/**/                invalid_rms  = true;
-/**/      		    break;
-/**/            } else {          	
+/**/              x_min = FLoatingMax;
+/**/              x_max = FLoatingMin;
+/**/              y_min = FLoatingMax;
+/**/              y_max = FLoatingMin;
+/**/              invalid_diff = true;
+/**/              invalid_intg = true;
+/**/              invalid_rms  = true;
+/**/              break;
+/**/            } else {
 /**/              if(grf_x(ix) < x_min) {x_min = grf_x(ix);}
 /**/              if(grf_x(ix) > x_max) {x_max = grf_x(ix);}
 /**/              if(PLOT_DIFF) {
@@ -631,7 +631,7 @@ void graph_plotmem(void) {
                         dydx = (grf_y(ix) - grf_y(ix-1)) / ddx;   // Differential
                       else if(ix >= 2)                            // ix >= 2 three samples available 0 1 2
                         dydx = ( grf_y(ix-2) - 4.0 * grf_y(ix-1) + 3.0 * grf_y(ix) ) / 2.0 / ddx; //ChE 205 — Formulas for Numerical Differentiation, formule 32
-                    } 
+                    }
                     else dydx = FLoatingMax;
 
 /**/                if(dydx < y_min) {y_min = dydx;}
@@ -649,7 +649,7 @@ void graph_plotmem(void) {
 /**/              }
 /**/
 /**/            }
-/**/          } 
+/**/          }
               if(keyWaiting()) {
                  return;
               }
@@ -662,24 +662,75 @@ void graph_plotmem(void) {
       #endif
 
 //#################################################### vvv SCALING LOOP  vvv #########################
+           uint16_t y_maxcnt=2;
+           uint16_t y_mincnt=2;
+           float a0,a1,a2,a3,a4,a5,a6,a7,a8;   //Digital filter to get rid of short sharp peak like some asymptotes
+           float aa = 1;
+           a0 = 0;
+           a1 = 0;
+           a2 = 0;
+           a3 = 0;
+           a4 = 0;
+           a5 = 0;
+           a6 = 0;
+           a7 = 0;
+           a8 = 0;
+
+
 /**/       if(PLOT_BOX || PLOT_LINE || PLOT_CROSS || !(PLOT_DIFF || PLOT_INTG)) {  //XXXX
+
 /**/        for(cnt=0; (cnt < statnum); cnt++) {
 /**/          #ifdef STATDEBUG
-/**/          printf("Axis0a: cnt/statnum: %i/%i  x: %f y: %f   \n",cnt, statnum, grf_x(cnt), grf_y(cnt));   
+/**/          printf("Axis0a: cnt/statnum: %i/%i  x: %f y: %f   \n",cnt, statnum, grf_x(cnt), grf_y(cnt));
 /**/          #endif
 /**/          if(grf_x(cnt) < x_min) {x_min = grf_x(cnt);}
 /**/          if(grf_x(cnt) > x_max) {x_max = grf_x(cnt);}
-/**/          if(grf_y(cnt) < y_min) {y_min = grf_y(cnt);}
-/**/          if(grf_y(cnt) > y_max) {y_max = grf_y(cnt);}
+              a8 = a7;
+              a7 = a6;
+              a6 = a5;
+              a5 = a4;
+              a4 = a3;
+              a3 = a2;
+              a2 = a1;
+              a1 = a0;
+              a0 = grf_y(cnt);
+              aa = a8*0.2 + a7 *0.2 + a6*0.1 + a5*0.1 + a4*0.1 + a3*0.1 + a2*0.1 + a1*0.1;
+              if(fabs(a0/aa) < 3) aa = a0 * 1.1;
+              //printf("%f %f %f %f %f %f %f %f %f  %f\n", a8,a7,a6,a5,a4,a3,a2,a1,a0, aa);
+/**/          if(aa < y_min) {
+                 y_mincnt++;
+                 if(fabs(aa / y_min) < 4 || aa == a0 * 1.1) {
+                   y_min = aa;
+                   y_mincnt=0;
+                 }
+                 else if(y_mincnt==3) {
+                   y_min = aa;
+                   y_mincnt=0;
+                 }
+               } else y_mincnt=0;
+
+/**/          if(aa > y_max) {
+                y_maxcnt++;
+                if(fabs(aa / y_max) < 4 || aa == a0 * 1.1) {
+                  y_max = aa;
+                  y_maxcnt=0;
+                }
+                else if(y_maxcnt==3) {
+                  y_max = aa;
+                  y_maxcnt=0;
+                }
+              } else y_maxcnt=0;
+
+
 /**/          #ifdef STATDEBUG
-/**/          printf("Axis0b: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);   
+/**/          printf("Axis0b: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
 /**/          #endif
               if(keyWaiting()) {
                  return;
               }
 /**/        }
 /**/      }
-/**/    } 
+/**/    }
 /**/
 /**/    else {                 //VECTOR
 /**/      sx =0;
@@ -694,7 +745,7 @@ void graph_plotmem(void) {
             if(keyWaiting()) {
                return;
             }
-/**/      }      
+/**/      }
 /**/    }
 //#################################################### ^^^ SCALING LOOP ^^^ #########################
 
@@ -702,14 +753,14 @@ void graph_plotmem(void) {
     //Manipulate the obtained axes positions
 
     #ifdef STATDEBUG
-      printf("Axis1a: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);   
+      printf("Axis1a: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
     #endif
 
     //Check and correct if min and max is swapped
     if(x_min>0.0f && x_min > x_max) {x_min = x_min - (-x_max+x_min)* 1.1f;}
     if(x_min<0.0f && x_min > x_max) {x_min = x_min + (-x_max+x_min)* 1.1f;}
     #ifdef STATDEBUG
-      printf("Axis1b: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);   
+      printf("Axis1b: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
     #endif
 
 
@@ -723,7 +774,7 @@ void graph_plotmem(void) {
       if(y_min<0.0f && y_max<0.0f) {if(y_min>=y_max) {y_min = -0.05f*y_max;} else {y_max = 0.0f;}}
     }
 
-    //Cause scales to be the same    
+    //Cause scales to be the same
     if(PLOT_SCALE) {
       x_min = min(x_min,y_min);
       x_max = max(x_max,y_max);
@@ -741,7 +792,7 @@ void graph_plotmem(void) {
       y_max = pow(2.0f,-PLOT_ZMY) * y_max;
     }
     #ifdef STATDEBUG
-    printf("Axis2: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);   
+    printf("Axis2: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
     #endif
 
     float dx = x_max-x_min;
@@ -772,7 +823,7 @@ void graph_plotmem(void) {
     if(PLOT_AXIS) graph_text();
 
     #ifdef STATDEBUG
-    printf("Axis3b: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);   
+    printf("Axis3b: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
     #endif
 
 
@@ -785,11 +836,11 @@ void graph_plotmem(void) {
       yn = screen_window_y(y_min,0,y_max);
       xn = screen_window_x(x_min,0,x_max);
       xN = xn;
-      yN = yn;      
+      yN = yn;
     }
 
     #ifdef STATDEBUG
-    printf("Axis3c: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);   
+    printf("Axis3c: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
     #endif
 
     sx = 0;
@@ -815,7 +866,7 @@ void graph_plotmem(void) {
               dydx = (grf_y(ix) - grf_y(ix-1)) / ddx;   // Differential
             else //if(ix >= 2)                            // ix >= 2 three samples available 0 1 2
               dydx = ( grf_y(ix-2) - 4.0 * grf_y(ix-1) + 3.0 * grf_y(ix) ) / 2.0 / ddx; //ChE 205 — Formulas for Numerical Differentiation, formule 32
-          } 
+          }
           else dydx = FLoatingMax;
 
           x = (grf_x(ix) + grf_x(ix-1))/2;
@@ -914,7 +965,7 @@ void graph_plotmem(void) {
             uint16_t yN0   =screen_window_y( y_min, inty0, y_max);
             uint16_t yNintg=screen_window_y( y_min, inty, y_max);
             uint16_t xAvg  =((xN0+xN) >> 1);
-            
+
             if(abs((int16_t)(xN-xN0)>=6)) {plotint( xAvg, yNintg );} else
                                           {//placePixel( xAvg, yNintg );
                                            plotrect(xAvg-1, yNintg-1, xAvg+1, yNintg+1);}
@@ -1014,7 +1065,7 @@ void fnStatList() {
     for (ix = 0; (ix < min(10,statnum)); ++ix) {
       ixx = statnum - ix - 1 + ListXYposition;
 
-      if(((fabs(grf_x(ixx)) > 0.000999 || grf_x(ixx) == 0) && fabs(grf_x(ixx)) < 1000000)) 
+      if(((fabs(grf_x(ixx)) > 0.000999 || grf_x(ixx) == 0) && fabs(grf_x(ixx)) < 1000000))
         sprintf(tmpstr1,"[%3d] x%19.7f, ",ixx+1, grf_x(ixx));
       else
         sprintf(tmpstr1,"[%3d] x%19.7e, ",ixx+1, grf_x(ixx)); //round(grf_x(ixx)*1e10)/1e10);

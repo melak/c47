@@ -273,7 +273,14 @@ void fnGetSignificantDigits(uint16_t unusedButMandatoryParameter) {
 
 
 
-void fnSetSignificantDigits(uint16_t unusedButMandatoryParameter) {
+void fnSetSignificantDigits(uint16_t S) {
+   significantDigits = S;
+   if(significantDigits == 0) {
+     significantDigits = 34;
+   }
+ }
+
+/* Removed in favour of TAM selection
   longInteger_t sigDigits;
 
   if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
@@ -301,7 +308,7 @@ void fnSetSignificantDigits(uint16_t unusedButMandatoryParameter) {
     #endif // PC_BUILD
   }
 }
-
+*/
 
 
 void fnRoundingMode(uint16_t RM) {
@@ -359,7 +366,12 @@ void setConfirmationMode(void (*func)(uint16_t)) {
 
 
 
-void fnRange(uint16_t unusedButMandatoryParameter) {
+void fnRange(uint16_t R) {
+  exponentLimit = R;
+  if(exponentLimit < 99) exponentLimit = 99;
+}
+
+/* removed in favour of TAM selection
   longInteger_t longInt;
 
   if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
@@ -391,6 +403,7 @@ void fnRange(uint16_t unusedButMandatoryParameter) {
 
   longIntegerFree(longInt);
 }
+*/
 
 
 
@@ -407,7 +420,13 @@ void fnGetRange(uint16_t unusedButMandatoryParameter) {
 
 
 
-void fnHide(uint16_t unusedButMandatoryParameter) {
+void fnHide(uint16_t H) {
+  exponentHideLimit = H;
+  if(exponentHideLimit > 0 && exponentHideLimit < 12) {
+    exponentHideLimit = 12;
+  }
+
+/* removed in favour of TAM entry
   longInteger_t longInt;
 
   if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
@@ -441,6 +460,7 @@ void fnHide(uint16_t unusedButMandatoryParameter) {
   }
 
   longIntegerFree(longInt);
+*/
 }
 
 
@@ -974,9 +994,9 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     lastErrorCode = 0;
 
     gammaLanczosCoefficients = (real51_t *)const_gammaC01;
-    angle180 = (real51_t *)const_pi_51;
-    angle90  = (real51_t *)const_piOn2_51;
-    angle45  = (real51_t *)const_piOn4_51;
+    angle180 = (real_t *)const_pi_75;
+    angle90  = (real_t *)const_piOn2_75;
+    angle45  = (real_t *)const_piOn4_75;
 
     #if !defined(TESTSUITE_BUILD)
       resetAlphaSelectionBuffer();
@@ -1073,7 +1093,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     while(ix<18) {
       indexOfItemsXEQM[+8*ix]=0;
       strcpy(indexOfItemsXEQM +8*ix, indexOfItems[fnXEQMENUpos+ix].itemSoftmenuName);
-      ix++;    
+      ix++;
     }
 
 
@@ -1099,10 +1119,10 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     #if !defined(TESTSUITE_BUILD)
       showSoftmenu(-MNU_MyMenu);                                   //this removes the false start on MyMenu error
     #endif // !TESTSUITE_BUILD
-    fnUserJM(USER_KRESET);                                      //JM USER    
+    fnUserJM(USER_KRESET);                                      //JM USER
     temporaryInformation = TI_NO_INFO;
     refreshScreen();
-    
+
 //    kbd_usr[0].primary     = ITM_CC;                         //JM CPX TEMP DEFAULT        //JM note. over-writing the content of setupdefaults
 //    kbd_usr[0].gShifted    = KEY_TYPCON_UP;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
 //    kbd_usr[0].fShifted    = KEY_TYPCON_DN;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
@@ -1141,6 +1161,11 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     allFormulae = NULL;
     numberOfFormulae = 0;
     currentFormula = 0;
+
+    currentSolverStatus = 0;
+    currentSolverProgram = 0xffffu;
+    currentSolverVariable = INVALID_VARIABLE;
+    currentSolverNestingDepth = 0;
 
     graphVariable = 0;
 
@@ -1194,7 +1219,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     fnClearFlag(FLAG_USER);
     fnRefreshState();
 
-  
+
   }
 }
 

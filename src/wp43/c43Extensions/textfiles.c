@@ -144,11 +144,11 @@ void stackregister_csv_out(int16_t reg_b, int16_t reg_e) {
       sprintf(tmp_b, "%sU%02d%s%s", CSV_STR, ix-100, CSV_STR, CSV_TAB);
     }
 
-    #if (VERBOSE_LEVEL >= 1) 
+    #if (VERBOSE_LEVEL >= 1)
       print_linestr("-2b",false);
     #endif
     copyRegisterToClipboardString2((calcRegister_t)ix, tmpString);
-    #if (VERBOSE_LEVEL >= 1) 
+    #if (VERBOSE_LEVEL >= 1)
       char tmpTmp[TMP_STR_LENGTH+100];
       sprintf(tmpTmp,"-2c: len=%u:%s",(uint16_t)stringByteLength(tmpString),tmpString);
       print_linestr(tmpTmp,false);
@@ -159,14 +159,14 @@ void stackregister_csv_out(int16_t reg_b, int16_t reg_e) {
     addStrBothSides(tmpString,tmp_b,tmp_e);
     //printf(">>>: §%s§\n",tmp);
 
-    #if (VERBOSE_LEVEL >= 1) 
+    #if (VERBOSE_LEVEL >= 1)
       sprintf(tmpTmp,"-2d: len=%u:%s",(uint16_t)stringByteLength(tmpString),tmpString);
       print_linestr(tmpTmp,false);
     #endif
 
     export_append_line(tmpString);                    //Output append to CSV file
 
-    #if (VERBOSE_LEVEL >= 1) 
+    #if (VERBOSE_LEVEL >= 1)
       sprintf(tmpString,":(ix=%u)------->",ix);
       print_linestr(tmpString,false);
     #endif
@@ -202,12 +202,12 @@ void displaywords(char *line1) {  //Preprocessor and display
   bb[1]=0;
   bb[0]=0;
 
-  #if (VERBOSE_LEVEL >= 2) 
+  #if (VERBOSE_LEVEL >= 2)
     print_linestr("Code:",true);
   #endif
   //printf("4:%s\n",line1);
 
-  #if (VERBOSE_LEVEL >= 2) 
+  #if (VERBOSE_LEVEL >= 2)
    char tmp[400];          //Messages
    sprintf(tmp, " F: Displaywords: %lu bytes.\n",stringByteLength(line1) );
    print_linestr(tmp,false);
@@ -230,12 +230,12 @@ void displaywords(char *line1) {  //Preprocessor and display
     if ((aa[0]=='/' && bb[0]=='/') && state_comments == false) {         //start comment on double slash
       state_comments=true;
       ix++; //skip the second slash
-    } 
-    else 
+    }
+    else
     if (state_comments && (aa[0]==13 || aa[0]==10))  {    //stop comment mode at end of line
       state_comments=false;
       strcat(tmpString," ");
-    } 
+    }
     else
       if(!state_comments) {                //proceed only if not comment mode
         switch(aa[0]) {
@@ -250,7 +250,7 @@ void displaywords(char *line1) {  //Preprocessor and display
                    }
                    break;
           default: strcat(tmpString,aa);
-        }    
+        }
       }
 
     ix++;
@@ -265,13 +265,13 @@ void displaywords(char *line1) {  //Preprocessor and display
   ix = 1;
   line1[0]=0;
   while (tmpString[ix] != 0) {
-    aa[0]=tmpString[ix];    
+    aa[0]=tmpString[ix];
     if (tmpString[ix-1] != ' ') {
       strcat(line1,aa);
       #ifdef DISPLOADING
       strcat(ll,aa);
       if(strlen(ll)>30 && aa[0] == ' ') {
-        #if (VERBOSE_LEVEL >= 2) 
+        #if (VERBOSE_LEVEL >= 2)
           print_linestr(ll,false);
         #endif
         ll[0]=0;
@@ -281,9 +281,9 @@ void displaywords(char *line1) {  //Preprocessor and display
       if(aa[0] != ' ') {
         strcat(line1,aa);
         #ifdef DISPLOADING
-        strcat(ll,aa);          
+        strcat(ll,aa);
         if(strlen(ll)>36) {
-         #if (VERBOSE_LEVEL >= 2) 
+         #if (VERBOSE_LEVEL >= 2)
            print_linestr(ll,false);
          #endif
           ll[0]=0;
@@ -295,7 +295,7 @@ void displaywords(char *line1) {  //Preprocessor and display
   }
   #ifdef DISPLOADING
   if(ll[0]!=0) {
-    #if (VERBOSE_LEVEL >= 2) 
+    #if (VERBOSE_LEVEL >= 2)
       print_linestr(ll,false);
     #endif
   }
@@ -324,7 +324,7 @@ void print_inlinestr(const char *line1, bool_t endline) {
        l1[ix+1]=0;
        ix = stringNextGlyph(line1, ix);
     }
-    if(t_line_y < SCREEN_HEIGHT) { 
+    if(t_line_y < SCREEN_HEIGHT) {
         t_line_x = showString(l1, &standardFont, t_line_x, t_line_y, vmNormal, true, true);
     }
     if(endline) {

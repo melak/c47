@@ -21,6 +21,7 @@
 #include "programming/manage.h"
 
 #include "bufferize.h"
+#include "c43Extensions/keyboardTweak.h"
 #include "charString.h"
 #include "config.h"
 #include "dateTime.h"
@@ -551,12 +552,9 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       decodeOneStep_ram(step);
       if(firstDisplayedStepNumber + line - lineOffset == currentStepNumber && !tam.mode) {
         if(getSystemFlag(FLAG_ALPHA)) {
-          char *tstr = tmpString + stringByteLength(tmpString) - 2;
-          *(tstr++) = STD_CURSOR[0];
-          *(tstr++) = STD_CURSOR[1];
-          *(tstr++) = STD_RIGHT_SINGLE_QUOTE[0];
-          *(tstr++) = STD_RIGHT_SINGLE_QUOTE[1];
-          *(tstr++) = 0;
+          xcopy(tmpString + 2 + T_cursorPos + 2, tmpString + 2 + T_cursorPos, stringByteLength(tmpString + 2 + T_cursorPos) + 1);
+          tmpString[2 + T_cursorPos    ] = STD_CURSOR[0];
+          tmpString[2 + T_cursorPos + 1] = STD_CURSOR[1];
         }
         else if(aimBuffer[0] != 0) {
           char *tstr = tmpString + stringByteLength(tmpString);
@@ -672,18 +670,57 @@ static void _insertInProgram(const uint8_t *dat, uint16_t size) {
   dynamicMenuItem = _dynamicMenuItem;
 }
 
+#if !defined(TESTSUITE_BUILD)
+static void _closeAlphaMenus(void) {
+  for(int i = 0; i < SOFTMENU_STACK_SIZE; ++i) {
+    switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
+      case MNU_ALPHAINTL:
+      case MNU_ALPHAintl:
+      case MNU_ALPHAMATH:
+      case MNU_ALPHA_OMEGA:
+      case MNU_alpha_omega:
+      case MNU_ALPHA:
+        popSoftmenu();
+        break;
+
+      case MNU_MyAlpha:
+        switch(-softmenu[softmenuStack[1].softmenuId].menuItem) {
+          case MNU_ALPHAINTL:
+          case MNU_ALPHAintl:
+          case MNU_ALPHAMATH:
+          case MNU_ALPHA_OMEGA:
+          case MNU_alpha_omega:
+          case MNU_ALPHA:
+            popSoftmenu();
+            break;
+          default:
+            softmenuStack[0].softmenuId = 0; // MyMenu
+            return;
+        }
+
+      default:
+        return;
+    }
+  }
+  // Just in case softmenuStack was filled with AIM-related menus
+  for(int i = 0; i < SOFTMENU_STACK_SIZE; ++i) {
+    softmenuStack[i].softmenuId = 0; // MyMenu
+  }
+}
+#endif // !TESTSUITE_BUILD
+
 void pemAlpha(int16_t item) {
   #if !defined(TESTSUITE_BUILD)
   if(!getSystemFlag(FLAG_ALPHA)) {
-    shiftF = false;
-    shiftG = false;
+    resetShiftState();  //JM
+    displayAIMbufferoffset = 0;
+    T_cursorPos = 0;
     aimBuffer[0] = 0;
-    alphaCase = AC_UPPER;
-    nextChar = NC_NORMAL;
 
-    if(softmenuStack[0].softmenuId == 0) { // MyMenu
-      softmenuStack[0].softmenuId = 1; // MyAlpha
-    }
+    //if(softmenuStack[0].softmenuId == 0) { // MyMenu
+    //  softmenuStack[0].softmenuId = 1; // MyAlpha
+    //}
+    showSoftmenu(-MNU_ALPHA); // JM addon
 
     setSystemFlag(FLAG_ALPHA);
 
@@ -698,6 +735,7 @@ void pemAlpha(int16_t item) {
   }
   if(indexOfItems[item].func == addItemToBuffer) {
     int32_t len = stringByteLength(aimBuffer);
+    item = numlockReplacements(0, item, numLock, shiftF, shiftG);
     if(alphaCase == AC_LOWER) {
         if(ITM_A <= item && item <= ITM_Z) {
           item += 26;
@@ -706,32 +744,88 @@ void pemAlpha(int16_t item) {
           item +=  (ITM_ALPHA <= item && item <= ITM_OMEGA) ? (ITM_alpha - ITM_ALPHA) : (ITM_qoppa - ITM_QOPPA);
         }
     }
-    item = convertItemToSubOrSup(item, nextChar);
-    if(len < (256 - stringByteLength(indexOfItems[item].itemSoftmenuName)) && stringGlyphLength(aimBuffer) < 196) {
-      xcopy(aimBuffer + len, indexOfItems[item].itemSoftmenuName, stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
+ if ((nextChar == NC_NORMAL) || ((item != ITM_DOWN_ARROW) && (item != ITM_UP_ARROW))) {
+      item = convertItemToSubOrSup(item, nextChar);
+      int32_t inputCharLength = stringByteLength(indexOfItems[item].itemSoftmenuName);
+      if(len < (256 - inputCharLength) && stringGlyphLength(aimBuffer) < 196) {
+        xcopy(aimBuffer + T_cursorPos + inputCharLength, aimBuffer + T_cursorPos, stringByteLength(aimBuffer + T_cursorPos) + 1);
+        xcopy(aimBuffer + T_cursorPos, indexOfItems[item].itemSoftmenuName, inputCharLength);
+        T_cursorPos += inputCharLength;
+      }
     }
-  }
-  else if(item == ITM_DOWN_ARROW) {
-    nextChar = NC_SUBSCRIPT;
-  }
-  else if(item == ITM_UP_ARROW) {
-    nextChar = NC_SUPERSCRIPT;
   }
   else if(item == ITM_BACKSPACE) {
     if(aimBuffer[0] == 0) {
       deleteStepsFromTo(currentStep.ram, findNextStep_ram(currentStep.ram));
       clearSystemFlag(FLAG_ALPHA);
         calcModeNormalGui();
+      _closeAlphaMenus();
+      return;
+    }
+    else if(T_cursorPos == 0) {
       return;
     }
     else {
-      aimBuffer[stringLastGlyph(aimBuffer)] = 0;
+      char cursorByte = aimBuffer[T_cursorPos];
+      int16_t lastGlyphPos;
+      aimBuffer[T_cursorPos] = 0;
+      lastGlyphPos = stringLastGlyph(aimBuffer);
+      aimBuffer[T_cursorPos] = cursorByte;
+      xcopy(aimBuffer + lastGlyphPos, aimBuffer + T_cursorPos, stringByteLength(aimBuffer + T_cursorPos) + 1);
+      T_cursorPos = lastGlyphPos;
     }
   }
   else if(item == ITM_ENTER) {
     pemCloseAlphaInput();
     --firstDisplayedLocalStepNumber;
     defineFirstDisplayedStep();
+      _closeAlphaMenus();
+    return;
+  }
+  else if(item == ITM_USERMODE) {
+    fnFlipFlag(FLAG_USER);
+    return;
+  }
+  else if(item == ITM_CLA) { // JM addon
+    aimBuffer[0] = 0;
+    T_cursorPos = 0;
+    nextChar = NC_NORMAL;
+  }
+
+  else if(item == CHR_numL && !numLock) { // JM addon
+    alphaCase = AC_UPPER;
+    SetSetting(indexOfItems[CHR_num].param);
+    return;
+  }
+  else if(item == CHR_numU && numLock) { // JM addon
+    alphaCase = AC_UPPER;
+    SetSetting(indexOfItems[CHR_num].param);
+    return;
+  }
+  else if(item == CHR_caseUP && alphaCase != AC_UPPER) { // JM addon
+    nextChar = NC_NORMAL;
+    SetSetting(indexOfItems[CHR_case].param);
+    return;
+  }
+  else if(item == CHR_caseDN && alphaCase != AC_LOWER) { // JM addon
+    nextChar = NC_NORMAL;
+    SetSetting(indexOfItems[CHR_case].param);
+    return;
+  }
+  else if(item == CHR_num) { // JM addon
+    alphaCase = AC_UPPER;
+    SetSetting(indexOfItems[item].param);
+    return;
+  }
+  else if(item == CHR_case) { // JM addon
+    nextChar = NC_NORMAL;
+    numLock = false;
+    SetSetting(indexOfItems[item].param);
+    return;
+  }
+
+  else if(indexOfItems[item].func == fnT_ARROW) { // JM addon
+    fnT_ARROW(indexOfItems[item].param);
     return;
   }
 
@@ -758,6 +852,7 @@ void pemCloseAlphaInput(void) {
   currentStep = findNextStep(currentStep);
   ++firstDisplayedLocalStepNumber;
   firstDisplayedStep = findNextStep(firstDisplayedStep);
+  _closeAlphaMenus();
   #endif // !TESTSUITE_BUILD
 }
 
@@ -1225,6 +1320,11 @@ void insertStepInProgram(int16_t func) {
           _insertInProgram((uint8_t *)tmpString, 8);
           break;
       }
+
+        case ITM_USERMODE: {         // 1729
+          fnFlipFlag(FLAG_USER);
+          break;
+        }
       }
       break;
     }
@@ -1346,6 +1446,12 @@ void addStepInProgram(int16_t func) {
 
 
 calcRegister_t findNamedLabel(const char *labelName) {
+  return findNamedLabelWithDuplicate(labelName, 0);
+}
+
+
+
+calcRegister_t findNamedLabelWithDuplicate(const char *labelName, int16_t dupNum) {
   for(uint16_t lbl = 0; lbl < numberOfLabels; lbl++) {
     if(labelList[lbl].step > 0) {
       if(labelList[lbl].program < 0) { // Flash
@@ -1353,15 +1459,25 @@ calcRegister_t findNamedLabel(const char *labelName) {
         readStepInFlashPgmLibrary(tmpLabel, 16, labelList[lbl].labelPointer.flash);
         xcopy(tmpString, tmpLabel + 1, *tmpLabel);
         tmpString[*tmpLabel] = 0;
-        if(compareString(tmpString, labelName, CMP_NAME) == 0) {
-          return lbl + FIRST_LABEL;
+        if(compareString(tmpString, labelName, CMP_BINARY) == 0) {
+          if(dupNum <= 0) {
+            return lbl + FIRST_LABEL;
+          }
+          else {
+            --dupNum;
+          }
         }
       }
       else { // RAM
         xcopy(tmpString, labelList[lbl].labelPointer.ram + 1, *(labelList[lbl].labelPointer.ram));
         tmpString[*(labelList[lbl].labelPointer.ram)] = 0;
-        if(compareString(tmpString, labelName, CMP_NAME) == 0) {
-          return lbl + FIRST_LABEL;
+        if(compareString(tmpString, labelName, CMP_BINARY) == 0) {
+          if(dupNum <= 0) {
+            return lbl + FIRST_LABEL;
+          }
+          else {
+            --dupNum;
+          }
         }
       }
     }

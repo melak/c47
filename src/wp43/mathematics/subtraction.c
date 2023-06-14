@@ -111,7 +111,7 @@ void subLonILonI(void) {
   longIntegerSubtract(y, x, x);
 
   if(running_program_jm) temporaryInformation = longIntegerIsZero(x) ? TI_TRUE : TI_FALSE;    //JM Temporary hack to do DSZ
-  
+
   convertLongIntegerToLongIntegerRegister(x, REGISTER_X);
 
   longIntegerFree(y);

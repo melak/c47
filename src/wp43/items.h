@@ -2164,8 +2164,13 @@
 #define MNU_TAMNONREGIND            2108
 #define ITM_SAVEST                  2109
 #define ITM_LOADST                  2110
+#define ITM_ASIN_SIGN               2111
+#define ITM_ACOS_SIGN               2112
+#define ITM_ATAN_SIGN               2113
+#define ITM_op_j_SIGN               2114
+#define ITM_poly_SIGN               2115
 
-#define LAST_ITEM                   2111
+#define LAST_ITEM                   2116
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
@@ -2176,28 +2181,28 @@ char *lastFuncCatalogName(void);
 char *lastFuncSoftmenuName(void);
 
 void reallyRunFunction(int16_t func, uint16_t param);
-  
+
 /**
  * Runs a function.
  *
  * \param[in] func Index in the indexOfItems area of the function to run
  */
 void runFunction      (int16_t func);
-  
+
 ///**
 // * Dummy function for a function (part of an item) to be coded.
 // *
 // * \param[in] unusedButMandatoryParameter
 // */
 //void fnToBeCoded      (void);
-  
+
 /**
  * Dummy function for an item to be coded.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void itemToBeCoded    (uint16_t unusedButMandatoryParameter);
-  
+
 /**
  * No OPeration.
  *

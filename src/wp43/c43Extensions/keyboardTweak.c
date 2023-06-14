@@ -171,10 +171,7 @@ void resetShiftState(void) {
     showShiftState();
     refreshScreen();
   }                                                                             //^^
-  #ifdef PC_BUILD
-        if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
-        if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
-  #endif
+  refreshModeGui();                                                             //JM refreshModeGui
 }
 
 
@@ -184,9 +181,9 @@ void resetKeytimers(void) {
   resetShiftState();
   //fnTimerStop(TO_FG_LONG) ;
   //fnTimerStop(TO_FG_TIMR) ;
-  
+
   fnTimerStop(TO_CL_LONG) ;
-  
+
   //additionally
   fnTimerStop(TO_FN_LONG) ;
 }
@@ -336,7 +333,7 @@ void Setup_MultiPresses(int16_t result) {                            //Setup and
 
   if(tmp != 0) {
     if(fnTimerGetStatus(TO_CL_DROP) == TMR_RUNNING) {
-      JM_auto_doublepress_autodrop_enabled = tmp;                    //Signal to DROP, i.e. that the second press of the same button was received 
+      JM_auto_doublepress_autodrop_enabled = tmp;                    //Signal to DROP, i.e. that the second press of the same button was received
     }
     fnTimerStart(TO_CL_DROP, TO_CL_DROP, JM_CLRDROP_TIMER);
   }
@@ -360,20 +357,20 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
 
   char *funcParam = (char *)getNthString((uint8_t *)userKeyLabel, key_no); //keyCode * 6 + g ? 2 : f ? 1 : 0);
   //printf("\n\n >>>> ## result=%i key_no=%i *funcParam=%s  [0]=%u\n", *result, key_no, (char*)funcParam, ((char*)funcParam)[0]);
-    
+
   if(calcMode == CM_NORMAL) {                                         //longpress special keys
     switch(*result) {
-      case ITM_XEQ      : 
+      case ITM_XEQ      :
         if(tam.mode == 0 && ((char*)funcParam)[0] == 0) { //If XEQ has a parameter, then do not inject it into the long press cycle
-          longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = -MNU_XXEQ;    //XEQ longpress to XEQMENU 
+          longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = -MNU_XXEQ;    //XEQ longpress to XEQMENU
         }
         break;
-      case ITM_BACKSPACE: 
+      case ITM_BACKSPACE:
         if(tam.mode == 0) {
           longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = ITM_CLSTK;    //backspace longpress to CLSTK
         }
         break;
-      case ITM_EXIT1    : 
+      case ITM_EXIT1    :
         longpressDelayedkey2=-MNU_MyMenu;           longpressDelayedkey1 = ITM_CLRMOD;     //EXIT longpress DOES CLRMOD
         break;
       default:;
@@ -381,17 +378,17 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
   }
   else if(calcMode == CM_NIM) {
     switch(*result) {
-      case ITM_XEQ      : 
+      case ITM_XEQ      :
         if(tam.mode == 0 && ((char*)funcParam)[0] == 0) { //If XEQ has a parameter, then do not inject it into the long press cycle
-          longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = -MNU_XXEQ;    //XEQ longpress to XEQMENU 
+          longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = -MNU_XXEQ;    //XEQ longpress to XEQMENU
         }
         break;
-      case ITM_BACKSPACE: 
+      case ITM_BACKSPACE:
         if(tam.mode == 0) {
                                                       longpressDelayedkey1 = ITM_CLN;      //BACKSPACE longpress clears input buffer
         }
         break;
-      case ITM_EXIT1    : 
+      case ITM_EXIT1    :
           longpressDelayedkey2=-MNU_MyMenu;           longpressDelayedkey1 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
           break;
       default:;
@@ -399,15 +396,15 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
   }
   else if(calcMode == CM_AIM) {
     switch(*result) {
-      case ITM_BACKSPACE: 
+      case ITM_BACKSPACE:
         if(tam.mode == 0) {
                                                       longpressDelayedkey1 = ITM_CLA;      //BACKSPACE longpress clears input buffer
           }
           break;
-      case ITM_EXIT1    : 
+      case ITM_EXIT1    :
           longpressDelayedkey2=-MNU_MyAlpha;          longpressDelayedkey1 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
           break;
-      case ITM_ENTER    : 
+      case ITM_ENTER    :
         if(tam.mode == 0) {
                                                       longpressDelayedkey1 = ITM_XEDIT;
           }
@@ -417,15 +414,15 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
   }
   else if(calcMode == CM_EIM) {
     switch(*result) {
-      case ITM_BACKSPACE: 
+      case ITM_BACKSPACE:
         if(tam.mode == 0) {
                                                       longpressDelayedkey1 = ITM_CLA;      //BACKSPACE longpress clears input buffer
         }
         break;
-      case ITM_EXIT1    : 
+      case ITM_EXIT1    :
                                                       longpressDelayedkey1 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
           break;
-      case ITM_ENTER    : 
+      case ITM_ENTER    :
         if(tam.mode == 0) {
                                                       longpressDelayedkey1 = ITM_XEDIT;
         }
@@ -435,7 +432,7 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
   }
   else {
     switch(*result) {
-      case ITM_EXIT1    : 
+      case ITM_EXIT1    :
                                                       longpressDelayedkey1 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
           break;
       default:;
@@ -550,7 +547,7 @@ void FN_cancel() {
 
 //*************----------*************------- FN KEY PRESSED -------***************-----------------
 #ifdef PC_BUILD                                                           //JM LONGPRESS FN
-void btnFnPressed_StateMachine(GtkWidget *unused, gpointer data) { 
+void btnFnPressed_StateMachine(GtkWidget *unused, gpointer data) {
 #endif
 #ifdef DMCP_BUILD
 void btnFnPressed_StateMachine(void *unused, void *data) {
@@ -598,7 +595,7 @@ void btnFnPressed_StateMachine(void *unused, void *data) {
       exexute_double_g = true;
       fnTimerStop(TO_FN_EXEC);
     }
-    //PLACE ANY CONDITION PREVENTING DOUBLE CLICK HERE   
+    //PLACE ANY CONDITION PREVENTING DOUBLE CLICK HERE
     //  old:if(softmenuStack[0].softmenuId == 0) exexute_double_g = false; //JM prevent double click from executing nothing and showing a line, if no menu is showing
   }
   else {
@@ -636,7 +633,7 @@ void btnFnPressed_StateMachine(void *unused, void *data) {
     fnTimerStart(TO_FN_LONG, TO_FN_LONG, JM_TO_FN_LONG);    //dr
     FN_timed_out_to_NOP = false;
 
-    
+
     char *varCatalogItem = "";
 
     if(!shiftF && !shiftG) {
@@ -806,7 +803,7 @@ uint16_t numlockReplacements(uint16_t id, int16_t item, bool_t NL, bool_t FSHIFT
  //Note item1 MUST be set to 0 prior to calling.
  bool_t keyReplacements(int16_t item, int16_t * item1, bool_t NL, bool_t FSHIFT, bool_t GSHIFT) {
  //printf("####B>> %d %d\n",item,* item1);
- if(calcMode == CM_AIM || calcMode == CM_EIM || (tam.mode && tam.alpha) ) {
+ if(calcMode == CM_AIM || calcMode == CM_EIM || calcMode == CM_PEM || (tam.mode && tam.alpha) ) {
 
    if(GSHIFT) {        //ensure that sigma and delta stays uppercase
       switch(item) {
@@ -967,7 +964,7 @@ uint8_t inKeyBuffer(uint8_t byte)
     char aaa[16];
     sprintf   (aaa,"%2d ",byte);
     showString(aaa,&standardFont, tmpxx++, 1, vmNormal, true, true);
-  #endif       
+  #endif
 
     return BUFFER_FAIL;  // doppelt
   }
@@ -1033,12 +1030,12 @@ uint8_t outKeyBuffer(uint8_t *pKey)
   uint32_t actTime = buffer.time[buffer.read];
   *pTime = actTime;
   uint32_t oldTime;
-  
+
   oldTime = buffer.time[(buffer.read - 1) & BUFFER_MASK];
   if(actTime >= oldTime) {
     *pTimeSpan_1 = actTime - oldTime;
   }
-  else {            // protect uint overflow 
+  else {            // protect uint overflow
     *pTimeSpan_1 = actTime;
   }
 
@@ -1055,11 +1052,11 @@ uint8_t outKeyBuffer(uint8_t *pKey)
   if(actTime >= oldTime) {
     *pTimeSpan_B = actTime - oldTime;
   }
-  else {            // protect uint overflow 
+  else {            // protect uint overflow
     *pTimeSpan_B = actTime;
   }
 #endif
-  
+
   buffer.read = (buffer.read + 1) & BUFFER_MASK;
 
 #ifdef BUFFER_CLICK_DETECTION
@@ -1071,7 +1068,7 @@ uint8_t outKeyBuffer(uint8_t *pKey)
   showString(aaa, &standardFont, 220, 1, vmNormal, true, true);
 #endif
 #endif
-  
+
   return BUFFER_SUCCESS;
 }
 
@@ -1138,7 +1135,7 @@ Circular key buffer:
 uint8_t outKeyBufferDoubleClick()
 {
 #ifdef BUFFER_CLICK_DETECTION
-     //WARNING! this triggers conseq double click to be 'triple' click but does not check it is the SAME key. 
+     //WARNING! this triggers conseq double click to be 'triple' click but does not check it is the SAME key.
      //Buffer of 4 to short for that. Buffer of 8 sufficient.
      //Can be fixed by having a single byte added to the rolling stack catching the key which was rolled out
 
@@ -1154,9 +1151,9 @@ uint8_t outKeyBufferDoubleClick()
   #define D1 150 //400 //space before last press, released time
   #define D2 200 //length of first press, pressed down time
 
-  doubleclicked = 
+  doubleclicked =
          buffer.data[(buffer.read-1) & BUFFER_MASK] != 0   //check that the last incoming keys was a press, not a release
-      && buffer.data[(buffer.read-1) & BUFFER_MASK] == buffer.data[(buffer.read-3) & BUFFER_MASK]   //check that the two last keys are the same, otherwise itis a glisando 
+      && buffer.data[(buffer.read-1) & BUFFER_MASK] == buffer.data[(buffer.read-3) & BUFFER_MASK]   //check that the two last keys are the same, otherwise itis a glisando
       && (dTime_1 > 10 ) && (dTime_1 < D1)                //check no chatter > 10 ms & released width is not longer than limit
       && (dTime_2 > 10 ) && (dTime_2 < D2);               //check no chatter > 10 ms & pressed width is not longer than limit
 
@@ -1167,9 +1164,9 @@ uint8_t outKeyBufferDoubleClick()
   #define TD2 200 //length of middle press, pressed down time
   #define TD3 150 //space before middle press, i.e. released time after first press
 
-  tripleclicked = 
+  tripleclicked =
          buffer.data[(buffer.read-1) & BUFFER_MASK] != 0   //check that the last incoming keys was a press, not a release
-      && buffer.data[(buffer.read-1) & BUFFER_MASK] == buffer.data[(buffer.read-3) & BUFFER_MASK]   //check that the two last keys are the same, otherwise itis a glisando 
+      && buffer.data[(buffer.read-1) & BUFFER_MASK] == buffer.data[(buffer.read-3) & BUFFER_MASK]   //check that the two last keys are the same, otherwise itis a glisando
       && buffer.data[(buffer.read-1) & BUFFER_MASK] == buffer.data[(buffer.read-5) & BUFFER_MASK]   //check that the previous key is the same. If buffer is 4 long only, it will wrap and not check the first triple press
       && (dTime_1 > 10 ) && (dTime_1 < TD1)                //check no chatter > 10 ms & released width is not longer than limit
       && (dTime_2 > 10 ) && (dTime_2 < TD2)                //check no chatter > 10 ms & pressed width is not longer than limit
@@ -1179,11 +1176,11 @@ uint8_t outKeyBufferDoubleClick()
 
   if(tripleclicked) outDoubleclick = 3; else
   if(doubleclicked) outDoubleclick = 2; else
-  if(buffer.data[(buffer.read-1) & BUFFER_MASK] != 0) outDoubleclick = 1; 
+  if(buffer.data[(buffer.read-1) & BUFFER_MASK] != 0) outDoubleclick = 1;
   else outDoubleclick = 0;
 
 
-  #ifdef JMSHOWCODES_KB2 
+  #ifdef JMSHOWCODES_KB2
     char line[50], line1[100];
     fnDisplayStack(2);
     sprintf(line1,"R%-1dW%-1d -1:%-5d -2:%-5d -3:%-5d -4:%-5d  ",
@@ -1191,7 +1188,7 @@ uint8_t outKeyBufferDoubleClick()
       (uint16_t)buffer.time[(buffer.read-1) & BUFFER_MASK], (uint16_t)buffer.time[(buffer.read-2) & BUFFER_MASK],(uint16_t)buffer.time[(buffer.read-3) & BUFFER_MASK],(uint16_t)buffer.time[(buffer.read-4) & BUFFER_MASK] );
     showString(line1, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_T - REGISTER_X), vmNormal, true, true);
     sprintf(line,"B-1:%d %d %d %d",(uint16_t)buffer.data[(buffer.read-1) & BUFFER_MASK], (uint16_t)buffer.data[(buffer.read-2) & BUFFER_MASK],(uint16_t)buffer.data[(buffer.read-3) & BUFFER_MASK],(uint16_t)buffer.data[(buffer.read-4) & BUFFER_MASK] );
-    sprintf(line1,"%-16s   D1:%d D2:%d D3:%d    ",       
+    sprintf(line1,"%-16s   D1:%d D2:%d D3:%d    ",
       line,dTime_1, dTime_2, dTime_3);
     showString(line1, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X), vmNormal, true, true);
   #endif
@@ -1203,12 +1200,12 @@ uint8_t outKeyBufferDoubleClick()
       strcat(line2,"S");
       showString(line2, &standardFont, SCREEN_WIDTH-11, 0, vmNormal, true, true);
     }
-    else 
+    else
     if( outDoubleclick == 2) {
       strcat(line2,"D");
       showString(line2, &standardFont, SCREEN_WIDTH-11, 0, vmNormal, true, true);
     }
-    else 
+    else
     if( outDoubleclick == 3) {
       strcat(line2,"T");
       showString(line2, &standardFont, SCREEN_WIDTH-11, 0, vmNormal, true, true);
@@ -1262,12 +1259,12 @@ void fnT_ARROW(uint16_t command) {
 
     switch (command) {
 
-       case ITM_T_LEFT_ARROW /*STD_LEFT_ARROW */ : 
+       case ITM_T_LEFT_ARROW /*STD_LEFT_ARROW */ :
           T_cursorPos = stringPrevGlyph(aimBuffer, T_cursorPos);
           if(T_cursorPos < displayAIMbufferoffset && displayAIMbufferoffset > 0) displayAIMbufferoffset = stringPrevGlyph(aimBuffer, displayAIMbufferoffset);
           break;
 
-       case ITM_T_RIGHT_ARROW /*STD_RIGHT_ARROW*/ : 
+       case ITM_T_RIGHT_ARROW /*STD_RIGHT_ARROW*/ :
           ixx = T_cursorPos;
           T_cursorPos = stringNextGlyph(aimBuffer, T_cursorPos);
           incOffset();
@@ -1383,3 +1380,29 @@ void fnCln(uint16_t unusedButMandatoryParameter){
   #endif
 }
 
+
+void refreshModeGui(void) {
+  #ifdef PC_BUILD
+    if(!tam.mode) {
+      switch(calcMode) {
+        case CM_AIM:
+        case CM_EIM:
+          calcModeAimGui();
+          break;
+
+        case CM_NORMAL:
+          calcModeNormalGui();
+          break;
+
+        case CM_PEM:
+          if(getSystemFlag(FLAG_ALPHA)) {
+            calcModeAimGui();
+          }
+          else {
+            calcModeNormalGui();
+          }
+          break;
+      }
+    }
+  #endif
+}

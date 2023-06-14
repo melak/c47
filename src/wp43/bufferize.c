@@ -57,10 +57,12 @@
 TO_QSPI static const char bugScreenNoParam[] = "In function addItemToBuffer:item should not be NOPARAM=7654!";
 
   void fnAim(uint16_t unusedButMandatoryParameter) {
-    resetShiftState();  //JM
-    displayAIMbufferoffset = 0;
-    T_cursorPos = 0;
-    aimBuffer[0] = 0;
+    if(calcMode != CM_AIM && calcMode != CM_EIM && (calcMode != CM_PEM || tam.mode || !getSystemFlag(FLAG_ALPHA))) {
+      resetShiftState();  //JM
+      displayAIMbufferoffset = 0;
+      T_cursorPos = 0;
+      aimBuffer[0] = 0;
+    }
     calcModeAim(NOPARAM); // Alpha Input Mode
     if(programRunStop != PGM_RUNNING) {
       entryStatus |= 0x01;
@@ -301,13 +303,18 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
                                 item == ITM_VERTICAL_BAR        ? "||" :
                                 item == ITM_ROOT_SIGN           ? STD_SQUARE_ROOT "()" :
                                 item == ITM_ALOG_SYMBOL         ? "e" STD_SUB_E "^()" :
-                                item == ITM_LG_SIGN             ? "LOG()" :  //JM C43
-                                item == ITM_LN_SIGN             ? "LN()"  :  //JM C43
-                                item == ITM_SIN_SIGN            ? "SIN()" :  //JM C43
-                                item == ITM_COS_SIGN            ? "COS()" :  //JM C43
-                                item == ITM_TAN_SIGN            ? "TAN()" :  //JM C43
-                                item == ITM_OBELUS              ? STD_SLASH  :  //JM C43
-                                indexOfItems[item].itemSoftmenuName;
+                                item == ITM_LG_SIGN             ? "LOG()" :     //C47
+                                item == ITM_LN_SIGN             ? "LN()"  :     //C47
+                                item == ITM_SIN_SIGN            ? "SIN()" :     //C47
+                                item == ITM_COS_SIGN            ? "COS()" :     //C47
+                                item == ITM_TAN_SIGN            ? "TAN()" :     //C47
+                                item == ITM_ASIN_SIGN           ? "ASIN()" :    //C47
+                                item == ITM_ACOS_SIGN           ? "ACOS()" :    //C47
+                                item == ITM_ATAN_SIGN           ? "ATAN()" :    //C47
+                                item == ITM_OBELUS              ? STD_SLASH  :  //C47
+                                item == ITM_poly_SIGN           ? "a3" STD_DOT "x^3+a2" STD_DOT "x^2+a1" STD_DOT "x+a0" :
+                                item == ITM_op_j_SIGN           ? COMPLEX_UNIT :
+                                  indexOfItems[item].itemSoftmenuName;
           char *aimCursorPos = aimBuffer;
           char *aimBottomPos = aimBuffer + stringByteLength(aimBuffer);
           uint32_t itemLen = stringByteLength(addChar);
@@ -319,14 +326,21 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           }
           xcopy(aimCursorPos, addChar, itemLen);
           switch(item) {
-            case ITM_ALOG_SYMBOL: {
-              xCursor += 4;
+            case ITM_poly_SIGN: {    //C47
+              xCursor += 21;
               break;
             }
-            case ITM_LG_SIGN:   //JM C43
-            case ITM_SIN_SIGN:   //JM C43
-            case ITM_COS_SIGN:   //JM C43
-            case ITM_TAN_SIGN: {    //JM C43
+            case ITM_ASIN_SIGN:      //C47
+            case ITM_ACOS_SIGN:      //C47
+            case ITM_ATAN_SIGN: {    //C47
+              xCursor += 5;
+              break;
+            }
+            case ITM_ALOG_SYMBOL:
+            case ITM_LG_SIGN:       //C47
+            case ITM_SIN_SIGN:      //C47
+            case ITM_COS_SIGN:      //C47
+            case ITM_TAN_SIGN: {    //C47
               xCursor += 4;
               break;
             }
@@ -334,7 +348,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
               xCursor += 2;
               break;
             }
-            case ITM_LN_SIGN: {   //JM C43
+            case ITM_LN_SIGN: {     //C47
               xCursor += 3;
               break;
             }
