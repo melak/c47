@@ -76,7 +76,7 @@ dist_windows: testPgms build.rel/wiki
 	cp res/c47.cmd $(WIN_DIST_DIR2)/
 	cp -r res/PROGRAMS $(WIN_DIST_DIR2)/res/
 	cp res/dm42l_L1.png $(WIN_DIST_DIR2)/res/
-	cp res/fonts/C43__StandardFont.ttf $(WIN_DIST_DIR2)/
+	cp res/fonts/C47__StandardFont.ttf $(WIN_DIST_DIR2)/
 	cp build.rel/wiki/Installation-on-Windows.md $(WIN_DIST_DIR2)/readme.txt
 	zip -r c47-windows.zip $(WIN_DIST_DIR2)
 	rm -rf $(WIN_DIST_DIR2)
@@ -88,7 +88,7 @@ dist_macos: testPgms build.rel
 	cp res/dmcp/testPgms.bin $(MAC_DIST_DIR2)/res/dmcp/
 	cp res/c47_pre.css $(MAC_DIST_DIR2)/res/
 	cp res/dm42l_L1.png $(MAC_DIST_DIR2)/res/
-	cp res/fonts/C43__StandardFont.ttf $(MAC_DIST_DIR2)/
+	cp res/fonts/C47__StandardFont.ttf $(MAC_DIST_DIR2)/
 	zip -r c47-macos.zip $(MAC_DIST_DIR2)
 	rm -rf $(MAC_DIST_DIR2)
 

@@ -264,7 +264,13 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(shortIntegerWordSize);
     recallFromDtConfigDescriptor(displayFormat);
     recallFromDtConfigDescriptor(displayFormatDigits);
-    recallFromDtConfigDescriptor(groupingGap);
+    recallFromDtConfigDescriptor(gapItemLeft);
+    recallFromDtConfigDescriptor(gapItemRight);
+    recallFromDtConfigDescriptor(gapItemRadix);
+    recallFromDtConfigDescriptor(grpGroupingLeft);
+    recallFromDtConfigDescriptor(grpGroupingGr1LeftOverflow);
+    recallFromDtConfigDescriptor(grpGroupingGr1Left);
+    recallFromDtConfigDescriptor(grpGroupingRight);
     recallFromDtConfigDescriptor(currentAngularMode);
     recallFromDtConfigDescriptor(lrSelection);
     recallFromDtConfigDescriptor(lrChosen);

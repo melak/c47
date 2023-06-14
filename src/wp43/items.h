@@ -519,7 +519,7 @@
 #define SFL_SPCRES                   486
 #define SFL_SSIZE8                   487
 #define SFL_QUIET                    488
-#define SFL_DECIMP                   489
+#define ITM_0489                     489
 #define SFL_MULTx                    490
 #define SFL_ALLENG                   491
 #define SFL_GROW                     492
@@ -1177,10 +1177,10 @@
 #define ITM_SUB_z                   1141
 #define ITM_DELITM_PROG             1142
 #define ITM_DELITM_MENU             1143
-#define VAR_1144                    1144
-#define VAR_1145                    1145
-#define VAR_1146                    1146
-#define VAR_1147                    1147
+#define ITM_LEFT_DARROW             1144
+#define ITM_UP_DARROW               1145
+#define ITM_RIGHT_DARROW            1146
+#define ITM_DOWN_DARROW             1147
 #define VAR_1148                    1148
 #define VAR_1149                    1149
 #define VAR_1150                    1150
@@ -1524,7 +1524,8 @@
 #define ITM_FLASH                   1474
 #define ITM_FQX                     1475
 #define ITM_FDQX                    1476
-#define ITM_GAP                     1477
+
+#define ITM_GAP                     1477   //#define ITM_1477                    1477
 #define ITM_GD                      1478
 #define ITM_GDM1                    1479
 #define ITM_GRAD                    1480
@@ -1618,8 +1619,8 @@
 #define ITM_RESET                   1568
 #define ITM_REtoCX                  1569
 #define ITM_REexIM                  1570
-#define MNU_1571                    1571
-#define MNU_1572                    1572
+#define ITM_1571                    1571
+#define ITM_1572                    1572
 #define ITM_DSP                     1573
 #define ITM_RNORM                   1574
 #define ITM_EX1                     1575
@@ -2000,8 +2001,8 @@
 #define ITM_MULTCR                  1944
 #define ITM_MULTDOT                 1945
 #define ITM_POLAR                   1946
-#define ITM_RDXCOM                  1947
-#define ITM_RDXPER                  1948
+#define MNU_1947                    1947
+#define MNU_1948                    1948
 #define ITM_RECT                    1949
 #define ITM_SCIOVR                  1950
 #define ITM_ENGOVR                  1951
@@ -2164,13 +2165,64 @@
 #define MNU_TAMNONREGIND            2108
 #define ITM_SAVEST                  2109
 #define ITM_LOADST                  2110
-#define ITM_ASIN_SIGN               2111
-#define ITM_ACOS_SIGN               2112
-#define ITM_ATAN_SIGN               2113
-#define ITM_op_j_SIGN               2114
-#define ITM_poly_SIGN               2115
+#define ITM_GAPDOT_L                2111
+#define ITM_GAPWIDDOT_L             2112
+#define ITM_GAPPER_L                2113
+#define ITM_GAPWIDPER_L             2114
+#define ITM_GAPCOM_L                2115
+#define ITM_GAPWIDCOM_L             2116
+#define ITM_GAPAPO_L                2117
+#define ITM_GAPNARAPO_L             2118
+#define ITM_GAPSPC_L                2119
+#define ITM_GAPNARSPC_L             2120
+#define ITM_GAPDBLSPC_L             2121
+#define ITM_GAPUND_L                2122
+#define ITM_GAPNIL_L                2123
+#define ITM_GAPDOT_R                2124
+#define ITM_GAPWIDDOT_R             2125
+#define ITM_GAPPER_R                2126
+#define ITM_GAPWIDPER_R             2127
+#define ITM_GAPCOM_R                2128
+#define ITM_GAPWIDCOM_R             2129
+#define ITM_GAPAPO_R                2130
+#define ITM_GAPNARAPO_R             2131
+#define ITM_GAPSPC_R                2132
+#define ITM_GAPNARSPC_R             2133
+#define ITM_GAPDBLSPC_R             2134
+#define ITM_GAPUND_R                2135
+#define ITM_GAPNIL_R                2136
+#define ITM_GAPDOT_RX               2137
+#define ITM_GAPWIDDOT_RX            2138
+#define ITM_GAPPER_RX               2139
+#define ITM_GAPWIDPER_RX            2140
+#define ITM_GAPCOM_RX               2141
+#define ITM_GAPWIDCOM_RX            2142
+#define ITM_WDOT                    2143
+#define ITM_WPERIOD                 2144
+#define ITM_WCOMMA                  2145
+#define ITM_NQUOTE                  2146
+#define ITM_JUL_GREG_1582           2147
+#define ITM_JUL_GREG_1752           2148
+#define ITM_JUL_GREG_1873           2149
+#define ITM_JUL_GREG_1949           2150
+#define MNU_GAP_L                   2151
+#define MNU_GAP_RX                  2152
+#define MNU_GAP_R                   2153
+#define ITM_SET_TO_TEXT             2154
+#define ITM_GRP_L                   2155
+#define ITM_GRP1_L_OF               2156
+#define ITM_GRP1_L                  2157
+#define ITM_GRP_R                   2158
+#define ITM_GAP_L                   2159
+#define ITM_GAP_RX                  2160
+#define ITM_GAP_R                   2161
+#define ITM_ASIN_SIGN               2162
+#define ITM_ACOS_SIGN               2163
+#define ITM_ATAN_SIGN               2164
+#define ITM_op_j_SIGN               2165
+#define ITM_poly_SIGN               2166
 
-#define LAST_ITEM                   2116
+#define LAST_ITEM                   2167
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL

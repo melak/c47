@@ -116,7 +116,7 @@
       }
       qsort(name, nbrItems, 16, sortItems);
       printf("To be meaningfull, the list below must\n");
-      printf("be displayed with the C43__StandardFont!\n");
+      printf("be displayed with the C47__StandardFont!\n");
       for(int i=0; i<nbrItems; i++) {
         stringToUtf8(name[i], (uint8_t *)nameUtf8);
         printf("%s\n", nameUtf8);

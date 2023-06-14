@@ -500,7 +500,7 @@ static void _addString(const char *stringToAppend) {
  * \return void
  ***********************************************/
 void addStriLonI(void) {
-  longIntegerRegisterToDisplayString(REGISTER_X, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH, 50, STD_SPACE_PUNCTUATION, false);
+  longIntegerRegisterToDisplayString(REGISTER_X, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH, 50, false);
   _addString(tmpString);
 }
 
@@ -591,7 +591,7 @@ void addStriShoI(void) {
  * \return void
  ***********************************************/
 void addStriReal(void) {
-  real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpString, &standardFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, STD_SPACE_PUNCTUATION, true);
+  real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpString, &standardFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, true);
   _addString(tmpString);
 }
 
@@ -604,7 +604,7 @@ void addStriReal(void) {
  * \return void
  ***********************************************/
 void addStriCplx(void) {
-  complex34ToDisplayString(REGISTER_COMPLEX34_DATA(REGISTER_X), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, STD_SPACE_PUNCTUATION, true, currentAngularMode, getSystemFlag(FLAG_POLAR));
+  complex34ToDisplayString(REGISTER_COMPLEX34_DATA(REGISTER_X), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, true, currentAngularMode, getSystemFlag(FLAG_POLAR));
   _addString(tmpString);
 }
 

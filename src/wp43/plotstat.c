@@ -686,12 +686,12 @@ char * radixProcess(const char * ss) {  //  .  HIERDIE WERK GLAD NIE
 
   while( ss[ix] != 0 ){
     if(ss[ix]==',' || ss[ix]=='.') {
-      tmp_names1[iy++] = getSystemFlag(FLAG_DECIMP) ? '.' : ',';
+      tmp_names1[iy++] = RADIX34_MARK_CHAR;
       tmp_names1[iy] = 0;
     }
     else
     if(ss[ix]=='#') {
-      tmp_names1[iy++] = getSystemFlag(FLAG_DECIMP) ? ',' : ';';
+      tmp_names1[iy++] = RADIX34_MARK_CHAR;
       tmp_names1[iy] = 0;
     }
     else {

@@ -77,6 +77,24 @@ void     fnConfigUk            (uint16_t unusedButMandatoryParameter);
  ***********************************************/
 void     fnConfigUsa           (uint16_t unusedButMandatoryParameter);
 
+void     fnSetHP35             (uint16_t unusedButMandatoryParameter);
+void     fnHP35JM              (uint16_t unusedButMandatoryParameter);
+void     fnSetC47              (uint16_t unusedButMandatoryParameter);
+
+void     fnMenuGapL                 (uint16_t unusedButMandatoryParameter);
+void     fnMenuGapRX                (uint16_t unusedButMandatoryParameter);
+void     fnMenuGapR                 (uint16_t unusedButMandatoryParameter);
+void     fnSetGapChar               (uint16_t charParam);
+void     fnSettingsToXEQ            (uint16_t unusedButMandatoryParameter);
+void     fnSettingsDispFormatGrpL   (uint16_t param);
+void     fnSettingsDispFormatGrp1Lo (uint16_t param);
+void     fnSettingsDispFormatGrp1L  (uint16_t param);
+void     fnSettingsDispFormatGrpR   (uint16_t param);
+
+
+
+
+
 /********************************************//**
  * \brief Sets the calc to back to default standards
  *
@@ -204,6 +222,7 @@ void     fnAngularMode         (uint16_t angularMode);
  * \param[in] unusedButMandatoryParameter uint16_t
  ***********************************************/
 void     fnFractionType        (uint16_t unusedButMandatoryParameter);
+
 
 #define  loadAutoSav           true
 #define  doNotLoadAutoSav      false
