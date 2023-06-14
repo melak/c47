@@ -21,7 +21,6 @@
 #include "bufferize.h"
 #include "calcMode.h"
 #include "charString.h"
-#include "config.h"
 #include "constantPointers.h"
 #include "curveFitting.h"
 #include "dateTime.h"
@@ -2242,17 +2241,6 @@ void hideFunctionName(void) {
           showStringEnhanced(whoStr1, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*2 + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
         }
       }
-
-      else if(temporaryInformation == TI_HELP) {
-        if (regist == REGISTER_Z || regist == REGISTER_Y || regist == REGISTER_X) { //Force repainting it 3 times to get it painted properly over three lines
-          if (MNU_INFO == -softmenu[softmenuStack[0].softmenuId].menuItem) popSoftmenu();  //remove the INFO menu
-          sprintf(tmpString, "   C47 Menu %i: HELP SYSTEM\n",-softmenu[softmenuStack[0].softmenuId].menuItem);
-          showStringEnhanced(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*3 + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
-          getHelp(tmpString);
-          showStringEnhanced(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*2 + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
-        }
-      }
-
 
       else if(temporaryInformation == TI_VERSION && regist == REGISTER_X) {
         clearRegisterLine(REGISTER_X,true,true);

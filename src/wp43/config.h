@@ -118,14 +118,6 @@ void     fnIntegerMode         (uint16_t mode);
 void     fnWho                 (uint16_t unusedButMandatoryParameter);
 
 /********************************************//**
- * \brief Displays help info based on the current menu
- *
- *
- * \param[in] unusedButMandatoryParameter uint16_t
- ***********************************************/
-void     fnHelp                 (uint16_t unusedButMandatoryParameter);
-
-/********************************************//**
  * \brief Displays the version of this software
  *
  * \param[in] unusedButMandatoryParameter uint16_t
@@ -231,8 +223,6 @@ void     fnAngularMode         (uint16_t angularMode);
  ***********************************************/
 void     fnFractionType        (uint16_t unusedButMandatoryParameter);
 
-
-void getHelp(char * text);
 
 #define  loadAutoSav           true
 #define  doNotLoadAutoSav      false

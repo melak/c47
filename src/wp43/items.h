@@ -1725,7 +1725,7 @@
 #define ITM_STDDEVPOP               1674
 #define ITM_RANI                    1675
 #define ITM_PRINTERX                1676
-#define ITM_HELP                    1677
+#define ITM_1677                    1677
 #define ITM_GETRANGE                1678
 #define ITM_M1X                     1679
 #define ITM_XMOD                    1680
@@ -1915,7 +1915,7 @@
 #define CHR_case                    1858
 #define ITM_BASE_HOME               1859
 #define MNU_MISC                    1860
-#define ITM_N_KEY_HLP               1861
+#define MNU_1861                    1861
 #define ITM_DTtoJ                   1862
 #define ITM_JtoDT                   1863
 #define ITM_DSPCYCLE                1864
