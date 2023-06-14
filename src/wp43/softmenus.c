@@ -156,8 +156,8 @@ TO_QSPI const int16_t menu_FLAGS[]       = { ITM_SF,                        ITM_
 
 TO_QSPI const int16_t menu_INFO[]        = { ITM_SSIZE,                     ITM_MEM,                    ITM_RMODEQ,               ITM_ISM,               ITM_WSIZEQ,                  ITM_KTYP,
                                              ITM_LocRQ,                     ITM_FLASH,                  ITM_ULP,                  ITM_NEIGHB,            ITM_SDIGS,                   ITM_BATT,
-                                             ITM_HELP,                      ITM_WHO,                    ITM_VERS,                 ITM_PMINFINITY,        ITM_ALPHAPOS,                ITM_ALPHALENG,                 
-                                             ITM_GETRANGE,                  ITM_GETHIDE,                ITM_GET_JUL_GREG,         ITM_M_DIMQ,            ITM_SH_ERPN,                 ITM_BESTFQ                      };    //JM INFO
+                                             ITM_WHO,                       ITM_VERS,                   ITM_M_DIMQ,               ITM_PMINFINITY,        ITM_ALPHAPOS,                ITM_ALPHALENG,                 
+                                             ITM_GETRANGE,                  ITM_GETHIDE,                ITM_GET_JUL_GREG,         ITM_NULL,              ITM_SH_ERPN,                 ITM_BESTFQ                      };    //JM INFO
         
 
 TO_QSPI const int16_t menu_INTS[]        = { ITM_A,                         ITM_B,                      ITM_C,                    ITM_D,                 ITM_E,                       ITM_F,
@@ -603,7 +603,7 @@ TO_QSPI const int16_t menu_Inl_Tst[]     = { ITM_TEST,                      ITM_
 //#endif
 
 
-TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_N_KEY_CC,               ITM_N_KEY_GSH,            ITM_N_KEY_MM,          ITM_N_KEY_DRG,               ITM_N_KEY_HLP,  //JM USER NAORMAL MODE
+TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_N_KEY_CC,               ITM_N_KEY_GSH,            ITM_N_KEY_MM,          ITM_N_KEY_DRG,               ITM_NULL,       //JM USER NAORMAL MODE
                                              ITM_N_KEY_PRGM,                ITM_N_KEY_USER,             ITM_N_KEY_HOME,           ITM_N_KEY_SIGMA,       ITM_N_KEY_SNAP,              ITM_NULL,       //JM USER NAORMAL MODE
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_USER_COPY,         ITM_SH_NORM_E,               ITM_GET_NORM_E                };    //JM USER NAORMAL MODE
   
