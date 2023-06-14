@@ -24,8 +24,9 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
- #define VERSION1 "108_09r"
+#define VERSION1 "0.108.9-07"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
+//2023-06-12-0.108.9-07-Snapshot-Test-version ()
 
   #undef SAVE_SPACE_DM42
   #undef SAVE_SPACE_DM42_0
@@ -59,9 +60,7 @@
 
 //THESE ARE DMCP COMPILE OPTIONS
   #ifndef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT WHILE NOT USING QSPI
-    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
-    #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers; 
-    #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
+    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S)
     #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
     #define SAVE_SPACE_DM42_6  //001648 bytes: ELEC functions
     #define SAVE_SPACE_DM42_7  //002144 bytes: KEYS USER_DM42; USER_C43ALTA; USER_C43_ALT;
@@ -79,11 +78,10 @@
 
   #ifdef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT INTO AVAILABLE FLASH EVEN WHILE USING QSPI
     #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
-//    #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers; 
-//    #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
+    #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
 //    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
-//    #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
-//   #define SAVE_SPACE_DM42_16   //           without Norml
+    #define SAVE_SPACE_DM42_15       //           without all distributions, i.e. binomial, cauchy, chi
+//    #define SAVE_SPACE_DM42_16       //           without Norml
   #endif
 #endif
 
@@ -193,6 +191,16 @@
 #define CF_NORMAL                1
 #define CF_COMPLEX1              2
 #define CF_COMPLEX2              3
+
+
+//Input mode                    //JM
+#define ID_43S                   0    //JM Input Default
+#define ID_DP                    2    //JM Input Default
+#define ID_CPXDP                 4    //JM Input Default
+#define ID_43D                   5    //JM Input Default
+#define ID_SI                    6    //JM Input Default
+#define ID_LI                    7    //JM Input Default
+
 
 
 //*********************************
@@ -317,7 +325,7 @@
 #define ERROR_WRITE_PROTECTED_SYSTEM_FLAG         32
 #define ERROR_STRING_WOULD_BE_TOO_LONG            33
 #define ERROR_EMPTY_STRING                        34
-#define ERROR_NO_BACKUP_DATA                      35
+#define ERROR_CANNOT_READ_FILE                    35
 #define ERROR_UNDEF_SOURCE_VAR                    36
 #define ERROR_WRITE_PROTECTED_VAR                 37
 #define ERROR_NO_MATRIX_INDEXED                   38
@@ -336,8 +344,11 @@
 #define ERROR_NO_GLOBAL_LABEL                     51
 #define ERROR_INVALID_DATA_TYPE_FOR_POLAR_RECT    52
 #define ERROR_BAD_INPUT                           53 // This error is not in ReM and cannot occur (theoretically).
+#define ERROR_NO_PROGRAM_SPECIFIED                54
 
-#define NUMBER_OF_ERROR_CODES                     54
+#define ERROR_CANNOT_WRITE_FILE                   55
+
+#define NUMBER_OF_ERROR_CODES                     56
 #define SIZE_OF_EACH_ERROR_MESSAGE                48
 
 #define NUMBER_OF_BUG_SCREEN_MESSAGES             10
@@ -391,7 +402,7 @@
 #define FLAG_SPCRES                           0x8017
 #define FLAG_SSIZE8                           0x8018
 #define FLAG_QUIET                            0x8019
-#define FLAG_DECIMP                           0x801a
+#define FLAG_SPARE                            0x801a       //SPARE
 #define FLAG_MULTx                            0x801b
 #define FLAG_ALLENG                           0x801c
 #define FLAG_GROW                             0x801d
@@ -879,6 +890,12 @@ typedef enum {
 #define TI_DISP_JULIAN                            81
 #define TI_FROM_DATEX                             82
 #define TI_LAST_CONST_CATNAME                     83
+#define TI_PROGRAM_LOADED                         84    //DL
+#define TI_PROGRAMS_RESTORED                      85    //DL
+#define TI_REGISTERS_RESTORED                     86    //DL
+#define TI_SETTINGS_RESTORED                      87    //DL
+#define TI_SUMS_RESTORED                          88    //DL
+#define TI_VARIABLES_RESTORED                     89    //DL
 
 
 // Register browser mode
@@ -1030,7 +1047,7 @@ typedef enum {
 #define SIGMA_YMAX   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_YMAX  )) // could be a real34
 
 #define MAX_NUMBER_OF_GLYPHS_IN_STRING           196
-#define NUMBER_OF_GLYPH_ROWS                     200  //Used in the font browser application
+#define NUMBER_OF_GLYPH_ROWS                     250  //Used in the font browser application
 
 #define MAX_DENMAX                              9999 // Biggest denominator in fraction display mode
 
@@ -1045,6 +1062,7 @@ typedef enum {
 #define KEY_AUTOREPEAT_PERIOD                    200 // in milliseconds
 #define TIMER_APP_PERIOD                         100 // in milliseconds
 #define RAM_SIZE                               16384 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
+#define RAM_SIZE_IN_BLOCKS                     16384 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
 //#define RAM_SIZE                                3072 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
 
 #define CONFIG_SIZE            TO_BLOCKS(sizeof(dtConfigDescriptor_t))
@@ -1215,10 +1233,48 @@ typedef enum {
 //#define modulo(n, d)                         ((n)%(d)<0 ? ((d)<0 ? (n)%(d) - (d) : (n)%(d) + (d)) : (n)%(d)) // modulo(n,d) = rmd(n,d) (+ |d| if rmd(n,d)<0)  thus the result is always >= 0
 #define modulo(n, d)                         ((n)%(d)<0 ? (n)%(d)+(d) : (n)%(d))                             // This version works only if d > 0
 #define nbrOfElements(x)                     (sizeof(x) / sizeof((x)[0]))                                    //dr
-#define COMPLEX_UNIT                         (getSystemFlag(FLAG_CPXj)   ? STD_j     : STD_i)
-#define RADIX34_MARK_CHAR                    (getSystemFlag(FLAG_DECIMP) ? '.'       : ',')
-#define RADIX34_MARK_STRING                  (getSystemFlag(FLAG_DECIMP) ? "."       : ",")
+#define COMPLEX_UNIT                         (getSystemFlag(FLAG_CPXj)   ? STD_op_j  : STD_op_i)  //Do not change back to single byte character - code must also change accordingly
 #define PRODUCT_SIGN                         (getSystemFlag(FLAG_MULTx)  ? STD_CROSS : STD_DOT)
+
+#define RADIX34_MARK_CHAR                    (gapChar1Radix[0] == ',' || (gapChar1Radix[0] == STD_WCOMMA[0] && gapChar1Radix[1] == STD_WCOMMA[1]) ? ',' : '.') //map comma and wide comma to comma, and dot and period and wdot and wperiod to period 
+#define RADIX34_MARK_STRING                  (gapChar1Radix)
+
+#define groupingGap                          ((uint8_t)(grpGroupingLeft)) //ADD HERE THE CONDITIONS FOR NIL SEPS
+
+#define Lt                                   (gapItemLeft  == 0 ? (char*) "\1\1\0" : (char*)indexOfItems[gapItemLeft ].itemSoftmenuName) // Actual separator character
+#define Rt                                   (gapItemRight == 0 ? (char*) "\1\1\0" : (char*)indexOfItems[gapItemRight].itemSoftmenuName) // Actual separator character
+#define Rx                                   ((char*)indexOfItems[gapItemRadix].itemSoftmenuName) // Actual separator character
+#define gapChar1Left                         (Lt[0] != 0 && Lt[1] == 0 && Lt[2] == 0 ? \
+                                                ( Lt[0] == ','  ? (char*) ",\1\0"  :   \
+                                                  Lt[0] == '.'  ? (char*) ".\1\0"  :   \
+                                                  Lt[0] == '\'' ? (char*) "\'\1\0" :   \
+                                                  Lt[0] == '_'  ? (char*) "_\1\0"  : Lt ) : Lt )  //set second character to skip character 0x01
+#define gapChar1Right                        (Rt[0] != 0 && (Rt[1] == 0 || (Rt[1] != 0 && Rt[2] == 0)) ? \
+                                                ( Rt[0] == ','  ? (char*) ",\1\0"  :   \
+                                                  Rt[0] == '.'  ? (char*) ".\1\0"  :   \
+                                                  Rt[0] == '\'' ? (char*) "\'\1\0" :   \
+                                                  Rt[0] == '_'  ? (char*) "_\1\0"  : Rt ) : Rt )  //set second character to skip character 0x01
+#define gapChar1Radix                        (Rx[0] != 0 && (Rx[1] == 0 || (Rx[1] != 0 && Rx[2] == 0)) ? \
+                                                ( Rx[0] == ','  ? (char*) ",\1\0"  :   \
+                                                  Rx[0] == '.'  ? (char*) ".\1\0"  : Rx ) : Rx )  //set second character to skip character 0x01
+
+#define SEPARATOR_LEFT                       (gapChar1Left)
+#define SEPARATOR_RIGHT                      (gapChar1Right)
+#define checkHP                              (significantDigits == 10 && displayStack == 1 && exponentHideLimit == 12 && exponentLimit == 99 && Input_Default == ID_DP)
+#define DOUBLING                             6u  // 8=is double; 7 is 1.75*; 6=1.5*; 5=1.25* 
+#define GROUPWIDTH_LEFT                      (grpGroupingLeft)
+#define GROUPWIDTH_LEFT1                     ((grpGroupingGr1Left        == 0 ? (uint16_t)grpGroupingLeft : (uint16_t)grpGroupingGr1Left))
+#define GROUPWIDTH_LEFT1X                    (grpGroupingGr1LeftOverflow)  
+#define GROUP1_OVFL(digitCount, exp)         ( (grpGroupingGr1LeftOverflow > 0 && exp == GROUPWIDTH_LEFT1 && digitCount+1 == GROUPWIDTH_LEFT1  ? grpGroupingGr1LeftOverflow:0 ) )
+#define GROUPWIDTH_RIGHT                     (grpGroupingRight)
+#define SEPARATOR_(digitCount)               (digitCount >= 0 ? SEPARATOR_LEFT : SEPARATOR_RIGHT)
+#define GROUPWIDTH_(digitCount)              (digitCount >= 0 ? GROUPWIDTH_LEFT : GROUPWIDTH_RIGHT)
+#define digitCountNEW(digitCount)            (  digitCount+1 > GROUPWIDTH_LEFT1 ? digitCount - GROUPWIDTH_LEFT1 : digitCount  )  //remaining digits to divide up into groups. "+1" due to the fact the the digit is recognized now, but only added below. So the sep gets added before the digit down below.
+#define IS_SEPARATOR_(digitCount)            (   (digitCount+1 == GROUPWIDTH_LEFT1) \
+                                              || ((digitCount+1  > GROUPWIDTH_LEFT1 || digitCount < 0) \
+                                                  && (modulo(digitCountNEW(digitCount), (uint16_t)GROUPWIDTH_(digitCount)) == (uint16_t)GROUPWIDTH_(digitCount) - 1)) )
+
+
 #define clearScreen()                        {lcd_fill_rect(0, 0, SCREEN_WIDTH, 240, LCD_SET_VALUE); clear_ul();}
 #define currentReturnProgramNumber           (currentSubroutineLevelData[0].returnProgramNumber)
 #define currentReturnLocalStep               (currentSubroutineLevelData[0].returnLocalStep)

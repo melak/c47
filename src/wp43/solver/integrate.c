@@ -115,6 +115,14 @@ void fnIntegrate(uint16_t labelOrVariable) {
       }
     }
   }
+  else if(labelOrVariable >= FIRST_NAMED_VARIABLE && labelOrVariable <= LAST_NAMED_VARIABLE && currentSolverProgram >= numberOfLabels) {
+    displayCalcErrorMessage(ERROR_NO_PROGRAM_SPECIFIED, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "label %u not found", labelOrVariable);
+      moreInfoOnError("In function fnIntegrate:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+  }
   else if(labelOrVariable >= FIRST_NAMED_VARIABLE && labelOrVariable <= LAST_NAMED_VARIABLE) {
     real_t acc, ulim, llim, res;
     real34ToReal(REGISTER_REAL34_DATA(RESERVED_VARIABLE_ACC),  &acc);
@@ -409,6 +417,9 @@ static void _integrate(calcRegister_t regist, const real_t *a, const real_t *b, 
   realAdd(&x, &x, &x, realContext); // 4*ln(...) for all cases except TS (2*LN(...))
   realDivide(&x, const_pi, &x, realContext);
   WP34S_Ln(&x, &tm, realContext); // tm done
+  if(realIsNaN(&tm)) {
+    realCopy(const_minusInfinity, &tm);
+  }
   // maximum t (tm) ready ********************************
   // level loop ******************************************
   realZero(&ss); realZero(&ss1);

@@ -153,7 +153,7 @@ void fnCurveFitting_T(uint16_t curveFitting) {
    } else                                       //Added  "
 
      lrSelection = curveFitting;                    // lrSelection is used to store the BestF method, in inverse, i.e. 1 indicating allowed method
-  
+
   lrChosen = 0;                               // lrChosen    is used to indicate if there was a L.R. selection. Can be only one bit.
 
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)

@@ -42,7 +42,7 @@ void fnToRect2(uint16_t unusedButMandatoryParameter) {
   if(getSystemFlag(FLAG_HPRP)) {
     dataTypeX = getRegisterDataType(REGISTER_X); //original
     dataAtagX = getRegisterAngularMode(REGISTER_X);
-    dataTypeY = getRegisterDataType(REGISTER_Y);      
+    dataTypeY = getRegisterDataType(REGISTER_Y);
   } else {
     dataTypeY = getRegisterDataType(REGISTER_X); //swapped
     dataTypeX = getRegisterDataType(REGISTER_Y);
@@ -74,11 +74,11 @@ void fnToRect(uint16_t unusedButMandatoryParameter) {
     REG_Y = REGISTER_Y;
   } else {
     REG_X = REGISTER_Y;
-    REG_Y = REGISTER_X;    
+    REG_Y = REGISTER_X;
   }
 
   dataTypeX = getRegisterDataType(REG_X);
-  dataTypeY = getRegisterDataType(REG_Y);      
+  dataTypeY = getRegisterDataType(REG_Y);
 
   if((dataTypeX == dtReal34 || dataTypeX == dtLongInteger) && (dataTypeY == dtReal34 || dataTypeY == dtLongInteger)) {
     angularMode_t yAngularMode = getRegisterAngularMode(REG_Y);

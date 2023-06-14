@@ -46,9 +46,9 @@ const font_t          *fontForShortInteger;
 const font_t          *cursorFont;
 TO_QSPI const char     digits[17] = "0123456789ABCDEF";
 real51_t               const *gammaLanczosCoefficients;
-real51_t               const *angle180;
-real51_t               const *angle90;
-real51_t               const *angle45;
+real_t               const *angle180;
+real_t               const *angle90;
+real_t               const *angle45;
 void                   (*confirmedFunction)(uint16_t);
 
 // Variables stored in RAM
@@ -122,6 +122,12 @@ char                   asmBuffer[5];
 char                   oldTime[8];
 char                   dateTimeString[12];
 char                   displayValueX[DISPLAY_VALUE_LEN];
+//char                   gapCharLeft[3];
+//char                   gapCharRadix[3];
+//char                   gapCharRight[3];
+uint16_t               gapItemLeft;
+uint16_t               gapItemRight;
+uint16_t               gapItemRadix;
 
 uint8_t                numScreensStandardFont;
 uint8_t                currentAsnScr;
@@ -135,7 +141,10 @@ uint8_t                shortIntegerWordSize;
 uint8_t                significantDigits;
 uint8_t                shortIntegerMode;
 uint8_t                previousCalcMode;
-uint8_t                groupingGap;
+uint8_t                grpGroupingLeft;
+uint8_t                grpGroupingGr1LeftOverflow;
+uint8_t                grpGroupingGr1Left;
+uint8_t                grpGroupingRight;
 uint8_t                roundingMode;
 uint8_t                calcMode;
 uint8_t                nextChar;
@@ -177,11 +186,13 @@ bool_t                jm_LARGELI;
 bool_t                constantFractions;                       //JM
 uint8_t               constantFractionsMode;
 bool_t                constantFractionsOn;                     //JM
+uint32_t              indic_x = 0;
+uint32_t              indic_y = SCREEN_HEIGHT-1;
+
 bool_t                eRPN;                                    //JM eRPN Create a flag to enable or disable eRPN. See bufferize.c
 bool_t                HOME3;                                   //JM HOME Create a flag to enable or disable triple shift HOME3. Create a flag to enable or disable HOME TIMER CANCEL.
 bool_t                ShiftTimoutMode;                         //JM SHIFT Create a flag to enable or disable SHIFT TIMER CANCEL.
 bool_t                SH_BASE_HOME;                            //JM BASEHOME
-bool_t                SH_BASE_AHOME;                           //JM BASEHOME
 int16_t               Norm_Key_00_VAR;                         //JM USER NORMAL
 uint8_t               Input_Default;                           //JM Input Default
 float                 graph_xmin;                              //JM Graph
@@ -191,8 +202,8 @@ float                 graph_ymax;                              //JM Graph
 uint8_t               DRG_Cycling = 0;
 uint8_t               DM_Cycling = 0;
 #ifdef INLINE_TEST                                             //vv dr
-bool_t                testEnabled;                             //
-uint16_t              testBitset;                              //
+  bool_t                testEnabled;                             //
+  uint16_t              testBitset;                              //
 #endif                                                         //^^
 int16_t                longpressDelayedkey2;         //JM
 int16_t                longpressDelayedkey3;         //JM
@@ -226,7 +237,7 @@ uint8_t                fgLN = 0;
 char                   indexOfItemsXEQM[18*8];       //JMXEQ
 int16_t                fnXEQMENUpos;                 //JMXEQ
 uint8_t                last_CM = 255;                //Do extern !!
-uint8_t                FN_state; // = ST_0_INIT;      
+uint8_t                FN_state; // = ST_0_INIT;
 
 int16_t                exponentSignLocation;
 int16_t                denominatorLocation;
@@ -319,7 +330,7 @@ bool_t temporaryFlagRect;
   #ifdef JMSHOWCODES                                        //JM Test
     int8_t            telltale_pos;                         //JM Test
     int8_t            telltale_lastkey;                     //JM Test
-  #endif //JMSHOWCODES                                      //JM Test 
+  #endif //JMSHOWCODES                                      //JM Test
 #ifdef BUFFER_CLICK_DETECTION
   uint32_t            timeStampKey;                         //dr - internal keyBuffer POC
 #endif //BUFFER_CLICK_DETECTION
@@ -551,7 +562,7 @@ bool_t temporaryFlagRect;
 
     backToDMCP = false;
 
-    lcd_forced_refresh();                                   //JM 
+    lcd_forced_refresh();                                   //JM
   //previousRefresh = sys_current_ms();
     nextScreenRefresh = sys_current_ms() + SCREEN_REFRESH_PERIOD;
   //now = sys_current_ms();
@@ -633,7 +644,7 @@ bool_t temporaryFlagRect;
             strcat(snum, " ");
             for(int8_t i = TMR_NUMBER -1; i>=0; i--) {
               char digit[2] = "_";
-              if(fnTimerGetStatus(i) == TMR_RUNNING) { itoa(i, digit, 16); } 
+              if(fnTimerGetStatus(i) == TMR_RUNNING) { itoa(i, digit, 16); }
               strcat(snum, digit);
             }
             showString(snum, &standardFont, 20, 40, vmNormal, false, false);
@@ -866,8 +877,8 @@ bool_t temporaryFlagRect;
           currentVolumeSetting = get_beep_volume();
         }
       }
-   
-    #ifdef JMSHOWCODES 
+
+    #ifdef JMSHOWCODES
       fnDisplayStack(1);
       //Show key codes
       if(sys_last_key()!=telltale_lastkey) {

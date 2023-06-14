@@ -83,10 +83,11 @@ TO_QSPI const int16_t menu_CLK[]         = { ITM_DATE,                      ITM_
                                              ITM_DATEto,                    ITM_TIMEto,                 ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
                                              ITM_toDATE,                    ITM_toTIME,                 ITM_NULL,                 ITM_NULL,              ITM_toHMS,                   ITM_msTo,
 
-                                             ITM_DATE,                      ITM_TIME,                   ITM_TDISP,                ITM_DMY,               ITM_YMD,                     ITM_MDY,
+                                             ITM_DATE,                      ITM_TIME,                   ITM_TDISP,                ITM_DMY,               ITM_MDY,                     ITM_YMD,
                                              ITM_SD,                        ITM_ST,                     ITM_WDAY,                 ITM_DAY,               ITM_MONTH,                   ITM_YEAR,
-                                             ITM_JUL_GREG,                  ITM_NULL,                   ITM_NULL,                 ITM_SECOND,            ITM_MINUTE,                  ITM_HR_DEG                  };    
+                                             ITM_CLK12,                     ITM_CLK24,                  ITM_NULL,                 ITM_SECOND,            ITM_MINUTE,                  ITM_HR_DEG, 
 
+                                             ITM_GET_JUL_GREG,              ITM_JUL_GREG,               ITM_JUL_GREG_1582,        ITM_JUL_GREG_1752,     ITM_JUL_GREG_1873,           ITM_JUL_GREG_1949             };    
 
 
 TO_QSPI const int16_t menu_CLR[]         = { ITM_CLSIGMA,                   ITM_CLP,                    ITM_CF,                   ITM_CLMENU,            ITM_CLCVAR,                  ITM_CLX,
@@ -101,17 +102,16 @@ TO_QSPI const int16_t menu_CPX[]         = { ITM_RE,                        ITM_
                                              ITM_CPXI,                      ITM_CPXJ,                   ITM_CXtoRE,               ITM_REtoCX,            ITM_RECT,                    ITM_POLAR                     };    //JM re-arranged menu
 
 TO_QSPI const int16_t menu_DISP[]        = { ITM_FIX,                       ITM_SCI,                    ITM_ENG,                  ITM_ALL,               ITM_SIGFIG,                  ITM_UNIT,
-                                             ITM_RNG,                       ITM_HIDE,                   ITM_NULL,                 ITM_NULL,              ITM_RECT,                    ITM_POLAR,                           //JM 
+                                             ITM_GAP_L,                     ITM_GAP_RX,                 ITM_GAP_R,                ITM_NULL,              ITM_RECT,                    ITM_POLAR,
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
 
-
-                                             ITM_SCIOVR,                    ITM_ENGOVR,                 ITM_DSTACK,               ITM_CPXMULT,           ITM_MULTCR,                  ITM_MULTDOT,                        //JM 
-                                             ITM_SI_All,                    ITM_SHOIREP,                ITM_LARGELI,              ITM_NULL,              ITM_CPXI,                    ITM_CPXJ,                           //JM 
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                           //JM 
+                                             ITM_DMY,                       ITM_MDY,                    ITM_YMD,                  ITM_CPXMULT,           ITM_MULTCR,                  ITM_MULTDOT,
+                                             ITM_SI_All,                    ITM_DSTACK,                 ITM_SHOIREP,              ITM_LARGELI,           ITM_CPXI,                    ITM_CPXJ,
+                                             ITM_SCIOVR,                    ITM_ENGOVR,                 ITM_RNG,                  ITM_HIDE,              ITM_CLK12,                   ITM_CLK24,
 
                                              ITM_SETCHN,                    ITM_SETEUR,                 ITM_SETIND,               ITM_SETJPN,            ITM_SETUK,                   ITM_SETUSA,                    
-                                             ITM_CLK12,                     ITM_CLK24,                  ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_SETDFLT,
-                                             ITM_RDXPER,                    ITM_RDXCOM,                 ITM_GAP,                  ITM_DMY,               ITM_YMD,                     ITM_MDY                       };
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_SETDFLT,
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                        };
 
 
 TO_QSPI const int16_t menu_EQN[]         = { ITM_EQ_NEW,                    ITM_EQ_EDI,                 -MNU_2NDDERIV,            -MNU_1STDERIV,         -MNU_Sf,                     -MNU_Solver,
@@ -184,11 +184,12 @@ TO_QSPI const int16_t menu_M_EDIT[]      = { ITM_LEFT_ARROW,                ITM_
                                              ITM_M_INSR,                    ITM_NULL,                   ITM_M_DELR,               ITM_M_GOTO,            ITM_M_WRAP,                  ITM_M_GROW                    };  //JM
 
 
-#if defined (INLINE_TEST) && defined (DMCP_BUILD)
+//#if defined (INLINE_TEST) && 
+//#if defined (DMCP_BUILD)
   #define ITM_TST -MNU_INL_TST
-#else
-  #define ITM_TST ITM_RESERVE
-#endif
+//#else
+//  #define ITM_TST ITM_RESERVE
+//#endif
 
 #ifdef DMCP_BUILD
   #define ITM_SYS ITM_SYSTEM
@@ -521,7 +522,10 @@ TO_QSPI const int16_t menu_alphaDot[]    = { ITM_EXCLAMATION_MARK,          ITM_
                                              ITM_LEFT_ARROW,                ITM_UP_ARROW,               ITM_SERIAL_IO,            ITM_DOWN_ARROW,        ITM_RIGHT_ARROW,             ITM_PGM_BEGIN,
                                              ITM_LEFT_DOUBLE_ANGLE,         ITM_RIGHT_DOUBLE_ANGLE,     ITM_LEFT_RIGHT_ARROWS,    ITM_WATCH,             ITM_TIMER_SYMBOL,            ITM_ASTERISK,
                                              ITM_HOURGLASS,                 ITM_NEG_EXCLAMATION_MARK,   ITM_USER_MODE,            ITM_BATTERY,           ITM_AT,                      ITM_SUP_ASTERISK,
-                                             ITM_DOUBLE_LOW_QUOTE,          ITM_RIGHT_DOUBLE_QUOTE,     ITM_ELLIPSIS,             ITM_UNDERSCORE,        ITM_BULLET,                  ITM_NUMBER_SIGN               };
+                                             ITM_DOUBLE_LOW_QUOTE,          ITM_RIGHT_DOUBLE_QUOTE,     ITM_ELLIPSIS,             ITM_UNDERSCORE,        ITM_BULLET,                  ITM_NUMBER_SIGN,
+                                             ITM_DEGREE,                    ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
+
+
 
 TO_QSPI const int16_t menu_1stDeriv[]    = { ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
 TO_QSPI const int16_t menu_2ndDeriv[]    = { ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
@@ -561,13 +565,13 @@ TO_QSPI const int16_t menu_TamLblAlpha[] = { ITM_INDIRECTION,               -MNU
                                              ITM_NULL,                      ITM_NULL,                  -MNU_MyAlpha,             -MNU_ALPHA_OMEGA,      -MNU_ALPHADOT,               -MNU_ALPHAMATH                 };   //JM
 
 
-
-TO_QSPI const int16_t menu_Eim[]         = { ITM_EQ_LEFT,                   ITM_CIRCUMFLEX,             ITM_COLON,                CHR_num,               CHR_case,                    ITM_EQ_RIGHT,
-                                             ITM_ALOG_SYMBOL,               ITM_ROOT_SIGN,              ITM_LEFT_PARENTHESIS,     ITM_RIGHT_PARENTHESIS, ITM_EQUAL,                  -MNU_CATALOG,
+ 
+TO_QSPI const int16_t menu_Eim[]         = { ITM_EQ_LEFT,                   ITM_CIRCUMFLEX,             ITM_ROOT_SIGN,            CHR_num,               CHR_case,                    ITM_EQ_RIGHT,
+                                             ITM_COLON,                     ITM_VERTICAL_BAR,           ITM_LEFT_PARENTHESIS,     ITM_RIGHT_PARENTHESIS, ITM_EQUAL,                  -MNU_CATALOG,
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                     
 
-                                             ITM_VERTICAL_BAR,              ITM_DELTA,                  ITM_pi,                   ITM_SIN_SIGN,          ITM_COS_SIGN,                ITM_TAN_SIGN,
-                                             ITM_SIGMA,                     ITM_CIRCUMFLEX,             ITM_ROOT_SIGN,            ITM_LG_SIGN,           ITM_LN_SIGN,                 ITM_alpha                     };
+                                             ITM_ALOG_SYMBOL,               ITM_op_j_SIGN,              ITM_pi,                   ITM_SIN_SIGN,          ITM_COS_SIGN,                ITM_TAN_SIGN,
+                                             ITM_poly_SIGN,                 ITM_LG_SIGN,                ITM_LN_SIGN,              ITM_ASIN_SIGN,          ITM_ACOS_SIGN,                ITM_ATAN_SIGN               };
 
 TO_QSPI const int16_t menu_Timer[]       = { ITM_TIMER_ADD,                 ITM_NULL,                   ITM_NULL,                 ITM_TIMER_0_1S,        ITM_NULL,                    ITM_TIMER_RESET               };
 
@@ -594,9 +598,9 @@ TO_QSPI const int16_t menu_EE[]          = { ITM_CONSTpi,                   ITM_
                                              ITM_EE_STO_V_I,                ITM_EE_STO_IR,              ITM_EE_STO_V_Z,           ITM_EE_X2BAL,          ITM_PARALLEL,                -MNU_CPX,                           //JM EE
                                              ITM_EE_STO_Z,                  ITM_EE_RCL_Z,               ITM_EE_STO_V,             ITM_EE_RCL_V,          ITM_EE_STO_I,                ITM_EE_RCL_I                  };    //JM EE
 
-#ifdef INLINE_TEST
+//#ifdef INLINE_TEST
 TO_QSPI const int16_t menu_Inl_Tst[]     = { ITM_TEST,                      ITM_NULL,                   ITM_NULL,                 ITM_SYS_FREE_RAM,      ITM_GET_TEST_BS,             ITM_SET_TEST_BS               };    //dr
-#endif
+//#endif
 
 
 TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_N_KEY_CC,               ITM_N_KEY_GSH,            ITM_N_KEY_MM,          ITM_N_KEY_DRG,               ITM_NULL,       //JM USER NAORMAL MODE
@@ -677,11 +681,25 @@ TO_QSPI const int16_t menu_PLOT[]        = { ITM_PLINE,                     ITM_
                                              ITM_NULL,                      ITM_PLOTRST,                ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL};                          //JM GRAPH
 
 
-TO_QSPI const int16_t menu_ALPHA[]       = { ITM_T_UP_ARROW,                ITM_T_DOWN_ARROW,           ITM_T_LLEFT_ARROW,        ITM_T_RRIGHT_ARROW,    ITM_T_LEFT_ARROW,            ITM_T_RIGHT_ARROW,
+TO_QSPI const int16_t menu_ALPHA[]       = { ITM_T_UP_ARROW,                ITM_T_DOWN_ARROW,           ITM_T_LLEFT_ARROW,        ITM_T_LEFT_ARROW,      ITM_T_RIGHT_ARROW,           ITM_T_RRIGHT_ARROW,    
                                              -MNU_MyAlpha,                 -MNU_ALPHA_OMEGA,           -MNU_ALPHADOT,            -MNU_ALPHAMATH,        -MNU_ALPHAINTL,               ITM_ASSIGN,                           //JM
                                              ITM_XEDIT,                     ITM_XPARSE,                 ITM_CLA,                  CHR_num,               CHR_case,                    ITM_USERMODE                     };   //JM
 
 TO_QSPI const int16_t menu_XXEQ[]        = { ITM_XSAVE,                     ITM_XLOAD,                  ITM_XEDIT,                ITM_XNEW,              ITM_XXEQ,                     -MNU_XEQ                        };   //JM
+
+
+TO_QSPI const int16_t menu_GAP_L[]       = { ITM_GAPPER_L,                  ITM_GAPCOM_L,               ITM_GAPDOT_L,             ITM_GAPNARAPO_L,       ITM_GAPSPC_L,                ITM_GAPNIL_L,
+                                             ITM_GAPWIDPER_L,               ITM_GAPWIDCOM_L,            ITM_GAPWIDDOT_L,          ITM_GAPAPO_L,          ITM_GAPDBLSPC_L,             ITM_GAPUND_L,
+                                             ITM_GRP_L,                     ITM_GRP1_L,                 ITM_GRP1_L_OF,            ITM_NULL,              ITM_GAPNARSPC_L,             ITM_NULL                         };
+
+TO_QSPI const int16_t menu_GAP_RX[]      = { ITM_GAPPER_RX,                 ITM_GAPCOM_RX,              ITM_GAPDOT_RX,            ITM_GAPWIDPER_RX,      ITM_GAPWIDCOM_RX,            ITM_GAPWIDDOT_RX };
+
+
+TO_QSPI const int16_t menu_GAP_R[]       = { ITM_GAPPER_R,                  ITM_GAPCOM_R,               ITM_GAPDOT_R,             ITM_GAPNARAPO_R,       ITM_GAPSPC_R,                ITM_GAPNIL_R,
+                                             ITM_GAPWIDPER_R,               ITM_GAPWIDCOM_R,            ITM_GAPWIDDOT_R,          ITM_GAPAPO_R,          ITM_GAPDBLSPC_R,             ITM_GAPUND_R,
+                                             ITM_GRP_R,                     ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_GAPNARSPC_R,             ITM_NULL                         };
+
+
 
 
 #include "softmenuCatalogs.h"
@@ -824,10 +842,11 @@ TO_QSPI const softmenu_t softmenu[] = {
 /* 132 */  {.menuItem = -MNU_TAMNONREG,   .numItems = sizeof(menu_TamNonReg     )/sizeof(int16_t), .softkeyItem = menu_TamNonReg      },
 /* 133 */  {.menuItem = -MNU_TAMNONREGIND,.numItems = sizeof(menu_TamNonRegInd  )/sizeof(int16_t), .softkeyItem = menu_TamNonRegInd   },
 /* 134 */  {.menuItem = -MNU_BLUE_C47,    .numItems = sizeof(menu_BLUE_C47      )/sizeof(int16_t), .softkeyItem = menu_BLUE_C47       },
-#ifdef INLINE_TEST                                                              //vv dr
-/*     */  {.menuItem= -MNU_INL_TST,     .numItems = sizeof(menu_Inl_Tst        )/sizeof(int16_t), .softkeyItem = menu_Inl_Tst        },
-#endif                                                                          //^^
-/*     */  {.menuItem =  0,               .numItems = 0,                                           .softkeyItem = NULL                }
+/* 135 */  {.menuItem = -MNU_GAP_L,       .numItems = sizeof(menu_GAP_L         )/sizeof(int16_t), .softkeyItem = menu_GAP_L          },
+/* 136 */  {.menuItem = -MNU_GAP_RX,      .numItems = sizeof(menu_GAP_RX        )/sizeof(int16_t), .softkeyItem = menu_GAP_RX         },
+/* 137 */  {.menuItem = -MNU_GAP_R,       .numItems = sizeof(menu_GAP_R         )/sizeof(int16_t), .softkeyItem = menu_GAP_R          },
+/* 138 */  {.menuItem = -MNU_INL_TST,     .numItems = sizeof(menu_Inl_Tst       )/sizeof(int16_t), .softkeyItem = menu_Inl_Tst        },
+/* 139 */  {.menuItem =  0,               .numItems = 0,                                           .softkeyItem = NULL                }
 };
 
 
@@ -1405,11 +1424,11 @@ char label1[30];
 if(xSoftkey == 0 || xSoftkey == 2 || xSoftkey == 4) {
   xx1 = x1; xx2 = x2;
   label0[0]=0;
-  strcat(label0,labelSM1);
+  stringAppend(label0 + stringByteLength(label0),labelSM1);
 
 }
   char sample[4];
-  strcpy(sample, STD_RIGHT_ARROW);
+  stringAppend(sample, STD_RIGHT_ARROW);
   int16_t i = 0;
   while (label0[i+1] != 0) {
     if(sample[0] == label0[i] && sample[1] == label0[i+1]) {
@@ -1419,7 +1438,7 @@ if(xSoftkey == 0 || xSoftkey == 2 || xSoftkey == 4) {
     i++;
   }
 
-  strcpy(sample, STD_LEFT_ARROW);
+  stringAppend(sample, STD_LEFT_ARROW);
   i = 0;
   while (label0[i+1] != 0) {
     if(sample[0] == label0[i] && sample[1] == label0[i+1]) {
@@ -1434,10 +1453,10 @@ if(xSoftkey == 0 || xSoftkey == 2 || xSoftkey == 4) {
 
 if(xSoftkey == 1 || xSoftkey == 3 || xSoftkey == 5) {
   label1[0]=0;
-  strcat(label1,labelSM1);
+  stringAppend(label1 + stringByteLength(label1), labelSM1);
 
 
-  strcpy(sample, STD_RIGHT_ARROW);
+  stringAppend(sample, STD_RIGHT_ARROW);
   i = 0;
   while (label1[i+1] != 0) {
     if(sample[0] == label1[i] && sample[1] == label1[i+1]) {
@@ -1448,7 +1467,7 @@ if(xSoftkey == 1 || xSoftkey == 3 || xSoftkey == 5) {
   }
 
 
-  strcpy(sample, STD_LEFT_ARROW);
+  stringAppend(sample, STD_LEFT_ARROW);
   i = 0;
   while (label1[i+1] != 0) {
     if(sample[0] == label1[i] && sample[1] == label1[i+1]) {
@@ -1466,7 +1485,6 @@ if(xSoftkey == 1 || xSoftkey == 3 || xSoftkey == 5) {
 
 
 void showKey2(const char *label0, const char *label1, int16_t x1, int16_t x2, int16_t y1, int16_t y2, bool_t rightMostSlot, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText) {
-  #define CS 1
   #define YY -100
   int16_t Text0   ;
   int16_t Arr0    ;
@@ -1478,10 +1496,10 @@ void showKey2(const char *label0, const char *label1, int16_t x1, int16_t x2, in
   float   space1=0;
 
 
-  int16_t w1 = showStringEnhanced(label0,          &standardFont, 0, y1+YY, videoMode, false, false, CS, 0, 1);
-  int16_t w2 = showStringEnhanced(STD_RIGHT_ARROW, &standardFont, 0, y1+YY, videoMode, false, false, CS, 0, 1);
-  int16_t w3 = showStringEnhanced(STD_LEFT_ARROW,  &standardFont, 0, y1+YY, videoMode, false, false, CS, 0, 1);
-  int16_t w4 = showStringEnhanced(label1,          &standardFont, 0, y1+YY, videoMode, false, false, CS, 0, 1);
+  int16_t w1 = showStringEnhanced(label0,          &standardFont, 0, y1+YY, videoMode, false, false, DO_compress, NO_raise, NO_Show, NO_LF);
+  int16_t w2 = showStringEnhanced(STD_RIGHT_ARROW, &standardFont, 0, y1+YY, videoMode, false, false, DO_compress, NO_raise, NO_Show, NO_LF);
+  int16_t w3 = showStringEnhanced(STD_LEFT_ARROW,  &standardFont, 0, y1+YY, videoMode, false, false, DO_compress, NO_raise, NO_Show, NO_LF);
+  int16_t w4 = showStringEnhanced(label1,          &standardFont, 0, y1+YY, videoMode, false, false, DO_compress, NO_raise, NO_Show, NO_LF);
 
 
   midpoint = (x2 - x1) / 2;
@@ -1510,10 +1528,10 @@ void showKey2(const char *label0, const char *label1, int16_t x1, int16_t x2, in
   // Clear inside the frame
   lcd_fill_rect(x1 + 1, y1 + 1, min(x2, SCREEN_WIDTH) - x1 - 1, min(y2, SCREEN_HEIGHT) - y1 - 1, (videoMode == vmNormal ? LCD_SET_VALUE : LCD_EMPTY_VALUE));
 
-  showStringEnhanced(label0,          &standardFont, Text0 + (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, CS, 0, 0);
-  showStringEnhanced(STD_RIGHT_ARROW, &standardFont, Arr0 +  (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, CS, 0, 0);
-  showStringEnhanced(label1,          &standardFont, Text1 + (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, CS, 0, 0);
-  showStringEnhanced(STD_LEFT_ARROW,  &standardFont, Arr1 +  (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, CS, 0, 0);
+  showStringEnhanced(label0,          &standardFont, Text0 + (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, DO_compress, NO_raise, DO_Show, NO_LF);
+  showStringEnhanced(STD_RIGHT_ARROW, &standardFont, Arr0 +  (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, DO_compress, NO_raise, DO_Show, NO_LF);
+  showStringEnhanced(label1,          &standardFont, Text1 + (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, DO_compress, NO_raise, DO_Show, NO_LF);
+  showStringEnhanced(STD_LEFT_ARROW,  &standardFont, Arr1 +  (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, DO_compress, NO_raise, DO_Show, NO_LF);
 
 
   // Draw the frame
@@ -1626,10 +1644,14 @@ bool_t isFunctionItemAMenu(int16_t item) {
          item == ITM_HPLOT     || 
          item == ITM_DRAW      || 
          item == ITM_CFG       || 
+         item == ITM_GAP_L     || 
+         item == ITM_GAP_RX    || 
+         item == ITM_GAP_R     || 
          item == ITM_PLOT_STAT ||
          item == ITM_EQ_NEW    ||
          item == ITM_VARMNU    ||
          item == ITM_SIM_EQ    ||
+         item == ITM_DELITM    ||
          item == ITM_M_EDI;
          /*item == ITM_PLOT_CENTRL ||  CENTRL does not bring up a new menu - it is the same menu therefore not inverted */
          /*|| (item == ITM_TIMER)*/       //JMvv colour PLOT in reverse font to appear to be menus
@@ -1638,10 +1660,12 @@ bool_t isFunctionItemAMenu(int16_t item) {
 
 static  char FF[16];
 static char *changeItoJ(int16_t item) {
-  strcpy(FF, indexOfItems[item%10000].itemSoftmenuName);
+  stringAppend(FF,indexOfItems[item%10000].itemSoftmenuName);
+  //printf(">>>> changeItoJ: %i %u %u %u %u %u %s %u %u\n", item, (uint8_t)(FF[0]), (uint8_t)(FF[1]), (uint8_t)(FF[2]), (uint8_t)(FF[3]), (uint8_t)(FF[4]), FF , (uint8_t)(STD_SUP_i[0]), (uint8_t)(STD_SUP_i[1]));
   if (getSystemFlag(FLAG_CPXj)) {
-    if (item == ITM_op_j && FF[0] == STD_i[0]) {
-      FF[0]++;
+    if ((item == ITM_op_j || item == ITM_op_j_SIGN) && FF[1] == STD_op_i[1]) {
+      //printf(">>>> changed: %u %u %u %u %u %s %u %u\n", (uint8_t)(FF[0]), (uint8_t)(FF[1]), (uint8_t)(FF[2]), (uint8_t)(FF[3]), (uint8_t)(FF[4]), FF , (uint8_t)(STD_SUP_i[0]), (uint8_t)(STD_SUP_i[1]));
+      FF[1]++;
     }
     if (item == ITM_EE_EXP_TH && FF[2] == STD_SUP_i[1]) {
       FF[2]++;
@@ -1656,37 +1680,64 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
   * vm = (itemNr < 0) || (isFunctionItemAMenu(itemNr%10000)) ? vmReverse : vmNormal;
   * showCb = NOVAL;
   * showValue = NOVAL;
-  strcpy(itemName,NOTEXT);
+  stringAppend(itemName,NOTEXT);
   showText[0]=0;
 
   if(itemNr > 0) { 
     * showCb = fnCbIsSet(itemNr%10000);
     * showValue = fnItemShowValue(itemNr%10000);
-    switch (* showValue) {
-      case 32700 : strcat(showText, "ALL" ); *showValue = NOVAL; break;
-      case 32701 : strcat(showText, "FIX" ); *showValue = NOVAL; break;
-      case 32702 : strcat(showText, "SCI" ); *showValue = NOVAL; break;
-      case 32703 : strcat(showText, "ENG" ); *showValue = NOVAL; break;
-      case 32704 : strcat(showText, "SIG" ); *showValue = NOVAL; break; 
-      case 32705 : strcat(showText, "UNIT"); *showValue = NOVAL; break;
-      default: break;
-    }
+
+    switch(itemNr%10000) {
+
+      case ITM_DSPCYCLE:switch (* showValue) {
+                          case 32700 : stringAppend(showText + stringByteLength(showText), "ALL" ); *showValue = NOVAL; break;
+                          case 32701 : stringAppend(showText + stringByteLength(showText), "FIX" ); *showValue = NOVAL; break;
+                          case 32702 : stringAppend(showText + stringByteLength(showText), "SCI" ); *showValue = NOVAL; break;
+                          case 32703 : stringAppend(showText + stringByteLength(showText), "ENG" ); *showValue = NOVAL; break;
+                          case 32704 : stringAppend(showText + stringByteLength(showText), "SIG" ); *showValue = NOVAL; break; 
+                          case 32705 : stringAppend(showText + stringByteLength(showText), "UNIT"); *showValue = NOVAL; break;
+                          default: break;
+                        } 
+                        break;
+      case ITM_GAP_L  : if(gapItemLeft == ITM_NULL) stringAppend(showText + stringByteLength(showText), "\1\1"); 
+                        else stringAppend(showText + stringByteLength(showText),  indexOfItems[gapItemLeft].itemSoftmenuName);  //  gapCharLeft); 
+                        *showValue = NOVAL; 
+                        break;
+      case ITM_GAP_RX : stringAppend(showText + stringByteLength(showText),  indexOfItems[gapItemRadix].itemSoftmenuName);  //  gapCharRadix); 
+                        *showValue = NOVAL; 
+                        break;
+      case ITM_GAP_R  : if(gapItemRight == ITM_NULL) stringAppend(showText + stringByteLength(showText), "\1\1"); 
+                        else stringAppend(showText + stringByteLength(showText), indexOfItems[gapItemRight].itemSoftmenuName);  //  gapCharRight); 
+                        *showValue = NOVAL; 
+                        break;
+      case ITM_GRP_L  : *showValue = grpGroupingLeft; 
+                        break;
+      case ITM_GRP1_L : *showValue = grpGroupingGr1Left; 
+                        break;
+      case ITM_GRP1_L_OF:*showValue = grpGroupingGr1LeftOverflow; 
+                        break;
+      case ITM_GRP_R  : *showValue = grpGroupingRight; 
+                        break;  
+      default:break;
+      } 
+
+    
     if(itemNr%10000 == 9999) {
-      strcpy(itemName, indexOfItems[!getSystemFlag(FLAG_MULTx) ? ITM_DOT : ITM_CROSS].itemSoftmenuName);
+      stringAppend(itemName, indexOfItems[!getSystemFlag(FLAG_MULTx) ? ITM_DOT : ITM_CROSS].itemSoftmenuName);
       //printf("WWW1: itemName=%s, 0:%i 1:%i, ItemNr=%i \n",itemName, (uint8_t) itemName[0], (uint8_t) itemName[1], itemNr);
       return;
     } else {
 
       if(itemNr%10000 >= ITM_X_P1 && itemNr%10000 <= ITM_X_g6) {
-        strcpy(itemName, indexOfItemsXEQM + 8*(itemNr%10000-fnXEQMENUpos));
+        stringAppend(itemName, indexOfItemsXEQM + 8*(itemNr%10000-fnXEQMENUpos));
       } else {
-        strcpy(itemName, changeItoJ(itemNr));
+        stringAppend(itemName, changeItoJ(itemNr));
       }
       //printf("WWW2: itemName=%s, ItemNr=%i \n",itemName,itemNr);
       return;
     }
-  } else { //itemNr >= 0
-    strcpy(itemName, indexOfItems[-itemNr%10000].itemSoftmenuName);
+  } else if(itemNr < 0) { //itemNr >= 0
+    stringAppend(itemName, indexOfItems[-itemNr%10000].itemSoftmenuName);
     //printf("WWW3: itemName=%s, ItemNr=%i \n",itemName,itemNr);
     return;
   }
@@ -1694,7 +1745,7 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
 
 
 void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
-  if(indexOfItems[itemNr%10000].func == itemToBeCoded) {
+  if(itemNr > 0 && indexOfItems[itemNr%10000].func == itemToBeCoded) {
     // Strike out non coded functions
     int16_t yStroke = SCREEN_HEIGHT - y*23 - 1;
     for(int16_t xStroke=x*67 + 1 +9 ; xStroke<x*67 + 66 -10; xStroke++) {      //JM mod stroke slash cross out
@@ -1726,10 +1777,10 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
     if(tam.mode == TM_KEY && !tam.keyInputFinished) {
       for(y=0; y<=2; y++) {
         for(x=0; x<6; x++) {
-          strcpy(tmp1," ");
+          stringAppend(tmp1," ");
           if(1+x+y*6>9) {
             tmp1[0]='1';
-            strcat(tmp1," ");
+            stringAppend(tmp1 + stringByteLength(tmp1), " ");
             tmp1[1] = (int)(48+(1+x+y*6) % 10);
           } else {
             tmp1[0] = (int)((48+1+x+y*6));            
@@ -1803,7 +1854,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
 
     char itemName[16];
     char showText[16];
-    showText[0]=0;                                  //strcat(showText, NOTEXT); not working, hence clearing the string
+    showText[0]=0;
     videoMode_t vm = vmNormal;
     int8_t showCb = NOVAL;
     int16_t showValue = NOVAL;
@@ -1830,7 +1881,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
                 showCb = NOVAL;
                 showValue = NOVAL;
                 int16_t itemNr = userMenuItems[x + 6*y].item;
-                strcpy(itemName,(char *)ptr);
+                stringAppend(itemName,(char *)ptr);
                 //printf(">>>> %u %u %s %s \n", x, y, itemName, userMenuItems[x + 6*y].argumentName);
                 switch(-softmenu[m].menuItem) {
                   case MNU_MENUS: {
@@ -1881,7 +1932,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
         showEquation(currentFormula, 0, EQUATION_NO_CURSOR, false, NULL, NULL);
       }
     }
-    else {
+    else {  //normal (not Dynamic) softmenu
       const int16_t *softkeyItem = softmenu[m].softkeyItem + currentFirstItem;
       char itemName[16];
       for(y=currentFirstItem/6; y<=min(currentFirstItem/6+2, numberOfItems/6); y++, softkeyItem+=6) {
@@ -1913,6 +1964,12 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
             else if(softmenu[menu].menuItem == -MNU_ALPHA_OMEGA && alphaCase == AC_LOWER) {
                 showSoftkey(indexOfItems[MNU_alpha_omega].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
             }
+            else if(softmenu[menu].menuItem == -MNU_ALPHAINTL && alphaCase == AC_UPPER) {
+                showSoftkey(indexOfItems[MNU_ALPHAINTL].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
+            }
+            else if(softmenu[menu].menuItem == -MNU_ALPHAINTL && alphaCase == AC_LOWER) {
+                showSoftkey(indexOfItems[MNU_ALPHAintl].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
+            }
             else {
               #ifdef INLINE_TEST
                 if(softmenu[menu].menuItem == -MNU_INL_TST) {
@@ -1940,6 +1997,10 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
             }
           }                                                                      //JM^^
 
+          else if(softmenu[m].menuItem == -MNU_ALPHA && calcMode == CM_PEM && item%10000 == ITM_ASSIGN) {
+            // do nothing
+          }
+
           else if(item > 0 && indexOfItems[item%10000].itemSoftmenuName[0] != 0) { // softkey
             // item : +10000 -> no top line
             //        +20000 -> no bottom line
@@ -1957,7 +2018,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
             else {
               if( (softmenu[m].menuItem == -MNU_FCNS || softmenu[m].menuItem  == -MNU_CONST) || //CONST is a normal menu not a catalog, but we expect the catalog to be treated as a catalog. //The same could be a problem with any of the generated catalogs (MNU_SYSFL, MNU_alpha_INTL, MNU_alpha_intl, )
                  ((softmenu[m].menuItem == -MNU_IO   || softmenu[m].menuItem  == -MNU_PFN  ) && (item == ITM_STOCFG || item == ITM_RCLCFG))) { //do not display "Config"
-                strcpy(itemName,indexOfItems[item%10000].itemCatalogName);
+                stringAppend(itemName,indexOfItems[item%10000].itemCatalogName);
               }
               showSoftkey(itemName, x, y-currentFirstItem/6, vm, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
             }
@@ -2032,8 +2093,18 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
         lcd_fill_rect(0,(uint32_t)(yDotted-t), 20,t+1, 0);
         uint32_t xx;
         for(xx=0; xx<=t; xx++) {
-          lcd_fill_rect(xx,       (uint32_t)(tt_o-t + yDotted-xx+t),   2*(t-xx), 1 ,true );
-          lcd_fill_rect(xx + t_o, (uint32_t)(tt_o-t + yDotted-t+xx+t), 2*(t-xx), 1 ,true );
+          if(!catalog) {
+            lcd_fill_rect(xx,       (uint32_t)(tt_o-t + yDotted-xx+t),   2*(t-xx), 1 ,true );
+            lcd_fill_rect(xx + t_o, (uint32_t)(tt_o-t + yDotted-t+xx+t), 2*(t-xx), 1 ,true );
+          } 
+          else {
+            if(xx!=t) {
+              lcd_fill_rect(xx,                 (uint32_t)(tt_o-t + yDotted-xx+t),   2, 1 ,true );
+              lcd_fill_rect(xx+ 2*(t-xx)-1,     (uint32_t)(tt_o-t + yDotted-xx+t),   2, 1 ,true );
+              lcd_fill_rect(xx+ t_o,               (uint32_t)(tt_o-t + yDotted-t+xx+t),   2, 1 ,true );
+              lcd_fill_rect(xx+ t_o+ 2*(t-xx)-1,   (uint32_t)(tt_o-t + yDotted-t+xx+t),   2, 1 ,true );
+            }
+          }
                                                                             //JM ^^
         }
       }
@@ -2137,6 +2208,10 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
       char tmp[200]; sprintf(tmp,"^^^^showSoftmenu: Showing Softmenu id=%d\n",id); jm_show_comment(tmp);
     #endif //PC_BUILD
 
+    #ifndef INLINE_TEST
+      if(id == -MNU_INL_TST) return;
+    #endif
+
     enterAsmModeIfMenuIsACatalog(id);
 
     if(id == 0) {
@@ -2194,6 +2269,16 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
           else {
             fn2ndDerivEq(NOPARAM);
           }
+        }
+      }
+    }
+    else if(id == -MNU_ADV || id == -MNU_EQN) {
+      currentSolverStatus &= ~SOLVER_STATUS_INTERACTIVE;
+      for(int i=0; i<SOFTMENU_STACK_SIZE; i++) { // Searching the stack for MNU_MVAR
+        if(softmenu[softmenuStack[i].softmenuId].menuItem == -MNU_MVAR) { // if found, remove it
+          xcopy(softmenuStack + i, softmenuStack + i + 1, (SOFTMENU_STACK_SIZE - i - 1) * sizeof(softmenuStack_t));
+          memset(softmenuStack + SOFTMENU_STACK_SIZE - 1, 0, sizeof(softmenuStack_t)); // Put MyMenu in the last stack element
+          --i; // redo
         }
       }
     }
@@ -2282,13 +2367,32 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
 
 
 char *dynmenuGetLabel(int16_t menuitem) {
+  return dynmenuGetLabelWithDup(menuitem, NULL);
+}
+
+
+
+char *dynmenuGetLabelWithDup(int16_t menuitem, int16_t *dupNum) {
+  if(dupNum) {
+    *dupNum = 0;
+  }
   if(menuitem < 0 || menuitem >= dynamicSoftmenu[softmenuStack[0].softmenuId].numItems) {
     return "";
   }
   char *labelName = (char *)dynamicSoftmenu[softmenuStack[0].softmenuId].menuContent;
+  char *prevLabelName = labelName;
   while(menuitem > 0) {
     labelName += stringByteLength(labelName) + 1;
     menuitem--;
+    if(dupNum) {
+      if(compareString(labelName, prevLabelName, CMP_BINARY) == 0) {
+        ++(*dupNum);
+      }
+      else {
+        prevLabelName = labelName;
+        *dupNum = 0;
+      }
+    }
   }
   return labelName;
 }

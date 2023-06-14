@@ -95,10 +95,10 @@
   extern const calcKey_t                 kbd_std_DM42[37];
   extern const calcKey_t                 kbd_std_C43[37];
   extern const calcKey_t                 kbd_std_C43AltA[37];
-  #ifndef SAVE_SPACE_DM42 
+  #ifndef SAVE_SPACE_DM42
     extern const calcKey_t                 kbd_std_D47[37];
     extern const calcKey_t                 kbd_std_N47[37];
-  #endif //SAVE_SPACE_DM42 
+  #endif //SAVE_SPACE_DM42
   extern const font_t                    standardFont, numericFont;
   extern const font_t                   *fontForShortInteger;
   extern const font_t                   *cursorFont;
@@ -112,9 +112,9 @@
   extern void                            (*confirmedFunction)(uint16_t);
   extern const softmenu_t                softmenu[];
   extern real51_t                 const *gammaLanczosCoefficients;
-  extern real51_t                 const *angle180;
-  extern real51_t                 const *angle90;
-  extern real51_t                 const *angle45;
+  extern real_t                 const *angle180;
+  extern real_t                 const *angle90;
+  extern real_t                 const *angle45;
 
   // Variables stored in RAM
   extern bool_t                 fnAsnDisplayUSER;
@@ -195,7 +195,9 @@
   extern char                   oldTime[8];
   extern char                   dateTimeString[12];
   extern char                   displayValueX[DISPLAY_VALUE_LEN];
-
+  extern uint16_t               gapItemLeft;
+  extern uint16_t               gapItemRight;
+  extern uint16_t               gapItemRadix;
   extern uint8_t                numScreensStandardFont;
   extern uint8_t                currentAsnScr;
   extern uint8_t                currentFntScr;
@@ -208,7 +210,10 @@
   extern uint8_t                significantDigits;
   extern uint8_t                shortIntegerMode;
   extern uint8_t                previousCalcMode;
-  extern uint8_t                groupingGap;
+  extern uint8_t                grpGroupingLeft;
+  extern uint8_t                grpGroupingGr1LeftOverflow;
+  extern uint8_t                grpGroupingGr1Left;
+  extern uint8_t                grpGroupingRight;
   extern uint8_t                roundingMode;
   extern uint8_t                calcMode;
   extern uint8_t                nextChar;
@@ -290,7 +295,30 @@
   extern char                   indexOfItemsXEQM[18*8];       //JMXEQ
   extern int16_t                fnXEQMENUpos;                 //JMXEQ
   extern uint8_t                last_CM;                      //Do extern !!
-  extern uint8_t                FN_state; // = ST_0_INIT;      
+  extern uint8_t                FN_state; // = ST_0_INIT;
+
+  // Variables from jm.h
+  extern bool_t                 eRPN;                         //JM eRPN Create a flag to enable or disable eRPN. See bufferize.c
+  extern bool_t                 HOME3;                        //JM HOME Create a flag to enable or disable triple shift HOME3; enable or disable TRIPLE SHIFT TIMER FOR HOME.
+  extern bool_t                 ShiftTimoutMode;              //JM HOME Create a flag to enable or disable SHIFT TIMER CANCEL.
+  extern bool_t                 SH_BASE_HOME;                 //JM BASEHOME Create a flag to enable or disable triple shift
+  extern int16_t                Norm_Key_00_VAR;              //JM USER NORMAL
+  extern uint8_t                Input_Default;                //JM Input Default
+  extern bool_t                 jm_BASE_SCREEN;               //JM Screen / keyboard operation setup
+  extern bool_t                 jm_G_DOUBLETAP;               //JM Screen / keyboard operation setup
+  extern float                  graph_xmin;                   //JM Graph
+  extern float                  graph_xmax;                   //JM Graph
+  extern float                  graph_ymin;                   //JM Graph
+  extern float                  graph_ymax;                   //JM Graph
+  extern bool_t                 jm_temporary;                 //JMHOME
+  extern bool_t                 jm_LARGELI;                   //JM flag to keep large font numbers on screen
+  extern bool_t                 constantFractions;            //JM
+  extern uint8_t                constantFractionsMode;        //JM
+  extern bool_t                 constantFractionsOn;          //JM
+  // Variables from jm.h & xeqm.c
+  extern uint32_t               indic_x;                      //JM program progress indicators
+  extern uint32_t               indic_y;                      //JM program progress indicators
+
 
   extern uint16_t               glyphRow[NUMBER_OF_GLYPH_ROWS];
   extern uint16_t               freeProgramBytes;

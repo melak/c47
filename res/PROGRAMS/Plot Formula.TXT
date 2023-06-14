@@ -10,16 +10,16 @@ CHS STO 11             // REG11: Higher X
   ERPN                   // SET PROGRAM MODE TO ERPN
   DOTD                   // ENSURE IN REAL MODE
   CLGRF                  // CLEAR GRAPH DEFAULTS AND STATS DATA
-  TICKS STO 01           // GET CURRENT TIME IN 0.1 SECOND UNITS           
+  TICKS STO 01           // GET CURRENT TIME IN 0.1 SECOND UNITS
   RCL 12                 // GET NUMBER STEPS EG N SAY 100
   1 +
   STO 00                 // CURRENT LOOP COUNTER, N+1 (STARTNO) DECREMENTS AT 0 IT SKIPS
   STO 02                 // LOOP START VALUE STORED
   DROP DROP
 
-  LBL M1                 // CREATE LOOPING LABEL. FOUR LABELS AVAILABLE M1, M2, M3, M4   
+  LBL M1                 // CREATE LOOPING LABEL. FOUR LABELS AVAILABLE M1, M2, M3, M4
   RCL 02                 // GET THE START VALUE OF THE LOOP COUNTER
-  RCL 00 -               // REVERSE THE RANGE TO: 0 TO STARTNO-1 
+  RCL 00 -               // REVERSE THE RANGE TO: 0 TO STARTNO-1
 
   RCL 02 DEC X 2 IDIV /  // SCALE STEP RANGE [0:(101-1)] TO: ([0:100]/ ((101-1)/2)); i.e. [0:2]
   2 /                    // [0-1]
@@ -51,7 +51,7 @@ RETURN                   // STOPS PROCESSING
 
 //---SUBROUTINE----------
 LBL M4                   // CALC FUNCTION SUBROUTINE: X and REG13
-  SINCPI                 // CALCULATE FUNCTION 
+  SINCPI                 // CALCULATE FUNCTION
 RTN                      // RETURN TO MAIN PROGRAM
 
 

@@ -106,7 +106,7 @@ TO_QSPI const calcKey_t kbd_std_WP43[37] = {
 // C43 Layout from Layout_template_automation template: Do not change manually
 //This variable is to store in flash memory
 TO_QSPI const calcKey_t kbd_std_C43[37] = {
-//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
+//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam
 {21,                  ITM_SIGMAPLUS,        ITM_RI,               ITM_TGLFRT,           ITM_NULL,             ITM_A,                ITM_a,                ITM_SIGMA,            ITM_REG_A           },
 {22,                  ITM_1ONX,             ITM_YX,               ITM_HASH_JM,          ITM_NUMBER_SIGN,      ITM_B,                ITM_b,                ITM_CIRCUMFLEX,       ITM_REG_B           },
 {23,                  ITM_SQUAREROOTX,      ITM_SQUARE,           ITM_ms,               ITM_ROOT_SIGN,        ITM_C,                ITM_c,                ITM_ROOT_SIGN,        ITM_REG_C           },
@@ -144,7 +144,7 @@ TO_QSPI const calcKey_t kbd_std_C43[37] = {
 {83,                  ITM_PERIOD,           ITM_SHOW,             -MNU_INFO,            ITM_PERIOD,           ITM_COMMA,            ITM_PERIOD,           ITM_PERIOD,           ITM_PERIOD          },
 {84,                  ITM_RS,               ITM_PR,               -MNU_PFN,             ITM_NULL,             ITM_QUESTION_MARK,    ITM_SLASH,            ITM_SLASH,            ITM_NULL            },
 {85,                  ITM_ADD,              -MNU_CATALOG,         -MNU_IO,              ITM_PLUS,             ITM_SPACE,            ITM_PLUS,             ITM_PLUS,             ITM_ADD             }
-//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
+//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam
 };
 
 
@@ -153,7 +153,7 @@ TO_QSPI const calcKey_t kbd_std_C43[37] = {
 // C47 Layout from Layout_template_automation template: Do not change manually
 //This variable is to store in flash memory
 TO_QSPI const calcKey_t kbd_std[37] = { //C47 Layout, in the default position without suffix, kbd_std
-//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
+//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam
 {21,                  ITM_SIGMAPLUS,        ITM_RI,               ITM_TGLFRT,           ITM_NULL,             ITM_A,                ITM_a,                ITM_SIGMA,            ITM_REG_A           },
 {22,                  ITM_1ONX,             ITM_YX,               ITM_HASH_JM,          ITM_NUMBER_SIGN,      ITM_B,                ITM_b,                ITM_CIRCUMFLEX,       ITM_REG_B           },
 {23,                  ITM_SQUAREROOTX,      ITM_SQUARE,           ITM_ms,               ITM_ROOT_SIGN,        ITM_C,                ITM_c,                ITM_ROOT_SIGN,        ITM_REG_C           },
@@ -191,13 +191,13 @@ TO_QSPI const calcKey_t kbd_std[37] = { //C47 Layout, in the default position wi
 {83,                  ITM_PERIOD,           ITM_SHOW,             -MNU_INFO,            ITM_PERIOD,           ITM_COMMA,            ITM_PERIOD,           ITM_PERIOD,           ITM_PERIOD          },
 {84,                  ITM_RS,               ITM_PR,               -MNU_TEST,            ITM_NULL,             ITM_QUESTION_MARK,    ITM_SLASH,            ITM_SLASH,            ITM_NULL            },
 {85,                  ITM_ADD,              -MNU_CATALOG,         -MNU_CONST,           ITM_PLUS,             ITM_SPACE,            ITM_PLUS,             ITM_PLUS,             ITM_ADD             }
-//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
+//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam
 };
 
 
 //This variable is to store in flash memory
 TO_QSPI const calcKey_t kbd_std_C43AltA[37] = {
-  //keyID,   primary,           fShifted,          gShifted,          keyLblAim,         primaryAim,        fShiftedAim,       gShiftedAim,       primaryTam         
+  //keyID,   primary,           fShifted,          gShifted,          keyLblAim,         primaryAim,        fShiftedAim,       gShiftedAim,       primaryTam
       {21,   ITM_USERMODE,      ITM_RI,            ITM_TGLFRT,        ITM_NULL,          ITM_A,             ITM_a,             ITM_SIGMA,          ITM_REG_A          },
       {22,   ITM_1ONX,          ITM_YX,            ITM_HASH_JM,       ITM_NUMBER_SIGN,   ITM_B,             ITM_b,             ITM_CIRCUMFLEX,     ITM_REG_B          },
       {23,   ITM_SQUAREROOTX,   ITM_SQUARE,        ITM_ms,            ITM_ROOT_SIGN,     ITM_C,             ITM_c,             ITM_ROOT_SIGN,      ITM_REG_C          },
@@ -241,13 +241,13 @@ TO_QSPI const calcKey_t kbd_std_C43AltA[37] = {
       {83,   ITM_PERIOD,        ITM_SHOW,          -MNU_INFO,         ITM_PERIOD,        ITM_COMMA,         ITM_PERIOD,        ITM_PERIOD,         ITM_PERIOD         },
       {84,   ITM_RS,            ITM_PR,            -MNU_PFN,          ITM_NULL,          ITM_QUESTION_MARK, ITM_SLASH,         ITM_SLASH,          ITM_NULL           },
       {85,   ITM_ADD,           -MNU_CATALOG,      -MNU_IO,           ITM_PLUS,          ITM_SPACE,         ITM_PLUS,          ITM_PLUS,           ITM_ADD            }
-  //keyID,   primary,           fShifted,          gShifted,          keyLblAim,         primaryAim,        fShiftedAim,       gShiftedAim,       primaryTam         
+  //keyID,   primary,           fShifted,          gShifted,          keyLblAim,         primaryAim,        fShiftedAim,       gShiftedAim,       primaryTam
 };
 
 
 //This variable is to store in flash memory
 TO_QSPI const calcKey_t kbd_std_DM42[37] = {
-  //keyID,   primary,           fShifted,          gShifted,          keyLblAim,         primaryAim,        fShiftedAim,       gShiftedAim,       primaryTam         
+  //keyID,   primary,           fShifted,          gShifted,          keyLblAim,         primaryAim,        fShiftedAim,       gShiftedAim,       primaryTam
       {21,   ITM_SIGMAPLUS,     ITM_SIGMAMINUS,    ITM_TGLFRT,        ITM_NULL,          ITM_A,             ITM_a,             ITM_SIGMA,          ITM_REG_A          },
       {22,   ITM_1ONX,          ITM_YX,            ITM_HASH_JM,       ITM_NUMBER_SIGN,   ITM_B,             ITM_b,             ITM_CIRCUMFLEX,     ITM_REG_B          },
       {23,   ITM_SQUAREROOTX,   ITM_SQUARE,        ITM_ms,            ITM_ROOT_SIGN,     ITM_C,             ITM_c,             ITM_ROOT_SIGN,      ITM_REG_C          },
@@ -291,16 +291,16 @@ TO_QSPI const calcKey_t kbd_std_DM42[37] = {
       {83,   ITM_PERIOD,        ITM_SHOW,          -MNU_INFO,         ITM_PERIOD,        ITM_COMMA,         ITM_PERIOD,        ITM_PERIOD,         ITM_PERIOD         },
       {84,   ITM_RS,            ITM_PR,            -MNU_TEST,         ITM_NULL,          ITM_QUESTION_MARK, ITM_SLASH,         ITM_SLASH,          ITM_NULL           },
       {85,   ITM_ADD,           -MNU_CATALOG,      -MNU_CONST,        ITM_PLUS,          ITM_SPACE,         ITM_PLUS,          ITM_PLUS,           ITM_ADD            }
-  //keyID,   primary,           fShifted,          gShifted,          keyLblAim,         primaryAim,        fShiftedAim,       gShiftedAim,       primaryTam         
+  //keyID,   primary,           fShifted,          gShifted,          keyLblAim,         primaryAim,        fShiftedAim,       gShiftedAim,       primaryTam
 };
 
 
 
-#ifndef SAVE_SPACE_DM42 
+#ifndef SAVE_SPACE_DM42
 // N47 Layout from Layout_template_automation template: Do not change manually
 //This variable is to store in flash memory
 TO_QSPI const calcKey_t kbd_std_N47[37] = {
-//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
+//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam
 {21,                  ITM_sin,              ITM_arcsin,           ITM_TGLFRT,           ITM_NULL,             ITM_A,                ITM_a,                ITM_NULL,             ITM_REG_A           },
 {22,                  ITM_cos,              ITM_arccos,           ITM_HASH_JM,          ITM_NUMBER_SIGN,      ITM_B,                ITM_b,                ITM_NULL,             ITM_REG_B           },
 {23,                  ITM_tan,              ITM_arctan,           ITM_ms,               ITM_NULL,             ITM_C,                ITM_c,                ITM_NULL,             ITM_REG_C           },
@@ -338,19 +338,19 @@ TO_QSPI const calcKey_t kbd_std_N47[37] = {
 {83,                  ITM_PERIOD,           ITM_SHOW,             -MNU_INFO,            ITM_PERIOD,           ITM_COMMA,            ITM_PERIOD,           ITM_PERIOD,           ITM_PERIOD          },
 {84,                  ITM_RS,               ITM_PR,               -MNU_PFN,             ITM_NULL,             ITM_QUESTION_MARK,    ITM_SLASH,            ITM_SLASH,            ITM_NULL            },
 {85,                  ITM_ADD,              -MNU_CATALOG,         -MNU_IO,              ITM_PLUS,             ITM_SPACE,            ITM_PLUS,             ITM_PLUS,             ITM_ADD             }
-//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
+//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam
 };
-#endif //SAVE_SPACE_DM42 
+#endif //SAVE_SPACE_DM42
 
 
 
 
 
-#ifndef SAVE_SPACE_DM42 
+#ifndef SAVE_SPACE_DM42
 // D47 Layout from Layout_template_automation template: Do not change manually
 //This variable is to store in flash memory
 TO_QSPI const calcKey_t kbd_std_D47[37] = {
-//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
+//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam
 {21,                  ITM_LN,               ITM_EXP,              ITM_TGLFRT,           ITM_NULL,             ITM_A,                ITM_a,                ITM_NULL,             ITM_REG_A           },
 {22,                  ITM_LOG10,            ITM_10x,              ITM_HASH_JM,          ITM_NUMBER_SIGN,      ITM_B,                ITM_b,                ITM_NULL,             ITM_REG_B           },
 {23,                  ITM_SQUAREROOTX,      ITM_SQUARE,           ITM_ms,               ITM_ROOT_SIGN,        ITM_C,                ITM_c,                ITM_NULL,             ITM_REG_C           },
@@ -388,9 +388,9 @@ TO_QSPI const calcKey_t kbd_std_D47[37] = {
 {83,                  ITM_PERIOD,           ITM_SHOW,             -MNU_INFO,            ITM_PERIOD,           ITM_COMMA,            ITM_PERIOD,           ITM_PERIOD,           ITM_PERIOD          },
 {84,                  ITM_RS,               ITM_PR,               -MNU_PFN,             ITM_NULL,             ITM_QUESTION_MARK,    ITM_SLASH,            ITM_SLASH,            ITM_NULL            },
 {85,                  ITM_ADD,              -MNU_CATALOG,         -MNU_IO,              ITM_PLUS,             ITM_SPACE,            ITM_PLUS,             ITM_PLUS,             ITM_ADD             }
-//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
+//keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam
 };
-#endif //SAVE_SPACE_DM42 
+#endif //SAVE_SPACE_DM42
 
 
 
@@ -443,25 +443,25 @@ void fnDeleteMenu(uint16_t id) {
 
 void updateAssignTamBuffer(void) {
   char *tbPtr = tamBuffer;
-  tbPtr = stpcpy(tbPtr, "ASSIGN ");
+  tbPtr = stringAppend(tbPtr, "ASSIGN ");
 
   if(itemToBeAssigned == 0) {
     if(tam.alpha) {
-      tbPtr = stpcpy(tbPtr, STD_LEFT_SINGLE_QUOTE);
+      tbPtr = stringAppend(tbPtr, STD_LEFT_SINGLE_QUOTE);
       if(aimBuffer[0] == 0) {
-        tbPtr = stpcpy(tbPtr, "_");
+        tbPtr = stringAppend(tbPtr, "_");
       }
       else {
-        tbPtr = stpcpy(tbPtr, aimBuffer);
-        tbPtr = stpcpy(tbPtr, STD_RIGHT_SINGLE_QUOTE);
+        tbPtr = stringAppend(tbPtr, aimBuffer);
+        tbPtr = stringAppend(tbPtr, STD_RIGHT_SINGLE_QUOTE);
       }
     }
     else {
-      tbPtr = stpcpy(tbPtr, "_");
+      tbPtr = stringAppend(tbPtr, "_");
     }
   }
   else if(itemToBeAssigned == ASSIGN_CLEAR) {
-    tbPtr = stpcpy(tbPtr, "NULL");
+    tbPtr = stringAppend(tbPtr, "NULL");
   }
   else if(itemToBeAssigned >= ASSIGN_LABELS) {
     if(labelList[itemToBeAssigned - ASSIGN_LABELS].program > 0) { // RAM
@@ -481,47 +481,47 @@ void updateAssignTamBuffer(void) {
     }
   }
   else if(itemToBeAssigned >= ASSIGN_RESERVED_VARIABLES) {
-    tbPtr = stpcpy(tbPtr, (char *)allReservedVariables[itemToBeAssigned - ASSIGN_RESERVED_VARIABLES].reservedVariableName + 1);
+    tbPtr = stringAppend(tbPtr, (char *)allReservedVariables[itemToBeAssigned - ASSIGN_RESERVED_VARIABLES].reservedVariableName + 1);
   }
   else if(itemToBeAssigned >= ASSIGN_NAMED_VARIABLES) {
-    tbPtr = stpcpy(tbPtr, (char *)allNamedVariables[itemToBeAssigned - ASSIGN_NAMED_VARIABLES].variableName + 1);
+    tbPtr = stringAppend(tbPtr, (char *)allNamedVariables[itemToBeAssigned - ASSIGN_NAMED_VARIABLES].variableName + 1);
   }
   else if(itemToBeAssigned <= ASSIGN_USER_MENU) {
-    tbPtr = stpcpy(tbPtr, userMenus[-(itemToBeAssigned - ASSIGN_USER_MENU)].menuName);
+    tbPtr = stringAppend(tbPtr, userMenus[-(itemToBeAssigned - ASSIGN_USER_MENU)].menuName);
   }
   else if(itemToBeAssigned < 0) {
-    tbPtr = stpcpy(tbPtr, indexOfItems[-itemToBeAssigned].itemCatalogName);
+    tbPtr = stringAppend(tbPtr, indexOfItems[-itemToBeAssigned].itemCatalogName);
   }
   else if(itemToBeAssigned >= ITM_X_P1 && itemToBeAssigned <= ITM_X_g6) {
-    tbPtr = stpcpy(tbPtr, indexOfItemsXEQM + 8*(itemToBeAssigned-fnXEQMENUpos));
+    tbPtr = stringAppend(tbPtr, indexOfItemsXEQM + 8*(itemToBeAssigned-fnXEQMENUpos));
   }
   else if(indexOfItems[itemToBeAssigned].itemCatalogName[0] == 0) {
-    tbPtr = stpcpy(tbPtr, indexOfItems[itemToBeAssigned].itemSoftmenuName);
+    tbPtr = stringAppend(tbPtr, indexOfItems[itemToBeAssigned].itemSoftmenuName);
   }
   else {
-    tbPtr = stpcpy(tbPtr, indexOfItems[itemToBeAssigned].itemCatalogName);
+    tbPtr = stringAppend(tbPtr, indexOfItems[itemToBeAssigned].itemCatalogName);
   }
 
-  tbPtr = stpcpy(tbPtr, " ");
+  tbPtr = stringAppend(tbPtr, " ");
   if(itemToBeAssigned != 0 && tam.alpha) {
-    tbPtr = stpcpy(tbPtr, STD_LEFT_SINGLE_QUOTE);
+    tbPtr = stringAppend(tbPtr, STD_LEFT_SINGLE_QUOTE);
     if(aimBuffer[0] == 0) {
-      tbPtr = stpcpy(tbPtr, "_");
+      tbPtr = stringAppend(tbPtr, "_");
     }
     else {
-      tbPtr = stpcpy(tbPtr, aimBuffer);
-      tbPtr = stpcpy(tbPtr, STD_RIGHT_SINGLE_QUOTE);
+      tbPtr = stringAppend(tbPtr, aimBuffer);
+      tbPtr = stringAppend(tbPtr, STD_RIGHT_SINGLE_QUOTE);
     }
 
   }
   else if(itemToBeAssigned != 0 && shiftF) {
-    tbPtr = stpcpy(tbPtr, STD_SUP_f STD_CURSOR);
+    tbPtr = stringAppend(tbPtr, STD_SUP_f STD_CURSOR);
   }
   else if(itemToBeAssigned != 0 && shiftG) {
-    tbPtr = stpcpy(tbPtr, STD_SUP_g STD_CURSOR);
+    tbPtr = stringAppend(tbPtr, STD_SUP_g STD_CURSOR);
   }
   else {
-    tbPtr = stpcpy(tbPtr, "_");
+    tbPtr = stringAppend(tbPtr, "_");
   }
 }
 

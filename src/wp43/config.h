@@ -32,7 +32,7 @@ enum {
 
 void     configCommon          (uint16_t idx);
 void     showSoftmenu          (int16_t id);  //JM repeat here to make DMCP compile
-void     fnShowVersion         (uint8_t option); 
+void     fnShowVersion         (uint8_t option);
 extern const enum rounding roundingModeTable[7];
 
 /********************************************//**
@@ -76,6 +76,24 @@ void     fnConfigUk            (uint16_t unusedButMandatoryParameter);
  * \param[in] unusedButMandatoryParameter uint16_t
  ***********************************************/
 void     fnConfigUsa           (uint16_t unusedButMandatoryParameter);
+
+void     fnSetHP35             (uint16_t unusedButMandatoryParameter);
+void     fnHP35JM              (uint16_t unusedButMandatoryParameter);
+void     fnSetC47              (uint16_t unusedButMandatoryParameter);
+
+void     fnMenuGapL                 (uint16_t unusedButMandatoryParameter);
+void     fnMenuGapRX                (uint16_t unusedButMandatoryParameter);
+void     fnMenuGapR                 (uint16_t unusedButMandatoryParameter);
+void     fnSetGapChar               (uint16_t charParam);
+void     fnSettingsToXEQ            (uint16_t unusedButMandatoryParameter);
+void     fnSettingsDispFormatGrpL   (uint16_t param);
+void     fnSettingsDispFormatGrp1Lo (uint16_t param);
+void     fnSettingsDispFormatGrp1L  (uint16_t param);
+void     fnSettingsDispFormatGrpR   (uint16_t param);
+
+
+
+
 
 /********************************************//**
  * \brief Sets the calc to back to default standards
@@ -182,7 +200,7 @@ void     fnGetSignificantDigits(uint16_t unusedButMandatoryParameter);
  *
  * \param[in] unusedButMandatoryParameter uint16_t
  ***********************************************/
-void     fnSetSignificantDigits(uint16_t unusedButMandatoryParameter);
+void     fnSetSignificantDigits(uint16_t S);
 
 /********************************************//**
  * \brief Sets the rounding mode
@@ -205,6 +223,7 @@ void     fnAngularMode         (uint16_t angularMode);
  ***********************************************/
 void     fnFractionType        (uint16_t unusedButMandatoryParameter);
 
+
 #define  loadAutoSav           true
 #define  doNotLoadAutoSav      false
 void     resetOtherConfigurationStuff(void);
@@ -217,8 +236,8 @@ void     fnClAll               (uint16_t confirmation);
 void     backToSystem          (uint16_t confirmation);
 void     runDMCPmenu           (uint16_t confirmation);
 void     activateUSBdisk       (uint16_t confirmation);
-void     fnRange               (uint16_t unusedButMandatoryParameter);
+void     fnRange               (uint16_t R);
 void     fnGetRange            (uint16_t unusedButMandatoryParameter);
-void     fnHide                (uint16_t digits);
+void     fnHide                (uint16_t H);
 void     fnGetHide             (uint16_t unusedButMandatoryParameter);
 #endif // !CONFIG_H

@@ -57,10 +57,12 @@
 TO_QSPI static const char bugScreenNoParam[] = "In function addItemToBuffer:item should not be NOPARAM=7654!";
 
   void fnAim(uint16_t unusedButMandatoryParameter) {
-    resetShiftState();  //JM
-    displayAIMbufferoffset = 0;
-    T_cursorPos = 0;
-    aimBuffer[0] = 0;
+    if(calcMode != CM_AIM && calcMode != CM_EIM && (calcMode != CM_PEM || tam.mode || !getSystemFlag(FLAG_ALPHA))) {
+      resetShiftState();  //JM
+      displayAIMbufferoffset = 0;
+      T_cursorPos = 0;
+      aimBuffer[0] = 0;
+    }
     calcModeAim(NOPARAM); // Alpha Input Mode
     if(programRunStop != PGM_RUNNING) {
       entryStatus |= 0x01;
@@ -301,13 +303,18 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
                                 item == ITM_VERTICAL_BAR        ? "||" :
                                 item == ITM_ROOT_SIGN           ? STD_SQUARE_ROOT "()" :
                                 item == ITM_ALOG_SYMBOL         ? "e" STD_SUB_E "^()" :
-                                item == ITM_LG_SIGN             ? "LOG()" :  //JM C43
-                                item == ITM_LN_SIGN             ? "LN()"  :  //JM C43
-                                item == ITM_SIN_SIGN            ? "SIN()" :  //JM C43
-                                item == ITM_COS_SIGN            ? "COS()" :  //JM C43
-                                item == ITM_TAN_SIGN            ? "TAN()" :  //JM C43
-                                item == ITM_OBELUS              ? STD_SLASH  :  //JM C43
-                                indexOfItems[item].itemSoftmenuName;
+                                item == ITM_LG_SIGN             ? "LOG()" :     //C47
+                                item == ITM_LN_SIGN             ? "LN()"  :     //C47
+                                item == ITM_SIN_SIGN            ? "SIN()" :     //C47
+                                item == ITM_COS_SIGN            ? "COS()" :     //C47
+                                item == ITM_TAN_SIGN            ? "TAN()" :     //C47
+                                item == ITM_ASIN_SIGN           ? "ASIN()" :    //C47
+                                item == ITM_ACOS_SIGN           ? "ACOS()" :    //C47
+                                item == ITM_ATAN_SIGN           ? "ATAN()" :    //C47
+                                item == ITM_OBELUS              ? STD_SLASH  :  //C47
+                                item == ITM_poly_SIGN           ? "a3" STD_DOT "x^3+a2" STD_DOT "x^2+a1" STD_DOT "x+a0" :
+                                item == ITM_op_j_SIGN           ? COMPLEX_UNIT :
+                                  indexOfItems[item].itemSoftmenuName;
           char *aimCursorPos = aimBuffer;
           char *aimBottomPos = aimBuffer + stringByteLength(aimBuffer);
           uint32_t itemLen = stringByteLength(addChar);
@@ -319,14 +326,21 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           }
           xcopy(aimCursorPos, addChar, itemLen);
           switch(item) {
-            case ITM_ALOG_SYMBOL: {
-              xCursor += 4;
+            case ITM_poly_SIGN: {    //C47
+              xCursor += 21;
               break;
             }
-            case ITM_LG_SIGN:   //JM C43
-            case ITM_SIN_SIGN:   //JM C43
-            case ITM_COS_SIGN:   //JM C43
-            case ITM_TAN_SIGN: {    //JM C43
+            case ITM_ASIN_SIGN:      //C47
+            case ITM_ACOS_SIGN:      //C47
+            case ITM_ATAN_SIGN: {    //C47
+              xCursor += 5;
+              break;
+            }
+            case ITM_ALOG_SYMBOL:
+            case ITM_LG_SIGN:       //C47
+            case ITM_SIN_SIGN:      //C47
+            case ITM_COS_SIGN:      //C47
+            case ITM_TAN_SIGN: {    //C47
               xCursor += 4;
               break;
             }
@@ -334,7 +348,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
               xCursor += 2;
               break;
             }
-            case ITM_LN_SIGN: {   //JM C43
+            case ITM_LN_SIGN: {     //C47
               xCursor += 3;
               break;
             }
@@ -1726,7 +1740,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         case NP_REAL_EXPONENT: { // +12345.678e+3
           nimBufferToDisplayBuffer(aimBuffer, nimBufferDisplay + 2);
 
-          exponentToDisplayString(stringToInt32(aimBuffer + exponentSignLocation), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL, true, STD_SPACE_PUNCTUATION);
+          exponentToDisplayString(stringToInt32(aimBuffer + exponentSignLocation), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL, true);
           if(aimBuffer[exponentSignLocation + 1] == 0 && aimBuffer[exponentSignLocation] == '-') {
             strcat(nimBufferDisplay, STD_SUP_MINUS);
           }
@@ -1742,7 +1756,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
 
           for(index=2; aimBuffer[index]!=' '; index++) {
           }
-          supNumberToDisplayString(stringToInt32(aimBuffer + index + 1), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL, true, STD_SPACE_PUNCTUATION);
+          supNumberToDisplayString(stringToInt32(aimBuffer + index + 1), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL, true);
 
           strcat(nimBufferDisplay, "/");
 
@@ -1775,7 +1789,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           nimBufferToDisplayBuffer(aimBuffer, nimBufferDisplay + 2);
 
           if(nimNumberPart == NP_REAL_EXPONENT) {
-            exponentToDisplayString(stringToInt32(aimBuffer + exponentSignLocation), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL, true, STD_SPACE_PUNCTUATION);
+            exponentToDisplayString(stringToInt32(aimBuffer + exponentSignLocation), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL, true);
             if(aimBuffer[exponentSignLocation + 1] == 0 && aimBuffer[exponentSignLocation] == '-') {
               strcat(nimBufferDisplay, STD_SUP_MINUS);
             }
@@ -1827,7 +1841,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
             nimBufferToDisplayBuffer(aimBuffer + imaginaryMantissaSignLocation + 1, nimBufferDisplay + stringByteLength(nimBufferDisplay));
 
             if(nimNumberPart == NP_REAL_EXPONENT) {
-              exponentToDisplayString(stringToInt32(aimBuffer + imaginaryExponentSignLocation), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL, true, STD_SPACE_PUNCTUATION);
+              exponentToDisplayString(stringToInt32(aimBuffer + imaginaryExponentSignLocation), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL, true);
               if(aimBuffer[imaginaryExponentSignLocation + 1] == 0 && aimBuffer[imaginaryExponentSignLocation] == '-') {
                 strcat(nimBufferDisplay, STD_SUP_MINUS);
               }
@@ -1847,7 +1861,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       }
       }
 
-      if(!getSystemFlag(FLAG_DECIMP)) {
+      if(RADIX34_MARK_CHAR == ',') {
         for(index=stringByteLength(nimBufferDisplay) - 1; index>0; index--) {
           if(nimBufferDisplay[index] == '.') {
             nimBufferDisplay[index] = ',';
@@ -1884,18 +1898,21 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
 
 
   static int16_t insertGapIP(char *displayBuffer, int16_t numDigits, int16_t nth) {
-    if(groupingGap == 0) {
+    if(GROUPWIDTH_LEFT == 0 || (SEPARATOR_LEFT[0]==1 && SEPARATOR_LEFT[1]==1)) {
       return 0; // no gap when none is required!
     }
-    if(numDigits <= groupingGap) {
-      return 0; // there are less than groupingGap digits
+    if(numDigits <= GROUPWIDTH_LEFT) {
+      return 0; // there are less than GROUPWIDTH_LEFT digits
     }
     if(nth + 1 == numDigits) {
       return 0; // no gap after the last digit
     }
 
-    if((numDigits - nth) % groupingGap == 1 || groupingGap == 1) {
-      strcpy(displayBuffer, STD_SPACE_PUNCTUATION);
+    if((numDigits - nth) % GROUPWIDTH_LEFT == 1 || GROUPWIDTH_LEFT == 1) {
+      char tt[4];
+      if(SEPARATOR_LEFT[1]!=1) {strcpy(tt,SEPARATOR_LEFT);} 
+      else {tt[0] = SEPARATOR_LEFT[0]; tt[1] = 0;} 
+      strcpy(displayBuffer, tt);
       return 2;
     }
 
@@ -1903,18 +1920,21 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
   }
 
   static int16_t insertGapFP(char *displayBuffer, int16_t numDigits, int16_t nth) {
-    if(groupingGap == 0) {
+    if(GROUPWIDTH_RIGHT == 0 || (SEPARATOR_RIGHT[0]==1 && SEPARATOR_RIGHT[1]==1)) {
       return 0; // no gap when none is required!
     }
-    if(numDigits <= groupingGap) {
-      return 0; // there are less than groupingGap digits
+    if(numDigits <= GROUPWIDTH_RIGHT) {
+      return 0; // there are less than GROUPWIDTH_LEFT digits
     }
     if(nth + 1 == numDigits) {
       return 0; // no gap after the last digit
     }
 
-    if(nth % groupingGap == groupingGap - 1) {
-      strcpy(displayBuffer, STD_SPACE_PUNCTUATION);
+    if(nth % GROUPWIDTH_RIGHT == GROUPWIDTH_RIGHT - 1) {
+      char tt[4];
+      if(SEPARATOR_RIGHT[1]!=1) {strcpy(tt,SEPARATOR_RIGHT);} 
+      else {tt[0] = SEPARATOR_RIGHT[0]; tt[1] = 0;} 
+      strcpy(displayBuffer, tt);
       return 2;
     }
 
@@ -1931,15 +1951,15 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     }
     buffer++;
 
-    int16_t groupingGapM = groupingGap;                       //JMGAP vv
+    int16_t GROUPWIDTH_LEFTM = GROUPWIDTH_LEFT;                       //JMGAP vv
     switch(nimNumberPart) {
-      case NP_INT_10:                    // +12345 longint; Do not change groupingGap. Leave at user setting, default 3.
-      case NP_INT_BASE:                  // +123AB#16.    ; Change groupinggap from user selection to this table, for entry
+      case NP_INT_10:                    // +12345 longint; Do not change GROUPWIDTH_LEFT. Leave at user setting, default 3.
+      case NP_INT_BASE:                  // +123AB#16.    ; Change GROUPWIDTH_LEFT from user selection to this table, for entry
         switch(lastIntegerBase) {
-          case  0:groupingGap = groupingGapM; break;
-          case  2:groupingGap = 4; break;
-          case  3:groupingGap = 3; break;
-          case  4:groupingGap = 2; break;
+          case  0:GROUPWIDTH_LEFT = GROUPWIDTH_LEFTM; break;
+          case  2:GROUPWIDTH_LEFT = 4; break;
+          case  3:GROUPWIDTH_LEFT = 3; break;
+          case  4:GROUPWIDTH_LEFT = 2; break;
           case  5:
           case  6:
           case  7:
@@ -1950,13 +1970,13 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case 12:
           case 13:
           case 14:
-          case 15:groupingGap = 3; break;
-          case 16:groupingGap = 2; break;
+          case 15:GROUPWIDTH_LEFT = 3; break;
+          case 16:GROUPWIDTH_LEFT = 2; break;
           default:break;
         }
         break;
       case NP_INT_16:                    // +123AB.       ; Change to 2 for hex.
-        groupingGap = 2;
+        GROUPWIDTH_LEFT = 2;
         break;
       default:
         break;
@@ -1970,7 +1990,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       dest += insertGapIP(displayBuffer + dest, numDigits, source);
     }
 
-    groupingGap = groupingGapM;                               //JMGAP
+    GROUPWIDTH_LEFT = GROUPWIDTH_LEFTM;                               //JMGAP
     displayBuffer[dest] = 0;
 
     if(nimNumberPart == NP_REAL_FLOAT_PART || nimNumberPart == NP_REAL_EXPONENT) {

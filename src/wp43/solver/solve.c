@@ -116,6 +116,14 @@ void fnSolve(uint16_t labelOrVariable) {
     }
     adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
+  else if(labelOrVariable >= FIRST_NAMED_VARIABLE && labelOrVariable <= LAST_NAMED_VARIABLE && currentSolverProgram >= numberOfLabels) {
+    displayCalcErrorMessage(ERROR_NO_PROGRAM_SPECIFIED, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "label %u not found", labelOrVariable);
+      moreInfoOnError("In function fnSolve:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+  }
   else if(labelOrVariable >= FIRST_NAMED_VARIABLE && labelOrVariable <= LAST_NAMED_VARIABLE) {
     // Execute
     real34_t z, y, x;
@@ -210,7 +218,7 @@ void fnSolve(uint16_t labelOrVariable) {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "unexpected parameter %u", labelOrVariable);
-      moreInfoOnError("In function fnPgmSlv:", errorMessage, NULL, NULL);
+      moreInfoOnError("In function fnSolve:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }

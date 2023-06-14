@@ -40,7 +40,7 @@
     switch(getRegisterDataType(regist)) {
       case dtReal34: {
         if(showContent) {
-          real34ToDisplayString(REGISTER_REAL34_DATA(regist), getRegisterAngularMode(regist), tmpString, &standardFont, SCREEN_WIDTH - 1 - registerNameWidth, 34, false, STD_SPACE_4_PER_EM, false);
+          real34ToDisplayString(REGISTER_REAL34_DATA(regist), getRegisterAngularMode(regist), tmpString, &standardFont, SCREEN_WIDTH - 1 - registerNameWidth, 34, false, false);
         }
         else {
           sprintf(tmpString, "%d bytes", (int16_t)TO_BYTES(REAL34_SIZE));
@@ -50,7 +50,7 @@
 
       case dtComplex34: {
         if(showContent) {
-          complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &standardFont, SCREEN_WIDTH - 1 - registerNameWidth, 34, false, STD_SPACE_4_PER_EM, false, getComplexRegisterAngularMode(regist), getComplexRegisterPolarMode(regist));
+          complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &standardFont, SCREEN_WIDTH - 1 - registerNameWidth, 34, false, false, getComplexRegisterAngularMode(regist), getComplexRegisterPolarMode(regist));
         }
         else {
           sprintf(tmpString, "%d bytes", (int16_t)TO_BYTES(COMPLEX34_SIZE));
@@ -62,13 +62,13 @@
         if(showContent) {
           if(regist >= FIRST_RESERVED_VARIABLE) {
             copySourceRegisterToDestRegister(regist, TEMP_REGISTER_1);
-            longIntegerRegisterToDisplayString(TEMP_REGISTER_1, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - 1 - registerNameWidth, 50, STD_SPACE_4_PER_EM, false);
+            longIntegerRegisterToDisplayString(TEMP_REGISTER_1, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - 1 - registerNameWidth, 50, false);
           }
           else if(getRegisterLongIntegerSign(regist) == LI_NEGATIVE) {
-            longIntegerRegisterToDisplayString(regist, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - 1 - registerNameWidth, 50, STD_SPACE_4_PER_EM, false);   //JM added last parameter: Allow LARGELI
+            longIntegerRegisterToDisplayString(regist, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - 1 - registerNameWidth, 50, false);   //JM added last parameter: Allow LARGELI
           }
           else {
-            longIntegerRegisterToDisplayString(regist, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - 9 - registerNameWidth, 50, STD_SPACE_4_PER_EM, false);   //JM added last parameter: Allow LARGELI
+            longIntegerRegisterToDisplayString(regist, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - 9 - registerNameWidth, 50, false);   //JM added last parameter: Allow LARGELI
           }
         }
         else {
@@ -293,7 +293,8 @@
       for(int16_t row=0; row<10; row++) {
         calcRegister_t regist = currentRegisterBrowserScreen + row;
         if(regist < FIRST_NAMED_VARIABLE + numberOfNamedVariables) { // Named variables
-          sprintf(tmpString, "%s:", (char *)allNamedVariables[regist - FIRST_NAMED_VARIABLE].variableName + 1);
+          stringAppend(tmpString, (char *)allNamedVariables[regist - FIRST_NAMED_VARIABLE].variableName + 1);
+          stringAppend(tmpString + stringByteLength(tmpString), ":");
 
           // variable name
           registerNameWidth = showString(tmpString, &standardFont, 1, 219 - 22 * row, vmNormal, true, true);

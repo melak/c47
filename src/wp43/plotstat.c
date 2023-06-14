@@ -686,12 +686,12 @@ char * radixProcess(const char * ss) {  //  .  HIERDIE WERK GLAD NIE
 
   while( ss[ix] != 0 ){
     if(ss[ix]==',' || ss[ix]=='.') {
-      tmp_names1[iy++] = getSystemFlag(FLAG_DECIMP) ? '.' : ',';
+      tmp_names1[iy++] = RADIX34_MARK_CHAR;
       tmp_names1[iy] = 0;
     }
     else
     if(ss[ix]=='#') {
-      tmp_names1[iy++] = getSystemFlag(FLAG_DECIMP) ? ',' : ';';
+      tmp_names1[iy++] = RADIX34_MARK_CHAR;
       tmp_names1[iy] = 0;
     }
     else {
@@ -883,7 +883,7 @@ static char *eng(double value, int digits) {
 
 void eformat_eng2 (char* s02, const char* s01, double inreal, int8_t digits, const char* s05) {
   char s03[100];
-  
+
   strcpy(s03,eng(inreal, digits));
   strcpy(s02,s01);
   strcat(s02,eatSpacesMid(radixProcess(s03)));
@@ -901,7 +901,7 @@ void eformat_eng2 (char* s02, const char* s01, double inreal, int8_t digits, con
 #if !defined (TESTSUITE_BUILD) //TESTSUITE_BUILD
   int32_t statMxN(void) {
     uint16_t rows = 0;
-    
+
     if(plotStatMx[0]=='D') {
       return 0;                //Only allow S and H
     }
@@ -1115,7 +1115,7 @@ void graphPlotstat(uint16_t selection){
       float histofactor = drawHistogram == 0 ? 1 : 1/zoomfactor * (((float)statnum + 2.0f)  /  ((float)(statnum) - 1.0f) - 1)/2;     //Create space on the sides of the graph for the wider histogram columns
       float plotzoomx = pow(4.5f, (int8_t)(PLOT_ZOOM & 0x03));
       float plotzoomy = drawHistogram == 1 ? 1 : plotzoomx;
-      
+
       x_min = x_min - dx * histofactor * zoomfactor * plotzoomx;
       y_min = y_min - dy * histofactor * zoomfactor * plotzoomy;
       x_max = x_max + dx * histofactor * zoomfactor * plotzoomx;
@@ -1141,7 +1141,7 @@ void graphPlotstat(uint16_t selection){
      if(x_min >= FLoatingMax || x_max >= FLoatingMax || y_min >= FLoatingMax || y_max >= FLoatingMax) {
        goto scalePlusInfinity;
      }
-     
+
 
 
     graph_axis();
@@ -1278,7 +1278,7 @@ void graphPlotstat(uint16_t selection){
       n = showString(padEquals(ss), &standardFont, 160-2 - stringWidth(tt, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index + 2   -3  +autoshift, vmNormal, false, false);
       eformat_eng2(ss, radixProcess("#"), y_max, 2, ")");
       showString(padEquals(ss), &standardFont, n+3,           Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++  -3  + autoshift + 2, vmNormal, false, false);
-      
+
       eformat_eng2(ss, "(", x_min, 2, "");
       n = showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index    -6  + autoshift + 2, vmNormal, false, false);
       eformat_eng2(ss, radixProcess("#"), y_min, 2, ")");
@@ -1288,21 +1288,21 @@ void graphPlotstat(uint16_t selection){
       showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -4 +autoshift, vmNormal, false, false);
       eformat_eng2(ss,"",lB,3,"");
       showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -4 +autoshift, vmNormal, false, false);
-      strcpy(ss,STD_DOWN_ARROW "BIN" "=");                   
+      strcpy(ss,STD_DOWN_ARROW "BIN" "=");
       showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -4 +autoshift, vmNormal, false, false);
 
-      eformat_eng2(ss,"",hB,3,"");           
+      eformat_eng2(ss,"",hB,3,"");
       showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
-      strcpy(ss,STD_UP_ARROW "BIN" "=");                   
+      strcpy(ss,STD_UP_ARROW "BIN" "=");
       showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
 
-      eformat_eng2(ss,"",nB,3,"");           
+      eformat_eng2(ss,"",nB,3,"");
       showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
-      strcpy(ss,"nBINS" "=");                   
+      strcpy(ss,"nBINS" "=");
       showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
-      eformat_eng2(ss,"",(hB-lB)/nB,3,"");           
+      eformat_eng2(ss,"",(hB-lB)/nB,3,"");
       showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
-      strcpy(ss,"Width" "=");                   
+      strcpy(ss,"Width" "=");
       showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
 
     }
@@ -1750,7 +1750,7 @@ void fnPlotStat(uint16_t plotMode){
     #if defined(STATDEBUG) && defined(PC_BUILD)
     printf("fnPlotStat1: plotSelection = %u; Plotmode=%u\n",plotSelection,plotMode);
     printf("#####>>> fnPlotStat1: plotSelection:%u:%s  Plotmode:%u lastplotmode:%u  lrSelection:%u lrChosen:%u plotStatMx:%s\n",plotSelection, getCurveFitModeName(plotSelection), plotMode, lastPlotMode, lrSelection, lrChosen, plotStatMx);
-      if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || 
+      if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) ||
           (plotStatMx[0]=='D' && drawMxN() >= 2) ||
           (plotStatMx[0]=='H' && statMxN() >= 3) ) {
         int16_t cnt = 0;
@@ -1775,8 +1775,8 @@ void fnPlotStat(uint16_t plotMode){
     }
     #endif //STATDEBUG
 
-    if((plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || 
-       (plotStatMx[0]=='D' && drawMxN() >= 2) || 
+    if((plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) ||
+       (plotStatMx[0]=='D' && drawMxN() >= 2) ||
        (plotStatMx[0]=='H' && statMxN() >= 3) ) {
     PLOT_SCALE = false;
 
@@ -1952,7 +1952,7 @@ void fnPlotRegressionLine(uint16_t plotMode){
     case PLOT_NOTHING: {
       break;
     }
-    
+
     default: {
       break;
     }

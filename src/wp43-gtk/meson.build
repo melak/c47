@@ -2,7 +2,8 @@ wp43_gtk_src = files(
   'wp43-gtk.c',
   'gtkGui.c',
   'hal/audio.c',
-  'hal/gui.c')
+  'hal/gui.c',
+  'hal/io.c')
 
 override_opts = ['b_coverage=false']
 cflags        = []

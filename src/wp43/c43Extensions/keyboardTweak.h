@@ -36,7 +36,7 @@
 //extern uint32_t nextTimerRefresh;
 //#endif
 
-void     keyClick(uint8_t length); 
+void     keyClick(uint8_t length);
 
 void     showAlphaModeonGui   (void);
 void     resetShiftState      (void);
@@ -114,5 +114,7 @@ void fnCla                   (uint16_t unusedButMandatoryParameter);
 void fnCln                   (uint16_t unusedButMandatoryParameter);
 
 void fnT_ARROW(uint16_t command);
+
+void     refreshModeGui       (void);
 
 #endif // KEYBOARDTWEAK_H

@@ -1,0 +1,221 @@
+2019-11-27 Started new WP43C / C43 Font files
+
+2019-11-27 Added 6 last glyphs in font. Copied from 2019-07-07 previous font, into the new WP43C font.
+           JM Added 6 Greek glyphs to WP43S_StandardFont.ttf.
+           - "\x83\xd8" 03D8   Ϙ  GREEK LETTER ARCHAIC KOPPA
+           - "\x83\xd9" 03D9   ϙ  GREEK SMALL LETTER ARCHAIC KOPPA
+           - "\x83\xdc" 03DC   Ϝ  GREEK LETTER DIGAMMA
+           - "\x83\xdd" 03DD   ϝ  GREEK SMALL LETTER DIGAMMA
+           - "\x83\xe0" 03E0   Ϡ  GREEK LETTER SAMPI
+           - "\x83\xe1" 03E1   ϡ  GREEK SMALL LETTER SAMPI
+
+WP43S font:
+
+2019-12-31 Updated copyright information in both ttf files:
+           2019 ==> 2020
+
+2020-03-07 Changed glyph U+21CD (undo)
+           New WP43S_StandardFont.ttf generated.
+
+2020-04-03 Changed characters U+2422 and U+2423 in Standard font.
+           Added U+2421 and U+2430 ... 33.
+           New WP43S_StandardFont.ttf generated.
+
+WP43C font:
+2020-04-04 Copied 6 last glyphs in font from 2019-11-27 previous font, into the new WP43S font.
+           JM 6 Greek glyphs to WP43S_StandardFont.ttf.
+           - "\x83\xd8" 03D8   Ϙ  GREEK LETTER ARCHAIC KOPPA
+           - "\x83\xd9" 03D9   ϙ  GREEK SMALL LETTER ARCHAIC KOPPA
+           - "\x83\xdc" 03DC   Ϝ  GREEK LETTER DIGAMMA
+           - "\x83\xdd" 03DD   ϝ  GREEK SMALL LETTER DIGAMMA
+           - "\x83\xe0" 03E0   Ϡ  GREEK LETTER SAMPI
+           - "\x83\xe1" 03E1   ϡ  GREEK SMALL LETTER SAMPI
+
+           - Copied the undo "u-turn" glyph back from previous font
+
+WP43S font:
+2020-04-10 Changed characters U+2430 and U+2433 in Standard font.
+           Added characters U+2018 and U+2019 in Numeric font.
+
+           New WP43S_NumericFont.ttf generated.
+           New WP43S_StandardFont.ttf generated.
+
+
+WP43C font:
+2020-04-10 Copied 6 last glyphs in font from 2019-11-27 previous font, into the new WP43S font.
+           JM 6 Greek glyphs to WP43S_StandardFont.ttf.
+           - "\x83\xd8" 03D8   Ϙ  GREEK LETTER ARCHAIC KOPPA
+           - "\x83\xd9" 03D9   ϙ  GREEK SMALL LETTER ARCHAIC KOPPA
+           - "\x83\xdc" 03DC   Ϝ  GREEK LETTER DIGAMMA
+           - "\x83\xdd" 03DD   ϝ  GREEK SMALL LETTER DIGAMMA
+           - "\x83\xe0" 03E0   Ϡ  GREEK LETTER SAMPI
+           - "\x83\xe1" 03E1   ϡ  GREEK SMALL LETTER SAMPI
+
+2020-05-23 Renamed the modified WP43S fonts to C43 fonts, to maintain the differences easier.
+           When new WP43S fonts come out, the easiest procedure is to
+           1. Copy the new WP43S...ttf files to C43...ttf files
+           2. From the old C43 font files, copy the last 6 glyphs including the descriptions to the new C43 fonts.
+           3. Add the contents of C43_sortingOrder_additions.csv to the bottom of sortingOrder.csv.
+
+WP43S font:
+020-05-23 Removed U+00B9 from both fonts.
+           Removed U+21C8 and U+21CA from standard font.
+           Added U+222D (triple integral), U+2230 (volume integral),
+           and U+2222 (spherical angle).
+           Swapped glyphs 1/2 and 1/4 (U+00BC is 1/4 and U+00BD is 1/2).
+           New WP43S_NumericFont.ttf generated.
+           New WP43S_StandardFont.ttf generated.
+
+WP43S font:
+2020-07-31 added USB symbol U+2434
+           New WP43S_StandardFont.ttf generated.
+
+2020-08-20 Changed USB icon U+2434
+           New WP43S_StandardFont.ttf generated.
+
+2021-05-02 Made + and - 16 pixels wide (1 pixel wider) in NumericFont
+           Reduced the space (U+0020) down to 8 pixels wide.
+
+
+WP43C font:
+2021-06-29 Copied 6 last glyphs in font from previous font, into the new WP43S font, and renamed back to C43
+           JM 6 Greek glyphs to WP43S_NumericFont.ttf.
+           Ϙ  GREEK LETTER ARCHAIC KOPPA
+           ϙ  GREEK SMALL LETTER ARCHAIC KOPPA
+           Ϝ  GREEK LETTER DIGAMMA
+           ϝ  GREEK SMALL LETTER DIGAMMA
+           Ϡ  GREEK LETTER SAMPI
+           ϡ  GREEK SMALL LETTER SAMPI
+
+2021-09-28 Added stopwatch symbol U+23F1 to standard font.
+WP43C standard font:
+2021-10-10 Copied 6 last glyphs in font from previous font, into the new WP43S font, and renamed back to C43
+           JM 6 Greek glyphs to WP43S_NumericFont.ttf.
+           Ϙ  GREEK LETTER ARCHAIC KOPPA
+           ϙ  GREEK SMALL LETTER ARCHAIC KOPPA
+           Ϝ  GREEK LETTER DIGAMMA
+           ϝ  GREEK SMALL LETTER DIGAMMA
+           Ϡ  GREEK LETTER SAMPI
+           ϡ  GREEK SMALL LETTER SAMPI
+
+WP43S Font:
+2022-01-16 Changed USB symbol U+2434 and printer symbol U+2399 in standard font.
+           Changed printer symbol U+2399 in numeric font.
+
+C43 Font:
+2022-01-20 Updated accordingly.
+
+
+WP43S Font:
+2022-08-16 Moved in both fonts U+2065 to U+2296 (subscript alpha),
+           moved in both fonts U+2066 to U+2297 (subscript delta),
+           moved in both fonts U+2067 to U+2298 (subscript delta),
+           moved in numeric font U+2068 to U+229A (subscript sun),
+           moved in numeric font U+2069 to U+2295 (subscript earth),
+           removed in standard font U+2068 (subscript sun),
+           removed in standard font U+2069 (subscript earth)
+
+C43 Font:
+2022-08-17 Updated accordingly.
+           Ditched the custom C43 USB glyph as the 43S now has an acceptable font.
+
+2022-10-01 Update both new WP43 fonts
+
+----
+           When new WP43S fonts come out, the easiest procedure is to
+           1. Copy the new WP43...ttf files to C43...ttf files, and add 6 blank glyphs.
+           2. From the old C43 font files, copy and paste special, the last 6 glyphs including the descriptions to the new C43 fonts.
+           3. Change the font name to "C43__....ttf"
+           4. Add the contents of C43_sortingOrder_additions.csv to the bottom of sortingOrder.csv.
+           5. Both fonts updated.
+
+           Transferred the only different glyphs now are:
+
+           Ϙ  GREEK LETTER ARCHAIC KOPPA
+           ϙ  GREEK SMALL LETTER ARCHAIC KOPPA
+           Ϝ  GREEK LETTER DIGAMMA
+           ϝ  GREEK SMALL LETTER DIGAMMA
+           Ϡ  GREEK LETTER SAMPI
+           ϡ  GREEK SMALL LETTER SAMPI
+
+
+----
+
+2023-10-11 Add "U+21D2", Rightwards Double Arrow to StandardFont only
+2023-01-15 Add "U+267A", Recycling Symbol For Generic Materials to both fonts
+2023-01-15 Copied "U+21D2", Rightwards Double Arrow to Numericfont to try keep them the same, even for just the additions
+
+    Add STD_RIGHT_DOUBLE_ARROW        "\xa1\xD2"
+    Add STD_RECYCLE                   "\xa6\x7A"
+
+
+----
+
+
+Added the following:
+    2023-05-25 Add STD_WDOT                          "\xa2\xc5" //   22c5
+    2023-05-25 Add STD_WPERIOD                       "\xff\x0e" //   ff0e  THESE TWO ARE ISSUES AND NEED NEW NUMBERS
+    2023-05-25 Add STD_WCOMMA                        "\xff\x0c" //   ff0c  THESE TWO ARE ISSUES AND NEED NEW NUMBERS
+    2023-05-25 Add STD_NQUOTE                        "\x82\xbc" //   02bc
+    2023-05-25 Add STD_INV_BRIDGE                    "\x83\x3a" //   033a   
+    
+    2023-05-29 #define STD_op_i                      "\xa6\x7c"
+    2023-05-29 #define STD_op_j                      "\xa6\x7d"
+    2023-05-29 #define STD_case                      "\xa6\x7b"
+    2023-05-29 #define STD_num                       "\xa6\x7e"
+    2023-05-29 #define STD_RIGHT_TACK                "\xa2\xa2"
+
+----
+
+2023-06-02 Summary of all C47 added characters
+
+  Standardfont: All added glyphs, after the tick:
+    03DC Digamma-grek                               STD_DIGAMMA                   "\x83\xdc"
+    03DD digamma-grek                               STD_digamma                   "\x83\xdd"
+    03D8 Archaickoppa-grek                          STD_QOPPA                     "\x83\xd8"
+    03D9 archaickoppa-grek                          STD_qoppa                     "\x83\xd9"
+    03E0 Sampi-grek                                 STD_SAMPI                     "\x83\xe0"
+    03E1 sampi-grek                                 STD_sampi                     "\x83\xe1"
+    21D2 rightwardsdoublearrow                      STD_RIGHT_DOUBLE_ARROW        "\xa1\xD2"
+    267A recyclingsymbolforgenericmaterials         STD_RECYCLE                   "\xa6\x7A"
+    22C5 dotoperator                                STD_WDOT                      "\xa2\xc5"   
+  > 2789 fullwidthfullstop                          STD_WPERIOD                   "\xff\x0e"   THESE TWO ARE ISSUES AND NEED NEW NUMBERS: Changed from FF0E to 2789
+  > 2788 fullwidthcomma                             STD_WCOMMA                    "\xff\x0c"   THESE TWO ARE ISSUES AND NEED NEW NUMBERS: Changed from FF0C to 2788
+    02BC apostrophemod                              STD_NQUOTE                    "\x82\xbc"   
+    267C recycledpapersymbol (i)                    STD_op_i                      "\xa6\x7c"
+    267D partiallyrecycledpapersymbol (j)           STD_op_j                      "\xa6\x7d"
+    267B blackuniversalrecyclingsymbol              STD_case                      "\xa6\x7b"
+    267E permanentpapersign                         STD_num                       "\xa6\x7e"
+    22A2 righttack                                  STD_RIGHT_TACK                "\xa2\xa2"
+    033A invertedbridgebelowcomb                    STD_INV_BRIDGE                "\x83\x3a"
+  
+  Numeric Font, after z:
+    03DC Digamma-grek                               STD_DIGAMMA                   "\x83\xdc"
+    03DD digamma-grek                               STD_digamma                   "\x83\xdd"
+    03D8 Archaickoppa-grek                          STD_QOPPA                     "\x83\xd8"
+    03D9 archaickoppa-grek                          STD_qoppa                     "\x83\xd9"
+    03E0 Sampi-grek                                 STD_SAMPI                     "\x83\xe0"
+    03E1 sampi-grek                                 STD_sampi                     "\x83\xe1"
+    21D2 rightwardsdoublearrow                      STD_RIGHT_DOUBLE_ARROW        "\xa1\xD2"
+    267A recyclingsymbolforgenericmaterials         STD_RECYCLE                   "\xa6\x7A"
+    22C5 dotoperator                                STD_WDOT                      "\xa2\xc5"   
+  > 2789 fullwidthfullstop                          STD_WPERIOD                   "\xff\x0e"   THESE TWO ARE ISSUES AND NEED NEW NUMBERS: Changed from FF0E to 2789
+  > 2788 fullwidthcomma                             STD_WCOMMA                    "\xff\x0c"   THESE TWO ARE ISSUES AND NEED NEW NUMBERS: Changed from FF0C to 2788
+    02BC apostrophemod                              STD_NQUOTE                    "\x82\xbc"   
+    2219 bulletoperator                             STD_BULLET                    "\xa2\x19"   //not new item, just added to the font
+    267C recycledpapersymbol (i)                    STD_op_i                      "\xa6\x7c"
+    267D partiallyrecycledpapersymbol (j)           STD_op_j                      "\xa6\x7d"
+
+2023-06-04 Add four arrows 
+
+    21E0 leftwardsdashedarrow                       STD_LEFT_DASHARROW            "\xa1\xe0"   
+    21E1 upwardsdashedarrow                         STD_UP_DASHARROW              "\xa1\xe1"  
+    21E2 rightwardsdashedarrow                      STD_RIGHT_DASHARROW           "\xa1\xe2"  
+    21E3 downwardsdashedarrow                       STD_DOWN_DASHARROW            "\xa1\xe3"  
+
+-------
+2023-06-12 Change both fonts i and j to 
+    $2148 i
+    $2149 j
+
+    

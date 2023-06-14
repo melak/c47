@@ -25,15 +25,15 @@
 
 Math changes:
 
-1. addon.c: Added fnArg_all which uses fnArg, but gives a result of 0 for a real 
-   and longint input. The testSuite is not ifluenced. Not needed to modify |x|, 
+1. addon.c: Added fnArg_all which uses fnArg, but gives a result of 0 for a real
+   and longint input. The testSuite is not ifluenced. Not needed to modify |x|,
    as it already works for a real and longint.
    (testSuite not in use for fnArg, therefore also not added)
 
-2. bufferize.c: closenim: changed the default for (0 CC EXIT to 0) instead of i. 
+2. bufferize.c: closenim: changed the default for (0 CC EXIT to 0) instead of i.
    (testSuite not ifluenced).
 
-Todo 
+Todo
 
 
 All the below: because both Last x and savestack does not work due to multiple steps.
@@ -46,7 +46,7 @@ All the below: because both Last x and savestack does not work due to multiple s
 
   8. ABC>SYM
 
-  9. e^theta. redo in math file, 
+  9. e^theta. redo in math file,
 
   10. three phase Ohms Law: 17,18,19
 
@@ -156,6 +156,7 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
   #endif //PC_BUILD
   #ifndef TESTSUITE_BUILD
     resetKeytimers();  //JM
+    clearSystemFlag(FLAG_FRACT);
 
     temporaryInformation = TI_NO_INFO;
     if(calcMode == CM_NIM) {
@@ -165,7 +166,6 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
     }
     lastIntegerBase = 0;
 
-  #ifndef TESTSUITE_BUILD
     uint_fast8_t ix = 0;
     while(ix < SOFTMENU_STACK_SIZE && softmenuStack[0].softmenuId != 0) {
     #ifdef PC_BUILD
@@ -175,14 +175,13 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
       ix++;
     }
 
-    fnDisplayStack(4);                    //Restore to default DSTACK 4
+    if(!checkHP) fnDisplayStack(4);                    //Restore to default DSTACK 4
 
     calcModeNormal();
     refreshScreen();
     fnKeyExit(0);                         //Call fnkeyExit to ensure the correct home screen is brought up, if HOME is selected.
     popSoftmenu();
-  #endif
-#endif //TESTSUITE_BUILD
+  #endif //TESTSUITE_BUILD
 }
 
 //fnArg for real and longints in addition to the standard complex. Simply returns 0 angle
@@ -238,7 +237,7 @@ void fnFrom_ms(uint16_t unusedButMandatoryParameter){
     char tmpString100_OUT[100];
     tmpString100[0]=0;
     tmpString100_OUT[0]=0;
-     
+
     if(getRegisterDataType(REGISTER_X) == dtTime) {
       temporaryInformation = TI_FROM_MS_TIME;
     }
@@ -254,7 +253,7 @@ void fnFrom_ms(uint16_t unusedButMandatoryParameter){
         copyRegisterToClipboardString2(REGISTER_X, tmpString100);
       }
       if(temporaryInformation == TI_FROM_MS_DEG) {
-        real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpString100, &standardFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, " ", true);
+        real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpString100, &standardFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, true);
         int16_t tmp_i = 0;
         while(tmpString100[tmp_i] != 0 && tmpString100[tmp_i+1] != 0) { //pre-condition the dd.mmssss to replaxce spaces with zeroes
           //printf("%c %d",tmpString100[tmp_i],tmpString100[tmp_i]);
@@ -325,7 +324,7 @@ void fnFrom_ms(uint16_t unusedButMandatoryParameter){
       }
     }
 
-    
+
 //    stringToReal(tmpString100,&value,&ctxtReal39);
 #endif //TESTSUITE_BUILD
 }
@@ -538,7 +537,7 @@ void fnJM_2SI(uint16_t unusedButMandatoryParameter) { //Convert Real to Longint;
  * \param[in]  exponent int32_t Power of 10 to format                                                     JM UNIT
  * \return void                                                                                           JM UNIT
  ***********************************************                                                          JM UNIT */
-void exponentToUnitDisplayString(int32_t exponent, char *displayString, char *displayValueString, bool_t nimMode, const char *separator) {               //JM UNIT
+void exponentToUnitDisplayString(int32_t exponent, char *displayString, char *displayValueString, bool_t nimMode) {               //JM UNIT
   displayString[0] = ' ';
   displayString[1] = 0;
   displayString[2] = 0;
@@ -581,11 +580,11 @@ void exponentToUnitDisplayString(int32_t exponent, char *displayString, char *di
     displayString[0] = 0;                                                                               //JM UNIT
     if(nimMode) {                                                                                       //JM UNIT
       if(exponent != 0) {                                                                               //JM UNIT
-        supNumberToDisplayString(exponent, displayString, displayValueString, false, separator);                                 //JM UNIT
+        supNumberToDisplayString(exponent, displayString, displayValueString, false);                                 //JM UNIT
       }                                                                                                 //JM UNIT
     }                                                                                                   //JM UNIT
     else {                                                                                              //JM UNIT
-      supNumberToDisplayString(exponent, displayString, displayValueString, false, separator);                                   //JM UNIT
+      supNumberToDisplayString(exponent, displayString, displayValueString, false);                                   //JM UNIT
     }                                                                                                   //JM UNIT
   }                                                                                                     //JM UNIT
 
@@ -609,7 +608,7 @@ void fnDisplayFormatCycle (uint16_t unusedButMandatoryParameter) {
     fnDisplayFormatSci(displayFormatDigits);
   } else
   if(displayFormat == DF_SCI) {
-    fnDisplayFormatEng(displayFormatDigits); 
+    fnDisplayFormatEng(displayFormatDigits);
   } else
   if(displayFormat == DF_ENG) {
     fnDisplayFormatAll(displayFormatDigits);
@@ -631,14 +630,14 @@ void fnAngularModeJM(uint16_t AMODE) { //Setting to HMS does not change AM
       fnCvtFromCurrentAngularMode(amDegree);
     fnKeyDotD(0);
     fnToHms(0); //covers longint & real
-  } else { 
+  } else {
     if(getRegisterDataType(REGISTER_X) == dtTime) {
       fnToHr(0); //covers time
       setRegisterAngularMode(REGISTER_X, amDegree);
       fnCvtFromCurrentAngularMode(AMODE);
       //fnAngularMode(AMODE);                             Remove updating of ADM to the same mode
     }
-    
+
     if(getRegisterDataType(REGISTER_X) == dtComplex34) {
         //printf("###AA fnAngularModeJM (%i)<= %i\n",REGISTER_X, AMODE);
         //printf("###BB fnAngularModeJM (%i)=> %i\n",REGISTER_X, getRegisterTag(REGISTER_X));
@@ -647,7 +646,7 @@ void fnAngularModeJM(uint16_t AMODE) { //Setting to HMS does not change AM
       setComplexRegisterPolarMode(REGISTER_X, amPolar);
         //printf("###CC fnAngularModeJM (%i)=> %i\n",REGISTER_X, getRegisterTag(REGISTER_X));
 
-    } else { 
+    } else {
       if((getRegisterDataType(REGISTER_X) != dtReal34) || ((getRegisterDataType(REGISTER_X) == dtReal34) && getRegisterAngularMode(REGISTER_X) == amNone)) {
       fnKeyDotD(0); //convert longint, and strip all angles to real.
       uint16_t currentAngularModeOld = currentAngularMode;
@@ -671,7 +670,7 @@ void fnAngularModeJM(uint16_t AMODE) { //Setting to HMS does not change AM
 
 
 void fnDRG(uint16_t unusedButMandatoryParameter) {
-  
+
   switch(getRegisterDataType(REGISTER_X)) {
     case dtTime           :
     case dtDate           :
@@ -680,7 +679,7 @@ void fnDRG(uint16_t unusedButMandatoryParameter) {
     case dtComplex34Matrix:
     case dtConfig         : goto to_return_noLastX; break;
     default: break;
-  } 
+  }
 
   copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER_1);
   uint16_t dest = 9999;
@@ -1224,7 +1223,7 @@ void notSexa(void) {
 void fnHrDeg(uint16_t unusedButMandatoryParameter) {
   if(!saveLastX()) return;
   if(getRegisterAngularMode(REGISTER_X) == amDMS && getRegisterDataType(REGISTER_X) == dtReal34)  dms34ToReal34(0);
-  else if(getRegisterDataType(REGISTER_X) == dtTime)  timeToReal34(0); 
+  else if(getRegisterDataType(REGISTER_X) == dtTime)  timeToReal34(0);
   else                                                notSexa();
 }
 void fnMinute(uint16_t unusedButMandatoryParameter) {
@@ -1388,7 +1387,7 @@ int32_t getD(const real34_t *val) {
     int32_t m[2][2];
     int32_t maxden = denMax; /*999*/
     int32_t ai;
-    
+
     /* initialize matrix */
     m[0][0] = m[1][1] = 1;
     m[0][1] = m[1][0] = 0;
@@ -1407,14 +1406,14 @@ int32_t getD(const real34_t *val) {
       real34Subtract(&xx,&temp,&xx);
       if(real34IsZero(&xx)) break;  // AF: division by zero
       real34Divide(const34_1,&xx,&xx);
-      
+
       int32ToReal34(0x7FFFFFFF,&temp);
       if(real34CompareGreaterThan(&xx,&temp)) break;  // AF: representation failure
-      } 
+      }
 
-	//int nn = (double) m[0][0];
+  //int nn = (double) m[0][0];
     int32_t dd = (double) m[1][0];
-	//printf(">>> %i / %i \n",nn,dd);
+  //printf(">>> %i / %i \n",nn,dd);
 
     if(dd == 0) dd = 1;
     return dd;
@@ -1428,7 +1427,7 @@ void changeToSup(char *str){
   int16_t u, src = 0;
   int16_t insertAt = 0;
   while (strtmp[src]!=0) {
-      u = strtmp[src]-48;   
+      u = strtmp[src]-48;
       if(u <= 1 && u >= 0) {
         str[insertAt]     = STD_SUP_0[0];
         str[insertAt + 1] = STD_SUP_0[1];
@@ -1461,7 +1460,7 @@ void changeToSub(char *str){
   int16_t u, src = 0;
   int16_t insertAt = 0;
   while (strtmp[src]!=0) {
-      u = strtmp[src]-48;   
+      u = strtmp[src]-48;
       if(u <= 9 && u >= 0) {
         str[insertAt]     = STD_SUB_0[0];
         str[insertAt + 1] = STD_SUB_0[1];
@@ -1493,9 +1492,9 @@ void changeToSub(char *str){
     int32_t resultingInteger = 0;
     real34CopyAbs(value34, &val);
     real34Copy(value34, &val1);               //initialize val1 as a fallback value
-	real_t newConstant, tempResult, tempresult_ip, tempresult_fp;
-	real_t valr;
-	real34ToReal(&val,&valr);
+    real_t newConstant, tempResult, tempresult_ip, tempresult_fp;
+    real_t valr;
+    real34ToReal(&val,&valr);
 
     char sign[2];
     if(real34IsPositive(value34)) strcpy(sign,"+"); else strcpy(sign,"-");
@@ -1526,9 +1525,9 @@ void changeToSub(char *str){
     realToIntegralValue(&tempResult, &tempresult_ip, DEC_ROUND_HALF_UP,&ctxtReal39);
     realSubtract(&tempResult, &tempresult_ip, &tempresult_fp, &ctxtReal39);
 
-	realToReal34(&tempResult,&result);
-	realToReal34(&tempresult_fp,&result_fp);
-	realToReal34(&tempresult_ip,&result_ip);
+    realToReal34(&tempResult,&result);
+    realToReal34(&tempresult_fp,&result_fp);
+    realToReal34(&tempresult_ip,&result_ip);
 
     //printReal34ToConsole(&result_fp,"fp:","--\n");
 
@@ -1628,14 +1627,14 @@ void changeToSub(char *str){
           if(real34IsZero(&result_fp)) {
             strcat(displayString,"");
           }
-          else { 
+          else {
             strcat(displayString,"" STD_ALMOST_EQUAL);
           }
         }
       }
 
       return true;
-    } 
+    }
     else {
       return false;
     }
@@ -1681,7 +1680,7 @@ void fnSafeReset (uint16_t unusedButMandatoryParameter) {
 
     jm_G_DOUBLETAP = false;
     ShiftTimoutMode= false;
-    HOME3          = false;    
+    HOME3          = false;
   }
 }
 
@@ -2038,13 +2037,13 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
 void fnSetBCD (uint16_t bcd) {
   switch (bcd) {
     case JC_BCD:  {
-    	bcdDisplay = !bcdDisplay;
+      bcdDisplay = !bcdDisplay;
       if(lastIntegerBase == 0) {
         fnChangeBaseJM(10);
       }
     }
     break;
-    case BCD9c :  
+    case BCD9c :
     case BCD10c:
     case BCDu  :  bcdDisplaySign = bcd; break;
     case JC_TOPHEX : topHex = !topHex;
@@ -2056,8 +2055,8 @@ void fnSetBCD (uint16_t bcd) {
 
 void setFGLSettings(uint16_t option) {
   switch (option) {
-    case RB_FGLNOFF : 
-    case RB_FGLNLIM : 
+    case RB_FGLNOFF :
+    case RB_FGLNLIM :
     case RB_FGLNFUL : {
       fgLN = (uint8_t)option;
       break;
@@ -2066,26 +2065,26 @@ void setFGLSettings(uint16_t option) {
       fgLN = RB_FGLNFUL;
       break;
     }
-  }  
+  }
 }
 
 
 void fnLongPressSwitches (uint16_t option) {
   switch (option) {
     case RB_F14   :
-    case RB_F124  : 
+    case RB_F124  :
     case RB_F1234 : {
       LongPressF = option;
       break;
-    } 
-    case RB_M14   : 
+    }
+    case RB_M14   :
     case RB_M1234 :  {
       LongPressM = option;
       break;
-    } 
+    }
     default: {
       LongPressM = RB_M1234;
-      LongPressF = RB_F124;      
+      LongPressF = RB_F124;
       break;
     }
   }

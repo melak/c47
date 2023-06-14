@@ -97,13 +97,13 @@ void fnAdd(uint16_t unusedButMandatoryParameter) {
 void addRegYStri(void) {
   copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER_1);
   copySourceRegisterToDestRegister(REGISTER_Y, REGISTER_X);
-  
+
   char tmp[2];
   tmp[0]=0;
   int16_t len = stringByteLength(tmp) + 1;
   reallocateRegister(REGISTER_Y, dtString, TO_BLOCKS(len), amNone);
   xcopy(REGISTER_STRING_DATA(REGISTER_Y), tmp, len);
-  
+
   addition[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 
   copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
@@ -500,7 +500,7 @@ static void _addString(const char *stringToAppend) {
  * \return void
  ***********************************************/
 void addStriLonI(void) {
-  longIntegerRegisterToDisplayString(REGISTER_X, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH, 50, STD_SPACE_PUNCTUATION, false);
+  longIntegerRegisterToDisplayString(REGISTER_X, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH, 50, false);
   _addString(tmpString);
 }
 
@@ -591,7 +591,7 @@ void addStriShoI(void) {
  * \return void
  ***********************************************/
 void addStriReal(void) {
-  real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpString, &standardFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, STD_SPACE_PUNCTUATION, true);
+  real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpString, &standardFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, true);
   _addString(tmpString);
 }
 
@@ -604,7 +604,7 @@ void addStriReal(void) {
  * \return void
  ***********************************************/
 void addStriCplx(void) {
-  complex34ToDisplayString(REGISTER_COMPLEX34_DATA(REGISTER_X), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, STD_SPACE_PUNCTUATION, true, currentAngularMode, getSystemFlag(FLAG_POLAR));
+  complex34ToDisplayString(REGISTER_COMPLEX34_DATA(REGISTER_X), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, true, currentAngularMode, getSystemFlag(FLAG_POLAR));
   _addString(tmpString);
 }
 
