@@ -40,9 +40,6 @@ Modes available in the mode menu:
 #include "typeDefinitions.h"
 #include <stdint.h>
 
-// Radix Mark 1 bit
-#define RX_PERIOD               103
-#define RX_COMMA                104
 // Time format 1 bit
 #define TF_H24                  105
 #define TF_H12                  106
@@ -93,26 +90,6 @@ void jm_show_comment   (char comment[]);
 #define ITEM_CONF_N ITM_CHS
 
 
-// Define variables that are saved with the config
-extern bool_t eRPN;                                                  //JM eRPN Create a flag to enable or disable eRPN. See bufferize.c
-extern bool_t HOME3;                                                 //JM HOME Create a flag to enable or disable triple shift HOME3; enable or disable TRIPLE SHIFT TIMER FOR HOME.
-extern bool_t ShiftTimoutMode;                                       //JM HOME Create a flag to enable or disable SHIFT TIMER CANCEL.
-extern bool_t SH_BASE_HOME;                                          //JM BASEHOME Create a flag to enable or disable triple shift
-extern int16_t Norm_Key_00_VAR;                                      //JM USER NORMAL
-extern uint8_t Input_Default;                                        //JM Input Default
-extern bool_t jm_BASE_SCREEN;                                        //JM Screen / keyboard operation setup
-extern bool_t jm_G_DOUBLETAP;                                        //JM Screen / keyboard operation setup
-extern float graph_xmin;                                             //JM Graph
-extern float graph_xmax;                                             //JM Graph
-extern float graph_ymin;                                             //JM Graph
-extern float graph_ymax;                                             //JM Graph
-extern bool_t jm_temporary;                                          //JMHOME
-extern bool_t jm_LARGELI;                                           //JM flag to keep large font numbers on screen
-extern bool_t constantFractions;                                    //JM
-extern uint8_t constantFractionsMode;                                //JM
-extern bool_t constantFractionsOn;                                   //JM
-extern uint32_t indic_x;                                            //JM program progress indicators
-extern uint32_t indic_y;                                            //JM program progress indicators
 
 
 // Additional routines needed in jm.c
@@ -154,12 +131,6 @@ void fnStrInputReal34 (char inp1[]);
 void fnStrInputLongint(char inp1[]);
 void fnRCL          (int16_t inp);
 
-#define ID_43S                  0    //JM Input Default
-#define ID_DP                   2    //JM Input Default
-#define ID_CPXDP                4    //JM Input Default
-#define ID_43D                  5    //JM Input Default
-#define ID_SI                   6    //JM Input Default
-#define ID_LI                   7    //JM Input Default
 
 #define JC_ERPN                 1    // eRPN
 #define JC_HOME_TRIPLE          2    // HOME.3

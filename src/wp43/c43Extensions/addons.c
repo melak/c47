@@ -166,7 +166,6 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
     }
     lastIntegerBase = 0;
 
-  #ifndef TESTSUITE_BUILD
     uint_fast8_t ix = 0;
     while(ix < SOFTMENU_STACK_SIZE && softmenuStack[0].softmenuId != 0) {
     #ifdef PC_BUILD
@@ -176,14 +175,13 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
       ix++;
     }
 
-    fnDisplayStack(4);                    //Restore to default DSTACK 4
+    if(!checkHP) fnDisplayStack(4);                    //Restore to default DSTACK 4
 
     calcModeNormal();
     refreshScreen();
     fnKeyExit(0);                         //Call fnkeyExit to ensure the correct home screen is brought up, if HOME is selected.
     popSoftmenu();
-  #endif
-#endif //TESTSUITE_BUILD
+  #endif //TESTSUITE_BUILD
 }
 
 //fnArg for real and longints in addition to the standard complex. Simply returns 0 angle
@@ -255,7 +253,7 @@ void fnFrom_ms(uint16_t unusedButMandatoryParameter){
         copyRegisterToClipboardString2(REGISTER_X, tmpString100);
       }
       if(temporaryInformation == TI_FROM_MS_DEG) {
-        real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpString100, &standardFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, " ", true);
+        real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpString100, &standardFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, true);
         int16_t tmp_i = 0;
         while(tmpString100[tmp_i] != 0 && tmpString100[tmp_i+1] != 0) { //pre-condition the dd.mmssss to replaxce spaces with zeroes
           //printf("%c %d",tmpString100[tmp_i],tmpString100[tmp_i]);
@@ -539,7 +537,7 @@ void fnJM_2SI(uint16_t unusedButMandatoryParameter) { //Convert Real to Longint;
  * \param[in]  exponent int32_t Power of 10 to format                                                     JM UNIT
  * \return void                                                                                           JM UNIT
  ***********************************************                                                          JM UNIT */
-void exponentToUnitDisplayString(int32_t exponent, char *displayString, char *displayValueString, bool_t nimMode, const char *separator) {               //JM UNIT
+void exponentToUnitDisplayString(int32_t exponent, char *displayString, char *displayValueString, bool_t nimMode) {               //JM UNIT
   displayString[0] = ' ';
   displayString[1] = 0;
   displayString[2] = 0;
@@ -582,11 +580,11 @@ void exponentToUnitDisplayString(int32_t exponent, char *displayString, char *di
     displayString[0] = 0;                                                                               //JM UNIT
     if(nimMode) {                                                                                       //JM UNIT
       if(exponent != 0) {                                                                               //JM UNIT
-        supNumberToDisplayString(exponent, displayString, displayValueString, false, separator);                                 //JM UNIT
+        supNumberToDisplayString(exponent, displayString, displayValueString, false);                                 //JM UNIT
       }                                                                                                 //JM UNIT
     }                                                                                                   //JM UNIT
     else {                                                                                              //JM UNIT
-      supNumberToDisplayString(exponent, displayString, displayValueString, false, separator);                                   //JM UNIT
+      supNumberToDisplayString(exponent, displayString, displayValueString, false);                                   //JM UNIT
     }                                                                                                   //JM UNIT
   }                                                                                                     //JM UNIT
 

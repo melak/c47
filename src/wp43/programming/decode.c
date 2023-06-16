@@ -444,14 +444,14 @@ static void _decodeNumeral(char *startPtr, const char *srcStartPtr, bool_t isLon
       ++srcStr;
     }
     else {
-      if(groupingGap > 0 && digit < -1 && (abs(digit) % groupingGap) == 1) {
-        *(strPtr++) = STD_SPACE_PUNCTUATION[0];
-        *(strPtr++) = STD_SPACE_PUNCTUATION[1];
+      if(!GROUPRIGHT_DISABLED && digit < -1 && (abs(digit) % GROUPWIDTH_RIGHT) == 1) {
+        *(strPtr++) = gapChar1Right[0];
+        if(gapChar1Right[1] !=1) *(strPtr++) = gapChar1Right[1];
       }
       *(strPtr++) = *(srcStr++);
-      if(groupingGap > 0 && digit > 1 && (digit % groupingGap) == 1) {
-        *(strPtr++) = STD_SPACE_PUNCTUATION[0];
-        *(strPtr++) = STD_SPACE_PUNCTUATION[1];
+      if(!GROUPLEFT_DISABLED && digit > 1 && (digit % GROUPWIDTH_LEFT) == 1) {
+        *(strPtr++) = gapChar1Left[0];
+        if(gapChar1Left[1]!=1) *(strPtr++) = gapChar1Left[1];
       }
     }
     --digit;
@@ -510,7 +510,7 @@ static void decodeLiteral(uint8_t *literalAddress) {
     //}
 
     case BINARY_REAL34: {
-      real34ToDisplayString((real34_t *)literalAddress, amNone, tmpString, &standardFont, 9999, 34, false, STD_SPACE_PUNCTUATION, false);
+      real34ToDisplayString((real34_t *)literalAddress, amNone, tmpString, &standardFont, 9999, 34, false, false);
       break;
     }
 
@@ -518,7 +518,7 @@ static void decodeLiteral(uint8_t *literalAddress) {
       complex34_t complexLiteral;
       xcopy(VARIABLE_REAL34_DATA(&complexLiteral), literalAddress     , 16);
       xcopy(VARIABLE_IMAG34_DATA(&complexLiteral), literalAddress + 16, 16);
-      complex34ToDisplayString(&complexLiteral, tmpString, &standardFont, 9999, 34, false, STD_SPACE_PUNCTUATION, false, currentAngularMode, getSystemFlag(FLAG_POLAR));
+      complex34ToDisplayString(&complexLiteral, tmpString, &standardFont, 9999, 34, false, false, currentAngularMode, getSystemFlag(FLAG_POLAR));
       break;
     }
 
@@ -532,13 +532,13 @@ static void decodeLiteral(uint8_t *literalAddress) {
 
     case STRING_SHORT_INTEGER: {
       int32_t digit;
-      uint8_t gap = groupingGap;
+      uint8_t gap = GROUPWIDTH_LEFT;
       char *dispStringPtr = tmpString;
       char *sourceStringPtr = tmpStringLabelOrVariableName;
       uint8_t base = (uint8_t)(*literalAddress);
       getStringLabelOrVariableName(literalAddress + 1);
 
-      if(groupingGap > 0) {
+      if(!GROUPLEFT_DISABLED) {
         if(base == 2) {
           gap = 4;
         }
@@ -592,11 +592,13 @@ static void decodeLiteral(uint8_t *literalAddress) {
         *(dispStringPtr++) = '+';
         *(dispStringPtr++) = '+';
         *(dispStringPtr++) = COMPLEX_UNIT[0];
+        *(dispStringPtr++) = COMPLEX_UNIT[1];
         ++sourceStringPtr;
       }
       else if(*sourceStringPtr == '+' || *sourceStringPtr == '-') {
         *(dispStringPtr++) = *(sourceStringPtr++);
         *(dispStringPtr++) = COMPLEX_UNIT[0];
+        *(dispStringPtr++) = COMPLEX_UNIT[1];
         ++sourceStringPtr;
       }
       *(dispStringPtr++) = PRODUCT_SIGN[0];

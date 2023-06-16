@@ -859,7 +859,9 @@ void setParameter(char *p) {
       uint16_t gap = atoi(r);
 
       if(gap <= 15) {
-        fnDisplayFormatGap(gap);
+
+        grpGroupingLeft = gap;
+        grpGroupingRight = gap;
         //printf("  Set grouping gap to %d\n", gap);
       }
       else {

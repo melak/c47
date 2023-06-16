@@ -29,7 +29,6 @@
 
 //Graph functions
 void    graph_reset        (void);
-void    plotrect           (uint16_t a, uint8_t b, uint16_t c, uint8_t d);
 void    fnClGrf            (uint16_t unusedButMandatoryParameter);
 void    fnPline            (uint16_t unusedButMandatoryParameter);
 void    fnPcros            (uint16_t unusedButMandatoryParameter);

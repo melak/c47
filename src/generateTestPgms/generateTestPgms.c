@@ -10388,46 +10388,46 @@ int main(int argc, char* argv[]) {
     *(currentStep++) =  ITM_FDQX       & 0xff;
     *(currentStep++) = 'E' - 'A' + 100; // E
 
-    *(currentStep++) = (ITM_GAP >> 8) | 0x80;
-    *(currentStep++) =  ITM_GAP       & 0xff;
+    *(currentStep++) = (ITM_GRP_L >> 8) | 0x80;
+    *(currentStep++) =  ITM_GRP_L       & 0xff;
     *(currentStep++) = 0;
 
-    *(currentStep++) = (ITM_GAP >> 8) | 0x80;
-    *(currentStep++) =  ITM_GAP       & 0xff;
+    *(currentStep++) = (ITM_GRP_L >> 8) | 0x80;
+    *(currentStep++) =  ITM_GRP_L       & 0xff;
     *(currentStep++) = 15;
 
-    *(currentStep++) = (ITM_GAP >> 8) | 0x80;
-    *(currentStep++) =  ITM_GAP       & 0xff;
+    *(currentStep++) = (ITM_GRP_L >> 8) | 0x80;
+    *(currentStep++) =  ITM_GRP_L       & 0xff;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = 0;
 
-    *(currentStep++) = (ITM_GAP >> 8) | 0x80;
-    *(currentStep++) =  ITM_GAP       & 0xff;
+    *(currentStep++) = (ITM_GRP_L >> 8) | 0x80;
+    *(currentStep++) =  ITM_GRP_L       & 0xff;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = 99;
 
-    *(currentStep++) = (ITM_GAP >> 8) | 0x80;
-    *(currentStep++) =  ITM_GAP       & 0xff;
+    *(currentStep++) = (ITM_GRP_L >> 8) | 0x80;
+    *(currentStep++) =  ITM_GRP_L       & 0xff;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = REGISTER_X;
 
-    *(currentStep++) = (ITM_GAP >> 8) | 0x80;
-    *(currentStep++) =  ITM_GAP       & 0xff;
+    *(currentStep++) = (ITM_GRP_L >> 8) | 0x80;
+    *(currentStep++) =  ITM_GRP_L       & 0xff;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = REGISTER_K;
 
-    *(currentStep++) = (ITM_GAP >> 8) | 0x80;
-    *(currentStep++) =  ITM_GAP       & 0xff;
+    *(currentStep++) = (ITM_GRP_L >> 8) | 0x80;
+    *(currentStep++) =  ITM_GRP_L       & 0xff;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = FIRST_LOCAL_REGISTER;
 
-    *(currentStep++) = (ITM_GAP >> 8) | 0x80;
-    *(currentStep++) =  ITM_GAP       & 0xff;
+    *(currentStep++) = (ITM_GRP_L >> 8) | 0x80;
+    *(currentStep++) =  ITM_GRP_L       & 0xff;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = LAST_LOCAL_REGISTER;
 
-    *(currentStep++) = (ITM_GAP >> 8) | 0x80;
-    *(currentStep++) =  ITM_GAP       & 0xff;
+    *(currentStep++) = (ITM_GRP_L >> 8) | 0x80;
+    *(currentStep++) =  ITM_GRP_L       & 0xff;
     *(currentStep++) = INDIRECT_VARIABLE;
     *(currentStep++) = 3;
     *(currentStep++) = 'V';

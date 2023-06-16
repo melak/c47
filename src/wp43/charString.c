@@ -34,6 +34,12 @@ static void _calculateStringWidth(const char *str, const font_t *font, bool_t wi
   int16_t ch, numPixels, charCode, glyphId;
   const glyph_t *glyph;
   bool_t  firstChar;
+  #if defined(GENERATE_CATALOGS)
+    uint8_t doubling = false;
+  #else //GENERATE_CATALOGS
+    uint8_t doubling = (font == &numericFont && temporaryInformation == TI_NO_INFO && checkHP) ? DOUBLING : 4u;
+  #endif //GENERATE_CATALOGS
+
 //  const font_t  *font;  //JM
 
   glyph = NULL;
@@ -62,22 +68,22 @@ static void _calculateStringWidth(const char *str, const font_t *font, bool_t wi
     }                                             //JM ^^
 #endif //TESTSUITE_BUILD
 */
-
-    glyphId = findGlyph(font, charCode);
-    if(glyphId >= 0) {
-      glyph = (font->glyphs) + glyphId;
-    }
-    else if(glyphId == -1) {
-      generateNotFoundGlyph(-1, charCode);
-      glyph = &glyphNotFound;
-    }
-    else if(glyphId == -2) {
-      generateNotFoundGlyph(-2, charCode);
-      glyph = &glyphNotFound;
-    }
-    else {
-      glyph = NULL;
-    }
+    if(charCode != 1u) {                          //If the special ASCII 01, then skip the width and font not found portions
+      glyphId = findGlyph(font, charCode);
+      if(glyphId >= 0) {
+        glyph = (font->glyphs) + glyphId;
+      }
+      else if(glyphId == -1) {
+        generateNotFoundGlyph(-1, charCode);
+        glyph = &glyphNotFound;
+      }
+      else if(glyphId == -2) {
+        generateNotFoundGlyph(-2, charCode);
+        glyph = &glyphNotFound;
+      }
+      else {
+        glyph = NULL;
+      }
 
     if(glyph == NULL) {
       #if defined(GENERATE_CATALOGS)
@@ -92,29 +98,30 @@ static void _calculateStringWidth(const char *str, const font_t *font, bool_t wi
       return;
     }
 
-    numPixels += glyph->colsGlyph + glyph->colsAfterGlyph;
-    if(firstChar) {
-      firstChar = false;
-      if(withLeadingEmptyRows) {
-        numPixels += glyph->colsBeforeGlyph;
-      }
-    }
-    else {
-      numPixels += glyph->colsBeforeGlyph;
-    }
-
-    if(resultStr != NULL) { // for stringAfterPixels
-      if(numPixels > *width) {
-        break;
+      numPixels += (doubling*(glyph->colsGlyph + glyph->colsAfterGlyph)) >> 2;
+      if(firstChar) {
+        firstChar = false;
+        if(withLeadingEmptyRows) {
+          numPixels += (doubling*(glyph->colsBeforeGlyph)) >> 2;
+        }
       }
       else {
-        *resultStr = str + ch;
+        numPixels += (doubling*(glyph->colsBeforeGlyph)) >> 2;
+      }
+
+      if(resultStr != NULL) { // for stringAfterPixels
+        if(numPixels > *width) {
+          break;
+        }
+        else {
+          *resultStr = str + ch;
+        }
       }
     }
   }
 
   if(glyph != NULL && withEndingEmptyRows == false) {
-    numPixels -= glyph->colsAfterGlyph;
+    numPixels -= doubling*(glyph->colsAfterGlyph);
     if(resultStr != NULL && numPixels <= *width) { // for stringAfterPixels
       if((**resultStr) & 0x80) {
         *resultStr += 2;

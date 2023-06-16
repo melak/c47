@@ -87,8 +87,9 @@ extern  uint32_t yzero;
 void    placePixel         (uint32_t x, uint32_t y);
 void    removePixel        (uint32_t x, uint32_t y);
 void    clearScreenPixels  ();
-void    plotcross          (uint16_t xn, uint8_t yn);              // Plots line from xo,yo to xn,yn; uses temporary x1,y1
-void    plotbox            (uint16_t xn, uint8_t yn);                // Plots line from xo,yo to xn,yn; uses temporary x1,y1
+void    plotcross          (uint16_t xn, uint8_t yn);                      // Plots line from xo,yo to xn,yn; uses temporary x1,y1
+void    plotbox            (uint16_t xn, uint8_t yn);                      // Plots line from xo,yo to xn,yn; uses temporary x1,y1
+void    plotrect           (uint16_t a, uint8_t b, uint16_t c, uint8_t d); // Plots rectangle from xo,yo to xn,yn; uses temporary x1,y1
 void    pixelline          (uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn, bool_t vmNormal);              // Plots line from xo,yo to xn,yn; uses temporary x1,y1
 void    plotline           (uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn);
 void    plotline2          (uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn);

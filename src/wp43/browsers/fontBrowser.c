@@ -58,7 +58,7 @@ TO_QSPI static const char bugScreenShowFonts[] = "In function showFonts: This sh
     if(numLinesNumericFont % NUMBER_OF_NUMERIC_FONT_LINES_PER_SCREEN != 0) {
       numScreensNumericFont++;
     }
-
+printf(">>>> @@ %i\n",numScreensNumericFont);
     numLinesStandardFont  = 0;
     for(g=0; g<standardFont.numberOfGlyphs;) {
       glyphRow[numLinesNumericFont + numLinesStandardFont] = standardFont.glyphs[g].charCode & 0xfff0;

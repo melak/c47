@@ -201,7 +201,7 @@ static void _setCaption(uint16_t keyNum) {
         }
 
       case dtLongInteger: {
-        longIntegerRegisterToDisplayString(REGISTER_K, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH, 50, STD_SPACE_PUNCTUATION, false);  //JM added last parameter: Allow LARGELI);
+        longIntegerRegisterToDisplayString(REGISTER_K, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH, 50, false);  //JM added last parameter: Allow LARGELI);
         break;
         }
 
@@ -231,12 +231,12 @@ static void _setCaption(uint16_t keyNum) {
         }
 
         case dtReal34: {
-        real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_K), getRegisterAngularMode(REGISTER_K), tmpString, &standardFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, STD_SPACE_PUNCTUATION, true);
+        real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_K), getRegisterAngularMode(REGISTER_K), tmpString, &standardFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, true);
         break;
         }
 
         case dtComplex34: {
-        complex34ToDisplayString(REGISTER_COMPLEX34_DATA(REGISTER_K), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, STD_SPACE_PUNCTUATION, true, getComplexRegisterAngularMode(REGISTER_K), getComplexRegisterPolarMode(REGISTER_K));
+        complex34ToDisplayString(REGISTER_COMPLEX34_DATA(REGISTER_K), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, true, getComplexRegisterAngularMode(REGISTER_K), getComplexRegisterPolarMode(REGISTER_K));
         break;
         }
 

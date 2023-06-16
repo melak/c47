@@ -138,9 +138,18 @@ void       fnAGraph                           (uint16_t regist);
   #define numSmall         3
   #define numHalf          4
 
-  //comp
+  //showStringEnhanced, showStringC43
+  #define DO_LF            true
+  #define NO_LF            false
+  #define DO_compress      1
+  #define NO_compress      0
   #define nocompress       0
-  #define stdcompress      1
+  #define DO_raise         1
+  #define NO_raise         0
+  #define DO_Show          0
+  #define NO_Show          1
+
+
 
   uint32_t showStringC43                      (const char *string, int mode, int comp, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols );
   uint32_t stringWidthC43                     (const char *str,    int mode, int comp,                                                bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows);
@@ -176,7 +185,7 @@ void       fnAGraph                           (uint16_t regist);
    * \param[in] showEndingCols  Display the ending empty columns
    * \return x coordinate for the next glyph
    */
-  uint32_t showStringEnhanced                 (const char *string, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, uint8_t compress1, uint8_t raise1, uint8_t noShow1);
+  uint32_t showStringEnhanced                 (const char *string, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, uint8_t compress1, uint8_t raise1, uint8_t noShow1, bool_t lf);
   uint32_t showString                         (const char *str,   const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols);
 
   /**

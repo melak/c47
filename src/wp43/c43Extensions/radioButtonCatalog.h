@@ -46,7 +46,6 @@ char*    figlabel              (const char* label, const char* showText, int16_t
  * \typedef radiocb_t
  * \brief Structure keeping the information for one item
  ***********************************************/
-//??? #define RB_NO   ' '
 #define RB_AM   '!' // AngularMode
 #define RB_CM   '"' // ComplexMode
 #define RB_CU   '#' // ComplexUnit
@@ -54,15 +53,11 @@ char*    figlabel              (const char* label, const char* showText, int16_t
 #define RB_DF   '%' // DateFormat
 #define RB_DI   '\''// DisplayFormat
 #define RB_DO   '(' // DisplayModeOverride
-//??? #define RB_FT   ')' // FractionType
 #define RB_IM   '*' // IntegerMode
 #define RB_PS   '+' // ProductSign
-#define RB_RX   ',' // RadixMark
 #define RB_SS   '-' // StackSize
 #define RB_TF   '.' // TimeFormat
 #define RB_WS   '/' // WordSize
-//#define RB_BCR  '0' // ComplexResult
-//#define RB_BLZ  '1' // LeadingZeros
 #define RB_SA   '>' // SigmaAssign
 #define RB_ID   '?' // InputDefault
 #define CB_JC   'A' // CheckBox
@@ -73,11 +68,9 @@ char*    figlabel              (const char* label, const char* showText, int16_t
 #define RB_F    'F' // NORMALMODE
 #define RB_TV   'G' // NORMALMODE
 #define RB_FG   'H' // NORMALMODE
-
-
-//??? #define RB_AM2  'C' // AngularMode
-//??? #define RB_ZM   'D' // AngularMode
-
+#define RB_IP   'I' // SEPS
+#define RB_FP   'J' // SEPS
+#define RB_RX   'K' // SEPS
 
 
 typedef struct {

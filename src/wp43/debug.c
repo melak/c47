@@ -1133,7 +1133,7 @@ void debugNIM(void) {
     }
 
     else if(getRegisterDataType(regist) == dtLongInteger) {
-      longIntegerRegisterToDisplayString(regist, string + n, sizeof(string) - n, SCREEN_WIDTH, 50, STD_SPACE_PUNCTUATION, false);   //JM added last parameter: Allow LARGELI
+      longIntegerRegisterToDisplayString(regist, string + n, sizeof(string) - n, SCREEN_WIDTH, 50, false);   //JM added last parameter: Allow LARGELI
     }
 
     else if(getRegisterDataType(regist) == dtTime) {
@@ -1275,10 +1275,43 @@ void debugNIM(void) {
       }
 
       if(row < DEBUG_LINES) {
-        sprintf(string, "groupingGap                               = %6u",         groupingGap);
+        sprintf(string, "gapItemLeft                               = %6u",         gapItemLeft);
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }
+
+      if(row < DEBUG_LINES) {
+        sprintf(string, "gapItemRight                               = %6u",         gapItemRight);
+        gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
+        gtk_widget_show(lbl1[row++]);
+      }
+
+      if(row < DEBUG_LINES) {
+        sprintf(string, "gapItemRadix                               = %6u",         gapItemRadix);
+        gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
+        gtk_widget_show(lbl1[row++]);
+      }
+      if(row < DEBUG_LINES) {
+        sprintf(string, "grpGroupingLeft                               = %6u",         grpGroupingLeft);
+        gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
+        gtk_widget_show(lbl1[row++]);
+      }
+      if(row < DEBUG_LINES) {
+        sprintf(string, "grpGroupingGr1LeftOverflow                               = %6u",         grpGroupingGr1LeftOverflow);
+        gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
+        gtk_widget_show(lbl1[row++]);
+      }
+      if(row < DEBUG_LINES) {
+        sprintf(string, "grpGroupingGr1Left                               = %6u",         grpGroupingGr1Left);
+        gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
+        gtk_widget_show(lbl1[row++]);
+      }
+      if(row < DEBUG_LINES) {
+        sprintf(string, "grpGroupingRight                               = %6u",         grpGroupingRight);
+        gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
+        gtk_widget_show(lbl1[row++]);
+      }
+
 
       if(row < DEBUG_LINES) {
         sprintf(string, "significantDigits                         = %6u",         significantDigits);
@@ -1335,13 +1368,7 @@ void debugNIM(void) {
       }
 
       if(row < DEBUG_LINES) {
-        sprintf(string, "FLAG_LEAD.0                               = %s",          getBooleanName(getSystemFlag(FLAG_CPXj)));
-        gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
-        gtk_widget_show(lbl1[row++]);
-      }
-
-      if(row < DEBUG_LINES) {
-        sprintf(string, "FLAG_DECIM.                               = %s",          getBooleanName(getSystemFlag(FLAG_DECIMP)));
+        sprintf(string, "FLAG_LEAD.0                               = %s",          getBooleanName(getSystemFlag(FLAG_LEAD0)));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }
