@@ -330,16 +330,20 @@ void graph_eqn(uint16_t mode) {
     double dy;
     double dx0 = (x_max-x_min)/SCREEN_WIDTH_GRAPH*10;
     double dx = dx0;
-    double slope = 1;
-    double slope0 = 1;
+    double grad2 = 1;
+    double grad1 = 1;
+    double grad0 = 1;
     int16_t count = 0;
     int16_t ss0 = 0;
     int16_t ss1 = 0;
     int16_t ss2 = 0;
-    #define SS1 1.8 //1.4  slope/slope threshold for 50% dx
-    #define SS2 2.4 //2    slope/slope threshold for jumping back
+    #define SS1 1.8 //1.4  grad2/grad2 threshold for 50% dx
+    #define SS2 2.4 //2    grad2/grad2 threshold for jumping back
+    #define FINE 9   // (was 20) number of steps to jump 
+    #define JMP 0.8  // Jump back: 9 x 0.2 (was 20 x 0.1) : -0.8 -0.6 -0.4 -0.2 0 0.2 0.4 0.6 0.8, i.e. 9 steps back for discontinuity (0.9)
+    #define dJMP 0.2 // Fine movement in p.u. ddx
     uint8_t discontinuityDetected = 0;
-    bool_t  slopeIncreaseDetected = false;
+    bool_t  grad2IncreaseDetected = false;
     double yAvg = 0.1;
 
     if(graphVariable <= 0 || graphVariable > 65535) {
@@ -356,12 +360,13 @@ void graph_eqn(uint16_t mode) {
       fnClDrawMx();
     }
     #ifdef DEBUG_GR
-      printf("dx0=%f discontinuityDetected:%u slopeIncreaseDetected:%u\n",dx0, discontinuityDetected, slopeIncreaseDetected);
+      printf("dx0=%f discontinuityDetected:%u grad2IncreaseDetected:%u\n",dx0, discontinuityDetected, grad2IncreaseDetected);
     #endif //DEBUG_GR
 
     //Main loop, default is 40 x 6 point gaps, across the 240 wide screen
-    //  If the slope is increasing, then the dx is reduced. That helps going forward, but not looking a the laast sample which already jumped too far, so the next part step back
-    //  The 0.99999 is to purposely stay off integer fractions, which is then less likely to land on easy roots
+    //  If the grad2 is increasing, then the dx is reduced. 
+    //  That helps going forward, but not looking a the last sample which already jumped too far, so the next part steps back.
+    //  The 0.99999*dx increment is to purposely stay off integer fractions, which is then less likely to land on easy roots
     for(x=x_min; x<=x_max; x+=0.99999*dx) {
       x = fmax(x_min,x);
       x = fmin(x_max,x);
@@ -371,32 +376,34 @@ void graph_eqn(uint16_t mode) {
 
       y02 = convertRegisterToDouble(REGISTER_Y);
       dy = y02 - y01;
-      slope  = dy / (x - x01);
+      grad2  = dy / (x - x01);
       ss0 = ss1;
       ss1 = ss2;
-      ss2 = slope == 0 ? 0 : slope > 0 ? 1 : -1;
+      ss2 = grad2 == 0 ? 0 : grad2 > 0 ? 1 : -1;
+      grad0 = grad1;
+      grad1 = grad2;
 
 
       #ifdef DEBUG_GR
         printRegisterToConsole(REGISTER_X,"X:","");
         printRegisterToConsole(REGISTER_Y," Y:","");
-        printf("%f %f slope/slope0=%f slope0/slope=%f \n",slope, slope0, slope/slope0, slope0/slope);
+        printf("%f %f grad2/grad1=%f grad1/grad2=%f \n",grad2, grad1, grad2/grad1, grad1/grad2);
         printf("ss1 %i ss2 %i y01 %6f y02 %6f\n",ss1,ss2,y01,y02);
       #endif //DEBUG_GR
 
 
-      if (slope0 != 0 && slope != 0) {
-        slopeIncreaseDetected = (
-          (fabs(y02/y01) > 1.01 && fabs(slope/slope0) > SS2) ||
-          (fabs(y01/y02) > 1.01 && fabs(slope0/slope) > SS2) ||   //increase in slope
-          (ss0 == 1  && ss1 == -1 && ss2 == 1) ||
-          (ss0 == -1 && ss1 == 1  && ss2 == -1) ||
-          (             ss1 == 1  && ss2 == -1  && y01 > 0 && y02 < 0) ||
-          (             ss1 == -1 && ss2 == 1   && y01 < 0 && y02 > 0)     );
-      } else slopeIncreaseDetected = false;
+      if (grad1 != 0 && grad2 != 0) {
+        grad2IncreaseDetected = (
+          (fabs(y02/y01) > 1.01 && fabs(grad2/grad1) > SS2) ||                //increase in grad2
+          (fabs(y01/y02) > 1.01 && fabs(grad1/grad2) > SS2) ||                //increase in grad2
+          (ss0 == 1  && ss1 == -1 && ss2 == 1) ||                              //grad2 reversal checking
+          (ss0 == -1 && ss1 == 1  && ss2 == -1) ||                             //grad2 reversal checking
+          (             ss1 == 1  && ss2 == -1  && y01 > 0 && y02 < 0) ||      //grad2 reversal checking
+          (             ss1 == -1 && ss2 == 1   && y01 < 0 && y02 > 0)     );  //grad2 reversal checking
+      } else grad2IncreaseDetected = false;
 
 
-      if(count == 0) {
+      if(count == 0) {                        //accumulate an average value starting with inflated 2x start value; 
         yAvg += 2 * fabs(y02);
       } else
         if(fabs(y02) > yAvg){
@@ -404,39 +411,41 @@ void graph_eqn(uint16_t mode) {
         }
 
       if(discontinuityDetected == 0) {
-        if((real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X)) || (real34IsInfinite(REGISTER_IMAG34_DATA(REGISTER_X)))) ||
-           (real34IsNaN     (REGISTER_REAL34_DATA(REGISTER_X)) || (real34IsNaN     (REGISTER_IMAG34_DATA(REGISTER_X)))) ||
-          ((fabs(y02) > 6 * yAvg) && count > 3)   ) {
-          discontinuityDetected = 20;
+        if((real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X)) || ((getRegisterDataType(REGISTER_X) == dtComplex34) && (real34IsInfinite(REGISTER_IMAG34_DATA(REGISTER_X)))))
+        || (real34IsNaN     (REGISTER_REAL34_DATA(REGISTER_X)) || ((getRegisterDataType(REGISTER_X) == dtComplex34) && (real34IsNaN     (REGISTER_IMAG34_DATA(REGISTER_X)))))
+        ||((fabs(grad2)/6 > fabs(0.8*grad0 + 0.2*grad1) ) && count > 3)
+        ||((fabs(y02) > 10 * yAvg) && count > 3)   
+        ) {
+          discontinuityDetected = FINE;
         }
       }
 
-      if((discontinuityDetected == 20) || (discontinuityDetected == 0 && slopeIncreaseDetected)) {
+      if((discontinuityDetected == FINE) || (discontinuityDetected == 0 && grad2IncreaseDetected)) {
         #ifdef DEBUG_GR
-          printf("jumping %f %f slope/slope0=%f  slope0/slope=%f\n",slope, slope0, slope/slope0, slope0/slope );
+          printf("jumping %f %f grad2/grad1=%f  grad1/grad2=%f\n",grad2, grad1, grad2/grad1, grad1/grad2 );
         #endif //DEBUG_GR
-        x -= dx * (0.90);
+        x -= dx * (JMP);
         convertDoubleToReal34RegisterPush(x, REGISTER_X);
         execute_rpn_function();
         y02 = convertRegisterToDouble(REGISTER_Y);
-        slope  = (y02 - y01) / (x - x01);
+        grad2  = (y02 - y01) / (x - x01);
         ss0 = ss1;
         ss1 = ss2;
-        ss2 = slope == 0 ? 0 : slope > 0 ? 1 : -1;
+        ss2 = grad2 == 0 ? 0 : grad2 > 0 ? 1 : -1;
         #ifdef DEBUG_GR
           printf("Jump back\n");
           printRegisterToConsole(REGISTER_X,"X:","");
           printRegisterToConsole(REGISTER_Y," Y:","");
-          printf("%f %f slope/slope0=%f slope0/slope=%f \n",slope, slope0, slope/slope0, slope0/slope);
+          printf("%f %f grad2/grad1=%f grad1/grad2=%f \n",grad2, grad1, grad2/grad1, grad1/grad2);
         #endif //DEBUG_GR
       }
 
-      if(discontinuityDetected > 0 && discontinuityDetected <= 20) {
-        dx = 0.1 * dx0;
-      } else if(slope == 0 || slope0 == 0) {
+      if(discontinuityDetected > 0 && discontinuityDetected <= FINE) {
+        dx = dJMP * dx0;
+      } else if(grad2 == 0 || grad1 == 0) {
         dx = dx0;
-      } else if(slopeIncreaseDetected){
-        dx = dx0 * ( (slope/slope0 > SS1 || slope0/slope > SS1)  ? 0.5 : 1.0);
+      } else if(grad2IncreaseDetected){
+        dx = dx0 * ( (grad2/grad1 > SS1 || grad1/grad2 > SS1)  ? 0.5 : 1.0);     //50% dx0 if increased grad2 detected
       } else dx = dx0;
 
       #ifdef DEBUG_GR
@@ -444,7 +453,7 @@ void graph_eqn(uint16_t mode) {
       #endif //DEBUG_GR
 
       AddtoDrawMx();
-      slope0 = slope;
+      grad1 = grad2;
       y01 = y02;
       x01 = x;
 
@@ -464,7 +473,7 @@ void graph_eqn(uint16_t mode) {
       if(count > 60) break;
 
       #ifdef DEBUG_GR
-        printf("dx0=%f dx=%f yAvg=%f count=%i discontinuityDetected:%u slopeIncreaseDetected:%u\n",dx0, dx, yAvg, count, discontinuityDetected, slopeIncreaseDetected);
+        printf("dx0=%f dx=%f yAvg=%f count=%i discontinuityDetected:%u grad2IncreaseDetected:%u\n",dx0, dx, yAvg, count, discontinuityDetected, grad2IncreaseDetected);
       #endif //DEBUG_GR
     }
 
