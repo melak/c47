@@ -1340,10 +1340,11 @@ uint8_t  displaymode = stdNoEnlarge;
     compressString = compress1;
     raiseString = raise1;
     noShow = noShow1;    
-    return _doShowString(string, font, x, y, NULL, 0, videoMode, showLeadingCols, showEndingCols, lf);
+    uint32_t tmp = _doShowString(string, font, x, y, NULL, 0, videoMode, showLeadingCols, showEndingCols, lf);
     compressString = 0;
     raiseString = 0;
-    noShow = 0;    
+    noShow = 0;
+    return tmp;
   }
 
   uint32_t showString(const char *string, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols) {

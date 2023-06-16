@@ -333,7 +333,7 @@ void plotbox(uint16_t xn, uint8_t yn) {                // Plots line from xo,yo 
 }
 
 
-static void plotrect(uint16_t a, uint8_t b, uint16_t c, uint8_t d) {                // Plots rectangle from xo,yo to xn,yn; uses temporary x1,y1
+void plotrect(uint16_t a, uint8_t b, uint16_t c, uint8_t d) {                // Plots rectangle from xo,yo to xn,yn; uses temporary x1,y1
   plotline(a, b, c, b);
   plotline(a, b, a, d);
   plotline(c, d, c, b);
@@ -691,7 +691,7 @@ char * radixProcess(const char * ss) {  //  .  HIERDIE WERK GLAD NIE
     }
     else
     if(ss[ix]=='#') {
-      tmp_names1[iy++] = RADIX34_MARK_CHAR;
+      tmp_names1[iy++] = ';';
       tmp_names1[iy] = 0;
     }
     else {
@@ -1235,13 +1235,13 @@ void graphPlotstat(uint16_t selection){
 
     if(calcMode == CM_GRAPH) {
       int16_t index = -1;
+
       char ss[100], tt[100];
       int32_t n;
-
       eformat_eng2(ss,"(",x_max, 2,"");
       eformat_eng2(tt,radixProcess("#"),y_max,2,")");
-      strcat(tt,ss);
-      n = showString(padEquals(ss), &standardFont, 160-2 - stringWidth(tt, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index + 2       +autoshift, vmNormal, false, false);
+      strcat(tt,padEquals(ss));
+      n = showString(padEquals(ss), &standardFont, 160-2-3-2 - stringWidth(tt, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index + 2       +autoshift, vmNormal, false, false);
       eformat_eng2(ss, radixProcess("#"), y_max, 2, ")");
       showString(padEquals(ss), &standardFont, n+3,       Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++      +autoshift + 2, vmNormal, false, false);
       eformat_eng2(ss, "(", x_min, 2, "");
@@ -1274,8 +1274,8 @@ void graphPlotstat(uint16_t selection){
 
       eformat_eng2(ss, "(", x_max, 2, "");
       eformat_eng2(tt,radixProcess("#"),y_max,2,")");
-      strcat(tt, ss);
-      n = showString(padEquals(ss), &standardFont, 160-2 - stringWidth(tt, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index + 2   -3  +autoshift, vmNormal, false, false);
+      strcat(tt, padEquals(ss));
+      n = showString(padEquals(ss), &standardFont, 160-2-3-2 - stringWidth(tt, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index + 2   -3  +autoshift, vmNormal, false, false);
       eformat_eng2(ss, radixProcess("#"), y_max, 2, ")");
       showString(padEquals(ss), &standardFont, n+3,           Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++  -3  + autoshift + 2, vmNormal, false, false);
 
@@ -1595,15 +1595,15 @@ void graphDrawLRline(uint16_t selection) {
         showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   +2 +autoshift, vmNormal, false, false);
 
         eformat_eng2(ss,"(",x_max,2,"");
+        uint16_t ssw = showStringEnhanced(padEquals(ss),&standardFont,0,0,vmNormal, false, false, NO_compress, NO_raise, NO_Show, NO_LF);
         eformat_eng2(tt,radixProcess("#"),y_max,2,")");
-        strcat(tt, ss);
-        n = showString(padEquals(ss), &standardFont,160-2 - stringWidth(tt, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index + 2       +autoshift, vmNormal, false, false);
-        eformat_eng2(ss,radixProcess("#"),y_max,2,")");
-                                             showString(padEquals(ss), &standardFont,n+3,       Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++      +autoshift + 2, vmNormal, false, false);
+        uint16_t ttw = showStringEnhanced(padEquals(tt),&standardFont,0,0,vmNormal, false, false, NO_compress, NO_raise, NO_Show, NO_LF);
+        n = showString(padEquals(ss), &standardFont,160-3-2-ssw-ttw, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index + 2       +autoshift, vmNormal, false, false);
+        showString(padEquals(tt), &standardFont,n+3, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++ +autoshift + 2, vmNormal, false, false);
         eformat_eng2(ss, "(", x_min, 2, "");
         n = showString(padEquals(ss), &standardFont,horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index    -2  +autoshift + 2, vmNormal, false, false);
         eformat_eng2(ss,radixProcess("#"),y_min,2,")");
-                                             showString(padEquals(ss), &standardFont,n+3,       Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++  -2  +autoshift + 2, vmNormal, false, false);
+        showString(padEquals(ss), &standardFont,n+3,       Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++  -2  +autoshift + 2, vmNormal, false, false);
 
       }
       else {                          //ORTHOF

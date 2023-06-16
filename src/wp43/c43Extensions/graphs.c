@@ -347,16 +347,6 @@ void fnListXY(uint16_t unusedButMandatoryParameter) {
 
       }
 
-
-
-      void plotrect(uint16_t a, uint8_t b, uint16_t c, uint8_t d) {                // Plots rectangle from xo,yo to xn,yn; uses temporary x1,y1
-        plotline(a, b, c, b);
-        plotline(a, b, a, d);
-        plotline(c, d, c, b);
-        plotline(c, d, a, d);
-      }
-
-
       void plottriangle(uint16_t a, uint8_t b, uint16_t c, uint8_t d) {                // Plots rectangle from xo,yo to xn,yn; uses temporary x1,y1
         plotline(a, b, c, b);
         plotline(a, b, c, d);
@@ -413,20 +403,18 @@ void graph_text(void){
         char ss[100], tt[100];
         int32_t n;
         eformat_eng2(ss,"(",x_max,2,"");
+        uint16_t ssw = showStringEnhanced(padEquals(ss),&standardFont,0,0,vmNormal, false, false, NO_compress, NO_raise, NO_Show, NO_LF);
         eformat_eng2(tt,radixProcess("#"),y_max,2,")");
-        strcat(tt,ss);
+        uint16_t ttw = showStringEnhanced(padEquals(tt),&standardFont,0,0,vmNormal, false, false, NO_compress, NO_raise, NO_Show, NO_LF);
         ypos += 38;
-        n = showString(padEquals(ss), &standardFont,160-2 - stringWidth(tt, &standardFont, false, false), ypos, vmNormal, false, false);
-
-        eformat_eng2(ss,radixProcess("#"),y_max,2,")");
-        showString(padEquals(ss), &standardFont,n+3,       ypos, vmNormal, false, false);
-
+        n = showString(padEquals(ss), &standardFont,160-3-2-ssw-ttw, ypos, vmNormal, false, false);
+        showString(padEquals(tt), &standardFont,n+3, ypos, vmNormal, false, false);
+        eformat_eng2(ss,"(",x_min,2,""); 
         ypos += 19;
-        eformat_eng2(ss,"(",x_min,2,""); n = showString(padEquals(ss), &standardFont,1, ypos, vmNormal, false, false);
+        n = showString(padEquals(ss), &standardFont,1, ypos, vmNormal, false, false);
         eformat_eng2(ss,radixProcess("#"),y_min,2,")");
-                                             showString(padEquals(ss), &standardFont,n+3,       ypos, vmNormal, false, false);
+        showString(padEquals(ss), &standardFont,n+3,       ypos, vmNormal, false, false);
         ypos -= 38;
-
 
   snprintf(tmpString, TMP_STR_LENGTH, "y %.3f/tick  ",tick_int_y);
   ii = 0;
