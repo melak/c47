@@ -683,7 +683,9 @@ void graph_plotmem(void) {
               a1 = a0;
               a0 = grf_y(cnt);
               aa = a8*0.2 + a7 *0.2 + a6*0.1 + a5*0.1 + a4*0.1 + a3*0.1 + a2*0.1 + a1*0.1;
-              if(aa!=0) if(fabs(a0/aa) < 3) aa = a0 * 1.1;
+              if(aa != 0 && fabs(a0/aa) < 3) {
+                aa = a0 * 1.1;
+              }
               //printf("%f %f %f %f %f %f %f %f %f  %f\n", a8,a7,a6,a5,a4,a3,a2,a1,a0, aa);
 /**/          if(aa < y_min) {
                  y_mincnt++;
