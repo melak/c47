@@ -20,71 +20,69 @@ static int create_dir(char * dir) {
   int ret;
   #if defined(WIN32)
     ret = mkdir( dir );
-  #else
+  #else // !WIN32
     ret = mkdir( dir, 0775);
-  #endif // WIN3
-  if (( ret != 0) && (errno != EEXIST)) {
+  #endif // WIN32
+
+  if(ret != 0 && errno != EEXIST) {
     return -1;
-  } else {
+  }
+  else {
     return 0;
   }
 }
 
+
 int file_selection_screen(const char * title, const char * base_dir, const char * ext, int disp_save, int overwrite_check, void * data) {
-      GtkFileChooserNative *native;
-      static char untitled[16];
-      gint res;
+  GtkFileChooserNative *native;
+  static char untitled[16];
+  gint res;
 
-      strcpy(untitled, "untitled");
-      strcat(untitled, ext+1);
+  strcpy(untitled, "untitled");
+  strcat(untitled, ext+1);
 
-      if (disp_save) {
-        GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
-        native = gtk_file_chooser_native_new (title,
-                                              GTK_WINDOW(frmCalc),
-                                              action,
-                                              "_Save",
-                                              "_Cancel");
-      } else{
-        GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
-        native = gtk_file_chooser_native_new (title,
-                                              GTK_WINDOW(frmCalc),
-                                              action,
-                                              "_Load",
-                                              "_Cancel");
+  if(disp_save) {
+    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+    native = gtk_file_chooser_native_new (title, GTK_WINDOW(frmCalc), action, "_Save", "_Cancel");
+  }
+  else {
+    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+    native = gtk_file_chooser_native_new (title, GTK_WINDOW(frmCalc), action, "_Load", "_Cancel");
+  }
+
+  GtkFileChooser *chooser = GTK_FILE_CHOOSER (native);
+
+  if(overwrite_check) {
+      gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
+  }
+
+  gtk_file_chooser_set_current_folder(chooser,base_dir);
+  if(disp_save) {
+    gtk_file_chooser_set_current_name (chooser,untitled);
+  }
+  GtkFileFilter *filter = gtk_file_filter_new ();
+  gtk_file_filter_add_pattern (filter, ext);
+  gtk_file_chooser_add_filter(chooser, filter);
+  res = gtk_native_dialog_run (GTK_NATIVE_DIALOG (native));
+  if(res == GTK_RESPONSE_ACCEPT) {
+    char *filename;
+    filename = gtk_file_chooser_get_filename (chooser);
+    strcpy(data, filename);
+    if(disp_save) {
+      char * fe = data+strlen(filename)-4;
+      const char * ee = ext+1;
+      if(strcmp(fe,ee) != 0) {
+        strcat(data,ee);     //filename doesn't have the expected extension
       }
-
-      GtkFileChooser *chooser = GTK_FILE_CHOOSER (native);
-
-      if (overwrite_check) {
-          gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
-      }
-
-      gtk_file_chooser_set_current_folder(chooser,base_dir);
-      if (disp_save) {     
-        gtk_file_chooser_set_current_name (chooser,untitled);
-      }
-      GtkFileFilter *filter = gtk_file_filter_new ();
-      gtk_file_filter_add_pattern (filter, ext);
-      gtk_file_chooser_add_filter(chooser, filter);
-      res = gtk_native_dialog_run (GTK_NATIVE_DIALOG (native));
-      if (res == GTK_RESPONSE_ACCEPT)
-      {
-        char *filename;
-        filename = gtk_file_chooser_get_filename (chooser);
-        strcpy(data, filename);
-        if (disp_save) {
-          char * fe = data+strlen(filename)-4;
-          const char * ee = ext+1;
-          if (strcmp(fe,ee) != 0) strcat(data,ee);     //filename doesn't have the expected extension
-        }
-        g_free(filename);
-        g_object_unref (native);
-        return FILE_OK;
-      } else {
-        g_object_unref (native);
-        return FILE_CANCEL;
-      }
+    }
+    g_free(filename);
+    g_object_unref (native);
+    return FILE_OK;
+  }
+  else {
+    g_object_unref (native);
+    return FILE_CANCEL;
+  }
 }
 
 
@@ -95,56 +93,72 @@ int _ioFileNameFromFilePath(ioFilePath_t path, char * filename) {
 
   switch(path) {
     case ioPathManualSave:
-      if (create_dir("./" SAVE_DIR) != 0) return FILE_ERROR;
+      if(create_dir("./" SAVE_DIR) != 0) {
+        return FILE_ERROR;
+      }
       strcpy(filename, SAVE_DIR "/" SAVE_FILE);
       return FILE_OK;
+
     case ioPathPgmFile:
-      if (create_dir("./" LIB_DIR) != 0) return FILE_ERROR;
+      if(create_dir("./" LIB_DIR) != 0) {
+        return FILE_ERROR;
+      }
       strcpy(filename, LIB_DIR "/" LIB_FILE);
       return FILE_OK;
+
     case ioPathTestPgms:
       strcpy(filename, BASEPATH "res/dmcp/testPgms.bin");
       return FILE_OK;
+
     case ioPathBackup:
       strcpy(filename, "backup.bin");
       return FILE_OK;
+
     case ioPathRegDump:
-      //if (create_dir("./" SAVE_DIR) != 0) return FILE_ERROR;
+      //if(create_dir("./" SAVE_DIR) != 0) {
+      //  return FILE_ERROR;
+      //}
       //strcpy(filename, SAVE_DIR "/regx-");
       //getTimeStampString(filename + strlen(filename));
       //strcat(filename, ".tsv");
       return FILE_OK;
+
     case ioPathSaveStateFile:
     case ioPathLoadStateFile:
       current_dir = g_get_current_dir();
       strcpy(base_dir,current_dir);
-      if (create_dir("./" STATE_DIR) != 0) return FILE_ERROR;
+      if(create_dir("./" STATE_DIR) != 0) return FILE_ERROR;
       strcat(base_dir, "/" STATE_DIR);
-      if (path == ioPathSaveStateFile) {
+      if(path == ioPathSaveStateFile) {
         ret = file_selection_screen("Save State File", base_dir, "*"STATE_EXT, 1, 1, filename);
-      } else if (path == ioPathLoadStateFile) {
+      }
+      else if(path == ioPathLoadStateFile) {
         ret = file_selection_screen("Load State File", base_dir, "*"STATE_EXT, 0, 0, filename);
       }
       g_free(current_dir);
       return ret;
+
     case ioPathSaveProgram:
     case ioPathLoadProgram:
       current_dir = g_get_current_dir();
       strcpy(base_dir,current_dir);
-      if (create_dir("./" PROGRAMS_DIR) != 0) return 0;
+      if(create_dir("./" PROGRAMS_DIR) != 0) {
+        return 0;
+      }
       strcat(base_dir, "/" PROGRAMS_DIR);
-      if (path == ioPathSaveProgram) {
+      if(path == ioPathSaveProgram) {
         ret = file_selection_screen("Save Program File", base_dir, "*"PRGM_EXT, 1, 1, filename);
-      } else if (path == ioPathLoadProgram) {
+      }
+      else if (path == ioPathLoadProgram) {
         ret = file_selection_screen("Load Program File", base_dir, "*"PRGM_EXT, 0, 0, filename);
       }
       g_free(current_dir);
       return ret;
+
     default:
       return FILE_ERROR;
   }
 }
-
 
 
 int ioFileOpen(ioFilePath_t path, ioFileMode_t mode) {
@@ -156,22 +170,14 @@ int ioFileOpen(ioFilePath_t path, ioFileMode_t mode) {
     return ret;
   }
   switch(mode) {
-    case ioModeRead:
-      filemode = "rb";
-      break;
-    case ioModeWrite:
-      filemode = "wb";
-      break;
-    case ioModeUpdate:
-      filemode = "r+b";
-      break;
-    default:
-      return false;
+    case ioModeRead:   filemode = "rb";  break;
+    case ioModeWrite:  filemode = "wb";  break;
+    case ioModeUpdate: filemode = "r+b"; break;
+    default: return false;
   }
   _ioFileHandle = fopen(filename, filemode);
   return (_ioFileHandle != NULL ? FILE_OK : FILE_ERROR);
 }
-
 
 
 void ioFileWrite(const void *buffer, uint32_t size) {
@@ -180,12 +186,10 @@ void ioFileWrite(const void *buffer, uint32_t size) {
 }
 
 
-
 uint32_t ioFileRead(void *buffer, uint32_t size) {
   assert(_ioFileHandle != NULL);
   return fread(buffer, 1, size, _ioFileHandle);
 }
-
 
 
 void ioFileSeek(uint32_t position) {
@@ -194,13 +198,11 @@ void ioFileSeek(uint32_t position) {
 }
 
 
-
 void ioFileClose(void) {
   assert(_ioFileHandle != NULL);
   fclose(_ioFileHandle);
   _ioFileHandle = NULL;
 }
-
 
 
 int ioFileRemove(ioFilePath_t path, uint32_t *errorNumber) {
@@ -214,21 +216,17 @@ int ioFileRemove(ioFilePath_t path, uint32_t *errorNumber) {
   if(result == -1 && errorNumber != NULL) {
     *errorNumber = errno;
   }
-  return (result != -1? FILE_OK : FILE_ERROR);
+  return (result != -1 ? FILE_OK : FILE_ERROR);
 }
 
-void show_warning(char *string)
-{
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wformat"
+
+void show_warning(char *string) {
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wformat-security"
   GtkWidget *dialog;
-  dialog = gtk_message_dialog_new(GTK_WINDOW(frmCalc),
-            GTK_DIALOG_DESTROY_WITH_PARENT,
-            GTK_MESSAGE_WARNING,
-            GTK_BUTTONS_OK,
-            string);
+  dialog = gtk_message_dialog_new(GTK_WINDOW(frmCalc), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, string);
   gtk_window_set_title(GTK_WINDOW(dialog), "Warning");
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
-  #pragma clang diagnostic pop
+  #pragma GCC diagnostic pop
 }
