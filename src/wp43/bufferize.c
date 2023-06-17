@@ -1858,7 +1858,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         default: {
           sprintf(errorMessage, "In function addItemToNimBuffer:%d is an unexpected nimNumberPart value while converting buffer to display!", nimNumberPart);
           displayBugScreen(errorMessage);
-      }
+        }
       }
 
       if(RADIX34_MARK_CHAR == ',') {
@@ -1871,11 +1871,11 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     }
 
     else {
-        switch (item) {           //JMCLOSE remove auto closenim for these functions only.
-          case ITM_SQUAREROOTX : //closeNim moved to keyboard.c / btnkeyrelease, as .ms is on longpress underneath sqrt
-          case ITM_HASH_JM :     //closeNim simply not needed because we need to type the base while NIM remains open
+      switch(item) {          //JMCLOSE remove auto closenim for these functions only.
+        case ITM_SQUAREROOTX: //closeNim moved to keyboard.c / btnkeyrelease, as .ms is on longpress underneath sqrt
+        case ITM_HASH_JM:     //closeNim simply not needed because we need to type the base while NIM remains open
           break;
-          default :
+        default:
           if(item != -MNU_INTS && item != -MNU_BITS) {
             screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
             closeNim();
@@ -1910,8 +1910,8 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
 
     if((numDigits - nth) % GROUPWIDTH_LEFT == 1 || GROUPWIDTH_LEFT == 1) {
       char tt[4];
-      if(SEPARATOR_LEFT[1]!=1) {strcpy(tt,SEPARATOR_LEFT);} 
-      else {tt[0] = SEPARATOR_LEFT[0]; tt[1] = 0;} 
+      if(SEPARATOR_LEFT[1]!=1) {strcpy(tt,SEPARATOR_LEFT);}
+      else {tt[0] = SEPARATOR_LEFT[0]; tt[1] = 0;}
       strcpy(displayBuffer, tt);
       return 2;
     }
@@ -1932,8 +1932,8 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
 
     if(nth % GROUPWIDTH_RIGHT == GROUPWIDTH_RIGHT - 1) {
       char tt[4];
-      if(SEPARATOR_RIGHT[1]!=1) {strcpy(tt,SEPARATOR_RIGHT);} 
-      else {tt[0] = SEPARATOR_RIGHT[0]; tt[1] = 0;} 
+      if(SEPARATOR_RIGHT[1]!=1) {strcpy(tt,SEPARATOR_RIGHT);}
+      else {tt[0] = SEPARATOR_RIGHT[0]; tt[1] = 0;}
       strcpy(displayBuffer, tt);
       return 2;
     }
@@ -1956,10 +1956,10 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       case NP_INT_10:                    // +12345 longint; Do not change GROUPWIDTH_LEFT. Leave at user setting, default 3.
       case NP_INT_BASE:                  // +123AB#16.    ; Change GROUPWIDTH_LEFT from user selection to this table, for entry
         switch(lastIntegerBase) {
-          case  0:GROUPWIDTH_LEFT = GROUPWIDTH_LEFTM; break;
-          case  2:GROUPWIDTH_LEFT = 4; break;
-          case  3:GROUPWIDTH_LEFT = 3; break;
-          case  4:GROUPWIDTH_LEFT = 2; break;
+          case  0: GROUPWIDTH_LEFT = GROUPWIDTH_LEFTM; break;
+          case  2: GROUPWIDTH_LEFT = 4; break;
+          case  3: GROUPWIDTH_LEFT = 3; break;
+          case  4: GROUPWIDTH_LEFT = 2; break;
           case  5:
           case  6:
           case  7:
@@ -1970,20 +1970,19 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case 12:
           case 13:
           case 14:
-          case 15:GROUPWIDTH_LEFT = 3; break;
-          case 16:GROUPWIDTH_LEFT = 2; break;
-          default:break;
+          case 15: GROUPWIDTH_LEFT = 3; break;
+          case 16: GROUPWIDTH_LEFT = 2; break;
+          default: ;
         }
         break;
       case NP_INT_16:                    // +123AB.       ; Change to 2 for hex.
         GROUPWIDTH_LEFT = 2;
         break;
-      default:
-        break;
+      default: ;
     }                                                         //JMGAP ^^
 
-      for(numDigits=0; buffer[numDigits]!=0 && buffer[numDigits]!='e' && buffer[numDigits]!='.' && buffer[numDigits]!=' ' && buffer[numDigits]!='#' && buffer[numDigits]!='+' && buffer[numDigits]!='-'; numDigits++) {
-      }
+    for(numDigits=0; buffer[numDigits]!=0 && buffer[numDigits]!='e' && buffer[numDigits]!='.' && buffer[numDigits]!=' ' && buffer[numDigits]!='#' && buffer[numDigits]!='+' && buffer[numDigits]!='-'; numDigits++) {
+    }
 
     for(source=0, dest=0; source<numDigits; source++) {
       displayBuffer[dest++] = buffer[source];
