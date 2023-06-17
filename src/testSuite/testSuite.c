@@ -1563,7 +1563,7 @@ void wrongElementValue(calcRegister_t regist, char letter, int row, int col, cha
     printf("%s\nbut it is ", expectedValue);
   }
   switch(getRegisterDataType(regist)) {
-    case dtReal34Matrix: {
+    case dtReal34Matrix:
       if(row > 0 && col > 0) {
         char str[300];
         int cols = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns;
@@ -1574,8 +1574,8 @@ void wrongElementValue(calcRegister_t regist, char letter, int row, int col, cha
         printf("a real matrix\n");
       }
       break;
-    }
-    case dtComplex34Matrix: {
+
+    case dtComplex34Matrix:
       if(row > 0 && col > 0) {
         char str[300];
         int cols = REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns;
@@ -1588,11 +1588,9 @@ void wrongElementValue(calcRegister_t regist, char letter, int row, int col, cha
         printf("a complex matrix\n");
       }
       break;
-    }
-    default: {
+
+    default:
       printRegisterToConsole(regist, "", "\n");
-      break;
-    }
   }
   abortTest();
 }
@@ -1635,7 +1633,7 @@ void expectedAndShouldBeValueForElement(calcRegister_t regist, char letter, int 
   }
   strcat(expectedAndValue, "\nbut it is ");
   switch(getRegisterDataType(regist)) {
-    case dtReal34Matrix: {
+    case dtReal34Matrix:
       if(row > 0 && col > 0) {
         int cols = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns;
         real34ToString(REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + (row - 1) * cols + (col - 1), str);
@@ -1644,8 +1642,8 @@ void expectedAndShouldBeValueForElement(calcRegister_t regist, char letter, int 
         strcpy(str, "a real matrix");
       }
       break;
-    }
-    case dtComplex34Matrix: {
+
+    case dtComplex34Matrix:
       if(row > 0 && col > 0) {
         int cols = REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns;
         const real34_t *re34 = VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + (row - 1) * cols + (col - 1));
@@ -1666,11 +1664,8 @@ void expectedAndShouldBeValueForElement(calcRegister_t regist, char letter, int 
         strcpy(str, "a complex matrix");
       }
       break;
-    }
-    default: {
+    default:
       printRegisterToString(regist, str);
-      break;
-    }
   }
   strcat(expectedAndValue, str);
   strcat(expectedAndValue, "\n");
@@ -2885,7 +2880,7 @@ void callFunction(void) {
   lastErrorCode = 0;
 
   switch(funcType) {
-    case FUNC_NOPARAM: {
+    case FUNC_NOPARAM:
       if((indexOfItems[functionIndex].status & US_STATUS) == US_ENABLED) {
         saveForUndo();
       }
@@ -2895,15 +2890,12 @@ void callFunction(void) {
 
       funcNoParam(NOPARAM);
       break;
-    }
 
-    case FUNC_CVT: {
+    case FUNC_CVT:
       funcCvt(NOPARAM);
       break;
-    }
 
-    default: {
-    }
+    default: ;
   }
 
   if(lastErrorCode == 0) {

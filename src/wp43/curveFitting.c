@@ -40,7 +40,7 @@
 #include "wp43.h"
 
 
-//#define STAT_DISPLAY_ABCDEFG                      //to display helper functions A-H
+//#define STAT_DISPLAY_ABCDEFG                       //to display helper functions A-H
 
 static real_t RR, RR2, RRMAX, SMI, aa0, aa1, aa2;  // Curve fitting variables, available to the different functions
 realContext_t *realContext;
@@ -114,17 +114,17 @@ void fnCurveFittingReset(uint16_t control) {     // JM vv
   if(control == 0) {
     lrSelection = CF_LINEAR_FITTING;
     lrChosen = 0;                               // lrChosen    is used to indicate if there was a L.R. selection. Can be only one bit.
-  } else {
-    lrSelection =
-      CF_LINEAR_FITTING      +
-      CF_EXPONENTIAL_FITTING +
-      CF_LOGARITHMIC_FITTING +
-      CF_POWER_FITTING       +
-      CF_ROOT_FITTING        +
-      CF_HYPERBOLIC_FITTING  +
-      CF_PARABOLIC_FITTING   +
-      CF_CAUCHY_FITTING      +
-      CF_GAUSS_FITTING;
+  }
+  else {
+    lrSelection =   CF_LINEAR_FITTING
+                  + CF_EXPONENTIAL_FITTING 
+                  + CF_LOGARITHMIC_FITTING 
+                  + CF_POWER_FITTING       
+                  + CF_ROOT_FITTING        
+                  + CF_HYPERBOLIC_FITTING  
+                  + CF_PARABOLIC_FITTING   
+                  + CF_CAUCHY_FITTING      
+                  + CF_GAUSS_FITTING;
     lrChosen = 0;                               // lrChosen    is used to indicate if there was a L.R. selection. Can be only one bit.
   }
 }
@@ -138,23 +138,23 @@ void fnCurveFitting_T(uint16_t curveFitting) {
   if(curveFitting < 0x01FF) {                 // note curveFitting >= 0
     curveFitting = (~curveFitting) & 0x01FF;  // see above
   }
-  else if (curveFitting == 0x01FF) {
+  else if(curveFitting == 0x01FF) {
     curveFitting = 0x0200;                    // see above
   }
   else {
     curveFitting = 0;                         // illegal value, therefore defaulting to none
   }
 
-   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-     printf(">>>%u  %u\n",curveFitting,lrCountOnes(curveFitting));
-   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-   if(lrCountOnes(curveFitting) == 1) {         //Added experimental, toggle bits of the lrselection word
-     lrSelection = lrSelection ^ curveFitting;  //Added  "
-   } else                                       //Added  "
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    printf(">>>%u  %u\n",curveFitting,lrCountOnes(curveFitting));
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  if(lrCountOnes(curveFitting) == 1) {         //Added experimental, toggle bits of the lrselection word
+    lrSelection = lrSelection ^ curveFitting;  //Added  "
+  } else                                       //Added  "
 
-     lrSelection = curveFitting;                    // lrSelection is used to store the BestF method, in inverse, i.e. 1 indicating allowed method
+  lrSelection = curveFitting;                  // lrSelection is used to store the BestF method, in inverse, i.e. 1 indicating allowed method
 
-  lrChosen = 0;                               // lrChosen    is used to indicate if there was a L.R. selection. Can be only one bit.
+  lrChosen = 0;                                // lrChosen    is used to indicate if there was a L.R. selection. Can be only one bit.
 
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     uint16_t numberOfOnes;
@@ -292,7 +292,7 @@ void fnProcessLRfind(uint16_t curveFitting){
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
   if(nn >= (int32_t)minLRDataPoints(s)) {
-    processCurvefitSelection(s,&RR,&SMI, &aa0, &aa1, &aa2);
+    processCurvefitSelection(s, &RR, &SMI, &aa0, &aa1, &aa2);
     lrChosen = s;
 
     temporaryInformation = TI_LR;
@@ -338,8 +338,8 @@ void fnProcessLR (uint16_t unusedButMandatoryParameter){
 
 
 void calc_BCD(real_t *BB, real_t *CC, real_t *DD){                        //Aux terms, calc_BCD must be run before calc_AEFG
-realContext = &ctxtReal75;
-real_t SS,TT;
+  realContext = &ctxtReal75;
+  real_t SS,TT;
 
   //        B = nn * sumx2y - sumx2 * sumy;
   realMultiply(SIGMA_N, SIGMA_X2Y, &SS, realContext);
@@ -360,8 +360,8 @@ real_t SS,TT;
 
 
 void calc_AEFG(real_t *AA, real_t *BB, real_t *CC, real_t *DD, real_t *EE, real_t *FF, real_t *GG){                        //Aux terms, calc_AEFG must be run after calc_BCD
-realContext = &ctxtReal75;
-real_t SS,TT,UU;
+  realContext = &ctxtReal75;
+  real_t SS,TT,UU;
 
   //        A = nn * sumx2 - sumx * sumx;
   realMultiply(SIGMA_N, SIGMA_X2, &SS, realContext);
@@ -480,7 +480,7 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         printf("##### Linear\n");
         formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
         formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
-        formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        formatRealDebug(ss, RR_); printf("§§ r:  %s\n", ss);
       #endif // STATDEBUG && PC_BUILD
       break;
     }
@@ -532,7 +532,7 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         printf("##### EXPF\n");
         formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
         formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
-        formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        formatRealDebug(ss, RR_); printf("§§ r:  %s\n", ss);
       #endif // STATDEBUG && PC_BUILD
       break;
     }
@@ -585,7 +585,7 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         printf("##### LOGF\n");
         formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
         formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
-        formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        formatRealDebug(ss, RR_); printf("§§ r:  %s\n", ss);
       #endif // STATDEBUG && PC_BUILD
       break;
     }
@@ -644,7 +644,7 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         printf("##### POWERF\n");
         formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
         formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
-        formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        formatRealDebug(ss, RR_); printf("§§ r:  %s\n", ss);
       #endif // STATDEBUG && PC_BUILD
       break;
     }
@@ -691,7 +691,7 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         printf("##### ROOTF\n");
         formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
         formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
-        formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        formatRealDebug(ss, RR_); printf("§§ r:  %s\n", ss);
       #endif // STATDEBUG && PC_BUILD
       #if defined(STAT_DISPLAY_ABCDEFG) && defined(PC_BUILD)
         realToDouble(SIGMA_N, &v); printf("§§ n: %f\n", v);
@@ -739,10 +739,10 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
 
       #if defined(STATDEBUG) && defined(PC_BUILD)
         printf("##### HYPF\n");
-        formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
-        formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
+        formatRealDebug(ss, aa1);  printf("§§ A1:  %s\n", ss);
+        formatRealDebug(ss, aa0);  printf("§§ A0:  %s\n", ss);
         formatRealDebug(ss, &RR2); printf("§§ r^2: %s\n", ss);
-        formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        formatRealDebug(ss, RR_);  printf("§§ r:   %s\n", ss);
       #endif // STATDEBUG && PC_BUILD
       break;
     }
@@ -795,11 +795,11 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
       #endif // STAT_DISPLAY_ABCDEFG && PC_BUILD
       #if defined(STATDEBUG) && defined(PC_BUILD)
         printf("##### PARABF\n");
-        formatRealDebug(ss, aa2); printf("§§ A2: %s\n", ss);
-        formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
-        formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
+        formatRealDebug(ss, aa2);  printf("§§ A2:  %s\n", ss);
+        formatRealDebug(ss, aa1);  printf("§§ A1:  %s\n", ss);
+        formatRealDebug(ss, aa0);  printf("§§ A0:  %s\n", ss);
         formatRealDebug(ss, &RR2); printf("§§ r^2: %s\n", ss);
-        formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        formatRealDebug(ss, RR_);  printf("§§ r:   %s\n", ss);
       #endif // STATDEBUG && PC_BUILD
       break;
     }
@@ -876,11 +876,11 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
       #endif // STAT_DISPLAY_ABCDEFG && PC_BUILD
       #if defined(STATDEBUG) && defined(PC_BUILD)
         printf("##### GAUSSF\n");
-        formatRealDebug(ss, aa2); printf("§§ A2: %s\n", ss);
-        formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
-        formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
+        formatRealDebug(ss, aa2);  printf("§§ A2:  %s\n", ss);
+        formatRealDebug(ss, aa1);  printf("§§ A1:  %s\n", ss);
+        formatRealDebug(ss, aa0);  printf("§§ A0:  %s\n", ss);
         formatRealDebug(ss, &RR2); printf("§§ r^2: %s\n", ss);
-        formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        formatRealDebug(ss, RR_);  printf("§§ r:   %s\n", ss);
       #endif // STATDEBUG && PC_BUILD
       break;
     }
@@ -955,11 +955,11 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
       #endif // STAT_DISPLAY_ABCDEFG && PC_BUILD
       #if defined(STATDEBUG) && defined(PC_BUILD)
         printf("##### CAUCHYF\n");
-        formatRealDebug(ss, aa2); printf("§§ A2: %s\n", ss);
-        formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
-        formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
+        formatRealDebug(ss, aa2);  printf("§§ A2:  %s\n", ss);
+        formatRealDebug(ss, aa1);  printf("§§ A1:  %s\n", ss);
+        formatRealDebug(ss, aa0);  printf("§§ A0:  %s\n", ss);
         formatRealDebug(ss, &RR2); printf("§§ r^2: %s\n", ss);
-        formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        formatRealDebug(ss, RR_);  printf("§§ r:   %s\n", ss);
       #endif // STATDEBUG && PC_BUILD
       break;
     }
@@ -1007,11 +1007,11 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
       realDivide(RR_, &UU, RR_, realContext); // r
 
       #if defined(STATDEBUG) && defined(PC_BUILD)
-        formatRealDebug(ss, &S_X); printf("§§ S_X: %s\n", ss);
-        formatRealDebug(ss, &S_Y); printf("§§ S_Y: %s\n", ss);
+        formatRealDebug(ss, &S_X);  printf("§§ S_X: %s\n", ss);
+        formatRealDebug(ss, &S_Y);  printf("§§ S_Y: %s\n", ss);
         formatRealDebug(ss, &S_XY); printf("§§ SXY: %s\n", ss);
-        formatRealDebug(ss, &M_X); printf("§§ M_X: %s\n", ss);
-        formatRealDebug(ss, &M_Y); printf("§§ M_Y: %s\n", ss);
+        formatRealDebug(ss, &M_X);  printf("§§ M_X: %s\n", ss);
+        formatRealDebug(ss, &M_Y);  printf("§§ M_Y: %s\n", ss);
         formatRealDebug(ss, SIGMA_N ); printf("§§ SIGMA_N : %s\n", ss);
         formatRealDebug(ss, SIGMA_X ); printf("§§ SIGMA_X : %s\n", ss);
         formatRealDebug(ss, SIGMA_Y ); printf("§§ SIGMA_Y : %s\n", ss);
@@ -1024,7 +1024,7 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         printf("##### ORTHOF\n");
         formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
         formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
-        formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        formatRealDebug(ss, RR_); printf("§§ r:  %s\n", ss);
       #endif // STATDEBUG && PC_BUILD
       break;
     }
@@ -1265,7 +1265,7 @@ void xIsFny(uint16_t selection, uint8_t rootNo, real_t *XX, real_t *YY, real_t *
       realMultiply(const_2, &UU,     &UU, realContextForecast);
       realMultiply(aa2,     &UU,     &UU, realContextForecast);
       realMultiply(aa1,     aa1,     &TT, realContextForecast);
-      realAdd     (&UU,     &TT,     &UU, realContextForecast);        //swapped terms around minus, therefore add
+      realAdd     (&UU,     &TT,     &UU, realContextForecast);      //swapped terms around minus, therefore add
       realSquareRoot(&UU,   &UU,          realContextForecast);
 
       realSubtract(const_0, aa1,     &SS, realContextForecast);
@@ -1273,7 +1273,7 @@ void xIsFny(uint16_t selection, uint8_t rootNo, real_t *XX, real_t *YY, real_t *
         realSubtract(&SS,   &UU,     &SS, realContextForecast);      //This term could be Add due to plus and minus
       }
       if(rootNo == 2) {
-        realAdd   (&SS,     &UU,     &SS, realContextForecast);        //This term could be Add due to plus and minus
+        realAdd   (&SS,     &UU,     &SS, realContextForecast);      //This term could be Add due to plus and minus
       }
 
       realDivide(&SS,       const_2, &SS, realContextForecast);

@@ -14,16 +14,11 @@ static FILE *_ioFileHandle = NULL;
 
 const char *_ioFileNameFromFilePath(ioFilePath_t path) {
   switch(path) {
-    case ioPathManualSave:
-      return "wp43.sav";
-    case ioPathPgmFile:
-      return "wp43.dat";
-    case ioPathTestPgms:
-      return "res/dmcp/testPgms.bin";
-    case ioPathBackup:
-      return "backup.bin";
-    default:
-      return false;
+    case ioPathManualSave: return "wp43.sav";
+    case ioPathPgmFile:    return "wp43.dat";
+    case ioPathTestPgms:   return "res/dmcp/testPgms.bin";
+    case ioPathBackup:     return "backup.bin";
+    default:               return false;
   }
 }
 
@@ -37,17 +32,10 @@ int ioFileOpen(ioFilePath_t path, ioFileMode_t mode) {
     return FILE_ERROR;
   }
   switch(mode) {
-    case ioModeRead:
-      filemode = "rb";
-      break;
-    case ioModeWrite:
-      filemode = "wb";
-      break;
-    case ioModeUpdate:
-      filemode = "r+b";
-      break;
-    default:
-      return FILE_ERROR;
+    case ioModeRead:   filemode = "rb";  break;
+    case ioModeWrite:  filemode = "wb";  break;
+    case ioModeUpdate: filemode = "r+b"; break;
+    default: return FILE_ERROR;
   }
   _ioFileHandle = fopen(filename, filemode);
   return (_ioFileHandle != NULL? FILE_OK : FILE_ERROR);

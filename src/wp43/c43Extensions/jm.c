@@ -47,9 +47,8 @@
 
 
 
-#ifdef PC_BUILD
-
-  #ifdef PC_BUILD_TELLTALE
+#if defined(PC_BUILD)
+  #if defined(PC_BUILD_TELLTALE)
     static char * getCalcModeName(uint16_t cm) {
       if(cm == CM_NORMAL)                return "normal ";
       if(cm == CM_AIM)                   return "aim    ";
@@ -70,43 +69,56 @@
       if(cm == CM_TIMER)                 return "timer  ";
       if(cm == CM_CONFIRMATION)          return "confirm";
       if(cm == CM_LISTXY)                return "listxy ";    //JM
-
       return "???    ";
     }
+
     static char * getAlphaCaseName(uint16_t ac) {
       if(ac == AC_LOWER) return "lower";
       if(ac == AC_UPPER) return "upper";
-
       return "???  ";
     }
-  #endif //PC_BUILD_TELLTALE
+  #endif // PC_BUILD_TELLTALE
 
 
   void jm_show_calc_state(char comment[]) {
-  #ifdef PC_BUILD_TELLTALE
-    printf("\n%s--------------------------------------------------------------------------------\n",comment);
-    printf(".  calcMode: %s   last_CM=%s  AlphaCase=%s  doRefreshSoftMenu=%d    lastErrorCode=%d fnAsnDisplayUSER=%d\n",getCalcModeName(calcMode), getCalcModeName(last_CM), getAlphaCaseName(alphaCase), doRefreshSoftMenu,lastErrorCode, fnAsnDisplayUSER);
-    printf(".  softmenuStack[0].softmenuId=%d       MY_ALPHA_MENU=%d    softmenu[softmenuStack[0].softmenuId].menuItem=%d -MNU_ALPHA=%d\n",softmenuStack[0].softmenuId,MY_ALPHA_MENU,softmenu[softmenuStack[0].softmenuId].menuItem, -MNU_ALPHA);
-    printf(".  ");int8_t ix=0; while(ix<SOFTMENU_STACK_SIZE) {printf("(%d)=%5d ", ix, softmenuStack[ix].softmenuId); ix++;} printf("\n");
-    printf(".  ");       ix=0; while(ix<SOFTMENU_STACK_SIZE) {printf("%9s ", indexOfItems[-softmenu[softmenuStack[ix].softmenuId].menuItem].itemSoftmenuName  ); ix++;} printf("\n");
-    printf(".  (tam.mode=%d, catalog=%d) (mm_MNU_HOME=%d, mm_MNU_ALPHA=%d)\n",tam.mode, catalog, mm_MNU_HOME, mm_MNU_ALPHA);
-    jm_show_comment("calcstate END:");
-  #endif //PC_BUILD_TELLTALE
+    #if defined(PC_BUILD_TELLTALE)
+      printf("\n%s--------------------------------------------------------------------------------\n",comment);
+      printf(".  calcMode: %s   last_CM=%s  AlphaCase=%s  doRefreshSoftMenu=%d    lastErrorCode=%d fnAsnDisplayUSER=%d\n",getCalcModeName(calcMode), getCalcModeName(last_CM), getAlphaCaseName(alphaCase), doRefreshSoftMenu,lastErrorCode, fnAsnDisplayUSER);
+      printf(".  softmenuStack[0].softmenuId=%d       MY_ALPHA_MENU=%d    softmenu[softmenuStack[0].softmenuId].menuItem=%d -MNU_ALPHA=%d\n",softmenuStack[0].softmenuId,MY_ALPHA_MENU,softmenu[softmenuStack[0].softmenuId].menuItem, -MNU_ALPHA);
+
+      printf(".  ");
+      int8_t ix=0;
+      while(ix < SOFTMENU_STACK_SIZE) {
+        printf("(%d)=%5d ", ix, softmenuStack[ix].softmenuId);
+        ix++;
+      }
+      printf("\n");
+
+      printf(".  ");
+      ix=0;
+      while(ix < SOFTMENU_STACK_SIZE) {
+        printf("%9s ", indexOfItems[-softmenu[softmenuStack[ix].softmenuId].menuItem].itemSoftmenuName  );
+        ix++;
+      }
+      printf("\n");
+
+      printf(".  (tam.mode=%d, catalog=%d) (mm_MNU_HOME=%d, mm_MNU_ALPHA=%d)\n",tam.mode, catalog, mm_MNU_HOME, mm_MNU_ALPHA);
+      jm_show_comment("calcstate END:");
+    #endif //PC_BUILD_TELLTALE
   }
 
 
   void jm_show_comment(char comment[]) {
-  #ifdef PC_BUILD_VERBOSE2
-    char tmp[600];
-    strcpy(tmp,comment);
-    strcat(tmp,"                                                                                                                                                                ");
-    tmp[130]=0;
-    printf("....%s calcMode=%4d last_CM=%4d tam.mode=%5d catalog=%5d Id=%4d Name=%8s F=%d G=%d \n",tmp, calcMode, last_CM, tam.mode, catalog, softmenuStack[0].softmenuId, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName,shiftF,shiftG);
-  //  printf("....%s\n",tmp);
-  #endif
+    #if defined(PC_BUILD_VERBOSE2)
+      char tmp[600];
+      strcpy(tmp,comment);
+      strcat(tmp,"                                                                                                                                                                ");
+      tmp[130]=0;
+      printf("....%s calcMode=%4d last_CM=%4d tam.mode=%5d catalog=%5d Id=%4d Name=%8s F=%d G=%d \n",tmp, calcMode, last_CM, tam.mode, catalog, softmenuStack[0].softmenuId, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName,shiftF,shiftG);
+    //  printf("....%s\n",tmp);
+    #endif // PC_BUILD_VERBOSE2
   }
-#endif //PC_BUILD
-
+#endif // PC_BUILD
 
 
 
@@ -124,7 +136,6 @@ void fnSigmaAssign(uint16_t sigmaAssign) {             //DONE
 }
 
 
-
 /********************************************//**
  * \brief Show flag value
  * \param[in] jmConfig to display uint16_t
@@ -137,16 +148,15 @@ void fnShowJM(uint16_t jmConfig) {                               //DONE
   liftStack();
 
   switch(jmConfig) {
-  case JC_ERPN:
-    uIntToLongInteger(eRPN ? 1:0, mem);
-    break;
-  default:
-    break;
+    case JC_ERPN:
+      uIntToLongInteger(eRPN ? 1:0, mem);
+      break;
+    default:
+      break;
   }
 
   convertLongIntegerToLongIntegerRegister(mem, REGISTER_X);
   longIntegerFree(mem);
-
 }
 
 
@@ -165,13 +175,10 @@ void fnGetSigmaAssignToX(uint16_t unusedButMandatoryParameter) {       //DONE
 
   convertLongIntegerToLongIntegerRegister(mem, REGISTER_X);
   longIntegerFree(mem);
-
 }
 
 
-
 //JM CONFIGURE USER MODE - ASSIGN KEYS
-
 /********************************************//**
  * \brief
  *
@@ -194,12 +201,6 @@ void fnJM_GetXToNORMmode(uint16_t unusedButMandatoryParameter) {      //DONE
 }
 
 
-
-
-
-
-
-
 uint16_t nprimes = 0;
 /********************************************//**
  * RPN PROGRAM.
@@ -208,355 +209,559 @@ uint16_t nprimes = 0;
  * \return void
  ***********************************************/
 void fnJM(uint16_t JM_OPCODE) {
-#define JMTEMP    TEMP_REGISTER_1 // 98
-#define JM_TEMP_I REGISTER_I // 97
-#define JM_TEMP_J REGISTER_J // 96
-#define JM_TEMP_K REGISTER_K // 95
+  #define JMTEMP    TEMP_REGISTER_1 // 98
+  #define JM_TEMP_I REGISTER_I // 97
+  #define JM_TEMP_J REGISTER_J // 96
+  #define JM_TEMP_K REGISTER_K // 95
 
-#ifndef SAVE_SPACE_DM42_6
-  if(JM_OPCODE == 6) {                                          //Delta to Star   ZYX to ZYX; destroys IJKL & JMTEMP
-    saveForUndo();
-    setSystemFlag(FLAG_ASLIFT);
-    copySourceRegisterToDestRegister(REGISTER_X, JM_TEMP_I);   // STO I
-    copySourceRegisterToDestRegister(REGISTER_Y, JM_TEMP_J);   // STO J
-    copySourceRegisterToDestRegister(REGISTER_Z, JM_TEMP_K);   // STO K
-    fnAdd(0);                                                   // +
-    fnSwapXY(0);                                                // X<>Y
+  #if !defined(SAVE_SPACE_DM42_6)
+    if(JM_OPCODE == 6) {                                         // Delta to Star   ZYX to ZYX; destroys IJKL & JMTEMP
+      saveForUndo();
+      setSystemFlag(FLAG_ASLIFT);
+      copySourceRegisterToDestRegister(REGISTER_X, JM_TEMP_I);   // STO I
+      copySourceRegisterToDestRegister(REGISTER_Y, JM_TEMP_J);   // STO J
+      copySourceRegisterToDestRegister(REGISTER_Z, JM_TEMP_K);   // STO K
+      fnAdd(0);                                                  // +
+      fnSwapXY(0);                                               // X<>Y
 
-    fnAdd(0);                                                   // +
-    copySourceRegisterToDestRegister(REGISTER_X, JMTEMP);       // STO JMTEMP
-    fnRCL(JM_TEMP_K);                                          // RCL I
-    fnRCL(JM_TEMP_J);                                          // RCL J     // z = (zx yz) / (x+y+z)
-    fnMultiply(0);                                              // *
-    fnSwapXY(0);                                                // X<>Y
-    fnDivide(0);                                                // /
+      fnAdd(0);                                                  // +
+      copySourceRegisterToDestRegister(REGISTER_X, JMTEMP);      // STO JMTEMP
+      fnRCL(JM_TEMP_K);                                          // RCL I
+      fnRCL(JM_TEMP_J);                                          // RCL J     // z = (zx yz) / (x+y+z)
+      fnMultiply(0);                                             // *
+      fnSwapXY(0);                                               // X<>Y
+      fnDivide(0);                                               // /
 
-    fnRCL(JMTEMP);                                              // RCL JMTEMP
-    fnRCL(JM_TEMP_I);                                          // RCL J
-    fnRCL(JM_TEMP_J);                                          // RCL K     // y = (xy yz) / (x+y+z)
-    fnMultiply(0);                                              // *
-    fnSwapXY(0);                                                // X<>Y
-    fnDivide(0);                                                // /
+      fnRCL(JMTEMP);                                             // RCL JMTEMP
+      fnRCL(JM_TEMP_I);                                          // RCL J
+      fnRCL(JM_TEMP_J);                                          // RCL K     // y = (xy yz) / (x+y+z)
+      fnMultiply(0);                                             // *
+      fnSwapXY(0);                                               // X<>Y
+      fnDivide(0);                                               // /
 
-    fnRCL(JMTEMP);                                              // RCL JMTEMP
-    fnRCL(JM_TEMP_I);                                          // RCL I
-    fnRCL(JM_TEMP_K);                                          // RCL K     // z = (xy zx) / (x+y+z)
-    fnMultiply(0);                                              // *
-    fnSwapXY(0);                                                // X<>Y
-    fnDivide(0);                                                // /
+      fnRCL(JMTEMP);                                             // RCL JMTEMP
+      fnRCL(JM_TEMP_I);                                          // RCL I
+      fnRCL(JM_TEMP_K);                                          // RCL K     // z = (xy zx) / (x+y+z)
+      fnMultiply(0);                                             // *
+      fnSwapXY(0);                                               // X<>Y
+      fnDivide(0);                                               // /
 
-    copySourceRegisterToDestRegister(JM_TEMP_I, REGISTER_L);   // STO
+      copySourceRegisterToDestRegister(JM_TEMP_I, REGISTER_L);   // STO
 
-    temporaryInformation = TI_ABC;
+      temporaryInformation = TI_ABC;
 
-    adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
-    adjustResult(REGISTER_Y, false, true, REGISTER_Y, -1, -1);
-    adjustResult(REGISTER_Z, false, true, REGISTER_Z, -1, -1);
-  }
-  else
+      adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
+      adjustResult(REGISTER_Y, false, true, REGISTER_Y, -1, -1);
+      adjustResult(REGISTER_Z, false, true, REGISTER_Z, -1, -1);
+    }
 
-  if(JM_OPCODE == 7) {                                          //Star to Delta ZYX to ZYX; destroys IJKL & JMTEMP
-    saveForUndo();
-    setSystemFlag(FLAG_ASLIFT);
-    copySourceRegisterToDestRegister(REGISTER_X, JM_TEMP_I);   // STO I
-    copySourceRegisterToDestRegister(REGISTER_Y, JM_TEMP_J);   // STO J
-    copySourceRegisterToDestRegister(REGISTER_Z, JM_TEMP_K);   // STO K
+    else if(JM_OPCODE == 7) {                                    // Star to Delta ZYX to ZYX; destroys IJKL & JMTEMP
+      saveForUndo();
+      setSystemFlag(FLAG_ASLIFT);
+      copySourceRegisterToDestRegister(REGISTER_X, JM_TEMP_I);   // STO I
+      copySourceRegisterToDestRegister(REGISTER_Y, JM_TEMP_J);   // STO J
+      copySourceRegisterToDestRegister(REGISTER_Z, JM_TEMP_K);   // STO K
 
-    fnMultiply(0);                          //IJ                // *
-    fnSwapXY(0);
-    fnRCL(JM_TEMP_I);                                          // RCL J
-    fnMultiply(0);                          //IK                // *
-    fnAdd(0);
-    fnRCL(JM_TEMP_J);                                          // RCL J
-    fnRCL(JM_TEMP_K);                                          // RCL K
-    fnMultiply(0);                          //JK                // *
-    fnAdd(0);
-    copySourceRegisterToDestRegister(REGISTER_X, JMTEMP);       // STO JMTEMP
+      fnMultiply(0);                          //IJ               // *
+      fnSwapXY(0);
+      fnRCL(JM_TEMP_I);                                          // RCL J
+      fnMultiply(0);                          //IK               // *
+      fnAdd(0);
+      fnRCL(JM_TEMP_J);                                          // RCL J
+      fnRCL(JM_TEMP_K);                                          // RCL K
+      fnMultiply(0);                          //JK               // *
+      fnAdd(0);
+      copySourceRegisterToDestRegister(REGISTER_X, JMTEMP);      // STO JMTEMP
                                                                 //
-    fnRCL(JM_TEMP_J);                                          //      zx = () / y
-    fnDivide(0);                                                //
+      fnRCL(JM_TEMP_J);                                          //      zx = () / y
+      fnDivide(0);                                               //
 
-    fnRCL(JMTEMP);                                              // RCL JMTEMP
-    fnRCL(JM_TEMP_I);                                          //      yz = () / x
-    fnDivide(0);                                                //
+      fnRCL(JMTEMP);                                             // RCL JMTEMP
+      fnRCL(JM_TEMP_I);                                          //      yz = () / x
+      fnDivide(0);                                               //
 
-    fnRCL(JMTEMP);                                              // RCL JMTEMP
-    fnRCL(JM_TEMP_K);                                          //      xy = () / z
-    fnDivide(0);                                                //
+      fnRCL(JMTEMP);                                             // RCL JMTEMP
+      fnRCL(JM_TEMP_K);                                          //      xy = () / z
+      fnDivide(0);                                               //
 
-    copySourceRegisterToDestRegister(JM_TEMP_I, REGISTER_L);   // STO
+      copySourceRegisterToDestRegister(JM_TEMP_I, REGISTER_L);   // STO
 
-    temporaryInformation = TI_ABBCCA;
-    adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
-    adjustResult(REGISTER_Y, false, true, REGISTER_Y, -1, -1);
-    adjustResult(REGISTER_Z, false, true, REGISTER_Z, -1, -1);
-  }
-  else
-
-  if(JM_OPCODE == 8) {                                          //SYMMETRICAL COMP to ABC   ZYX to ZYX; destroys IJKL
-    saveForUndo();
-    setSystemFlag(FLAG_ASLIFT);
-    copySourceRegisterToDestRegister(REGISTER_X, JM_TEMP_I);   // STO I  //A2
-    copySourceRegisterToDestRegister(REGISTER_Y, JM_TEMP_J);   // STO J  //A1
-    copySourceRegisterToDestRegister(REGISTER_Z, JM_TEMP_K);   // STO K  //A0
-    fnAdd(0);                                                   // +
-    fnAdd(0);                                                   // + Va = Vao + Va1 +Va2
-
-    setSystemFlag(FLAG_ASLIFT);
-//    liftStack();
-    fn_cnst_op_a(0);
-    fnRCL(JM_TEMP_I);                                       // A2
-    fnMultiply(0);                                              // * a
-    setSystemFlag(FLAG_ASLIFT);
-//    liftStack();
-    fn_cnst_op_aa(0);
-    fnRCL(JM_TEMP_J);                                       // A1
-    fnMultiply(0);                                              // * aa
-    fnAdd(0);                                                   // +
-    fnRCL(JM_TEMP_K);                                       // A0
-    fnAdd(0);                                                   // + Vb = Vao + aaVa1 +aVa2
-
-    setSystemFlag(FLAG_ASLIFT);
-//    liftStack();
-    fn_cnst_op_aa(0);
-    fnRCL(JM_TEMP_I);                                       // A2
-    fnMultiply(0);                                              // * a
-    setSystemFlag(FLAG_ASLIFT);
-//    liftStack();
-    fn_cnst_op_a(0);
-    fnRCL(JM_TEMP_J);                                       // A1
-    fnMultiply(0);                                              // * aa
-    fnAdd(0);                                                   // +
-    fnRCL(JM_TEMP_K);                                       // A0
-    fnAdd(0);                                                   // + Vb = Vao + aaVa1 +aVa2
-
-    copySourceRegisterToDestRegister(JM_TEMP_I, REGISTER_L);   // STO
-
-    temporaryInformation = TI_ABC;
-  }
-  else
-
-  if(JM_OPCODE == 9) {                                          //ABC to SYMMETRICAL COMP   ZYX to ZYX; destroys IJKL & JMTEMP
-    saveForUndo();
-    setSystemFlag(FLAG_ASLIFT);
-    copySourceRegisterToDestRegister(REGISTER_X, JM_TEMP_I);  // STO I  //c
-    copySourceRegisterToDestRegister(REGISTER_Y, JM_TEMP_J);  // STO J  //b
-    copySourceRegisterToDestRegister(REGISTER_Z, JM_TEMP_K);  // STO K  //a
-    fnAdd(0);                                                  // +
-    fnAdd(0);                                                  // + Va0 = (Va + Vb +Vc)/3
-    liftStack();
-    reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-    stringToReal34("3", REGISTER_REAL34_DATA(REGISTER_X));
-    stringToReal34("0", REGISTER_IMAG34_DATA(REGISTER_X));      //
-    copySourceRegisterToDestRegister(REGISTER_X, JMTEMP);       // STO
-    fnDivide(0);
-
-    setSystemFlag(FLAG_ASLIFT);
-//    liftStack();
-    fn_cnst_op_a(0);
-    fnRCL(JM_TEMP_J);                                       // VB
-    fnMultiply(0);                                              // * a
-    setSystemFlag(FLAG_ASLIFT);
-//    liftStack();
-    fn_cnst_op_aa(0);
-    fnRCL(JM_TEMP_I);                                       // VC
-    fnMultiply(0);                                              // * aa
-    fnAdd(0);                                                   // +
-    fnRCL(JM_TEMP_K);                                       // VA
-    fnAdd(0);                                                   // + V1 = (VA +aVb +aaVc) /3
-    fnRCL(JMTEMP);                                              // 3
-    fnDivide(0);                                                // /
-
-
-    setSystemFlag(FLAG_ASLIFT);
-//    liftStack();
-    fn_cnst_op_aa(0);
-    fnRCL(JM_TEMP_J);                                       // VB
-    fnMultiply(0);                                              // * a
-    setSystemFlag(FLAG_ASLIFT);
-//    liftStack();
-    fn_cnst_op_a(0);
-    fnRCL(JM_TEMP_I);                                       // VC
-    fnMultiply(0);                                              // * aa
-    fnAdd(0);                                                   // +
-    fnRCL(JM_TEMP_K);                                       // VA
-    fnAdd(0);                                                   // + V1 = (VA +aVb +aaVc) /3
-    fnRCL(JMTEMP);                                              // 3
-    fnDivide(0);                                                // /
-
-    copySourceRegisterToDestRegister(JM_TEMP_I, REGISTER_L);   // STO
-
-
-    temporaryInformation = TI_012;
-  }
-  else
-
-  if(JM_OPCODE == 11) {                                         //STO Z
-    saveForUndo();
-    setSystemFlag(FLAG_ASLIFT);                                          //  Registers: Z:90-92  V:93-95  I:96-98  XYZ
-    copySourceRegisterToDestRegister(REGISTER_X, 90);
-    copySourceRegisterToDestRegister(REGISTER_Y, 91);
-    copySourceRegisterToDestRegister(REGISTER_Z, 92);
-  }
-  else
-
-  if(JM_OPCODE == 13) {                                         //STO V
-    saveForUndo();
-    setSystemFlag(FLAG_ASLIFT);                                          //  Registers: Z:90-92  V:93-95  I:96-98  XYZ
-    copySourceRegisterToDestRegister(REGISTER_X, 93);
-    copySourceRegisterToDestRegister(REGISTER_Y, 94);
-    copySourceRegisterToDestRegister(REGISTER_Z, 95);
-  }
-  else
-
-  if(JM_OPCODE == 15) {                                         //STO I
-    saveForUndo();
-    setSystemFlag(FLAG_ASLIFT);                                          //  Registers: Z:90-92  V:93-95  I:96-98  XYZ
-    copySourceRegisterToDestRegister(REGISTER_X, 96);
-    copySourceRegisterToDestRegister(REGISTER_Y, 97);
-    copySourceRegisterToDestRegister(REGISTER_Z, 98);
-  }
-  else
-
-  if(JM_OPCODE == 12) {                                         //RCL Z
-    saveForUndo();
-    fnRCL(92);
-    fnRCL(91);
-    fnRCL(90);
-  }
-  else
-
-  if(JM_OPCODE == 14) {                                         //RCL V
-    saveForUndo();
-    fnRCL(95);
-    fnRCL(94);
-    fnRCL(93);
-  }
-  else
-
-  if(JM_OPCODE == 16) {                                         //RCL I
-    saveForUndo();
-    fnRCL(98);
-    fnRCL(97);
-    fnRCL(96);
-  }
-  else
-
-  if(JM_OPCODE == 17) {                                         // V/I
-    saveForUndo();
-    fnRCL(95);
-    fnRCL(98);
-    fnDivide(0);
-    fnRCL(94);
-    fnRCL(97);
-    fnDivide(0);
-    fnRCL(93);
-    fnRCL(96);
-    fnDivide(0);
-  }
-  else
-
-  if(JM_OPCODE == 18) {                                         // IZ
-    saveForUndo();
-    fnRCL(98);
-    fnRCL(92);
-    fnMultiply(0);
-    fnRCL(97);
-    fnRCL(91);
-    fnMultiply(0);
-    fnRCL(96);
-    fnRCL(91);
-    fnMultiply(0);
-  }
-  else
-
-  if(JM_OPCODE == 19) {                                         // V/Z
-    saveForUndo();
-    fnRCL(95);
-    fnRCL(92);
-    fnDivide(0);
-    fnRCL(94);
-    fnRCL(91);
-    fnDivide(0);
-    fnRCL(93);
-    fnRCL(90);
-    fnDivide(0);
-  }
-  else
-
-  if(JM_OPCODE == 20) {                                         //Copy Create X>ABC
-    saveForUndo();
-    setSystemFlag(FLAG_ASLIFT);
-    copySourceRegisterToDestRegister(REGISTER_X, JM_TEMP_I);
-
-    fnRCL(JM_TEMP_I);                                          //
-    setSystemFlag(FLAG_ASLIFT);
-//    liftStack();
-    fn_cnst_op_a(0);
-    fnMultiply(0);
-
-    fnRCL(JM_TEMP_I);                                          //
-    setSystemFlag(FLAG_ASLIFT);
-//    liftStack();
-    fn_cnst_op_aa(0);
-    copySourceRegisterToDestRegister(REGISTER_X, JM_TEMP_J);
-    fnMultiply(0);
-
-    temporaryInformation = TI_ABC;
-
-  }
-  else
-
-  if(JM_OPCODE == 45) {                                         //PRIME stats
-    #ifdef PC_BUILD
-//      ramDump();
-    #endif
-
-  char line1[700];
-  //Create a 3x3 A-matrix
-  TO_QSPI static const char *aa001 = "XEQC43 ERPN RECT 3 ENTER 3 M.NEW STO 99 DROP INDEX 99 1 ENTER 1 STOIJ DROP DROP";
-  TO_QSPI static const char *aa002 = " 1 STOEL J+ STOEL J+ STOEL";
-  TO_QSPI static const char *aa003 = " J+ STOEL DROP 0.5 ENTER CHS 3 ENTER SQRT 2 / CHS COMPLEX J+ STOEL COMPLEX CHS COMPLEX J+ STOEL";
-  TO_QSPI static const char *aa004 = " 1 J+ STOEL DROP J+ STOEL X^2 J+ STOEL DROP";
-  TO_QSPI static const char *aa005 = " RCL 99 ";
-  strcpy(line1, aa001);
-  strcat(line1, aa002);
-  strcat(line1, aa003);
-  strcat(line1, aa004);
-  strcat(line1, aa005);
-  fnXEQMexecute(line1);
-    }
-  else
-
-  if(JM_OPCODE == 46) {                                         //PRIME stats
-  char line1[700];
-  //Create a 3x1 matrix from Z Y X
-  TO_QSPI static const char *aa006 = "XEQC43 ERPN 3 ENTER 1 M.NEW STO 99 DROP INDEX 99 3 ENTER 1 STOIJ DROP DROP STOEL DROP  I- STOEL DROP  I-  STOEL DROP RCL 99 ";
-  strcpy(line1, aa006);
-  fnXEQMexecute(line1);
-    }
-  else
-
-
-  if(JM_OPCODE == 47) {                                         //PRIME stats
-  char line1[700];
-  //Create a ZYX form a 3x1 matrix
-  TO_QSPI static const char *aa007 = "XEQC43 ERPN STO 99 INDEX 99 DROP 1 ENTER 1 STOIJ DROP DROP RCLEL I+ RCLEL I+ RCLEL ";
-  strcpy(line1, aa007);
-  fnXEQMexecute(line1);
+      temporaryInformation = TI_ABBCCA;
+      adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
+      adjustResult(REGISTER_Y, false, true, REGISTER_Y, -1, -1);
+      adjustResult(REGISTER_Z, false, true, REGISTER_Z, -1, -1);
     }
 
+    else if(JM_OPCODE == 8) {                                          //SYMMETRICAL COMP to ABC   ZYX to ZYX; destroys IJKL
+      saveForUndo();
+      setSystemFlag(FLAG_ASLIFT);
+      copySourceRegisterToDestRegister(REGISTER_X, JM_TEMP_I);   // STO I  //A2
+      copySourceRegisterToDestRegister(REGISTER_Y, JM_TEMP_J);   // STO J  //A1
+      copySourceRegisterToDestRegister(REGISTER_Z, JM_TEMP_K);   // STO K  //A0
+      fnAdd(0);                                                  // +
+      fnAdd(0);                                                  // + Va = Vao + Va1 +Va2
 
-  if(JM_OPCODE == 48) {                                         //f.g
-    #ifndef TESTSUITE_BUILD
-      btnClicked(NULL, "27");
-    #endif
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_a(0);
+      fnRCL(JM_TEMP_I);                                          // A2
+      fnMultiply(0);                                             // * a
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_aa(0);
+      fnRCL(JM_TEMP_J);                                          // A1
+      fnMultiply(0);                                             // * aa
+      fnAdd(0);                                                  // +
+      fnRCL(JM_TEMP_K);                                          // A0
+      fnAdd(0);                                                  // + Vb = Vao + aaVa1 +aVa2
+
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_aa(0);
+      fnRCL(JM_TEMP_I);                                          // A2
+      fnMultiply(0);                                             // * a
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_a(0);
+      fnRCL(JM_TEMP_J);                                          // A1
+      fnMultiply(0);                                             // * aa
+      fnAdd(0);                                                  // +
+      fnRCL(JM_TEMP_K);                                          // A0
+      fnAdd(0);                                                  // + Vb = Vao + aaVa1 +aVa2
+
+      copySourceRegisterToDestRegister(JM_TEMP_I, REGISTER_L);  // STO
+
+      temporaryInformation = TI_ABC;
     }
 
-#endif //SAVE_SPACE_DM42_6
+    else if(JM_OPCODE == 9) {                                   //ABC to SYMMETRICAL COMP   ZYX to ZYX; destroys IJKL & JMTEMP
+      saveForUndo();
+      setSystemFlag(FLAG_ASLIFT);
+      copySourceRegisterToDestRegister(REGISTER_X, JM_TEMP_I);  // STO I  //c
+      copySourceRegisterToDestRegister(REGISTER_Y, JM_TEMP_J);  // STO J  //b
+      copySourceRegisterToDestRegister(REGISTER_Z, JM_TEMP_K);  // STO K  //a
+      fnAdd(0);                                                 // +
+      fnAdd(0);                                                 // + Va0 = (Va + Vb +Vc)/3
+      liftStack();
+      reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+      stringToReal34("3", REGISTER_REAL34_DATA(REGISTER_X));
+      stringToReal34("0", REGISTER_IMAG34_DATA(REGISTER_X));
+      copySourceRegisterToDestRegister(REGISTER_X, JMTEMP);     // STO
+      fnDivide(0);
 
-// Item 255 is NOP
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_a(0);
+      fnRCL(JM_TEMP_J);                                         // VB
+      fnMultiply(0);                                            // * a
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_aa(0);
+      fnRCL(JM_TEMP_I);                                         // VC
+      fnMultiply(0);                                            // * aa
+      fnAdd(0);                                                 // +
+      fnRCL(JM_TEMP_K);                                         // VA
+      fnAdd(0);                                                 // + V1 = (VA +aVb +aaVc) /3
+      fnRCL(JMTEMP);                                            // 3
+      fnDivide(0);                                              // /
 
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_aa(0);
+      fnRCL(JM_TEMP_J);                                         // VB
+      fnMultiply(0);                                            // * a
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_a(0);
+      fnRCL(JM_TEMP_I);                                         // VC
+      fnMultiply(0);                                            // * aa
+      fnAdd(0);                                                 // +
+      fnRCL(JM_TEMP_K);                                         // VA
+      fnAdd(0);                                                 // + V1 = (VA +aVb +aaVc) /3
+      fnRCL(JMTEMP);                                            // 3
+      fnDivide(0);                                              // /
+
+      copySourceRegisterToDestRegister(JM_TEMP_I, REGISTER_L);  // STO
+
+      temporaryInformation = TI_012;
+    }
+
+    else if(JM_OPCODE == 11) {                                  //STO Z
+      saveForUndo();
+      setSystemFlag(FLAG_ASLIFT);                               //  Registers: Z:90-92  V:93-95  I:96-98  XYZ
+      copySourceRegisterToDestRegister(REGISTER_X, 90);
+      copySourceRegisterToDestRegister(REGISTER_Y, 91);
+      copySourceRegisterToDestRegister(REGISTER_Z, 92);
+    }
+
+    else if(JM_OPCODE == 13) {                                  //STO V
+      saveForUndo();
+      setSystemFlag(FLAG_ASLIFT);                               //  Registers: Z:90-92  V:93-95  I:96-98  XYZ
+      copySourceRegisterToDestRegister(REGISTER_X, 93);
+      copySourceRegisterToDestRegister(REGISTER_Y, 94);
+      copySourceRegisterToDestRegister(REGISTER_Z, 95);
+    }
+
+    else if(JM_OPCODE == 15) {                                  //STO I
+      saveForUndo();
+      setSystemFlag(FLAG_ASLIFT);                               //  Registers: Z:90-92  V:93-95  I:96-98  XYZ
+      copySourceRegisterToDestRegister(REGISTER_X, 96);
+      copySourceRegisterToDestRegister(REGISTER_Y, 97);
+      copySourceRegisterToDestRegister(REGISTER_Z, 98);
+    }
+
+    else if(JM_OPCODE == 12) {                                  //RCL Z
+      saveForUndo();
+      fnRCL(92);
+      fnRCL(91);
+      fnRCL(90);
+    }
+
+    else if(JM_OPCODE == 14) {                                  //RCL V
+      saveForUndo();
+      fnRCL(95);
+      fnRCL(94);
+      fnRCL(93);
+    }
+
+    else if(JM_OPCODE == 16) {                                  //RCL I
+      saveForUndo();
+      fnRCL(98);
+      fnRCL(97);
+      fnRCL(96);
+    }
+
+    else if(JM_OPCODE == 17) {                                  // V/I
+      saveForUndo();
+      fnRCL(95);
+      fnRCL(98);
+      fnDivide(0);
+      fnRCL(94);
+      fnRCL(97);
+      fnDivide(0);
+      fnRCL(93);
+      fnRCL(96);
+      fnDivide(0);
+    }
+
+    else if(JM_OPCODE == 18) {                                  // IZ
+      saveForUndo();
+      fnRCL(98);
+      fnRCL(92);
+      fnMultiply(0);
+      fnRCL(97);
+      fnRCL(91);
+      fnMultiply(0);
+      fnRCL(96);
+      fnRCL(91);
+      fnMultiply(0);
+    }
+
+    else if(JM_OPCODE == 19) {                                  // V/Z
+      saveForUndo();
+      fnRCL(95);
+      fnRCL(92);
+      fnDivide(0);
+      fnRCL(94);
+      fnRCL(91);
+      fnDivide(0);
+      fnRCL(93);
+      fnRCL(90);
+      fnDivide(0);
+    }
+
+    else if(JM_OPCODE == 20) {                                  //Copy Create X>ABC
+      saveForUndo();
+      setSystemFlag(FLAG_ASLIFT);
+      copySourceRegisterToDestRegister(REGISTER_X, JM_TEMP_I);
+
+      fnRCL(JM_TEMP_I);                                         //
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_a(0);
+      fnMultiply(0);
+
+      fnRCL(JM_TEMP_I);                                         //
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_aa(0);
+      copySourceRegisterToDestRegister(REGISTER_X, JM_TEMP_J);
+      fnMultiply(0);
+
+      temporaryInformation = TI_ABC;
+    }
+
+    else if(JM_OPCODE == 45) {                                  //PRIME stats
+      #if defined(PC_BUILD)
+        //ramDump();
+      #endif // PC_BUILD
+
+      char line1[700];
+      //Create a 3x3 A-matrix
+      TO_QSPI static const char *aa001 = "XEQC43 ERPN RECT 3 ENTER 3 M.NEW STO 99 DROP INDEX 99 1 ENTER 1 STOIJ DROP DROP";
+      TO_QSPI static const char *aa002 = " 1 STOEL J+ STOEL J+ STOEL";
+      TO_QSPI static const char *aa003 = " J+ STOEL DROP 0.5 ENTER CHS 3 ENTER SQRT 2 / CHS COMPLEX J+ STOEL COMPLEX CHS COMPLEX J+ STOEL";
+      TO_QSPI static const char *aa004 = " 1 J+ STOEL DROP J+ STOEL X^2 J+ STOEL DROP";
+      TO_QSPI static const char *aa005 = " RCL 99 ";
+      strcpy(line1, aa001);
+      strcat(line1, aa002);
+      strcat(line1, aa003);
+      strcat(line1, aa004);
+      strcat(line1, aa005);
+      fnXEQMexecute(line1);
+      }
+
+    else if(JM_OPCODE == 46) {                                  //PRIME stats
+      char line1[700];
+      //Create a 3x1 matrix from Z Y X
+      TO_QSPI static const char *aa006 = "XEQC43 ERPN 3 ENTER 1 M.NEW STO 99 DROP INDEX 99 3 ENTER 1 STOIJ DROP DROP STOEL DROP  I- STOEL DROP  I-  STOEL DROP RCL 99 ";
+      strcpy(line1, aa006);
+      fnXEQMexecute(line1);
+    }
+
+    else if(JM_OPCODE == 47) {                                  //PRIME stats
+      char line1[700];
+      //Create a ZYX form a 3x1 matrix
+      TO_QSPI static const char *aa007 = "XEQC43 ERPN STO 99 INDEX 99 DROP 1 ENTER 1 STOIJ DROP DROP RCLEL I+ RCLEL I+ RCLEL ";
+      strcpy(line1, aa007);
+      fnXEQMexecute(line1);
+    }
+
+    else if(JM_OPCODE == 8) {                                   //SYMMETRICAL COMP to ABC   ZYX to ZYX; destroys IJKL
+      saveForUndo();
+      setSystemFlag(FLAG_ASLIFT);
+      copySourceRegisterToDestRegister(REGISTER_X, JM_TEMP_I);  // STO I  //A2
+      copySourceRegisterToDestRegister(REGISTER_Y, JM_TEMP_J);  // STO J  //A1
+      copySourceRegisterToDestRegister(REGISTER_Z, JM_TEMP_K);  // STO K  //A0
+      fnAdd(0);                                                 // +
+      fnAdd(0);                                                 // + Va = Vao + Va1 +Va2
+
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_a(0);
+      fnRCL(JM_TEMP_I);                                         // A2
+      fnMultiply(0);                                            // * a
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_aa(0);
+      fnRCL(JM_TEMP_J);                                         // A1
+      fnMultiply(0);                                            // * aa
+      fnAdd(0);                                                 // +
+      fnRCL(JM_TEMP_K);                                         // A0
+      fnAdd(0);                                                 // + Vb = Vao + aaVa1 +aVa2
+
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_aa(0);
+      fnRCL(JM_TEMP_I);                                         // A2
+      fnMultiply(0);                                            // * a
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_a(0);
+      fnRCL(JM_TEMP_J);                                         // A1
+      fnMultiply(0);                                            // * aa
+      fnAdd(0);                                                 // +
+      fnRCL(JM_TEMP_K);                                         // A0
+      fnAdd(0);                                                 // + Vb = Vao + aaVa1 +aVa2
+
+      copySourceRegisterToDestRegister(JM_TEMP_I, REGISTER_L);  // STO
+
+      temporaryInformation = TI_ABC;
+    }
+
+    else if(JM_OPCODE == 9) {                                    //ABC to SYMMETRICAL COMP   ZYX to ZYX; destroys IJKL & JMTEMP
+      saveForUndo();
+      setSystemFlag(FLAG_ASLIFT);
+      copySourceRegisterToDestRegister(REGISTER_X, JM_TEMP_I);   // STO I  //c
+      copySourceRegisterToDestRegister(REGISTER_Y, JM_TEMP_J);   // STO J  //b
+      copySourceRegisterToDestRegister(REGISTER_Z, JM_TEMP_K);   // STO K  //a
+      fnAdd(0);                                                  // +
+      fnAdd(0);                                                  // + Va0 = (Va + Vb +Vc)/3
+      liftStack();
+      reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+      stringToReal34("3", REGISTER_REAL34_DATA(REGISTER_X));
+      stringToReal34("0", REGISTER_IMAG34_DATA(REGISTER_X));     //
+      copySourceRegisterToDestRegister(REGISTER_X, JMTEMP);      // STO
+      fnDivide(0);
+
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_a(0);
+      fnRCL(JM_TEMP_J);                                          // VB
+      fnMultiply(0);                                             // * a
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_aa(0);
+      fnRCL(JM_TEMP_I);                                          // VC
+      fnMultiply(0);                                             // * aa
+      fnAdd(0);                                                  // +
+      fnRCL(JM_TEMP_K);                                          // VA
+      fnAdd(0);                                                  // + V1 = (VA +aVb +aaVc) /3
+      fnRCL(JMTEMP);                                             // 3
+      fnDivide(0);                                               // /
+
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_aa(0);
+      fnRCL(JM_TEMP_J);                                          // VB
+      fnMultiply(0);                                             // * a
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_a(0);
+      fnRCL(JM_TEMP_I);                                          // VC
+      fnMultiply(0);                                             // * aa
+      fnAdd(0);                                                  // +
+      fnRCL(JM_TEMP_K);                                          // VA
+      fnAdd(0);                                                  // + V1 = (VA +aVb +aaVc) /3
+      fnRCL(JMTEMP);                                             // 3
+      fnDivide(0);                                               // /
+
+      copySourceRegisterToDestRegister(JM_TEMP_I, REGISTER_L);   // STO
+
+      temporaryInformation = TI_012;
+    }
+
+    else if(JM_OPCODE == 11) {                                   //STO Z
+      saveForUndo();
+      setSystemFlag(FLAG_ASLIFT);                                //  Registers: Z:90-92  V:93-95  I:96-98  XYZ
+      copySourceRegisterToDestRegister(REGISTER_X, 90);
+      copySourceRegisterToDestRegister(REGISTER_Y, 91);
+      copySourceRegisterToDestRegister(REGISTER_Z, 92);
+    }
+
+    else if(JM_OPCODE == 13) {                                   //STO V
+      saveForUndo();
+      setSystemFlag(FLAG_ASLIFT);                                //  Registers: Z:90-92  V:93-95  I:96-98  XYZ
+      copySourceRegisterToDestRegister(REGISTER_X, 93);
+      copySourceRegisterToDestRegister(REGISTER_Y, 94);
+      copySourceRegisterToDestRegister(REGISTER_Z, 95);
+    }
+
+    else if(JM_OPCODE == 15) {                                   //STO I
+      saveForUndo();
+      setSystemFlag(FLAG_ASLIFT);                                //  Registers: Z:90-92  V:93-95  I:96-98  XYZ
+      copySourceRegisterToDestRegister(REGISTER_X, 96);
+      copySourceRegisterToDestRegister(REGISTER_Y, 97);
+      copySourceRegisterToDestRegister(REGISTER_Z, 98);
+    }
+
+    else if(JM_OPCODE == 12) {                                   //RCL Z
+      saveForUndo();
+      fnRCL(92);
+      fnRCL(91);
+      fnRCL(90);
+    }
+
+    else if(JM_OPCODE == 14) {                                   //RCL V
+      saveForUndo();
+      fnRCL(95);
+      fnRCL(94);
+      fnRCL(93);
+    }
+
+    else if(JM_OPCODE == 16) {                                   //RCL I
+      saveForUndo();
+      fnRCL(98);
+      fnRCL(97);
+      fnRCL(96);
+    }
+
+    else if(JM_OPCODE == 17) {                                   // V/I
+      saveForUndo();
+      fnRCL(95);
+      fnRCL(98);
+      fnDivide(0);
+      fnRCL(94);
+      fnRCL(97);
+      fnDivide(0);
+      fnRCL(93);
+      fnRCL(96);
+      fnDivide(0);
+    }
+
+    else if(JM_OPCODE == 18) {                                   // IZ
+      saveForUndo();
+      fnRCL(98);
+      fnRCL(92);
+      fnMultiply(0);
+      fnRCL(97);
+      fnRCL(91);
+      fnMultiply(0);
+      fnRCL(96);
+      fnRCL(91);
+      fnMultiply(0);
+    }
+
+    else if(JM_OPCODE == 19) {                                   // V/Z
+      saveForUndo();
+      fnRCL(95);
+      fnRCL(92);
+      fnDivide(0);
+      fnRCL(94);
+      fnRCL(91);
+      fnDivide(0);
+      fnRCL(93);
+      fnRCL(90);
+      fnDivide(0);
+    }
+
+    else if(JM_OPCODE == 20) {                                   //Copy Create X>ABC
+      saveForUndo();
+      setSystemFlag(FLAG_ASLIFT);
+      copySourceRegisterToDestRegister(REGISTER_X, JM_TEMP_I);
+
+      fnRCL(JM_TEMP_I);                                          //
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_a(0);
+      fnMultiply(0);
+
+      fnRCL(JM_TEMP_I);                                          //
+      setSystemFlag(FLAG_ASLIFT);
+      //liftStack();
+      fn_cnst_op_aa(0);
+      copySourceRegisterToDestRegister(REGISTER_X, JM_TEMP_J);
+      fnMultiply(0);
+
+      temporaryInformation = TI_ABC;
+    }
+
+    else if(JM_OPCODE == 45) {                                   //PRIME stats
+      #if defined(PC_BUILD)
+        //ramDump();
+      #endif // PC_BUILD
+
+      char line1[700];
+      //Create a 3x3 A-matrix
+      strcpy(line1, "XEQC43 ERPN RECT 3 ENTER 3 M.NEW STO 99 DROP INDEX 99 1 ENTER 1 STOIJ DROP DROP");
+      strcat(line1, " 1 STOEL J+ STOEL J+ STOEL");
+      strcat(line1, " J+ STOEL DROP 0.5 ENTER CHS 3 ENTER SQRT 2 / CHS COMPLEX J+ STOEL COMPLEX CHS COMPLEX J+ STOEL");
+      strcat(line1, " 1 J+ STOEL DROP J+ STOEL X^2 J+ STOEL DROP");
+      strcat(line1, " RCL 99 ");
+      fnXEQMexecute(line1);
+    }
+
+    else if(JM_OPCODE == 46) {                                   //PRIME stats
+      char line1[700];
+      //Create a 3x1 matrix from Z Y X
+      strcpy(line1, "XEQC43 ERPN 3 ENTER 1 M.NEW STO 99 DROP INDEX 99 3 ENTER 1 STOIJ DROP DROP STOEL DROP  I- STOEL DROP  I-  STOEL DROP RCL 99 ");
+      fnXEQMexecute(line1);
+    }
+
+    else if(JM_OPCODE == 47) {                                   //PRIME stats
+      char line1[700];
+      //Create a ZYX form a 3x1 matrix
+      strcpy(line1, "XEQC43 ERPN STO 99 INDEX 99 DROP 1 ENTER 1 STOIJ DROP DROP RCLEL I+ RCLEL I+ RCLEL ");
+      fnXEQMexecute(line1);
+    }
+
+    else if(JM_OPCODE == 48) {                                  //f.g
+      #if !defined(TESTSUITE_BUILD)
+        btnClicked(NULL, "27");
+      #endif // !TESTSUITE_BUILD
+    }
+  #endif // !SAVE_SPACE_DM42_6
+  // Item 255 is NOP
 }
 
 
@@ -568,19 +773,16 @@ void fnJM(uint16_t JM_OPCODE) {
  ***********************************************/
 void fnUserJM(uint16_t jmUser) {
   switch(jmUser) {
+    //---KEYS SIGMA+ ALLOCATIONS: COPY SIGMA+ USER MODE primary to -> ALLMODE
+    //-----------------------------------------------------------------------
+    case USER_COPY:
+      kbd_usr[0].primary        = Norm_Key_00_VAR;
+      fnRefreshState();
+      fnSetFlag(FLAG_USER);
+      break;
 
-
-//---KEYS SIGMA+ ALLOCATIONS: COPY SIGMA+ USER MODE primary to -> ALLMODE
-//-----------------------------------------------------------------------
-  case USER_COPY:
-        kbd_usr[0].primary        = Norm_Key_00_VAR;
-        fnRefreshState();
-        fnSetFlag(FLAG_USER);
-    break;
-
-
-  #ifndef SAVE_SPACE_DM42
-    case USER_E47:
+    #if !defined(SAVE_SPACE_DM42)
+      case USER_E47:
         fnUserJM(USER_KRESET);
         fnShowVersion(USER_E47);
 
@@ -660,12 +862,10 @@ void fnUserJM(uint16_t jmUser) {
         Norm_Key_00_VAR           = ITM_USERMODE;
         fnRefreshState();
         fnSetFlag(FLAG_USER);
-      break;
-    #endif //SAVE_SPACE_DM42
+        break;
+    #endif // !SAVE_SPACE_DM42
 
-
-
-    #ifndef SAVE_SPACE_DM42
+    #if !defined(SAVE_SPACE_DM42)
       case USER_V47:          //USER
         fnUserJM(USER_KRESET);
         fnShowVersion(USER_V47);
@@ -786,160 +986,145 @@ void fnUserJM(uint16_t jmUser) {
         kbd_usr[32].primaryAim    = ITM_SPACE;
         kbd_usr[36].primaryAim    = ITM_EXIT1;  //
 
-//      Norm_Key_00_VAR           = ITM_1ONX;
+        //Norm_Key_00_VAR           = ITM_1ONX;
         fnRefreshState();                                 //drJM
         fnSetFlag(FLAG_USER);
-      break;
-    #endif //SAVE_SPACE_DM42
+        break;
+    #endif // !SAVE_SPACE_DM42
 
-
-    #ifndef SAVE_SPACE_DM42
+    #if !defined(SAVE_SPACE_DM42)
       case USER_N47:          //USER
         fnUserJM(USER_KRESET);
         fnShowVersion(USER_N47);
-        #ifndef SAVE_SPACE_DM42
+        #if !defined(SAVE_SPACE_DM42)
           xcopy(kbd_usr, kbd_std_N47, sizeof(kbd_std_N47));
-        #endif //SAVE_SPACE_DM42
+        #endif // !SAVE_SPACE_DM42
         fnSetFlag(FLAG_USER);
-      break;
-    #endif //SAVE_SPACE_DM42
+        break;
+    #endif // !SAVE_SPACE_DM42
 
-
-    #ifndef SAVE_SPACE_DM42
+    #if !defined(SAVE_SPACE_DM42)
       case USER_D47:          //USER
         fnUserJM(USER_KRESET);
         fnShowVersion(USER_D47);
-        #ifndef SAVE_SPACE_DM42
+        #if !defined(SAVE_SPACE_DM42)
           xcopy(kbd_usr, kbd_std_D47, sizeof(kbd_std_D47));
-        #endif //SAVE_SPACE_DM42
+        #endif // !SAVE_SPACE_DM42
         fnSetFlag(FLAG_USER);
       break;
     #endif //SAVE_SPACE_DM42
 
-
-
-
-
-//---KEYS PROFILE: C43
-//------------------------
+    //---KEYS PROFILE: C43
+    //------------------------
     case USER_C43:          //USER
-        fnUserJM(USER_KRESET);
-        fnShowVersion(USER_C43);
-        xcopy(kbd_usr, kbd_std_C43, sizeof(kbd_std_C43));
-        fnSetFlag(FLAG_USER);
-    break;
-
-
-//---KEYS PROFILE: C47
-//------------------------
-    case USER_C47:          //USER
-        fnUserJM(USER_KRESET);
-        fnShowVersion(USER_C47);
-//        xcopy(kbd_usr, kbd_std, sizeof(kbd_std));         //Removed from the default profile. Return on other defaults like D47
-//        fnSetFlag(FLAG_USER);                             //Removed from the default profile. Return on other defaults like D47
-    break;
-
-
-//---KEYS PROFILE: DM42
-//------------------------
-  case USER_DM42:
-        fnUserJM(USER_KRESET);
-        fnShowVersion(USER_DM42);
-        xcopy(kbd_usr, kbd_std_DM42, sizeof(kbd_std_DM42));
-        fnSetFlag(FLAG_USER);
-    break;
-
-
-//---KEYS PROFILE: WP43
-//------------------------
-  case USER_43S:
-        fnUserJM(USER_KRESET);
-        fnShowVersion(USER_43S);
-        xcopy(kbd_usr, kbd_std_WP43, sizeof(kbd_std_WP43));
-        kbd_usr[10].primary       = KEY_fg;
-        kbd_usr[10].keyLblAim     = KEY_fg;
-        kbd_usr[10].primaryAim    = KEY_fg;
-        kbd_usr[10].gShiftedAim   = ITM_NULL;
-        kbd_usr[10].gShifted      = ITM_NULL;
-        kbd_usr[10].primaryTam    = KEY_fg;
-        kbd_usr[11].fShiftedAim   = ITM_NULL;
-        kbd_usr[11].fShifted      = ITM_NULL;
-        kbd_usr[18].gShifted      = ITM_SNAP;
-        kbd_usr[18].fShifted      = -MNU_ASN;
-        kbd_usr[19].fShifted      = ITM_USERMODE;
-        fnSetFlag(FLAG_USER);
-    break;
-
-
-//---KEYS PROFILE: C43-ALTA
-//-------------------------
-  case USER_C43ALTA:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
-        fnUserJM(USER_KRESET);
-        fnShowVersion(USER_C43ALTA);
-        xcopy(kbd_usr, kbd_std_C43AltA, sizeof(kbd_std_C43AltA));
-        Norm_Key_00_VAR           = ITM_USERMODE;
-        fnRefreshState();
-        fnSetFlag(FLAG_USER);
-    break;
-
-
-//---KEYS PROFILE: C43-ALTB
-//-------------------------
-  case USER_C43ALTB:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
-    #ifndef SAVE_SPACE_DM42_7
-      fnUserJM(USER_C43);
-      fnShowVersion(USER_C43ALTB);
-      kbd_usr[0].primary     = ITM_DRG;
-      kbd_usr[7].gShifted    = ITM_XTHROOT;
-      kbd_usr[8].gShifted    = ITM_Rup;
-      kbd_usr[13].gShifted   = -MNU_STK;
-      kbd_usr[14].gShifted   = -MNU_TRI;
-      Norm_Key_00_VAR        = ITM_DRG;
-      fnRefreshState();                                 //drJM
+      fnUserJM(USER_KRESET);
+      fnShowVersion(USER_C43);
+      xcopy(kbd_usr, kbd_std_C43, sizeof(kbd_std_C43));
       fnSetFlag(FLAG_USER);
-    #endif
-    break;
+      break;
 
+    //---KEYS PROFILE: C47
+    //------------------------
+    case USER_C47:          //USER
+      fnUserJM(USER_KRESET);
+      fnShowVersion(USER_C47);
+      //xcopy(kbd_usr, kbd_std, sizeof(kbd_std));         //Removed from the default profile. Return on other defaults like D47
+      //fnSetFlag(FLAG_USER);                             //Removed from the default profile. Return on other defaults like D47
+      break;
 
-//---KEYS PROFILE: C43-ALT
-//-------------------------
-  case USER_C43ALT:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
-        fnUserJM(USER_C43ALTA);
-        fnShowVersion(USER_C43ALT);
-        kbd_usr[ 0].primary       = ITM_SIGMAPLUS;
-        kbd_usr[ 9].gShifted      = ITM_GTO;
-        kbd_usr[ 9].fShifted      = ITM_SNAP;
-        kbd_usr[10].primary       = ITM_SHIFTf;
-        kbd_usr[27].primary       = KEY_fg;
-        kbd_usr[27].fShifted      = ITM_NULL;
-        kbd_usr[27].gShifted      = ITM_NULL;
-        Norm_Key_00_VAR           = ITM_SIGMAPLUS;
-        fnRefreshState();
-        fnSetFlag(FLAG_USER);
-    break;
+    //---KEYS PROFILE: DM42
+    //------------------------
+    case USER_DM42:
+      fnUserJM(USER_KRESET);
+      fnShowVersion(USER_DM42);
+      xcopy(kbd_usr, kbd_std_DM42, sizeof(kbd_std_DM42));
+      fnSetFlag(FLAG_USER);
+      break;
 
+    //---KEYS PROFILE: WP43
+    //------------------------
+    case USER_43S:
+      fnUserJM(USER_KRESET);
+      fnShowVersion(USER_43S);
+      xcopy(kbd_usr, kbd_std_WP43, sizeof(kbd_std_WP43));
+      kbd_usr[10].primary       = KEY_fg;
+      kbd_usr[10].keyLblAim     = KEY_fg;
+      kbd_usr[10].primaryAim    = KEY_fg;
+      kbd_usr[10].gShiftedAim   = ITM_NULL;
+      kbd_usr[10].gShifted      = ITM_NULL;
+      kbd_usr[10].primaryTam    = KEY_fg;
+      kbd_usr[11].fShiftedAim   = ITM_NULL;
+      kbd_usr[11].fShifted      = ITM_NULL;
+      kbd_usr[18].gShifted      = ITM_SNAP;
+      kbd_usr[18].fShifted      = -MNU_ASN;
+      kbd_usr[19].fShifted      = ITM_USERMODE;
+      fnSetFlag(FLAG_USER);
+      break;
 
+    //---KEYS PROFILE: C43-ALTA
+    //-------------------------
+    case USER_C43ALTA:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
+      fnUserJM(USER_KRESET);
+      fnShowVersion(USER_C43ALTA);
+      xcopy(kbd_usr, kbd_std_C43AltA, sizeof(kbd_std_C43AltA));
+      Norm_Key_00_VAR           = ITM_USERMODE;
+      fnRefreshState();
+      fnSetFlag(FLAG_USER);
+      break;
 
-  case USER_MRESET:                                              //USER_KRESET 26
-        fnRESET_MyM();
-        fnShowVersion(USER_MRESET);
-    break;
-
-  case USER_ARESET:                                              //USER_KRESET 26
-        fnRESET_Mya();
-        fnShowVersion(USER_ARESET);
-    break;
-
-  case USER_KRESET:                                              //USER_KRESET 26
-        fnShowVersion(USER_KRESET);
-        xcopy(kbd_usr, kbd_std, sizeof(kbd_std));
-        Norm_Key_00_VAR        = ITM_SIGMAPLUS;
+    //---KEYS PROFILE: C43-ALTB
+    //-------------------------
+    case USER_C43ALTB:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
+      #if !defined(SAVE_SPACE_DM42_7)
+        fnUserJM(USER_C43);
+        fnShowVersion(USER_C43ALTB);
+        kbd_usr[0].primary     = ITM_DRG;
+        kbd_usr[7].gShifted    = ITM_XTHROOT;
+        kbd_usr[8].gShifted    = ITM_Rup;
+        kbd_usr[13].gShifted   = -MNU_STK;
+        kbd_usr[14].gShifted   = -MNU_TRI;
+        Norm_Key_00_VAR        = ITM_DRG;
         fnRefreshState();                                 //drJM
-        fnClearFlag(FLAG_USER); //userModeEnabled = false;
-    break;
+        fnSetFlag(FLAG_USER);
+      #endif // !SAVE_SPACE_DM42_7
+      break;
 
+    //---KEYS PROFILE: C43-ALT
+    //-------------------------
+    case USER_C43ALT:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
+      fnUserJM(USER_C43ALTA);
+      fnShowVersion(USER_C43ALT);
+      kbd_usr[ 0].primary       = ITM_SIGMAPLUS;
+      kbd_usr[ 9].gShifted      = ITM_GTO;
+      kbd_usr[ 9].fShifted      = ITM_SNAP;
+      kbd_usr[10].primary       = ITM_SHIFTf;
+      kbd_usr[27].primary       = KEY_fg;
+      kbd_usr[27].fShifted      = ITM_NULL;
+      kbd_usr[27].gShifted      = ITM_NULL;
+      Norm_Key_00_VAR           = ITM_SIGMAPLUS;
+      fnRefreshState();
+      fnSetFlag(FLAG_USER);
+      break;
 
-  default:
-    break;
+    case USER_MRESET:                                              //USER_KRESET 26
+      fnRESET_MyM();
+      fnShowVersion(USER_MRESET);
+      break;
+
+    case USER_ARESET:                                              //USER_KRESET 26
+      fnRESET_Mya();
+      fnShowVersion(USER_ARESET);
+      break;
+
+    case USER_KRESET:                                              //USER_KRESET 26
+      fnShowVersion(USER_KRESET);
+      xcopy(kbd_usr, kbd_std, sizeof(kbd_std));
+      Norm_Key_00_VAR        = ITM_SIGMAPLUS;
+      fnRefreshState();                                 //drJM
+      fnClearFlag(FLAG_USER); //userModeEnabled = false;
+      break;
+
+    default:
+      break;
   }
 }
