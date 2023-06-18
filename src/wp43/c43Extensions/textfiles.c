@@ -179,6 +179,19 @@ void stackregister_csv_out(int16_t reg_b, int16_t reg_e) {
   #endif // !TESTSUITE_BUILD
 }
 
+void aimBuffer_csv_out(void) {
+  #if !defined(TESTSUITE_BUILD)
+    export_append_line(CSV_STR);                    //Output append to CSV file
+    export_append_line("Alpha buffer: ");           //Output append to CSV file
+    export_append_line(CSV_STR);                    //Output append to CSV file
+    export_append_line(CSV_TAB);                    //Output append to CSV file
+    export_append_line(CSV_STR);                    //Output append to CSV file
+    export_append_line(tmpString);                  //Output append to CSV file    //aimBuffer now in tmpString
+    export_append_line(CSV_STR);                    //Output append to CSV file
+    export_append_line(CSV_NEWLINE);                //Output append to CSV file
+  #endif // !TESTSUITE_BUILD
+}
+
 
 //**********************************************************************************************************
 #if !defined(TESTSUITE_BUILD)

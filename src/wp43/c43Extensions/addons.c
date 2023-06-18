@@ -892,6 +892,32 @@ void fnByte(uint16_t command) {
 } //JM POC BASE2 ^^
 
 
+void fnP_Alpha(void) {
+  #if !defined(TESTSUITE_BUILD)
+    if(calcMode != CM_AIM) {
+      #if defined(DMCP_BUILD)
+        beep(440, 50);
+        beep(4400, 50);
+        beep(440, 50);
+      #endif // DMCP_BUILD
+      return;
+    }
+    xcopy(tmpString, aimBuffer, ERROR_MESSAGE_LENGTH + AIM_BUFFER_LENGTH + NIM_BUFFER_LENGTH);       //backup portion of the "message buffer" area in DMCP used by ERROR..AIM..NIM buffers, to the tmpstring area in DMCP. DMCP uses this area during create_screenshot.
+    create_filename(".REGS.TSV");
+
+    #if (VERBOSE_LEVEL >= 1)
+      clearScreen();
+      print_linestr("Output Aim Buffer to drive:", true);
+      print_linestr(filename_csv, false);
+    #endif // VERBOSE_LEVEL >= 1
+
+    aimBuffer_csv_out();          //aimBuffer now already copied to tmpString
+    xcopy(aimBuffer,tmpString, ERROR_MESSAGE_LENGTH + AIM_BUFFER_LENGTH + NIM_BUFFER_LENGTH);        //   This total area must be less than the tmpString storage area, which it is.
+    //print_linestr(aimBuffer,false);
+  #endif
+}
+
+
 void fnP_All_Regs(uint16_t option) {
   #if !defined(TESTSUITE_BUILD)
     if(calcMode != CM_NORMAL) {
