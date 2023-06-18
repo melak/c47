@@ -75,7 +75,7 @@ static uint16_t _indirectVariable(uint8_t *stringAddress) {
   }
   else {
     displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "string '%s' is not a named variable", tmpStringLabelOrVariableName);
       moreInfoOnError("In function _indirectVariable:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -97,7 +97,7 @@ static uint16_t _get2ndParamOfKey(uint8_t *paramAddress) {
     }
     else {
       displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "string '%s' is not a named label", tmpStringLabelOrVariableName);
         moreInfoOnError("In function get2ndParamOfKey:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -110,7 +110,7 @@ static uint16_t _get2ndParamOfKey(uint8_t *paramAddress) {
     return _indirectVariable(paramAddress);
   }
   else {
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(tmpString, "\nIn function get2ndParamOfKey: %u is not a valid parameter!", opParam);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }

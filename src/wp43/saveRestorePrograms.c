@@ -99,91 +99,94 @@ static bool _addEndNeeded(void) {
 
 
 void fnSaveProgram(uint16_t label) {
-#if !defined(TESTSUITE_BUILD)
-  uint32_t programVersion = PROGRAM_VERSION;
-  ioFilePath_t path;
-//  char tmpString[3000];             //The concurrent use of the global tmpString
-//                                  //as target does not work while the source is at
-//                                  //tmpRegisterString = tmpString + START_REGISTER_VALUE;
-//                                  //Temporary solution is to use a local variable of sufficient length for the target.
-  uint32_t i;
-  int ret;
+  #if !defined(TESTSUITE_BUILD)
+    uint32_t programVersion = PROGRAM_VERSION;
+    ioFilePath_t path;
+    //char tmpString[3000];           //The concurrent use of the global tmpString
+    //                                //as target does not work while the source is at
+    //                                //tmpRegisterString = tmpString + START_REGISTER_VALUE;
+    //                                //Temporary solution is to use a local variable of sufficient length for the target.
+    uint32_t i;
+    int ret;
 
-#if defined(DMCP_BUILD)
-  // Don't pass through if the power is insufficient
-  if ( power_check_screen() ) return;
-#endif
+    #if defined(DMCP_BUILD)
+      // Don't pass through if the power is insufficient
+      if(power_check_screen()) {
+        return;
+      }
+    #endif // DMCP_BUILD
 
-  // Find program boundaries
-  const uint16_t savedCurrentLocalStepNumber = currentLocalStepNumber;
-  uint16_t savedCurrentProgramNumber = currentProgramNumber;
-  // no argument – need to save current program
-  if(label == 0 && !tam.alpha && tam.digitsSoFar == 0) {
-  }
-  // Existing global label
-  else if(label >= FIRST_LABEL && label <= LAST_LABEL) {
-    fnGoto(label);
-  }
-  // Invalid label
-  else {
-    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "label %" PRIu16 " is not a global label", label);
-      moreInfoOnError("In function fnSaveProgram:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return;
-  }
-
-  // program in flash memory : return without saving
-  if(programList[currentProgramNumber - 1].step < 0) { // flash memory
-    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
-    return;
-  }
-
-  path = ioPathSaveProgram;
-  ret = ioFileOpen(path, ioModeWrite);
-
-  if(ret != FILE_OK ) {
-    if(ret == FILE_CANCEL ) {
-      return;
-    } else {
-      #if !defined(DMCP_BUILD)
-       printf("Cannot save program!\n");
-      #endif
-      displayCalcErrorMessage(ERROR_CANNOT_WRITE_FILE, ERR_REGISTER_LINE, REGISTER_X);
+    // Find program boundaries
+    const uint16_t savedCurrentLocalStepNumber = currentLocalStepNumber;
+    uint16_t savedCurrentProgramNumber = currentProgramNumber;
+    // no argument – need to save current program
+    if(label == 0 && !tam.alpha && tam.digitsSoFar == 0) {
+    }
+    // Existing global label
+    else if(label >= FIRST_LABEL && label <= LAST_LABEL) {
+      fnGoto(label);
+    }
+    // Invalid label
+    else {
+      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "label %" PRIu16 " is not a global label", label);
+        moreInfoOnError("In function fnSaveProgram:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
-  }
 
-  // PROGRAM file version
-  sprintf(tmpString, "PROGRAM_FILE_FORMAT\n%" PRIu8 "\n", (uint8_t)BACKUP_FORMAT);
-  ioFileWrite(tmpString, strlen(tmpString));
-  sprintf(tmpString, "C47_program_file_version\n%" PRIu32 "\n", (uint32_t)programVersion);
-  ioFileWrite(tmpString, strlen(tmpString));
+    // program in flash memory : return without saving
+    if(programList[currentProgramNumber - 1].step < 0) { // flash memory
+      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+      return;
+    }
 
-  // Program
-  size_t currentSizeInBytes = endOfCurrentProgram.ram - ((currentProgramNumber == (numberOfPrograms - numberOfProgramsInFlash)) ? 2 : 0) - beginOfCurrentProgram.ram;
-  sprintf(tmpString, "PROGRAM\n%" PRIu32 "\n", (uint32_t)currentSizeInBytes);
-  ioFileWrite(tmpString, strlen(tmpString));
+    path = ioPathSaveProgram;
+    ret = ioFileOpen(path, ioModeWrite);
 
-  // Save program bytes
-  for(i=0; i<currentSizeInBytes; i++) {
-    sprintf(tmpString, "%" PRIu8 "\n", beginOfCurrentProgram.ram[i]);
+    if(ret != FILE_OK ) {
+      if(ret == FILE_CANCEL ) {
+        return;
+      }
+      else {
+        #if !defined(DMCP_BUILD)
+          printf("Cannot save program!\n");
+        #endif
+        displayCalcErrorMessage(ERROR_CANNOT_WRITE_FILE, ERR_REGISTER_LINE, REGISTER_X);
+        return;
+      }
+    }
+
+    // PROGRAM file version
+    sprintf(tmpString, "PROGRAM_FILE_FORMAT\n%" PRIu8 "\n", (uint8_t)BACKUP_FORMAT);
     ioFileWrite(tmpString, strlen(tmpString));
-  }
-  // If last program in memory then add .END. statement
-  if (currentProgramNumber == (numberOfPrograms - numberOfProgramsInFlash)) {
-    sprintf(tmpString, "255\n255\n");
+    sprintf(tmpString, "C47_program_file_version\n%" PRIu32 "\n", (uint32_t)programVersion);
     ioFileWrite(tmpString, strlen(tmpString));
-  }
 
-  ioFileClose();
+    // Program
+    size_t currentSizeInBytes = endOfCurrentProgram.ram - ((currentProgramNumber == (numberOfPrograms - numberOfProgramsInFlash)) ? 2 : 0) - beginOfCurrentProgram.ram;
+    sprintf(tmpString, "PROGRAM\n%" PRIu32 "\n", (uint32_t)currentSizeInBytes);
+    ioFileWrite(tmpString, strlen(tmpString));
 
-  currentLocalStepNumber = savedCurrentLocalStepNumber;
-  currentProgramNumber = savedCurrentProgramNumber;
+    // Save program bytes
+    for(i=0; i<currentSizeInBytes; i++) {
+      sprintf(tmpString, "%" PRIu8 "\n", beginOfCurrentProgram.ram[i]);
+      ioFileWrite(tmpString, strlen(tmpString));
+    }
+    // If last program in memory then add .END. statement
+    if(currentProgramNumber == (numberOfPrograms - numberOfProgramsInFlash)) {
+      sprintf(tmpString, "255\n255\n");
+      ioFileWrite(tmpString, strlen(tmpString));
+    }
 
-  temporaryInformation = TI_SAVED;
-#endif // !TESTSUITE_BUILD
+    ioFileClose();
+
+    currentLocalStepNumber = savedCurrentLocalStepNumber;
+    currentProgramNumber = savedCurrentProgramNumber;
+
+    temporaryInformation = TI_SAVED;
+  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -200,7 +203,8 @@ void fnLoadProgram(uint16_t unusedButMandatoryParameter) {
   if(ret != FILE_OK ) {
     if(ret == FILE_CANCEL ) {
       return;
-    } else {
+    }
+    else {
       displayCalcErrorMessage(ERROR_CANNOT_READ_FILE, ERR_REGISTER_LINE, REGISTER_X);
       return;
     }
@@ -211,15 +215,12 @@ void fnLoadProgram(uint16_t unusedButMandatoryParameter) {
   readLine(tmpString);
   if(strcmp(tmpString, "PROGRAM_FILE_FORMAT") == 0) {
     readLine(aimBuffer); // Format of program instructions (ignore now, there is only one format)
-  } else {
-      #if !defined(TESTSUITE_BUILD)
-        sprintf(tmpString," \n"
-                          "This is not a C47 program\n"
-                          " \n"
-                          "It will not be loaded."
-                          );
-        show_warning(tmpString);
-      #endif // TESTSUITE_BUILD
+  }
+  else {
+    #if !defined(TESTSUITE_BUILD)
+      sprintf(tmpString," \nThis is not a C47 program\n\nIt will not be loaded.");
+      show_warning(tmpString);
+    #endif // TESTSUITE_BUILD
     ioFileClose();
     return;
   }
@@ -229,37 +230,24 @@ void fnLoadProgram(uint16_t unusedButMandatoryParameter) {
     loadedVersion = stringToUint32(tmpString);
     if(loadedVersion < OLDEST_COMPATIBLE_PROGRAM_VERSION) { // Program incompatibility
       #if !defined(TESTSUITE_BUILD)
-      sprintf(tmpString," \n"
-                        "   !!! Program version is too old !!!\n"
-                        "Not compatible with current version\n"
-                        " \n"
-                        "It will not be loaded."
-                        );
+        sprintf(tmpString, " \n   !!! Program version is too old !!!\nNot compatible with current version\n \nIt will not be loaded.");
         show_warning(tmpString);
       #endif // TESTSUITE_BUILD
       ioFileClose();
       return;
     }
-  } else {
+  }
+  else {
     if(strcmp(aimBuffer, "WP43_program_file_version") == 0) {
       loadedVersion = stringToUint32(tmpString);
       #if !defined(TESTSUITE_BUILD)
-        sprintf(tmpString," \n"
-                          "This is a WP43 program\n"
-                          "WP43 program support is experimental\n"
-                          "Some instructions may not be \n"
-                          "compatible with the C47 and may\n"
-                          "crash the calculator."
-                           );
+        sprintf(tmpString," \nThis is a WP43 program\nWP43 program support is experimental\nSome instructions may not be \ncompatible with the C47 and may\ncrash the calculator.");
         show_warning(tmpString);
       #endif // TESTSUITE_BUILD
-    } else {
+    }
+    else {
       #if !defined(TESTSUITE_BUILD)
-        sprintf(tmpString," \n"
-                          "This is not a C47 program\n"
-                          " \n"
-                          "It will not be loaded."
-                          );
+        sprintf(tmpString, " \nThis is not a C47 program\n \nIt will not be loaded.");
         show_warning(tmpString);
       #endif // TESTSUITE_BUILD
       ioFileClose();
@@ -270,7 +258,8 @@ void fnLoadProgram(uint16_t unusedButMandatoryParameter) {
   readLine(tmpString); // value
   if(strcmp(aimBuffer, "PROGRAM") == 0) {
     pgmSizeInByte = stringToUint32(tmpString);
-  } else {
+  }
+  else {
     ioFileClose();
     return;
   }

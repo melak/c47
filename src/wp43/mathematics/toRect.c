@@ -43,7 +43,8 @@ void fnToRect2(uint16_t unusedButMandatoryParameter) {
     dataTypeX = getRegisterDataType(REGISTER_X); //original
     dataAtagX = getRegisterAngularMode(REGISTER_X);
     dataTypeY = getRegisterDataType(REGISTER_Y);
-  } else {
+  }
+  else {
     dataTypeY = getRegisterDataType(REGISTER_X); //swapped
     dataTypeX = getRegisterDataType(REGISTER_Y);
     dataAtagX  = getRegisterAngularMode(REGISTER_Y);
@@ -55,7 +56,7 @@ void fnToRect2(uint16_t unusedButMandatoryParameter) {
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+  #if(EXTRA_INFO_ON_CALC_ERROR == 1)
     sprintf(errorMessage, "You cannot use >R or >P with %s in X and %s in Y!", getDataTypeName(getRegisterDataType(REGISTER_X), true, false), getDataTypeName(getRegisterDataType(REGISTER_Y), true, false));
     moreInfoOnError("In function fnToRect2:", errorMessage, NULL, NULL);
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -72,7 +73,8 @@ void fnToRect(uint16_t unusedButMandatoryParameter) {
   if(getSystemFlag(FLAG_HPRP)) {
     REG_X = REGISTER_X;
     REG_Y = REGISTER_Y;
-  } else {
+  }
+  else {
     REG_X = REGISTER_Y;
     REG_Y = REGISTER_X;
   }
@@ -84,8 +86,8 @@ void fnToRect(uint16_t unusedButMandatoryParameter) {
     angularMode_t yAngularMode = getRegisterAngularMode(REG_Y);
 
     if(!saveLastX()) {
-    return;
-  }
+      return;
+    }
 
     switch(dataTypeX) {
       case dtLongInteger: {
@@ -135,13 +137,14 @@ void fnToRect(uint16_t unusedButMandatoryParameter) {
 
     if(getSystemFlag(FLAG_HPRP)) {
       temporaryInformation = TI_X_Y;
-    } else {
+    }
+    else {
       temporaryInformation = TI_X_Y_SWAPPED;
     }
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REG_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot convert (%s, %s) to rectangular coordinates!", getDataTypeName(getRegisterDataType(REG_X), false, false), getDataTypeName(getRegisterDataType(REG_Y), false, false));
       moreInfoOnError("In function fnToRect:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)

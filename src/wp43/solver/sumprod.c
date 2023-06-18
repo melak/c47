@@ -86,94 +86,98 @@
         )
       ) {
       displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "Counter will not count to destination");
         moreInfoOnError("In function _programmableiSumProd:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    } else {
-
+    }
+    else {
       ++currentSolverNestingDepth;
       setSystemFlag(FLAG_SOLVING);
 
-
       while(lastErrorCode == ERROR_NONE) {
-          hourGlassIconEnabled = true;
-          showHideHourGlass();
+        hourGlassIconEnabled = true;
+        showHideHourGlass();
 
-          real34Compare(&counter, &loopTo, &compare);
-          real34Compare(&loopStep, const34_0, &sign);
-          real34Multiply(&compare, &sign, &compare);
-          finished = real34ToInt32(&compare);                       //0 means equal
-          if(finished > 0) {
-            break;
-          }
+        real34Compare(&counter, &loopTo, &compare);
+        real34Compare(&loopStep, const34_0, &sign);
+        real34Multiply(&compare, &sign, &compare);
+        finished = real34ToInt32(&compare);                       //0 means equal
+        if(finished > 0) {
+          break;
+        }
 
-          if(getRegisterDataType(REGISTER_X) != dtReal34) {
-            reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-          }
-          real34Copy(&counter, REGISTER_REAL34_DATA(REGISTER_X));
-          fnFillStack(NOPARAM);
+        if(getRegisterDataType(REGISTER_X) != dtReal34) {
+          reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+        }
+        real34Copy(&counter, REGISTER_REAL34_DATA(REGISTER_X));
+        fnFillStack(NOPARAM);
 
-          dynamicMenuItem = -1;
-          execProgram(label);
+        dynamicMenuItem = -1;
+        execProgram(label);
+        if(lastErrorCode != ERROR_NONE) {
+          break;
+        }
+
+        if(getFlag(FLAG_CPXRES) && (getRegisterDataType(REGISTER_X) == dtComplex34 || !realIsZero(&resultRi))) {
+            changedOverToComplex = true;     //Only latch over to complex operation if CPXRES is true, as well as either sum or new f(n) is complex
+        }
+
+        if(!changedOverToComplex) {
+          fnToReal(NOPARAM);
           if(lastErrorCode != ERROR_NONE) {
             break;
           }
-
-          if(getFlag(FLAG_CPXRES) && (getRegisterDataType(REGISTER_X) == dtComplex34 || !realIsZero(&resultRi))) {
-              changedOverToComplex = true;     //Only latch over to complex operation if CPXRES is true, as well as either sum or new f(n) is complex
+          real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &resultX); //Result accumulated
+          if(prod) {
+            realMultiply(&resultR, &resultX, &resultR, &ctxtReal75);
           }
-
-          if(!changedOverToComplex) {
-            fnToReal(NOPARAM);
-            if(lastErrorCode != ERROR_NONE) {
-              break;
-            }
-            real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &resultX); //Result accumulated
-            if(prod) {
-              realMultiply(&resultR, &resultX, &resultR, &ctxtReal75);
-            }
-            else {
-              realAdd(&resultR, &resultX, &resultR, &ctxtReal75);
-            }
-          } else { //dtComplex34
-            real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &resultX);  //Result accumulated
-            real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &resultXi); //Result accumulated
-            if(prod) {
-              mulComplexComplex(&resultR, &resultRi, &resultX, &resultXi, &resultR, &resultRi, &ctxtReal75);
-            }
-            else {
-              realAdd(&resultR, &resultX, &resultR, &ctxtReal75);
-              realAdd(&resultRi, &resultXi, &resultRi, &ctxtReal75);
-            }
+          else {
+            realAdd(&resultR, &resultX, &resultR, &ctxtReal75);
           }
+        }
+        else { //dtComplex34
+          real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &resultX);  //Result accumulated
+          real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &resultXi); //Result accumulated
+          if(prod) {
+            mulComplexComplex(&resultR, &resultRi, &resultX, &resultXi, &resultR, &resultRi, &ctxtReal75);
+          }
+          else {
+            realAdd(&resultR, &resultX, &resultR, &ctxtReal75);
+            realAdd(&resultRi, &resultXi, &resultRi, &ctxtReal75);
+          }
+        }
 
 
 
-          #if defined(VERBOSE_COUNTER)
-            printf(">>> Fin: %d, Cpx: %d ", finished, changedOverToComplex);
-            printReal34ToConsole(&counter," Cnt: ", " ");
-            printRealToConsole(&resultX," X: ", " ");
-            if(changedOverToComplex) printRealToConsole(&resultXi," Xi: ", " ");
-            printRealToConsole(&resultR," SUM: ", "");
-            if(changedOverToComplex) printRealToConsole(&resultRi," SUMii: ", " ");
-            printf("\n");
-          #endif //VERBOSE_COUNTER
+        #if defined(VERBOSE_COUNTER)
+          printf(">>> Fin: %d, Cpx: %d ", finished, changedOverToComplex);
+          printReal34ToConsole(&counter," Cnt: ", " ");
+          printRealToConsole(&resultX," X: ", " ");
+          if(changedOverToComplex) {
+            printRealToConsole(&resultXi," Xi: ", " ");
+          }
+          printRealToConsole(&resultR," SUM: ", "");
+          if(changedOverToComplex) {
+            printRealToConsole(&resultRi," SUMii: ", " ");
+          }
+          printf("\n");
+        #endif // VERBOSE_COUNTER
 
-          real34Add(&counter, &loopStep, &counter);
-          printHalfSecUpdate_Integer(timed, "Loop: ",loop--); //timed
+        real34Add(&counter, &loopStep, &counter);
+        printHalfSecUpdate_Integer(timed, "Loop: ",loop--); //timed
 
-          #if defined(DMCP_BUILD)
-            if(keyWaiting()) {
-                showString("key Waiting ...", &standardFont, 20, 40, vmNormal, false, false);
-                printHalfSecUpdate_Integer(force+1, "Interrupted: ",loop);
-              break;
-            }
-          #endif //DMCP_BUILD
-
-          if(finished == 0) {
+        #if defined(DMCP_BUILD)
+          if(keyWaiting()) {
+              showString("key Waiting ...", &standardFont, 20, 40, vmNormal, false, false);
+              printHalfSecUpdate_Integer(force+1, "Interrupted: ", loop);
             break;
           }
+        #endif // DMCP_BUILD
+
+        if(finished == 0) {
+          break;
+        }
       } //WHILE
 
 
@@ -183,7 +187,8 @@
             reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
           }
           convertRealToReal34ResultRegister(&resultR, REGISTER_X);
-        } else {
+        }
+        else {
           if(getRegisterDataType(REGISTER_X) != dtComplex34) {
             reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
           }
@@ -191,9 +196,10 @@
           convertRealToImag34ResultRegister(&resultRi, REGISTER_X);
         }
       adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
-      } else {
+      }
+      else {
         displayCalcErrorMessage(lastErrorCode, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        #if(EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "Error while calculating");
           moreInfoOnError("In function _programmableSumProd:", errorMessage, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -248,7 +254,7 @@
       label = findNamedLabel(buf);
       if(label == INVALID_VARIABLE) {
         displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        #if(EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "string '%s' is not a named label", buf);
           moreInfoOnError("In function _checkArgument:", errorMessage, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -259,7 +265,7 @@
     }
     else {
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "unexpected parameter %u", label);
         moreInfoOnError("In function _checkArgument:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)

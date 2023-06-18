@@ -118,9 +118,8 @@ static bool_t longIntegerIsPrime1(longInteger_t primeCandidate) {
 } */
 
 
-
 void fnIsPrime(uint16_t unusedButMandatoryParameter) {
-#ifndef SAVE_SPACE_DM42_12
+#if !defined(SAVE_SPACE_DM42_12)
   longInteger_t primeCandidate;
 
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
@@ -149,13 +148,12 @@ void fnIsPrime(uint16_t unusedButMandatoryParameter) {
   //temporaryInformation = (longIntegerIsPrime2(primeCandidate) ? TI_TRUE : TI_FALSE);
   temporaryInformation = (longIntegerIsPrime(primeCandidate) ? TI_TRUE : TI_FALSE);
   longIntegerFree(primeCandidate);
-#endif //SAVE_SPACE_DM42_12
+#endif // !SAVE_SPACE_DM42_12
 }
 
 
-
 void fnNextPrime(uint16_t unusedButMandatoryParameter) {
-#ifndef SAVE_SPACE_DM42_12
+#if !defined(SAVE_SPACE_DM42_12)
   longInteger_t currentNumber, nextPrime;
 
   longIntegerInit(currentNumber);
@@ -175,7 +173,7 @@ void fnNextPrime(uint16_t unusedButMandatoryParameter) {
 
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "the input type %s is not allowed for PRIME?!", getDataTypeName(getRegisterDataType(REGISTER_X), false, false));
       moreInfoOnError("In function fnIsPrime:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -198,10 +196,8 @@ void fnNextPrime(uint16_t unusedButMandatoryParameter) {
 
   longIntegerFree(nextPrime);
   longIntegerFree(currentNumber);
-#endif //SAVE_SPACE_DM42_12
+#endif // !SAVE_SPACE_DM42_12
 }
-
-
 
 
 /*

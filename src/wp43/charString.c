@@ -52,21 +52,20 @@ static void _calculateStringWidth(const char *str, const font_t *font, bool_t wi
       charCode = (charCode<<8) | (uint8_t)str[ch++];
     }
 
-
 /*
-    font = font1;                                 //JM auto font change for enlarged alpha fonts vv
-#ifndef TESTSUITE_BUILD
-    if(combinationFonts == 2) {
-      if(maxiC == 1 && font == &numericFont) {
-#endif //TESTSUITE_BUILD
-        glyphId = findGlyph(font, charCode);
-        if(glyphId < 0) {                         //JM if there is not a large glyph, width of the small letter
-          font = &standardFont;
+    font = font1;                             //JM auto font change for enlarged alpha fonts vv
+    #if !defined(TESTSUITE_BUILD)
+      if(combinationFonts == 2) {
+        if(maxiC == 1 && font == &numericFont) {
+    #endif // !TESTSUITE_BUILD
+    glyphId = findGlyph(font, charCode);
+    if(glyphId < 0) {                         //JM if there is not a large glyph, width of the small letter
+      font = &standardFont;
+    }
+    #if !defined(TESTSUITE_BUILD)
         }
-#ifndef TESTSUITE_BUILD
-      }
-    }                                             //JM ^^
-#endif //TESTSUITE_BUILD
+      }                                       //JM ^^
+    #endif // !TESTSUITE_BUILD
 */
     if(charCode != 1u) {                          //If the special ASCII 01, then skip the width and font not found portions
       glyphId = findGlyph(font, charCode);
@@ -150,7 +149,6 @@ char *stringAfterPixels(const char *str, const font_t *font, int16_t width, bool
 }
 
 
-
 int16_t stringNextGlyphNoEndCheck_JM(const char *str, int16_t pos) {    //Not checking for beyond terminator. Use only if no risk for pos > length(str)
 int16_t posinc = 0;
   if(str[pos] == 0) return pos;
@@ -158,7 +156,8 @@ int16_t posinc = 0;
   if(str[pos] & 0x80) {
     posinc = 2;
     if(str[pos+1] == 0 || str[pos+2] == 0) return pos+1;
-  } else {
+  }
+  else {
     posinc = 1;
     if(str[pos+1] == 0) return pos+1;
   }
@@ -187,7 +186,6 @@ int16_t stringNextGlyph(const char *str, int16_t pos) {
 }
 
 
-
 int16_t stringPrevGlyph(const char *str, int16_t pos) {
   int16_t prev = 0;
   int16_t lg;
@@ -202,14 +200,13 @@ int16_t stringPrevGlyph(const char *str, int16_t pos) {
   }
   else {
     int16_t cnt = 0;
-    while ((str[cnt] != 0) && (cnt<pos)) {
+    while(str[cnt] != 0 && cnt < pos) {
       prev = cnt;
       cnt = stringNextGlyph(str, cnt);
     }
   }
   return prev;
 }
-
 
 
 int16_t stringLastGlyph(const char *str) {
@@ -243,7 +240,6 @@ int16_t stringLastGlyph(const char *str) {
 }
 
 
-
 int32_t stringByteLength(const char *str) {
   int32_t len = 0;
 
@@ -261,7 +257,6 @@ int32_t stringByteLength(const char *str) {
 }
 
 
-
 int32_t stringGlyphLength(const char *str) {
   int32_t len = 0;
 
@@ -277,7 +272,6 @@ int32_t stringGlyphLength(const char *str) {
   }
   return len;
 }
-
 
 
 void codePointToUtf8(uint32_t codePoint, uint8_t *utf8) { // WP43 supports only unicode code points from 0x0000 to 0x7FFF
@@ -332,7 +326,6 @@ void codePointToUtf8(uint32_t codePoint, uint8_t *utf8) { // WP43 supports only 
     utf8[6] = 0;
   }*/
 }
-
 
 
 uint32_t utf8ToCodePoint(const uint8_t *utf8, uint32_t *codePoint) { // WP43 supports only unicode code points from 0x0000 to 0x7FFF

@@ -72,12 +72,12 @@
           (longIntegerCompare(loopTo, iCounter) < 0 && longIntegerCompareUInt(loopStep, 0) >=0) )
     ) {
       displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "Counter will not count to destination");
         moreInfoOnError("In function _programmableiSumProd:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    } else {
-
+    }
+    else {
       ++currentSolverNestingDepth;
       setSystemFlag(FLAG_SOLVING);
 
@@ -148,9 +148,10 @@
 
       if(lastErrorCode == ERROR_NONE) {
         convertLongIntegerToLongIntegerRegister(resultLi, REGISTER_X);
-      } else {
+      }
+      else {
         displayCalcErrorMessage(lastErrorCode, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        #if(EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "Error while calculating");
           moreInfoOnError("In function _programmableiSumProd:", errorMessage, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -184,21 +185,21 @@
 static bool_t _checkRegisters(void) {
   if(getRegisterDataType(REGISTER_X) != dtLongInteger) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "Long integer expected");
       moreInfoOnError("In function _checkiArgument:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return true;
   } else if(getRegisterDataType(REGISTER_Y) != dtLongInteger) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_Y);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "Long integer expected");
       moreInfoOnError("In function _checkiArgument:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return true;
   } else if(getRegisterDataType(REGISTER_Z) != dtLongInteger) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_Z);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "Long integer expected");
       moreInfoOnError("In function _checkiArgument:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -218,35 +219,22 @@ static  void _checkiArgument(uint16_t label, bool_t prod) {
       // Interactive mode
       char buf[4];
       switch(label) {
-        case REGISTER_X: {
-          buf[0] = 'X';
-          break;
-        }
-        case REGISTER_Y: {
-          buf[0] = 'Y';
-          break;
-        }
-        case REGISTER_Z: {
-          buf[0] = 'Z';
-          break;
-        }
-        case REGISTER_T: {
-          buf[0] = 'T';
-          break;
-        }
-        default: { /* unlikely */
-          buf[0] = 0;
-        }
+        case REGISTER_X: buf[0] = 'X'; break;
+        case REGISTER_Y: buf[0] = 'Y'; break;
+        case REGISTER_Z: buf[0] = 'Z'; break;
+        case REGISTER_T: buf[0] = 'T'; break;
+        default:         buf[0] = 0; /* unlikely */
       }
       buf[1] = 0;
       label = findNamedLabel(buf);
       if(label == INVALID_VARIABLE) {
         displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        #if(EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "string '%s' is not a named label", buf);
           moreInfoOnError("In function _checkiArgument:", errorMessage, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      } else {
+      }
+      else {
         if(!_checkRegisters()) {
           _programmableiSumProd(label, prod);
         }
@@ -255,7 +243,7 @@ static  void _checkiArgument(uint16_t label, bool_t prod) {
     }
     else {
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "unexpected parameter %u", label);
         moreInfoOnError("In function _checkiArgument:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)

@@ -32,7 +32,7 @@
 
 static void bnTypeError(void) {
   displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+  #if(EXTRA_INFO_ON_CALC_ERROR == 1)
     sprintf(errorMessage, "cannot calculate Bernoulli number for %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnBn/fnBnStar:", errorMessage, NULL, NULL);
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -61,7 +61,7 @@ void fnBn(uint16_t unusedButMandatoryParameter) {
   WP34S_Bernoulli(&x, &res, false, &ctxtReal39);
   if(realIsNaN(&res)) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function fnBn:", "k must be a non-negative integer", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
@@ -97,7 +97,7 @@ void fnBnStar(uint16_t unusedButMandatoryParameter) {
   WP34S_Bernoulli(&x, &res, true, &ctxtReal39);
   if(realIsNaN(&res)) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function fnBnStar:", "k must be a positive integer", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }

@@ -46,7 +46,7 @@ TO_QSPI void (* const dispatch_eulersFormula[NUMBER_OF_DATA_TYPES_FOR_CALCULATIO
 };
 
 
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
+#if(EXTRA_INFO_ON_CALC_ERROR == 1)
   void eulersFormulaError(void) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     sprintf(errorMessage, "cannot calculate e^ix for %s", getRegisterDataTypeName(REGISTER_X, true, false));
@@ -89,11 +89,12 @@ void eulersFormulaCplx(void) {
   if( (real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X)) || (real34IsInfinite(REGISTER_IMAG34_DATA(REGISTER_X)))) ) {
     if(!getSystemFlag(FLAG_SPCRES)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function eulersFormulaReal:", "cannot use " STD_PLUS_MINUS STD_INFINITY " as real or imag X input when flag D is not set", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
-    } else {
+    }
+    else {
       convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
       convertRealToImag34ResultRegister(const_NaN, REGISTER_X);
       fnSetFlag(FLAG_CPXRES);
@@ -119,7 +120,7 @@ void eulersFormulaCplx(void) {
 void eulersFormulaReal(void) {
   if((real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) && !getSystemFlag(FLAG_SPCRES)) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function eulersFormulaReal:", "cannot use " STD_PLUS_MINUS STD_INFINITY " as X input when flag D is not set", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;

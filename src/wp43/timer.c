@@ -175,7 +175,7 @@ void refreshTimer(void) {                   // This function is called when next
 
 
 void fnTimerDummyTest(uint16_t param) {
-#if defined(PC_BUILD) || defined (TESTSUITE_BUILD)
+#if defined(PC_BUILD) || defined(TESTSUITE_BUILD)
   printf("fnTimerDummyTest called  %u\n", param);
 #endif // PC_BUILD || TESTSUITE_BUILD
 }
@@ -194,8 +194,8 @@ void fnTimerReset(void) {
   }
 
   #if defined(DMCP_BUILD)
-  mutexRefreshTimer = false;
-#endif
+    mutexRefreshTimer = false;
+  #endif
   fnRebuildTimerRefresh();
 }
 
@@ -654,7 +654,7 @@ void fnRecallTimerApp(uint16_t regist) {
       }
       default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot recall %s to the stopwatch", getRegisterDataTypeName(regist, true, false));
         moreInfoOnError("In function fnRecallTimerApp:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -664,7 +664,7 @@ void fnRecallTimerApp(uint16_t regist) {
 
   if(overflow) {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "the %s does not fit to uint32_t", getRegisterDataTypeName(regist, true, false));
       moreInfoOnError("In function fnRecallTimerApp:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)

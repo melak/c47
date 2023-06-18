@@ -68,9 +68,9 @@
 
 
   void calcModeNormal(void) {
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       char tmp[200]; sprintf(tmp,"^^^^### calcModeNormal"); jm_show_comment(tmp);
-    #endif //PC_BUILD
+    #endif // PC_BUILD
     calcMode = CM_NORMAL;
 
     if(softmenuStack[0].softmenuId == 1) { // MyAlpha
@@ -89,9 +89,9 @@
 
 
   void calcModeAim(uint16_t unusedButMandatoryParameter) {
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       char tmp[200]; sprintf(tmp,"^^^^### calcModeAim"); jm_show_comment(tmp);
-    #endif //PC_BUILD
+    #endif // PC_BUILD
 
     if(!tam.mode) {
             showSoftmenu(-MNU_ALPHA);        //JM ALPHA-HOME  Change to initialize the menu stack. it was true.
@@ -209,9 +209,9 @@
         catalog = CATALOG_NONE;
       }
     }
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       char tmp[200]; sprintf(tmp,"^^^^### enterAsmMode catalog=%d",catalog); jm_show_comment(tmp);
-    #endif //PC_BUILD
+    #endif // PC_BUILD
 
     if(catalog) {
       if(calcMode == CM_NIM) {
@@ -261,13 +261,13 @@
     #if defined(DEBUGUNDO)
       printf(">>> saveForUndo from gui: calcModeNim\n");
     #endif // DEBUGUNDO
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       char tmp[200]; sprintf(tmp,"^^^^### calcModeNim"); jm_show_comment(tmp);
-    #endif //PC_BUILD
+    #endif // PC_BUILD
     saveForUndo();
     if(lastErrorCode == ERROR_RAM_FULL) {
       displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function calcModeNim:", "there is not enough memory to save for undo!", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;

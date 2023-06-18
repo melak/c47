@@ -189,12 +189,15 @@ int load_statefile(const char * fpath, const char * fname, void * data) {
 
   for(;;) {
     int k1 = runner_get_key(NULL);
-    if ( IS_EXIT_KEY(k1) )
+    if(IS_EXIT_KEY(k1)) {
       return 0; // Continue the selection screen
-    if ( is_menu_auto_off() )
+    }
+    if(is_menu_auto_off()) {
       return MRET_EXIT; // Leave selection screen
-    if ( k1 == KEY_ENTER )
+    }
+    if(k1 == KEY_ENTER) {
       break; // Proceed with load
+    }
   }
 
   lcd_putsRAt(t24, 6, "  Loading ...");
@@ -209,7 +212,6 @@ int load_statefile(const char * fpath, const char * fname, void * data) {
 }
 
 int save_programfile(const char * fpath, const char * fname, void * data) {
-
   lcd_puts(t24,"Saving program ...");
   lcd_puts(t24, fname);  lcd_refresh();
 
@@ -221,7 +223,6 @@ int save_programfile(const char * fpath, const char * fname, void * data) {
 }
 
 int load_programfile(const char * fpath, const char * fname, void * data) {
-
   lcd_putsRAt(t24, 6, "  Loading ...");
   lcd_refresh_wait();
 
@@ -232,8 +233,7 @@ int load_programfile(const char * fpath, const char * fname, void * data) {
   return MRET_LOADSTATE;
 }
 
-void show_warning(char *str)
-{
+void show_warning(char *str) {
   char delim[] = "\n";
   char *ptr = strtok(str, delim);
 
@@ -252,7 +252,8 @@ void show_warning(char *str)
   wait_for_key_release(-1);
   for(;;) {
     int k1 = runner_get_key(NULL);
-    if (( k1 == KEY_ENTER ) ||( IS_EXIT_KEY(k1) ) || ( is_menu_auto_off() ))
-       break;
+    if(k1 == KEY_ENTER || IS_EXIT_KEY(k1) || is_menu_auto_off()) {
+      break;
+    }
   }
 }

@@ -54,7 +54,7 @@ TO_QSPI void (* const lnP1[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \param void
  * \return void
  ***********************************************/
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
+#if(EXTRA_INFO_ON_CALC_ERROR == 1)
   void lnP1Error(void) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     sprintf(errorMessage, "cannot calculate Ln(1 + x) for %s", getRegisterDataTypeName(REGISTER_X, true, false));
@@ -97,30 +97,29 @@ void lnP1Complex(const real_t *real, const real_t *imag, real_t *lnReal, real_t 
   int n, i;
 
   complexMagnitude(real, imag, &t, realContext);
-  if (realCompareAbsLessThan(&t, const_1e_6)) {
-      realCopy(real, &term_real); /* Sequential terms */
-      realCopy(imag, &term_imag);
-      realCopy(real, &sum_real);  /* Running summation */
-      realCopy(imag, &sum_imag);
+  if(realCompareAbsLessThan(&t, const_1e_6)) {
+    realCopy(real, &term_real); /* Sequential terms */
+    realCopy(imag, &term_imag);
+    realCopy(real, &sum_real);  /* Running summation */
+    realCopy(imag, &sum_imag);
 
-      /* Calculate the number of iterations for the number of requied digits.
-       * The assumption is a worst case of five digits per iteration and
-       * always using an odd number of iterations.
-       */
-      n = (realContext->digits / 5) | 1;
-      for (i = 1; i <= n; i++) {
-        mulComplexComplex(&term_real, &term_imag, real, imag,
-                          &term_real, &term_imag, realContext);
-        realChangeSign(&term_real);
-        realChangeSign(&term_imag);
-        int32ToReal(i + 1, &r);
-        realDivide(&term_real, &r, &t, realContext);
-        realAdd(&sum_real, &t, &sum_real, realContext);
-        realDivide(&term_imag, &r, &t, realContext);
-        realAdd(&sum_imag, &t, &sum_imag, realContext);
-      }
-      realCopy(&sum_real, lnReal);
-      realCopy(&sum_imag, lnImag);
+    /* Calculate the number of iterations for the number of requied digits.
+      * The assumption is a worst case of five digits per iteration and
+      * always using an odd number of iterations.
+      */
+    n = (realContext->digits / 5) | 1;
+    for(i = 1; i <= n; i++) {
+      mulComplexComplex(&term_real, &term_imag, real, imag, &term_real, &term_imag, realContext);
+      realChangeSign(&term_real);
+      realChangeSign(&term_imag);
+      int32ToReal(i + 1, &r);
+      realDivide(&term_real, &r, &t, realContext);
+      realAdd(&sum_real, &t, &sum_real, realContext);
+      realDivide(&term_imag, &r, &t, realContext);
+      realAdd(&sum_imag, &t, &sum_imag, realContext);
+    }
+    realCopy(&sum_real, lnReal);
+    realCopy(&sum_imag, lnImag);
   }
   else {
     /* No numeric problems, so just do this directly */
@@ -159,7 +158,7 @@ void lnP1LonI(void) {
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function lnP1LonI:", "cannot calculate Ln(0) in Ln(1 + x)", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
@@ -188,7 +187,7 @@ void lnP1LonI(void) {
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function lnP1LonI:", "cannot calculate Ln of a negative number when CPXRES is not set!", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
@@ -224,7 +223,7 @@ void lnP1ShoI(void) {
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function lnP1ShoI:", "cannot calculate Ln(0) in Ln(1 + x)", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
@@ -246,7 +245,7 @@ void lnP1ShoI(void) {
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function lnP1ShoI:", "cannot calculate Ln of a negative number when CPXRES is not set!", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
@@ -261,13 +260,13 @@ void lnP1Real(void) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &arg);
 
   realAdd(&arg, const_1, &r, &ctxtReal39);
-  if (realIsZero(&r)) {
+  if(realIsZero(&r)) {
     if(getSystemFlag(FLAG_SPCRES)) {
       convertRealToReal34ResultRegister(const_minusInfinity, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function lnP1Real:", "cannot calculate Ln(0) in Ln(1 + x)", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
@@ -276,7 +275,7 @@ void lnP1Real(void) {
   else if(realIsInfinite(&r)) {
     if(!getSystemFlag(FLAG_SPCRES)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function lnP1Real:", "cannot use " STD_PLUS_MINUS STD_INFINITY " as X input of ln(x+1) when flag D is not set", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
@@ -313,7 +312,7 @@ void lnP1Real(void) {
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function lnP1Real:", "cannot calculate Ln of a negative number when CPXRES is not set!", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
@@ -334,7 +333,7 @@ void lnP1Cplx(void) {
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function lnP1Cplx:", "cannot calculate Ln(0) in Ln(1 + x)", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }

@@ -21,7 +21,7 @@
  * \file jmgraph.c TEXTFILES module
  ***********************************************/
 
-#ifndef TEXTFILES_H
+#if !defined(TEXTFILES_H)
 #define TEXTFILES_H
 
 #include "defines.h"
@@ -36,4 +36,4 @@ void         stackregister_csv_out(int16_t reg_b, int16_t reg_e);
 void         aimBuffer_csv_out(void);
 void         copyRegisterToClipboardString2(calcRegister_t regist, char *clipboardString);
 
-#endif // TEXTFILES_H
+#endif // !TEXTFILES_H

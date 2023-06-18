@@ -477,7 +477,7 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
 
   if(numberOfRegistersToAllocate > 99) {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "You can allocate up to 99 registers, you requested %" PRIu16, numberOfRegistersToAllocate);
       moreInfoOnError("In function allocateLocalRegisters:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -1132,14 +1132,16 @@ void clearRegister(calcRegister_t regist) {
       real34Zero(REGISTER_IMAG34_DATA(regist));
       if(getSystemFlag(FLAG_POLAR)) {
         setRegisterTag(regist, currentAngularMode | amPolar);
-      } else {
+      }
+      else {
         setRegisterTag(regist, amNone);
       }
     }
     else{
       if(getSystemFlag(FLAG_POLAR)) {
         reallocateRegister(regist, dtComplex34, COMPLEX34_SIZE, currentAngularMode | amPolar);
-      } else {
+      }
+      else {
         reallocateRegister(regist, dtComplex34, COMPLEX34_SIZE, amNone);
       }
       real34Zero(REGISTER_REAL34_DATA(regist));
@@ -1214,7 +1216,7 @@ static void adjustRealRegister(calcRegister_t reg, real34_t *val) {
   if(real34IsInfinite(val)) {
     displayCalcErrorMessage(real34IsPositive(val) ? ERROR_OVERFLOW_PLUS_INF : ERROR_OVERFLOW_MINUS_INF , ERR_REGISTER_LINE, reg);
   }
-  else if (0&&real34IsNaN(val)) {
+  else if(0 && real34IsNaN(val)) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, reg);
   }
   else if(real34IsZero(val)) {
@@ -1598,7 +1600,7 @@ int16_t indirectAddressing(calcRegister_t regist, uint16_t parameterType, int16_
     isValidAlpha = true;
     if(value == INVALID_VARIABLE) {
       displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "string '%s' is not a named variable", REGISTER_STRING_DATA(regist));
         moreInfoOnError("In function indirectAddressing:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -1962,7 +1964,8 @@ void reallocateRegister(calcRegister_t regist, uint32_t dataType, uint16_t dataS
 
   if((dataType == dtComplex34) && getSystemFlag(FLAG_POLAR)) {
     setRegisterTag(regist, currentAngularMode | amPolar);
-  } else {
+  }
+  else {
     setRegisterTag(regist, tag);
   }
 
@@ -2027,7 +2030,7 @@ void fnToReal(uint16_t unusedButMandatoryParameter) {
 
     default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "data type %s cannot be converted to a real34!", getRegisterDataTypeName(REGISTER_X, false, false));
         moreInfoOnError("In function fnToReal:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)

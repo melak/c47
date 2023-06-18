@@ -27,9 +27,9 @@
 #endif // PC_BUILD
 
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   int16_t determineFunctionKeyItem(const char *data, int16_t itemShift);
-#endif
+#endif // !TESTSUITE_BUILD
 
 
 void leavePem        (void);

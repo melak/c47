@@ -18,14 +18,14 @@
  * \file inlineTest.h
  ***********************************************/
 
-#ifndef INLINETEST_H
+#if !defined(INLINETEST_H)
 #define INLINETEST_H
 
 #include "longIntegerType.h"
 #include "typeDefinitions.h"
 #include <stdint.h>
 
-//#ifdef INLINE_TEST
+//#if defined(INLINE_TEST)
 extern bool_t   testEnabled;
 extern uint16_t testBitset;
 
@@ -39,6 +39,6 @@ void fnGetInlineTestBsToX     (uint16_t unusedButMandatoryParameter);
 void fnSetInlineTestXToBs     (uint16_t unusedButMandatoryParameter);
 void fnSysFreeMem             (uint16_t unusedButMandatoryParameter);
 bool_t fnTestBitIsSet         (uint8_t bit);
-//#endif
+//#endif // INLINE_TEST
 
-#endif // INLINETEST_H
+#endif // !INLINETEST_H

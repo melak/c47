@@ -19,7 +19,7 @@
 /********************************************//**
  * \file xeqm.h
  ***********************************************/
-#ifndef XEQM_H
+#if !defined(XEQM_H)
 #define XEQM_H
 
 #include "typeDefinitions.h"
@@ -38,4 +38,4 @@ void fnXEQMXXEQ              (uint16_t unusedButMandatoryParameter);
 void fnXEQNEW                (uint16_t unusedButMandatoryParameter);
 void fnXEQMexecute           (char *line1);
 
-#endif //XEQM_H
+#endif // !XEQM_H

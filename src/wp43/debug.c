@@ -284,7 +284,7 @@ const char * getRegisterTagName(calcRegister_t regist, bool_t padWithBlanks) {
       }
 
     case dtComplex34: {
-      if (getComplexRegisterPolarMode(regist)) {
+      if(getComplexRegisterPolarMode(regist)) {
         return "Polar   ";
       }
       else {
@@ -586,7 +586,7 @@ void debugNIM(void) {
 */
 
 
-#if (DEBUG_PANEL == 1)
+#if(DEBUG_PANEL == 1)
   /********************************************//**
    * \brief Returns the name of a display format
    *
@@ -2040,7 +2040,7 @@ void debugNIM(void) {
 
 
 
-#if (DEBUG_PANEL == 1) || (DEBUG_REGISTER_L == 1)
+#if(DEBUG_PANEL == 1) || (DEBUG_REGISTER_L == 1)
   /********************************************//**
    * \brief Formats a real34 for the debug window
    *

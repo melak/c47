@@ -45,11 +45,11 @@
 
 #if defined(PC_BUILD)
   GtkWidget *grid;
-  #if (SCREEN_800X480 == 0)
+  #if(SCREEN_800X480 == 0)
     GtkWidget *backgroundImage;
-#ifdef S43
+#if defined(S43)
     GtkWidget *lblFSoftkeyArea, *lblGSoftkeyArea;
-#endif
+#endif // S43
 GtkWidget *lblFKey2;
 GtkWidget *lblGKey2;
 //GtkWidget *lblEKey;
@@ -123,7 +123,7 @@ GtkWidget           *lbl82Fa, *lbl83Fa, *lbl84Fa, *lbl85Fa;             //^^
 //JM7 GtkWidget  *lblConfirmY; //JM for Y/N
 //JM7 GtkWidget  *lblConfirmN; //JM for Y/N
 
-    #if (DEBUG_PANEL == 1)
+    #if(DEBUG_PANEL == 1)
       GtkWidget *lbl1[DEBUG_LINES], *lbl2[DEBUG_LINES];
       GtkWidget *btnBitFields, *btnFlags, *btnRegisters, *btnLocalRegisters, *btnStatisticalSums, *btnNamedVariables, *btnSavedStackRegisters;
       GtkWidget *chkHexaString;
@@ -242,32 +242,44 @@ uint32_t event_keyval = 99999999;
 
       case 65470: // F1                      //JM Added this portion to be able to go to NOP on emulator
         //printf("key pressed: F1\n");
-        if (!tam.mode) {btnFnClickedR(w, "1");}
+        if(!tam.mode) {
+          btnFnClickedR(w, "1");
+        }
         break;
 
       case 65471: // F2
         //printf("key pressed: F2\n");
-        if (!tam.mode) {btnFnClickedR(w, "2");}
+        if(!tam.mode) {
+          btnFnClickedR(w, "2");
+        }
         break;
 
       case 65472: // F3
         //printf("key pressed: F3\n");
-        if (!tam.mode) {btnFnClickedR(w, "3");}
+        if(!tam.mode) {
+          btnFnClickedR(w, "3");
+        }
         break;
 
       case 65473: // F4
         //printf("key pressed: F4\n");
-        if (!tam.mode) {btnFnClickedR(w, "4");}
+        if(!tam.mode) {
+          btnFnClickedR(w, "4");
+        }
         break;
 
       case 65474: // F5
         //printf("key pressed: F5\n");
-        if (!tam.mode) {btnFnClickedR(w, "5");}
+        if(!tam.mode) {
+          btnFnClickedR(w, "5");
+        }
         break;
 
       case 65475: // F6
         //printf("key pressed: F6\n");
-        if (!tam.mode) {btnFnClickedR(w, "6");}
+        if(!tam.mode) {
+          btnFnClickedR(w, "6");
+        }
         break;
 
     case 65505: // left shift  //JM Added this portion to be able to repeat f key on emulator
@@ -295,16 +307,17 @@ gboolean keyPressed(GtkWidget *w, GdkEventKey *event, gpointer data) {
                                   softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAMATH ||
                                   softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAINTL ||
                                   softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAintl );
-  if (event_keyval ==  event->keyval + CTRL_State) {
+  if(event_keyval ==  event->keyval + CTRL_State) {
     return FALSE;
   }
-  else event_keyval = event->keyval + CTRL_State;
+  else {
+    event_keyval = event->keyval + CTRL_State;
+  }
   //printf("#######%d\n",event_keyval);
 //JM ALPHA SECTION FOR ALPHAMODE - TAKE OVER ALPHA KEYBOARD
-if (calcMode == CM_AIM || calcMode == CM_EIM || tam.mode) {
-printf(">>>>> Keyboard Key Code = %d\n",event_keyval);
-switch (event_keyval) {
-
+if(calcMode == CM_AIM || calcMode == CM_EIM || tam.mode) {
+  printf(">>>>> Keyboard Key Code = %d\n", event_keyval);
+  switch(event_keyval) {
     case 65507: // left Ctrl
     case 65508: // right Ctrl
       //printf("key pressed: CTRL Activated\n");
@@ -316,19 +329,19 @@ switch (event_keyval) {
       copyScreenToClipboard();
       break;
 
-case 40:
+    case 40:
       if(calcMode == CM_EIM) {
         shiftF = true;
         btnFnClicked(w, "3");  //( F3
       }
       break;
-case 41:
+    case 41:
       if(calcMode == CM_EIM) {
         shiftF = true;
         btnFnClicked(w, "4");  //) F4
       }
       break;
-case 61:
+    case 61:
       if(calcMode == CM_EIM) {
         shiftF = true;
         btnFnClicked(w, "5");  //= F5
@@ -336,73 +349,104 @@ case 61:
       break;
 
 
-//ROW 0
+    //ROW 0
     case 65362:                                               //JM     // CursorUp //JM
-      if(AlphaArrowsOffAndUpDn)
+      if(AlphaArrowsOffAndUpDn) {
         btnClicked(w, "17");   //Up
-      else
-      if(calcMode == CM_EIM)
+      }
+      else if(calcMode == CM_EIM) {
         btnClicked(w, "17");   //Up
-      else
+      }
+      else {
         btnFnClicked(w, "1");  //F1
+      }
       break;
     case 65364:                                               //JM     // CursorDown //JM
       if(AlphaArrowsOffAndUpDn)
         btnClicked(w, "22");   //Up
-      else
-      if(calcMode == CM_EIM)
+      else if(calcMode == CM_EIM)
         btnClicked(w, "22");   //Dn
       else
         btnFnClicked(w, "2");  //F2
       break;
     case 65361:                                               //JM     // CursorLt BST //JM Left
-      if(AlphaArrowsOffAndUpDn)
-      {}
-      else
-      if(calcMode == CM_EIM)
-        if(softmenuStack[0].firstItem == 0) btnFnClicked(w, "1");  //F1
-        else {}
+      if(AlphaArrowsOffAndUpDn) {
+      }
+      else if(calcMode == CM_EIM)
+        if(softmenuStack[0].firstItem == 0) {
+          btnFnClicked(w, "1");  //F1
+        }
+        else {
+        }
       else
         btnFnClicked(w, "5");  //F5
       break;
     case 65363:                                               //JM     // CursorRt SST //JM Right
-      if(AlphaArrowsOffAndUpDn)
-      {}
-      else
-      if(calcMode == CM_EIM)
-        if(softmenuStack[0].firstItem == 0) btnFnClicked(w, "6");  //F6
-        else {}
-      else
+      if(AlphaArrowsOffAndUpDn) {
+      }
+      else if(calcMode == CM_EIM)
+        if(softmenuStack[0].firstItem == 0) {
+          btnFnClicked(w, "6");  //F6
+        }
+        else {
+        }
+      else {
         btnFnClicked(w, "6");  //F6
+      }
       break;
 
 
-//ROW 1
+    //ROW 1
     case 65470: // F1                                                    //**************-- FUNCTION KEYS --***************//
-      if(calcMode == CM_EIM || AlphaArrowsOffAndUpDn) btnFnClickedP(w, "1");
-      else  btnFnClicked(w, "1");
+      if(calcMode == CM_EIM || AlphaArrowsOffAndUpDn) {
+        btnFnClickedP(w, "1");
+      }
+      else {
+        btnFnClicked(w, "1");
+      }
       break;
     case 65471: // F2
-      if(calcMode == CM_EIM || AlphaArrowsOffAndUpDn) btnFnClickedP(w, "2");
-      else  btnFnClicked(w, "2");
+      if(calcMode == CM_EIM || AlphaArrowsOffAndUpDn) {
+        btnFnClickedP(w, "2");
+      }
+      else {
+        btnFnClicked(w, "2");
+      }
       break;
     case 65472: // F3
-      if(calcMode == CM_EIM || AlphaArrowsOffAndUpDn) btnFnClickedP(w, "3");
-      else  btnFnClicked(w, "3");
+      if(calcMode == CM_EIM || AlphaArrowsOffAndUpDn) {
+        btnFnClickedP(w, "3");
+      }
+      else {
+        btnFnClicked(w, "3");
+      }
       break;
     case 65473: // F4
-      if(calcMode == CM_EIM || AlphaArrowsOffAndUpDn) btnFnClickedP(w, "4");
-      else  btnFnClicked(w, "4");
+      if(calcMode == CM_EIM || AlphaArrowsOffAndUpDn) {
+        btnFnClickedP(w, "4");
+      }
+      else {
+        btnFnClicked(w, "4");
+      }
       break;
     case 65474: // F5
-      if(calcMode == CM_EIM || AlphaArrowsOffAndUpDn) btnFnClickedP(w, "5");
-      else  btnFnClicked(w, "5");
+      if(calcMode == CM_EIM || AlphaArrowsOffAndUpDn) {
+        btnFnClickedP(w, "5");
+      }
+      else {
+        btnFnClicked(w, "5");
+      }
       break;
     case 65475: // F6
-      if(calcMode == CM_EIM || AlphaArrowsOffAndUpDn) btnFnClickedP(w, "6");
-      else  btnFnClicked(w, "6");
+      if(calcMode == CM_EIM || AlphaArrowsOffAndUpDn) {
+        btnFnClickedP(w, "6");
+      }
+      else {
+        btnFnClicked(w, "6");
+      }
       break;
-//ROW 2
+
+    //ROW 2
     case 65:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM.    //**************-- ALPHA KEYS UPPER CASE --***************//
       btnClicked_UC(w, "00");                                          //UPPER CASE PC LETTER INPUT. INVERT C43 CASE. USE LETTER.
       break;
@@ -428,7 +472,7 @@ case 61:
       }
       break;
 
-//ROW 3
+    //ROW 3
     case 71:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_UC(w, "06");
       break;
@@ -453,7 +497,8 @@ case 61:
         btnClicked(w, "06");
       }
       break;
-//ROW 4
+
+    //ROW 4
     case 65421:                                               //JM    // Enter
     case 65293:                                               //JM    // Enter
       btnClicked(w, "12");
@@ -481,7 +526,8 @@ case 61:
         btnClicked(w, "14");
       }
       break;
-//ROW 5
+
+    //ROW 5
     case 65360:                                               //JM     // HOME  //JM
       btnClicked(w, "17");
       break;
@@ -497,7 +543,8 @@ case 61:
     case 83:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_UC(w, "21");
       break;
-//ROW 6
+
+    //ROW 6
     case 65367:                                               //JM     // END  //JM
       btnClicked(w, "22");
       break;
@@ -513,9 +560,10 @@ case 61:
     case 87:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_UC(w, "26");
       break;
-//ROW 7
+
+    //ROW 7
     case 65505:                                               //JM     // left shift  //JM
-  //case 65506: // right shift //JM
+    //case 65506: // right shift //JM
       btnClicked(w, "27");
       break;
     case 88:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
@@ -528,14 +576,8 @@ case 61:
       btnClicked_UC(w, "30");
       break;
 
-
-
-
-
-
-
-//JM ALPHA LOWER CASE SECTION FOR ALPHAMODE - TAKE OVER ALPHA KEYBOARD
-//ROW 2
+   //JM ALPHA LOWER CASE SECTION FOR ALPHAMODE - TAKE OVER ALPHA KEYBOARD
+    //ROW 2
     case 65+32:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM     //**************-- ALPHA KEYS LOWER CASE --***************//
       btnClicked_LC(w, "00");                                             //LOWER CASE PC LETTER INPUT. USE LETTER IN THE CURRENT C43 CASE.
       break;
@@ -554,7 +596,8 @@ case 61:
     case 70+32:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_LC(w, "05");
       break;
-//ROW 3
+
+    //ROW 3
     case 71+32:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_LC(w, "06");
       break;
@@ -573,7 +616,8 @@ case 61:
     case 76+32:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_LC(w, "11");
       break;
-//ROW 4
+
+    //ROW 4
     case 77+32:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_LC(w, "13");
       break;
@@ -583,7 +627,8 @@ case 61:
     case 79+32:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_LC(w, "15");
       break;
-//ROW 5
+
+    //ROW 5
     case 80+32:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_LC(w, "18");
       break;
@@ -596,7 +641,8 @@ case 61:
     case 83+32:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_LC(w, "21");
       break;
-//ROW 6
+
+    //ROW 6
     case 84+32:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_LC(w, "23");
       break;
@@ -609,7 +655,8 @@ case 61:
     case 87+32:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_LC(w, "26");
       break;
-//ROW 7
+
+    //ROW 7
     case 88+32:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_LC(w, "28");
       break;
@@ -620,13 +667,8 @@ case 61:
       btnClicked_LC(w, "30");
       break;
 
-
-
-
-
-
-//JM  NUMERALS FOR ALPHAMODE - TAKE OVER ALPHA KEYBOARD
-//ROW 5
+    //JM  NUMERALS FOR ALPHAMODE - TAKE OVER ALPHA KEYBOARD
+    //ROW 5
     case 65463: // 7
     case 48+7:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM     //**************-- NUM KEYS  --***************//
       btnClicked_NU(w, "18");                                            // Numbers from PC --> produce numbers.
@@ -639,7 +681,8 @@ case 61:
     case 48+9:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_NU(w, "20");
       break;
-//ROW 6
+
+    //ROW 6
     case 65460: // 4
     case 48+4:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_NU(w, "23");
@@ -652,7 +695,8 @@ case 61:
     case 48+6:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_NU(w, "25");
       break;
-//ROW 7
+
+    //ROW 7
     case 65457: // 1
     case 48+1:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_NU(w, "28");
@@ -665,7 +709,8 @@ case 61:
     case 48+3:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_NU(w, "30");
       break;
-//ROW 8
+
+    //ROW 8
     case 65456: // 0
     case 48+0:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_NU(w, "33");
@@ -675,10 +720,7 @@ case 61:
       btnClicked_NU(w, "34");
       break;
 
-
-
-
-//OPERATORS / * - +
+    //OPERATORS / * - +
     case 65455: // / //JM
     case 47:              // divide                   //JM     //**************-- OTHER DIRECT ALPHA MODE KEYBOARD KEYS  --***************//
       btnClicked_NU(w, "21");
@@ -696,12 +738,7 @@ case 61:
       btnClicked_NU(w, "36");
       break;
 
-
-
-
-
-
-//ROW 7/8
+    //ROW 7/8
     case 95:                //JM UNDERSCORE   //JM
       btnClicked(w, "31");
       break;
@@ -729,6 +766,7 @@ case 61:
     case 32:                //JM SPACE        //JM
       btnClicked(w, "36");
       break;
+
 /*
     case 65507: // left Ctrl
     case 65508: // right Ctrl
@@ -736,20 +774,19 @@ case 61:
       copyScreenToClipboard();
       break;
 */
-    default:
-      break;
+
+    default: ;
 
   }
 return FALSE;
 }
 
 
-
 //ORIGINAL MODIFIED KEYBOARD DETECTION
 //FOR NON AIM MODE. AIM HAS RETURNED AT THIS POINT SO NO IF NEEDED
 
-  switch (event_keyval) {
-//ROW 1
+  switch(event_keyval) {
+    //ROW 1
     case 65470: // F1                       //JM Changed these to btnFnPressed from btnFnClicked
       //printf("key pressed: F1\n");
       btnFnClickedP(w, "1");
@@ -779,7 +816,8 @@ return FALSE;
       //printf("key pressed: F6\n");
       btnFnClickedP(w, "6");
       break;
-//ROW 2
+
+    //ROW 2
     case 97:  // a  //dr
       //printf("key pressed: a Sigma+\n"); //dr
       btnClicked(w, "00");
@@ -810,7 +848,7 @@ return FALSE;
       btnClicked(w, "05");
       break;
 
-//ROW 3
+    //ROW 3
     case 109: // m //dr
       //printf("key pressed: m STO\n"); //dr
       btnClicked(w, "06");
@@ -821,7 +859,7 @@ return FALSE;
       btnClicked(w, "07");
       break;
 
-//dr    case 65366: // PgDn
+    //dr    case 65366: // PgDn
     case 100: // d //dr
       //printf("key pressed: d Rdown\n"); //dr
       btnClicked(w, "08");
@@ -849,26 +887,25 @@ return FALSE;
       btnClicked(w, "11");
       break;
 
-//ROW 4
+    //ROW 4
     case 65421: // Enter
     case 65293: // Enter
       //printf("key pressed: ENTER\n");
       btnClicked(w, "12");
       break;
 
-//dr    case 65289: // Tab
+    //dr    case 65289: // Tab
     case 119: // w //dr
       //printf("key pressed: w x<>y\n"); //dr
       btnClicked(w, "13");
       break;
-
 
     case 110: // n //dr
       //printf("key pressed: n +/-\n"); //dr
       btnClicked(w, "14");
       break;
 
-//dr    case 69:  // E
+    //dr    case 69:  // E
     case 101: // e //dr
     //printf("key pressed: e EXP\n"); //dr
       btnClicked(w, "15");
@@ -878,62 +915,62 @@ return FALSE;
       //printf("key pressed: Backspace\n");
       btnClicked(w, "16");
       break;
-//ROW 5
+
+    //ROW 5
     case 65362: // CursorUp //JM
                             //JM
       //printf("key pressed: <Up>\n"); //dr
       btnClicked(w, "17");
       break;
 
-      case 55:    // 7
-      case 65463: // 7
-        //printf("key pressed: 7\n");
-        btnClicked(w, "18");
-        break;
+    case 55:    // 7
+    case 65463: // 7
+      //printf("key pressed: 7\n");
+      btnClicked(w, "18");
+      break;
 
-      case 56:    // 8
-      case 65464: // 8
-        //printf("key pressed: 8\n");
-        btnClicked(w, "19");
-        break;
+    case 56:    // 8
+    case 65464: // 8
+      //printf("key pressed: 8\n");
+      btnClicked(w, "19");
+      break;
 
-      case 57:    // 9
-      case 65465: // 9
-        //printf("key pressed: 9\n");
-        btnClicked(w, "20");
-        break;
-
+    case 57:    // 9
+    case 65465: // 9
+      //printf("key pressed: 9\n");
+      btnClicked(w, "20");
+      break;
 
     case 47:    // / //JM
     case 65455: // / //JM
       //printf("key pressed: divide\n"); //dr
       btnClicked(w, "21");
       break;
-//ROW 6
+
+    //ROW 6
     case 65364: // CursorDown //JM
                               //JM
       //printf("key pressed: <Down>\n"); //dr
       btnClicked(w, "22");
       break;
 
-      case 52:    // 4
-      case 65460: // 4
-        //printf("key pressed: 4\n");
-        btnClicked(w, "23");
-        break;
+    case 52:    // 4
+    case 65460: // 4
+      //printf("key pressed: 4\n");
+      btnClicked(w, "23");
+      break;
 
-      case 53:    // 5
-      case 65461: // 5
-        //printf("key pressed: 5\n");
-        btnClicked(w, "24");
-        break;
+    case 53:    // 5
+    case 65461: // 5
+      //printf("key pressed: 5\n");
+      btnClicked(w, "24");
+      break;
 
-      case 54:    // 6
-      case 65462: // 6
-        //printf("key pressed: 6\n");
-        btnClicked(w, "25");
-        break;
-
+    case 54:    // 6
+    case 65462: // 6
+      //printf("key pressed: 6\n");
+      btnClicked(w, "25");
+      break;
 
     case 42:    // * //JM
     case 65450: // * //JM
@@ -941,56 +978,56 @@ return FALSE;
       btnClicked(w, "26");
       break;
 
-//ROW 7
+    //ROW 7
     case 65505: // left shift  //JM
-//    case 65506: //JM right shift. 65453: // -  //JM Remove Right Shift, to allow * & +
+    //case 65506: //JM right shift. 65453: // -  //JM Remove Right Shift, to allow * & +
       //printf("key pressed: Shift\n"); //dr
       btnClickedP(w, "27");                         //JM PRESSED FOR KEYBOARD F REPEAT
       break;
 
-      case 49:    // 1
-      case 65457: // 1
-        //printf("key pressed: 1\n");
-        btnClicked(w, "28");
-        break;
+    case 49:    // 1
+    case 65457: // 1
+      //printf("key pressed: 1\n");
+      btnClicked(w, "28");
+      break;
 
-      case 50:    // 2
-      case 65458: // 2
-        //printf("key pressed: 2\n");
-        btnClicked(w, "29");
-        break;
+    case 50:    // 2
+    case 65458: // 2
+      //printf("key pressed: 2\n");
+      btnClicked(w, "29");
+      break;
 
-      case 51:    // 3
-      case 65459: // 3
-        //printf("key pressed: 3\n");
-        btnClicked(w, "30");
-        break;
-
+    case 51:    // 3
+    case 65459: // 3
+      //printf("key pressed: 3\n");
+      btnClicked(w, "30");
+      break;
 
     case 45:    // - //JM
     case 65453: // - //JM
       //printf("key pressed: subtract\n"); //dr
       btnClicked(w, "31");
       break;
-//ROW 8
+
+    //ROW 8
     case 65307: // Esc //JM
                        //JM
       //printf("key pressed: EXIT\n"); //dr
       btnClicked(w, "32");
       break;
 
-      case 48:    // 0
-      case 65456: // 0
-        //printf("key pressed: 0\n");
-        btnClicked(w, "33");
-        break;
+    case 48:    // 0
+    case 65456: // 0
+      //printf("key pressed: 0\n");
+      btnClicked(w, "33");
+      break;
 
-      case 44:    // ,
-      case 46:    // .
-      case 65454: // .
-        //printf("key pressed: .\n");
-        btnClicked(w, "34");
-        break;
+    case 44:    // ,
+    case 46:    // .
+    case 65454: // .
+      //printf("key pressed: .\n");
+      btnClicked(w, "34");
+      break;
 
     case 92: // \                                //JM R/S changed to \ as on Mac CTRL is something else.
       //printf("key pressed: \\ R/S\n");
@@ -1004,13 +1041,13 @@ return FALSE;
       btnClicked(w, "36");
       break;
 
-/*//JM- Reinstated
+    /*//JM- Reinstated
     case 72:  // H    //JM REMOVE CAP H. ONLY lower case wil print
     case 104: // h
       //printf("key pressed: h Hardcopy to clipboard\n");
       copyScreenToClipboard();
       break;
-*/
+    */
 
     case 65507: // left Ctrl
     case 65508: // right Ctrl
@@ -1018,13 +1055,11 @@ return FALSE;
       CTRL_State = 65536;
       break;
 
-
     case 72+65536: // Ctrl H
     case 104+65536: // Ctrl h
       printf("key pressed: CTRL+h Hardcopy\n");
       copyScreenToClipboard();
       break;
-
 
     case 120+65536: // CTRL x
     case 88+65536: // CTRL X
@@ -1034,13 +1069,11 @@ return FALSE;
       copyRegisterXToClipboard();
       break;
 
-
     case 100+65536: // CTRL d
     case 68+65536: // CTRL D
       printf("key pressed: CTRL+d Copy Stack registers to clipboard\n");
       copyStackRegistersToClipboard();
       break;
-
 
     case 97+65536: // CTRL a
     case 65+65536: // CTRL A
@@ -1048,9 +1081,7 @@ return FALSE;
       copyAllRegistersToClipboard();
       break;
 
-      default: {
-        break;
-    }
+      default: ;
     }
     return FALSE;
   }
@@ -1059,7 +1090,7 @@ return FALSE;
 
 
 #if defined(PC_BUILD)
-  #if (SCREEN_800X480 == 0)
+  #if(SCREEN_800X480 == 0)
     /* Reads the CSS file to configure the calc's GUI style. */
     static void prepareCssData(void) {
       FILE *cssFile;
@@ -2231,14 +2262,16 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
   }
 }
 
-    void calcModeNormalGui(void) {
-      #if defined (DEBUGMODES) && defined PC_BUILD
+  void calcModeNormalGui(void) {
+    #if defined(DEBUGMODES) && defined(PC_BUILD)
       printf(">>> @@@ calcModeNormalGui     calcMode=%d tam.alpha=%d\n", calcMode, tam.alpha);
-      #endif //DEBUGMODES
+    #endif // DEBUGMODES && PC_BUILD
 
-      const calcKey_t *keys;
+    const calcKey_t *keys;
 
-  if(running_program_jm) return;                        //JM faster during program excution
+  if(running_program_jm) {
+    return;                        //JM faster during program excution
+  }
 
   keys = getSystemFlag(FLAG_USER) ? kbd_usr : kbd_std;
 
@@ -2483,15 +2516,17 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
   moveLabels();
 }
 
-    void calcModeAimGui(void) {
-      #if defined (DEBUGMODES) && defined PC_BUILD
+  void calcModeAimGui(void) {
+    #if defined(DEBUGMODES) && defined(PC_BUILD)
       printf(">>> @@@ calcModeAimGui      calcMode=%d tam.alpha=%d\n", calcMode, tam.alpha);
-      #endif //DEBUGMODES
+    #endif // DEBUGMODES && PC_BUILD
 
 
-      const calcKey_t *keys;
+    const calcKey_t *keys;
 
-  if(running_program_jm) return;                        //JM faster during program excution
+  if(running_program_jm) {
+    return;                        //JM faster during program excution
+  }
 
   keys = getSystemFlag(FLAG_USER) ? kbd_usr : kbd_std;
 
@@ -2797,14 +2832,16 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
 //  gtk_widget_hide(lbl31G);   //JM Remnanty from WP43. Not sure why. Removed.
 }
 
-    void calcModeTamGui(void) {
-      #if defined (DEBUGMODES) && defined PC_BUILD
+  void calcModeTamGui(void) {
+    #if defined(DEBUGMODES) && defined(PC_BUILD)
       printf(">>> @@@ calcModeTamGui      calcMode=%d tam.alpha=%d\n", calcMode, tam.alpha);
-      #endif //DEBUGMODES
+    #endif // DEBUGMODES && PC_BUILD
 
-      const calcKey_t *keys;
+    const calcKey_t *keys;
 
-  if(running_program_jm) return;                        //JM faster during program excution
+  if(running_program_jm) {
+    return;                        //JM faster during program excution
+  }
 
   keys = getSystemFlag(FLAG_USER) ? kbd_usr : kbd_std;
 
@@ -2919,7 +2956,7 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
  * \return void
  ***********************************************/
 void setupUI(void) {
-#if (SCREEN_800X480 == 0)
+#if(SCREEN_800X480 == 0)
   int            numBytes, xPos, yPos;
   GError         *error;
   GtkCssProvider *cssProvider;
@@ -2955,7 +2992,7 @@ void setupUI(void) {
   frmCalc = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
   if(calcLandscape) {
-    #if (DEBUG_PANEL == 1)
+    #if(DEBUG_PANEL == 1)
       gtk_window_set_default_size(GTK_WINDOW(frmCalc), 1000, 540);
       debugWidgetDx = 0;
       debugWidgetDy = 545;
@@ -2964,7 +3001,7 @@ void setupUI(void) {
     #endif
   }
   else {
-    #if (DEBUG_PANEL == 1)
+    #if(DEBUG_PANEL == 1)
       gtk_window_set_default_size(GTK_WINDOW(frmCalc),  1530, 980);
       debugWidgetDx = 531;
       debugWidgetDy = 0;
@@ -3004,7 +3041,7 @@ void setupUI(void) {
 
       gtk_fixed_put(GTK_FIXED(grid), backgroundImage, 0, 0);
 
-#ifdef S43
+#if defined(S43)
   // Areas for the g shifted softkeys
   lblGSoftkeyArea = gtk_label_new("");
   gtk_widget_set_name(lblGSoftkeyArea, "gSoftkeyArea");
@@ -3016,7 +3053,7 @@ void setupUI(void) {
   gtk_widget_set_name(lblFSoftkeyArea, "fSoftkeyArea");
   gtk_widget_set_size_request(lblFSoftkeyArea, 438, 24);
   gtk_fixed_put(GTK_FIXED(grid), lblFSoftkeyArea, 44, 72+170+24);
-#endif
+#endif // S43
 
 
 
@@ -3090,23 +3127,23 @@ void setupUI(void) {
     exit(1);
   }
 
-      g_signal_connect(screen, "draw", G_CALLBACK(drawScreen), NULL);
+  g_signal_connect(screen, "draw", G_CALLBACK(drawScreen), NULL);
 
 
-  #if (DEBUG_REGISTER_L == 1)
+  #if(DEBUG_REGISTER_L == 1)
     lblRegisterL1 = gtk_label_new("");
     lblRegisterL2 = gtk_label_new("");
     gtk_widget_set_name(lblRegisterL1, "registerL");
     gtk_widget_set_name(lblRegisterL2, "registerL");
     gtk_fixed_put(GTK_FIXED(grid), lblRegisterL1, 5, 28);
     gtk_fixed_put(GTK_FIXED(grid), lblRegisterL2, 5, 46);
-  #endif
+  #endif // (DEBUG_REGISTER_L == 1)
 
-  #if (SHOW_MEMORY_STATUS == 1)
+  #if(SHOW_MEMORY_STATUS == 1)
     lblMemoryStatus = gtk_label_new("");
     gtk_widget_set_name(lblMemoryStatus, "memoryStatus");
     gtk_fixed_put(GTK_FIXED(grid), lblMemoryStatus, 5, 5);
-  #endif
+  #endif // (SHOW_MEMORY_STATUS == 1)
 
       // 1st row: F1 to F6 buttons
       btn11 = gtk_button_new_with_label("");
@@ -4161,7 +4198,7 @@ void setupUI(void) {
   // gtk_fixed_put(GTK_FIXED(grid), lblOn,   0, 0);     //JM Removed ON to 81
 
       // The debug window
-      #if (DEBUG_PANEL == 1)
+      #if(DEBUG_PANEL == 1)
         for(int i=0; i<DEBUG_LINES; i++) {
           lbl1[i] = gtk_label_new("");
           gtk_widget_set_name(lbl1[i], "debugDejaVu");

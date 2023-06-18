@@ -44,27 +44,36 @@
 void linpol(const real_t *a, const real_t *b, const real_t *p, real_t *res) {
   real_t x;
 
-  if (realIsNaN(a) || realIsNaN(b) || realIsNaN(p) || realIsInfinite(p)) {
+  if(realIsNaN(a) || realIsNaN(b) || realIsNaN(p) || realIsInfinite(p)) {
     realCopy(const_NaN, res);
-  } else if (realIsInfinite(a)) {
-    if (realIsInfinite(b)) {    // both infinite, either NaN or one of them
-      if (realIsNegative(a) == realIsNegative(b))
+  }
+  else if(realIsInfinite(a)) {
+    if(realIsInfinite(b)) {    // both infinite, either NaN or one of them
+      if(realIsNegative(a) == realIsNegative(b)) {
         realCopy(a, res);
-      else
+      }
+      else {
         realCopy(const_NaN, res);
-    } else
+      }
+    }
+    else {
       realCopy(a, res);         // a only is infinite, return a
-  } else if (realIsInfinite(b)) {
+    }
+  }
+  else if(realIsInfinite(b)) {
     realCopy(b, res);           // b only is infinite, return b
-  } else if (realCompareEqual(a, b)) {
+  }
+  else if(realCompareEqual(a, b)) {
     realCopy(a, res);           // both same, return one
-  } else if (realIsNegative(a) != realIsNegative(b)) {
+  }
+  else if(realIsNegative(a) != realIsNegative(b)) {
     /* a * b < 0, use linpol = (1 - p) * a + p * b */
     realCopy(p, &x);
     realChangeSign(&x);
     realFMA(&x, a, a, &x, &ctxtReal75);   // a - p * a
     realFMA(p, b, &x, res, &ctxtReal75);  // p * b + (a - p * a)
-  } else {
+  }
+  else {
     /* a * b > 0, use linpol = a + p * (b - a) */
     realSubtract(b, a, &x, &ctxtReal75);
     realFMA(&x, p, a, res, &ctxtReal75);
@@ -97,7 +106,7 @@ void fnLINPOL(uint16_t unusedButMandatoryParameter) {
 
     default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot LINPOL with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
         moreInfoOnError("In function fnLINPOL:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -130,7 +139,7 @@ void fnLINPOL(uint16_t unusedButMandatoryParameter) {
 
     default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_Y);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot LINPOL with %s in Y", getRegisterDataTypeName(REGISTER_Y, true, false));
         moreInfoOnError("In function fnLINPOL:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -163,7 +172,7 @@ void fnLINPOL(uint16_t unusedButMandatoryParameter) {
 
     default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_Z);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot LINPOL with %s in Z", getRegisterDataTypeName(REGISTER_Z, true, false));
         moreInfoOnError("In function fnLINPOL:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -171,18 +180,20 @@ void fnLINPOL(uint16_t unusedButMandatoryParameter) {
     }
   }
 
-  if (!saveLastX())
+  if(!saveLastX()) {
     return;
+  }
 
   adjustResult(REGISTER_X, false, true, REGISTER_X, REGISTER_Y, REGISTER_Z);
   fnDrop(NOPARAM);
   fnDrop(NOPARAM);
 
   linpol(&aReal, &bReal, &p, &rReal);
-  if (realCoefs) {
+  if(realCoefs) {
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
     convertRealToReal34ResultRegister(&rReal, REGISTER_X);
-  } else {
+  }
+  else {
     linpol(&aImag, &bImag, &p, &rImag);
     reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
     convertRealToReal34ResultRegister(&rReal, REGISTER_X);

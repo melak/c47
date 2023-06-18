@@ -459,8 +459,11 @@ void use_base_glyphs(char* tmp1, int16_t xx) {              // Needs non-local v
 
 char *figlabel(const char *label, const char* showText, int16_t showValue) {      //JM
   //uint16_t ii=0;
-  //while (label[ii]!=0) {printf("(%u)=%c=%u ",ii, label[ii], label[ii]);ii++;}
-  //printf(">>>>> %1u %1u\n",(uint8_t)showText[strlen(showText)-2], (uint8_t)showText[strlen(showText)-1]);
+  //while(label[ii] != 0) {
+  //  printf("(%u)=%c=%u ", ii, label[ii], label[ii]);
+  //  ii++;
+  //}
+  //printf(">>>>> %1u %1u\n", (uint8_t)showText[strlen(showText)-2], (uint8_t)showText[strlen(showText)-1]);
   //printf("\n");
 
   char tmp1[16];
@@ -483,61 +486,69 @@ char *figlabel(const char *label, const char* showText, int16_t showValue) {    
   if(showText[0] != 0 && stringByteLength(tmp)+stringByteLength(showText) + 1 <= 15) {
     //stringAppend(tmp + stringByteLength(tmp), showText);
     uint16_t ii = 0;
-    while (showText[ii] != 0) {
-      if(showText[ii]>='A' && showText[ii]<='Z') {stringAppend(tmp + stringByteLength(tmp), STD_SUB_A); tmp[stringByteLength(tmp)-1] += showText[ii]-'A'; } else
-      if(showText[ii]>='0' && showText[ii]<='9') {stringAppend(tmp + stringByteLength(tmp), STD_SUB_0); tmp[stringByteLength(tmp)-1] += showText[ii]-'0'; } else
-      switch(showText[ii]) {
-        case '+':   stringAppend(tmp + stringByteLength(tmp), STD_SUB_PLUS);   break;
-        case ',':   stringAppend(tmp + stringByteLength(tmp), STD_COMMA);      break;
-        case '-':   stringAppend(tmp + stringByteLength(tmp), STD_SUB_MINUS);  break;
-        case '.':   stringAppend(tmp + stringByteLength(tmp), STD_PERIOD);     break;
-        case '_':   stringAppend(tmp + stringByteLength(tmp), STD_UNDERSCORE); break;
-        case ' ':   stringAppend(tmp + stringByteLength(tmp), STD_OPEN_BOX);   break;
-        case '\'':  stringAppend(tmp + stringByteLength(tmp), STD_QUOTE);      break;
-        default: {
-          uint16_t tmpi = (uint16_t)((((uint8_t)(showText[ii]) & 0x00FF)) << 8) + (uint16_t)((uint8_t)(showText[ii+1]));
-          if(0x0101 == tmpi) {
-            stringAppend(tmp + stringByteLength(tmp), STD_o_STROKE);
-            ii++;
-          }
-
-          //any other characters won't have actual subscript conversions and are returned translated, or as is
-          //printf(">>>> %u %u\n", (uint8_t)showText[ii], (uint8_t)showText[ii+1]);
-          else if((showText[ii] & 0x80) && (showText[ii+1] != 0)) {
-            char tt[3];
-            tt[0] = 0;
-            tt[1] = 0;
-            tt[2] = 0;
-
-            if(((uint16_t)(STD_SPACE_PUNCTUATION[0] & 0x00FF) << 8) + (STD_SPACE_PUNCTUATION[1] & 0x00FF) == tmpi) {
-              stringAppend(tmp + stringByteLength(tmp), STD_OPEN_BOX);
+    while(showText[ii] != 0) {
+      if(showText[ii]>='A' && showText[ii]<='Z') {
+        stringAppend(tmp + stringByteLength(tmp), STD_SUB_A);
+        tmp[stringByteLength(tmp)-1] += showText[ii]-'A';
+      }
+      else if(showText[ii]>='0' && showText[ii]<='9') {
+        stringAppend(tmp + stringByteLength(tmp), STD_SUB_0);
+        tmp[stringByteLength(tmp)-1] += showText[ii]-'0';
+      }
+      else {
+        switch(showText[ii]) {
+          case '+':  stringAppend(tmp + stringByteLength(tmp), STD_SUB_PLUS);   break;
+          case ',':  stringAppend(tmp + stringByteLength(tmp), STD_COMMA);      break;
+          case '-':  stringAppend(tmp + stringByteLength(tmp), STD_SUB_MINUS);  break;
+          case '.':  stringAppend(tmp + stringByteLength(tmp), STD_PERIOD);     break;
+          case '_':  stringAppend(tmp + stringByteLength(tmp), STD_UNDERSCORE); break;
+          case ' ':  stringAppend(tmp + stringByteLength(tmp), STD_OPEN_BOX);   break;
+          case '\'': stringAppend(tmp + stringByteLength(tmp), STD_QUOTE);      break;
+          default: {
+            uint16_t tmpi = (uint16_t)((((uint8_t)(showText[ii]) & 0x00FF)) << 8) + (uint16_t)((uint8_t)(showText[ii+1]));
+            if(0x0101 == tmpi) {
+              stringAppend(tmp + stringByteLength(tmp), STD_o_STROKE);
               ii++;
             }
 
-            else if(((uint16_t)(STD_SPACE_4_PER_EM[0] & 0x00FF) << 8) + (STD_SPACE_4_PER_EM[1] & 0x00FF) == tmpi) {
-              stringAppend(tmp + stringByteLength(tmp), STD_INV_BRIDGE);
-              ii++;
+            //any other characters won't have actual subscript conversions and are returned translated, or as is
+            //printf(">>>> %u %u\n", (uint8_t)showText[ii], (uint8_t)showText[ii+1]);
+            else if((showText[ii] & 0x80) && (showText[ii+1] != 0)) {
+              char tt[3];
+              tt[0] = 0;
+              tt[1] = 0;
+              tt[2] = 0;
+
+              if(((uint16_t)(STD_SPACE_PUNCTUATION[0] & 0x00FF) << 8) + (STD_SPACE_PUNCTUATION[1] & 0x00FF) == tmpi) {
+                stringAppend(tmp + stringByteLength(tmp), STD_OPEN_BOX);
+                ii++;
+              }
+
+              else if(((uint16_t)(STD_SPACE_4_PER_EM[0] & 0x00FF) << 8) + (STD_SPACE_4_PER_EM[1] & 0x00FF) == tmpi) {
+                stringAppend(tmp + stringByteLength(tmp), STD_INV_BRIDGE);
+                ii++;
+              }
+
+              else if(((uint16_t)(STD_SPACE_EM[0] & 0x00FF) << 8) + (STD_SPACE_EM[1] & 0x00FF) == tmpi) {
+                stringAppend(tmp + stringByteLength(tmp), STD_OPEN_BOX STD_OPEN_BOX);
+                ii++;
+              }
+
+              else { //double byte
+                //printf(">>>> Double byte in RB\n");
+                tt[0] = showText[ii++];
+                tt[1] = showText[ii];
+                stringAppend(tmp + stringByteLength(tmp), tt);
+              }
             }
 
-            else if(((uint16_t)(STD_SPACE_EM[0] & 0x00FF) << 8) + (STD_SPACE_EM[1] & 0x00FF) == tmpi) {
-              stringAppend(tmp + stringByteLength(tmp), STD_OPEN_BOX STD_OPEN_BOX);
-              ii++;
-            }
-
-            else { //double byte
-              //printf(">>>> Double byte in RB\n");
-              tt[0] = showText[ii++];
-              tt[1] = showText[ii];
+            else { //single byte
+              //printf(">>>> Single byte in RB\n");
+              char tt[2];
+              tt[0] = showText[ii];
+              tt[1] = 0;
               stringAppend(tmp + stringByteLength(tmp), tt);
             }
-          }
-
-          else { //single byte
-            //printf(">>>> Single byte in RB\n");
-            char tt[2];
-            tt[0] = showText[ii];
-            tt[1] = 0;
-            stringAppend(tmp + stringByteLength(tmp), tt);
           }
         }
       }

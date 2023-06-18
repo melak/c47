@@ -32,7 +32,7 @@
 
 
 #if !defined(TESTSUITE_BUILD)
-  #ifndef SAVE_SPACE_DM42_8
+  #if !defined(SAVE_SPACE_DM42_8)
   static void fnAsnDisplay(uint8_t page) {                // Heavily modified by JM from the original fnShow
   #define YOFF 32
     int xx,yy;
@@ -63,17 +63,18 @@
 
         if(fnAsnDisplayUSER) {
         switch(page) {
-          case 1: kk = kbd_usr[key].primary; break;
+          case 1: kk = kbd_usr[key].primary;  break;
           case 3: kk = kbd_usr[key].fShifted; break;
           case 2: kk = kbd_usr[key].gShifted; break;
-          default:break;
+          default: ;
         }
-      } else {
+      }
+      else {
         switch(page) {
-          case 1: kk = kbd_std[key].primary; break;
+          case 1: kk = kbd_std[key].primary;  break;
           case 3: kk = kbd_std[key].fShifted; break;
           case 2: kk = kbd_std[key].gShifted; break;
-          default:break;
+          default: ;
         }
       }
 
@@ -96,13 +97,13 @@
 
     temporaryInformation = TI_NO_INFO;
   }
-  #endif //SAVE_SPACE_DM42_8
+  #endif // !SAVE_SPACE_DM42_8
 #endif // !TESTSUITE_BUILD
 
 
 void fnAsnViewer(uint16_t unusedButMandatoryParameter) {
 #if !defined(TESTSUITE_BUILD)
-  #ifndef SAVE_SPACE_DM42_8
+  #if !defined(SAVE_SPACE_DM42_8)
     hourGlassIconEnabled = false;
     if(calcMode != CM_ASN_BROWSER) {
       previousCalcMode = calcMode;
@@ -112,7 +113,7 @@ void fnAsnViewer(uint16_t unusedButMandatoryParameter) {
       return;
     }
   fnAsnDisplay(currentAsnScr);
-  #endif //SAVE_SPACE_DM42_8
+  #endif // !SAVE_SPACE_DM42_8
 #endif // !TESTSUITE_BUILD
 
   }

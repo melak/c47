@@ -119,7 +119,7 @@ bool_t checkOpCodeOfStep(const uint8_t *step, uint16_t op) {
 
 
 void scanLabelsAndPrograms(void) {
-#ifndef SAVE_SPACE_DM42_10
+#if !defined(SAVE_SPACE_DM42_10)
   uint32_t stepNumber = 0;
   uint8_t *nextStep, *step = beginOfProgramMemory;
   uint16_t numberOfProgramsInRam;
@@ -199,7 +199,7 @@ void scanLabelsAndPrograms(void) {
   }
 
   defineCurrentProgramFromCurrentStep();
-#endif //SAVE_SPACE_DM42_10
+#endif // !SAVE_SPACE_DM42_10
 }
 
 
@@ -334,7 +334,7 @@ void fnClP(uint16_t label) {
   }
   else {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "label %" PRIu16 " is not a global label", label);
       moreInfoOnError("In function fnClP:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -438,7 +438,7 @@ void scrollPemForwards(void) {
 
 
 void fnPem(uint16_t unusedButMandatoryParameter) {
-#ifndef SAVE_SPACE_DM42_10
+#if !defined(SAVE_SPACE_DM42_10)
   #if !defined(TESTSUITE_BUILD)
     ///////////////////////////////////////////////////////////////////////////////////////
     // For this function to work properly we need the following variables set properly:
@@ -634,7 +634,7 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       fnPem(NOPARAM);
     }
   #endif // !TESTSUITE_BUILD
-#endif //SAVE_SPACE_DM42_10
+#endif // !SAVE_SPACE_DM42_10
 }
 
 
@@ -744,7 +744,7 @@ void pemAlpha(int16_t item) {
           item +=  (ITM_ALPHA <= item && item <= ITM_OMEGA) ? (ITM_alpha - ITM_ALPHA) : (ITM_qoppa - ITM_QOPPA);
         }
     }
- if ((nextChar == NC_NORMAL) || ((item != ITM_DOWN_ARROW) && (item != ITM_UP_ARROW))) {
+    if((nextChar == NC_NORMAL) || ((item != ITM_DOWN_ARROW) && (item != ITM_UP_ARROW))) {
       item = convertItemToSubOrSup(item, nextChar);
       int32_t inputCharLength = stringByteLength(indexOfItems[item].itemSoftmenuName);
       if(len < (256 - inputCharLength) && stringGlyphLength(aimBuffer) < 196) {
@@ -838,21 +838,21 @@ void pemAlpha(int16_t item) {
   --currentLocalStepNumber;
   currentStep = findPreviousStep(currentStep);
     if(!programListEnd) {
-    scrollPemBackwards();
+      scrollPemBackwards();
     }
   #endif // !TESTSUITE_BUILD
 }
 
 void pemCloseAlphaInput(void) {
   #if !defined(TESTSUITE_BUILD)
-  aimBuffer[0] = 0;
-  clearSystemFlag(FLAG_ALPHA);
+    aimBuffer[0] = 0;
+    clearSystemFlag(FLAG_ALPHA);
     calcModeNormalGui();
-  ++currentLocalStepNumber;
-  currentStep = findNextStep(currentStep);
-  ++firstDisplayedLocalStepNumber;
-  firstDisplayedStep = findNextStep(firstDisplayedStep);
-  _closeAlphaMenus();
+    ++currentLocalStepNumber;
+    currentStep = findNextStep(currentStep);
+    ++firstDisplayedLocalStepNumber;
+    firstDisplayedStep = findNextStep(firstDisplayedStep);
+    _closeAlphaMenus();
   #endif // !TESTSUITE_BUILD
 }
 

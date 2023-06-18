@@ -36,7 +36,7 @@
 #include "wp43.h"
 
 
-#ifndef SAVE_SPACE_DM42_12
+#if !defined(SAVE_SPACE_DM42_12)
 static bool_t besselGetParam(calcRegister_t regist, real_t *r, realContext_t *realContext) {
   switch(getRegisterDataType(regist)) {
     case dtReal34: {
@@ -52,16 +52,16 @@ static bool_t besselGetParam(calcRegister_t regist, real_t *r, realContext_t *re
     }
   }
   displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+  #if(EXTRA_INFO_ON_CALC_ERROR == 1)
     sprintf(errorMessage, "cannot calculate Bessel function for %s and %s", getRegisterDataTypeName(REGISTER_X, true, false), getRegisterDataTypeName(REGISTER_Y, true, false));
     moreInfoOnError("In function besselGetParam:", errorMessage, NULL, NULL);
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   return false;
 }
-#endif //SAVE_SPACE_DM42_12
+#endif // !SAVE_SPACE_DM42_12
 
 void fnBesselJ(uint16_t unusedButMandatoryParameter) {
-#ifndef SAVE_SPACE_DM42_12
+#if !defined(SAVE_SPACE_DM42_12)
   real_t x, n, r, a;
 
   if(!saveLastX()) {
@@ -86,18 +86,18 @@ void fnBesselJ(uint16_t unusedButMandatoryParameter) {
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnBesselJ:", "negative argument for Bessel function of non-integer degree", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
   }
 
   adjustResult(REGISTER_X, true, true, REGISTER_X, REGISTER_Y, -1);
-#endif //SAVE_SPACE_DM42_12
+#endif // !SAVE_SPACE_DM42_12
 }
 
 void fnBesselY(uint16_t unusedButMandatoryParameter) {
-#ifndef SAVE_SPACE_DM42_12
+#if !defined(SAVE_SPACE_DM42_12)
   real_t x, n, r, a, b, c;
 
   if(!saveLastX()) {
@@ -130,20 +130,20 @@ void fnBesselY(uint16_t unusedButMandatoryParameter) {
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnBesselY:", "negative argument for Bessel function", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
   }
 
   adjustResult(REGISTER_X, true, true, REGISTER_X, REGISTER_Y, -1);
-#endif //SAVE_SPACE_DM42_12
+#endif // !SAVE_SPACE_DM42_12
 }
 
 
 
 // Hankel's asymptotic expansion (based on Abramowitz and Stegun, p.364)
-#ifndef SAVE_SPACE_DM42_12
+#if !defined(SAVE_SPACE_DM42_12)
 static void bessel_asymptotic_large_x(const real_t *alpha, const real_t *x, bool_t is_y, real_t *res, realContext_t *realContext) {
   real_t p, q, pp, qq, chi, sChi, cChi, mu, z8, k21, k21sq, nm, tmp;
   int32_t k;
@@ -536,10 +536,10 @@ static void bessel(const real_t *alpha, const real_t *x, bool_t neg, real_t *res
   realCopy(const_NaN, res);
   return;
 }
-#endif //SAVE_SPACE_DM42_12
+#endif // !SAVE_SPACE_DM42_12
 
 void WP34S_BesselJ(const real_t *alpha, const real_t *x, real_t *res, realContext_t *realContext) {
-#ifndef SAVE_SPACE_DM42_12
+#if !defined(SAVE_SPACE_DM42_12)
   real_t a, beta, gamma;
 
   if(realIsNaN(alpha) || realIsSpecial(x)) {
@@ -579,11 +579,11 @@ void WP34S_BesselJ(const real_t *alpha, const real_t *x, real_t *res, realContex
   else {
     bessel(&a, x, true, res, realContext);
   }
-#endif //SAVE_SPACE_DM42_12
+#endif // !SAVE_SPACE_DM42_12
 }
 
 // See A&S page 360 section 9.1.11
-#ifndef SAVE_SPACE_DM42_12
+#if !defined(SAVE_SPACE_DM42_12)
 static void bessel2_int_series(const real_t *n, const real_t *x, real_t *res, realContext_t *realContext) {
   real_t factor;
   real_t xon2, xon2n, x2on4;
@@ -673,10 +673,10 @@ static void bessel2_int_series(const real_t *n, const real_t *x, real_t *res, re
     realChangeSign(res);
   }
 }
-#endif //SAVE_SPACE_DM42_12
+#endif // !SAVE_SPACE_DM42_12
 
 void WP34S_BesselY(const real_t *alpha, const real_t *x, real_t *res, realContext_t *realContext) {
-#ifndef SAVE_SPACE_DM42_12
+#if !defined(SAVE_SPACE_DM42_12)
   real_t a, t, u, s, c, beta, gamma;
 
   if(realIsNaN(alpha) || realIsSpecial(x)) {
@@ -727,5 +727,5 @@ void WP34S_BesselY(const real_t *alpha, const real_t *x, real_t *res, realContex
   else {
     bessel2_int_series(alpha, x, res, realContext);
   }
-#endif //SAVE_SPACE_DM42_12
+#endif // !SAVE_SPACE_DM42_12
 }

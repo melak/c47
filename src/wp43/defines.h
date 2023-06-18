@@ -50,7 +50,7 @@
   #undef SAVE_SPACE_DM42_21
 
 
-#if (defined(DMCP_BUILD) || (SCREEN_800X480 == 1))
+#if defined(DMCP_BUILD) || (SCREEN_800X480 == 1)
 
   #define TWO_FILE_PGM                 //JM Normally NOT have TWO_FILE. TWO_FILE means that QSPI is used.
 
@@ -59,7 +59,7 @@
 //                        //Also change the file here: src/wp43s-dmcp/qspi_crc.h for the single file version
 
 //THESE ARE DMCP COMPILE OPTIONS
-  #ifndef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT WHILE NOT USING QSPI
+  #if !defined(TWO_FILE_PGM) //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT WHILE NOT USING QSPI
     #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S)
     #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
     #define SAVE_SPACE_DM42_6  //001648 bytes: ELEC functions
@@ -74,16 +74,16 @@
   //#define SAVE_SPACE_DM42_14    //           programming sample programs
     #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
     #define SAVE_SPACE_DM42_16    //           without all distributions, i.e. binomial, cauchy, chi
-  #endif
+  #endif // !TWO_FILE_PGM
 
-  #ifdef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT INTO AVAILABLE FLASH EVEN WHILE USING QSPI
-    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
+  #if defined(TWO_FILE_PGM) //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT INTO AVAILABLE FLASH EVEN WHILE USING QSPI
+    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2;
     #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
 //    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
     #define SAVE_SPACE_DM42_15       //           without all distributions, i.e. binomial, cauchy, chi
 //    #define SAVE_SPACE_DM42_16       //           without Norml
-  #endif
-#endif
+  #endif // TWO_FILE_PGM
+#endif // DMCP_BUILD || SCREEN_800X480 == 1
 
 
 
@@ -160,15 +160,15 @@
 #define JM_FN_DOUBLE_TIMER 150   //ms TO_FN_EXEC
 #define JM_TO_FN_LONG      400   //ms TO_FN_LONG  //  450 on 2020-03-13
 
-#ifdef DMCP_BUILD
+#if defined(DMCP_BUILD)
   #define JM_CLRDROP_TIMER 900   //ms TO_CL_DROP   //DROP
   #define JM_TO_CL_LONG    800   //ms TO_CL_LONG   //CLSTK
   #define JM_TO_3S_CTFF    900   //ms TO_3S_CTFF
-#else
+#else // !DMCP_BUILD
   #define JM_CLRDROP_TIMER 500   //ms TO_CL_DROP   //DROP
   #define JM_TO_CL_LONG    800   //ms TO_CL_LONG   //CLSTK
   #define JM_TO_3S_CTFF    600   //ms TO_3S_CTFF
-#endif
+#endif // DMCP_BUILD
 
 #define JM_TO_KB_ACTV      6000  //ms TO_KB_ACTV
 #define PROGRAM_KB_ACTV   60000  //ms TO_KB_ACTV
@@ -243,15 +243,15 @@
 
 
 #define DEBUG_STAT                       0 // PLOT & STATS verbose level can be 0, 1 or 2 (more)
-#if (DEBUG_STAT == 0)
+#if(DEBUG_STAT == 0)
   #undef STATDEBUG
   #undef STATDEBUG_VERBOSE
   #endif // DEBUG_STAT == 0
-#if (DEBUG_STAT == 1)
+#if(DEBUG_STAT == 1)
   #define STATDEBUG
   #undef STATDEBUG_VERBOSE
   #endif // DEBUG_STAT == 1
-#if (DEBUG_STAT == 2)
+#if(DEBUG_STAT == 2)
   #define STATDEBUG
   #define STATDEBUG_VERBOSE
   #endif // DEBUG_STAT == 2
@@ -280,11 +280,11 @@
 
 #define AIM_BUFFER_LENGTH                        400 // 199 double byte glyphs + trailing 0 + 1 byte to round up to a 4 byte boundary
 #define TAM_BUFFER_LENGTH                         32 // TODO: find the exact maximum needed
-#ifdef BUFFER_CLICK_DETECTION
+#if defined(BUFFER_CLICK_DETECTION)
 #define NIM_BUFFER_LENGTH                        200 //JM(100-24-10) TEMP POC CHANGE FROM 100//JMMAX changed from 200 // TODO: find the exact maximum needed
-#else
+#else // !BUFFER_CLICK_DETECTION
 #define NIM_BUFFER_LENGTH                        200 //JM(100-24) TEMP POC CHANGE FROM 100//JMMAX changed from 200 // TODO: find the exact maximum needed
-#endif
+#endif // BUFFER_CLICK_DETECTION
 
 
 #define DEBUG_LINES                               68 // Used in for the debug panel
@@ -1051,13 +1051,13 @@ typedef enum {
 
 #define MAX_DENMAX                              9999 // Biggest denominator in fraction display mode
 
-#ifdef DMCP_BUILD
+#if defined(DMCP_BUILD)
 #define SCREEN_REFRESH_PERIOD                    160 // 500 // in milliseconds //JM timeout for lcd refresh in ms 125
 #define FAST_SCREEN_REFRESH_PERIOD               100 // in milliseconds
-#else
+#else // !DMCP_BUILD
 #define SCREEN_REFRESH_PERIOD                    100 // 500 // in milliseconds //JM timeout for lcd refresh in ms 100
 #define FAST_SCREEN_REFRESH_PERIOD               100 // in milliseconds
-#endif
+#endif // DMCP_BUILD
 #define KEY_AUTOREPEAT_FIRST_PERIOD              400 // in milliseconds
 #define KEY_AUTOREPEAT_PERIOD                    200 // in milliseconds
 #define TIMER_APP_PERIOD                         100 // in milliseconds
@@ -1193,18 +1193,18 @@ typedef enum {
   #define flipPixel(x, y)                    bitblt24(x, 1, y, 1, BLT_XOR,  BLT_NONE)
   #define beep(frequence, length)            {while(get_beep_volume() < 11) beep_volume_up(); start_buzzer_freq(frequence * 1000); sys_delay(length); stop_buzzer();}
   #undef TO_QSPI
-  #ifdef TWO_FILE_PGM
+  #if defined(TWO_FILE_PGM)
     #define TO_QSPI                            __attribute__ ((section(".qspi")))
-  #else //TWO_FILE_PGM
+  #else // !TWO_FILE_PGM
     #define TO_QSPI
-  #endif //TWO_FILE_PGM
+  #endif // TWO_FILE_PGM
 #endif // !DMCP_BUILD
 
 
 //******************************
 //* Macros replacing functions *
 //******************************
-#if (EXTRA_INFO_ON_CALC_ERROR == 0) || defined(TESTSUITE_BUILD) || defined(DMCP_BUILD)
+#if(EXTRA_INFO_ON_CALC_ERROR == 0) || defined(TESTSUITE_BUILD) || defined(DMCP_BUILD)
   #define EXTRA_INFO_MESSAGE(function, msg)
   #else // EXTRA_INFO_ON_CALC_ERROR != 0 && !TESTSUITE_BUILD && !DMCP_BUILD
   #define EXTRA_INFO_MESSAGE(function, msg)  {sprintf(errorMessage, msg); moreInfoOnError("In function ", function, errorMessage, NULL);}
@@ -1236,7 +1236,7 @@ typedef enum {
 #define COMPLEX_UNIT                         (getSystemFlag(FLAG_CPXj)   ? STD_op_j  : STD_op_i)  //Do not change back to single byte character - code must also change accordingly
 #define PRODUCT_SIGN                         (getSystemFlag(FLAG_MULTx)  ? STD_CROSS : STD_DOT)
 
-#define RADIX34_MARK_CHAR                    (gapChar1Radix[0] == ',' || (gapChar1Radix[0] == STD_WCOMMA[0] && gapChar1Radix[1] == STD_WCOMMA[1]) ? ',' : '.') //map comma and wide comma to comma, and dot and period and wdot and wperiod to period 
+#define RADIX34_MARK_CHAR                    (gapChar1Radix[0] == ',' || (gapChar1Radix[0] == STD_WCOMMA[0] && gapChar1Radix[1] == STD_WCOMMA[1]) ? ',' : '.') //map comma and wide comma to comma, and dot and period and wdot and wperiod to period
 #define RADIX34_MARK_STRING                  (gapChar1Radix)
 
 #define groupingGap                          ((uint8_t)(grpGroupingLeft)) //ADD HERE THE CONDITIONS FOR NIL SEPS
@@ -1263,10 +1263,10 @@ typedef enum {
 #define SEPARATOR_LEFT                       (gapChar1Left)
 #define SEPARATOR_RIGHT                      (gapChar1Right)
 #define checkHP                              (significantDigits == 10 && displayStack == 1 && exponentHideLimit == 12 && exponentLimit == 99 && Input_Default == ID_DP)
-#define DOUBLING                             6u  // 8=is double; 7 is 1.75*; 6=1.5*; 5=1.25* 
+#define DOUBLING                             6u  // 8=is double; 7 is 1.75*; 6=1.5*; 5=1.25*
 #define GROUPWIDTH_LEFT                      (grpGroupingLeft)
 #define GROUPWIDTH_LEFT1                     ((grpGroupingGr1Left        == 0 ? (uint16_t)grpGroupingLeft : (uint16_t)grpGroupingGr1Left))
-#define GROUPWIDTH_LEFT1X                    (grpGroupingGr1LeftOverflow)  
+#define GROUPWIDTH_LEFT1X                    (grpGroupingGr1LeftOverflow)
 #define GROUP1_OVFL(digitCount, exp)         ( (grpGroupingGr1LeftOverflow > 0 && exp == GROUPWIDTH_LEFT1 && digitCount+1 == GROUPWIDTH_LEFT1  ? grpGroupingGr1LeftOverflow:0 ) )
 #define GROUPWIDTH_RIGHT                     (grpGroupingRight)
 #define SEPARATOR_(digitCount)               (digitCount >= 0 ? SEPARATOR_LEFT : SEPARATOR_RIGHT)

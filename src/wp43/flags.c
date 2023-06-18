@@ -51,8 +51,7 @@ void systemFlagAction(uint16_t systemFlag, uint16_t action) {
           globalFlags[FLAG_A/16] ^=   1u << (FLAG_A%16);
           break;
         }
-        default: {
-        }
+        default: ;
       }
       break;
     }
@@ -71,8 +70,7 @@ void systemFlagAction(uint16_t systemFlag, uint16_t action) {
           globalFlags[FLAG_B/16] ^=   1u << (FLAG_B%16);
           break;
         }
-        default: {
-        }
+        default: ;
       }
       break;
     }
@@ -91,8 +89,7 @@ void systemFlagAction(uint16_t systemFlag, uint16_t action) {
           globalFlags[FLAG_C/16] ^=   1u << (FLAG_C%16);
           break;
         }
-        default: {
-        }
+        default: ;
       }
       break;
     }
@@ -111,8 +108,7 @@ void systemFlagAction(uint16_t systemFlag, uint16_t action) {
           globalFlags[FLAG_D/16] ^=   1u << (FLAG_D%16);
           break;
         }
-        default: {
-        }
+        default: ;
       }
       break;
     }
@@ -131,8 +127,7 @@ void systemFlagAction(uint16_t systemFlag, uint16_t action) {
           globalFlags[FLAG_I/16] ^=   1u << (FLAG_I%16);
           break;
         }
-        default: {
-        }
+        default: ;
       }
       break;
     }
@@ -151,8 +146,7 @@ void systemFlagAction(uint16_t systemFlag, uint16_t action) {
           globalFlags[FLAG_L/16] ^=   1u << (FLAG_L%16);
           break;
         }
-        default: {
-        }
+        default: ;
       }
       break;
     }
@@ -171,8 +165,7 @@ void systemFlagAction(uint16_t systemFlag, uint16_t action) {
           globalFlags[FLAG_T/16] ^=   1u << (FLAG_T%16);
           break;
         }
-        default: {
-        }
+        default: ;
       }
       break;
     }
@@ -191,34 +184,33 @@ void systemFlagAction(uint16_t systemFlag, uint16_t action) {
           globalFlags[FLAG_X/16] ^=   1u << (FLAG_X%16);
           break;
         }
-        default: {
-        }
+        default: ;
       }
       break;
     }
 
-    default: {
-    }
+    default: ;
   }
-    switch (systemFlag) {
-      case FLAG_YMD:      fnRefreshState (); break;
-      case FLAG_DMY:      fnRefreshState (); break;
-      case FLAG_MDY:      fnRefreshState (); break;
-      case FLAG_TDM24:    fnRefreshState (); break;
-      case FLAG_CPXRES:   fnRefreshState (); break;
-      case FLAG_SPCRES:   fnRefreshState (); break;
-      case FLAG_CPXj:     fnRefreshState (); break;
-      case FLAG_POLAR:    fnRefreshState (); break;
-      case FLAG_LEAD0:    fnRefreshState (); break;
-      case FLAG_DENANY:   fnRefreshState (); break;
-      case FLAG_DENFIX:   fnRefreshState (); break;
-      case FLAG_SSIZE8:   fnRefreshState (); break;
-      case FLAG_MULTx:    fnRefreshState (); break;
-      case FLAG_ALLENG:   fnRefreshState (); break;
-      case FLAG_ENDPMT:   fnRefreshState (); break;
-      case FLAG_HPRP:     fnRefreshState (); break;
-      default:;
-    }
+
+  switch(systemFlag) {
+    case FLAG_YMD:    fnRefreshState(); break;
+    case FLAG_DMY:    fnRefreshState(); break;
+    case FLAG_MDY:    fnRefreshState(); break;
+    case FLAG_TDM24:  fnRefreshState(); break;
+    case FLAG_CPXRES: fnRefreshState(); break;
+    case FLAG_SPCRES: fnRefreshState(); break;
+    case FLAG_CPXj:   fnRefreshState(); break;
+    case FLAG_POLAR:  fnRefreshState(); break;
+    case FLAG_LEAD0:  fnRefreshState(); break;
+    case FLAG_DENANY: fnRefreshState(); break;
+    case FLAG_DENFIX: fnRefreshState(); break;
+    case FLAG_SSIZE8: fnRefreshState(); break;
+    case FLAG_MULTx:  fnRefreshState(); break;
+    case FLAG_ALLENG: fnRefreshState(); break;
+    case FLAG_ENDPMT: fnRefreshState(); break;
+    case FLAG_HPRP:   fnRefreshState(); break;
+    default: ;
+  }
 }
 
 
@@ -230,42 +222,49 @@ void synchronizeLetteredFlags(void) {
   else {
     clearSystemFlag(FLAG_ALLENG)
   }
+
   if(getSystemFlag(FLAG_OVERFLOW)) {
     setSystemFlag(FLAG_OVERFLOW)
   }
   else {
     clearSystemFlag(FLAG_OVERFLOW)
   }
+
   if(getSystemFlag(FLAG_CARRY)) {
     setSystemFlag(FLAG_CARRY)
   }
   else {
     clearSystemFlag(FLAG_CARRY)
   }
+
   if(getSystemFlag(FLAG_SPCRES)) {
     setSystemFlag(FLAG_SPCRES)
   }
   else {
     clearSystemFlag(FLAG_SPCRES)
   }
+
   if(getSystemFlag(FLAG_CPXRES)) {
     setSystemFlag(FLAG_CPXRES)
   }
   else {
     clearSystemFlag(FLAG_CPXRES)
   }
+
   if(getSystemFlag(FLAG_LEAD0)) {
     setSystemFlag(FLAG_LEAD0)
   }
   else {
     clearSystemFlag(FLAG_LEAD0)
   }
+
   if(getSystemFlag(FLAG_TRACE)) {
     setSystemFlag(FLAG_TRACE)
   }
   else {
     clearSystemFlag(FLAG_TRACE)
   }
+
   if(getSystemFlag(FLAG_POLAR)) {
     setSystemFlag(FLAG_POLAR)
   }
@@ -367,7 +366,7 @@ void fnSetFlag(uint16_t flag) {
         programRunStop = PGM_STOPPED;
       }
       displayCalcErrorMessage(ERROR_WRITE_PROTECTED_SYSTEM_FLAG, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "protected system flag (%" PRIu16 ")!", (uint16_t)(flag & 0x3fff));
         moreInfoOnError("In function fnSetFlag:", "Tying to set a write", errorMessage, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -385,41 +384,15 @@ void fnSetFlag(uint16_t flag) {
   }
   else if(flag < NUMBER_OF_GLOBAL_FLAGS) { // Global flag
     switch(flag) {
-      case FLAG_A: {
-        setSystemFlag(FLAG_ALLENG);
-        break;
-      }
-      case FLAG_B: {
-        setSystemFlag(FLAG_OVERFLOW);
-        break;
-      }
-      case FLAG_C: {
-        setSystemFlag(FLAG_CARRY);
-        break;
-      }
-      case FLAG_D: {
-        setSystemFlag(FLAG_SPCRES);
-        break;
-      }
-      case FLAG_I: {
-        setSystemFlag(FLAG_CPXRES);
-        break;
-      }
-      case FLAG_L: {
-        setSystemFlag(FLAG_LEAD0);
-        break;
-      }
-      case FLAG_T: {
-        setSystemFlag(FLAG_TRACE);
-        break;
-      }
-      case FLAG_X: {
-        setSystemFlag(FLAG_POLAR);
-        break;
-      }
-      default: {
-        globalFlags[flag/16] |= 1u << (flag%16);
-      }
+      case FLAG_A: setSystemFlag(FLAG_ALLENG);   break;
+      case FLAG_B: setSystemFlag(FLAG_OVERFLOW); break;
+      case FLAG_C: setSystemFlag(FLAG_CARRY);    break;
+      case FLAG_D: setSystemFlag(FLAG_SPCRES);   break;
+      case FLAG_I: setSystemFlag(FLAG_CPXRES);   break;
+      case FLAG_L: setSystemFlag(FLAG_LEAD0);    break;
+      case FLAG_T: setSystemFlag(FLAG_TRACE);    break;
+      case FLAG_X: setSystemFlag(FLAG_POLAR);    break;
+      default: globalFlags[flag/16] |= 1u << (flag%16);
     }
   }
   else { // Local flag
@@ -457,7 +430,7 @@ void fnClearFlag(uint16_t flag) {
         programRunStop = PGM_STOPPED;
       }
       displayCalcErrorMessage(ERROR_WRITE_PROTECTED_SYSTEM_FLAG, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "protected system flag (%" PRIu16 ")!", (uint16_t)(flag & 0x3fff));
         moreInfoOnError("In function fnClearFlag:", "Tying to clear a write", errorMessage, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -547,7 +520,7 @@ void fnFlipFlag(uint16_t flag) {
         programRunStop = PGM_STOPPED;
       }
       displayCalcErrorMessage(ERROR_WRITE_PROTECTED_SYSTEM_FLAG, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "protected system flag (%" PRIu16 ")!", (uint16_t)(flag & 0x3fff));
         moreInfoOnError("In function fnFlipFlag:", "Tying to flip a write", errorMessage, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -773,7 +746,8 @@ void SetSetting(uint16_t jmConfig) {
           clearSystemFlag(FLAG_FRACT);
           constantFractionsOn = true;
         }
-      } else {
+      }
+      else {
         if(constantFractionsOn) {
           setSystemFlag(FLAG_FRACT);
           constantFractionsOn = false;
@@ -787,27 +761,27 @@ void SetSetting(uint16_t jmConfig) {
       fnClearFlag(FLAG_TDM24);
       break;
     }
-   
+
     case TF_H24: {
       fnSetFlag(FLAG_TDM24);
       break;
     }
-   
+
     case CU_I: {
       fnClearFlag(FLAG_CPXj);
       break;
     }
-   
+
     case CU_J: {
       fnSetFlag(FLAG_CPXj);
       break;
     }
-   
+
     case PS_DOT: {
       fnClearFlag(FLAG_MULTx);
       break;
     }
-   
+
     case PS_CROSS: {
       fnSetFlag(FLAG_MULTx);
       break;
@@ -817,12 +791,12 @@ void SetSetting(uint16_t jmConfig) {
       fnClearFlag(FLAG_SSIZE8);
       break;
     }
-   
+
     case SS_8: {
       fnSetFlag(FLAG_SSIZE8);
       break;
     }
-   
+
     case CM_RECTANGULAR: {
       fnClearFlag(FLAG_POLAR);
       if(getRegisterDataType(REGISTER_X) == dtComplex34) {
@@ -831,7 +805,7 @@ void SetSetting(uint16_t jmConfig) {
       }
       break;
     }
-   
+
     case CM_POLAR: {
       fnSetFlag(FLAG_POLAR);
       if(getRegisterDataType(REGISTER_X) == dtComplex34) {
@@ -842,17 +816,17 @@ void SetSetting(uint16_t jmConfig) {
       }
       break;
     }
-   
+
     case DO_SCI: {
       fnClearFlag(FLAG_ALLENG);
       break;
     }
-   
+
     case DO_ENG: {
       fnSetFlag(FLAG_ALLENG);
       break;
     }
-   
+
     case PR_HPRP: {
       fnFlipFlag(FLAG_HPRP);
       break;
@@ -862,47 +836,47 @@ void SetSetting(uint16_t jmConfig) {
       fnFlipFlag(FLAG_DENANY);
       break;
     }
-   
+
     case DM_FIX: {
       fnFlipFlag(FLAG_DENFIX);
       break;
     }
-   
+
     case JC_BLZ: {    //bit LeadingZeros
       fnFlipFlag(FLAG_LEAD0);
       break;
     }
-   
+
     case JC_BCR: {    //bit ComplexResult
       fnFlipFlag(FLAG_CPXRES);
       break;
     }
-   
+
     case ITM_CPXRES1: {    //bit ComplexResult
       fnSetFlag(FLAG_CPXRES);
       break;
     }
-   
+
     case ITM_CPXRES0: {    //bit ComplexResult
       fnClearFlag(FLAG_CPXRES);
       break;
     }
-   
+
     case JC_BSR: {    //bit SpecialResult
       fnFlipFlag(FLAG_SPCRES);
       break;
     }
-   
+
     case ITM_SPCRES1: {    //bit SpecialResult
       fnSetFlag(FLAG_SPCRES);
       break;
     }
-   
+
     case ITM_SPCRES0: {    //bit SpecialResult
       fnClearFlag(FLAG_SPCRES);
       break;
     }
-   
+
     case JC_FRC: {    //bit
       fnFlipFlag(FLAG_FRCSRN);
       break;
@@ -916,8 +890,8 @@ void SetSetting(uint16_t jmConfig) {
 
     case JC_UC: {    //call flip case
       numLock = false;
-      if(alphaCase == AC_LOWER) 
-        alphaCase = AC_UPPER; 
+      if(alphaCase == AC_LOWER)
+        alphaCase = AC_UPPER;
       else
         alphaCase = AC_LOWER;
        showAlphaModeonGui();
