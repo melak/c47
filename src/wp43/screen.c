@@ -2546,7 +2546,8 @@ void hideFunctionName(void) {
             default: break;
           }
 
-          if (stats_param_check(r_i, REGISTER_I)
+          if (!(r_i == NULL && r_j == NULL && r_k == NULL)
+              && stats_param_check(r_i, REGISTER_I)
               && stats_param_check(r_j, REGISTER_J)
               && stats_param_check(r_k, REGISTER_K)) {
             stats_param_display(r_i, REGISTER_I, prefix, tmpString, REGISTER_T);
@@ -4278,10 +4279,17 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
 
 
 
-
 void fnSNAP(uint16_t unusedButMandatoryParameter) {
-  fnScreenDump(0);
-  fnP_All_Regs(1); //print stack
+
+  if(calcMode == CM_AIM) {
+    xcopy(tmpString, aimBuffer, ERROR_MESSAGE_LENGTH + AIM_BUFFER_LENGTH + NIM_BUFFER_LENGTH);       //backup portion of the "message buffer" area in DMCP used by ERROR..AIM..NIM buffers, to the tmpstring area in DMCP. DMCP uses this area during create_screenshot.
+    fnScreenDump(0);
+    xcopy(aimBuffer,tmpString, ERROR_MESSAGE_LENGTH + AIM_BUFFER_LENGTH + NIM_BUFFER_LENGTH);        //   This total area must be less than the tmpString storage area, which it is.
+    fnP_Alpha();     //print alpha
+  } else {
+    fnScreenDump(0);
+    fnP_All_Regs(1); //print stack
+  }
 }
 
 
