@@ -1954,10 +1954,10 @@ void longIntegerRegisterToDisplayString(calcRegister_t regist, char *displayStri
   else {maxWidth = max_Width - 8;}                          //JM align longints
 
   exponentShift = (longIntegerBits(lgInt) - 1) * 0.3010299956639811952137;
-  exponentStep = (GROUPWIDTH_LEFT  == 0 && SEPARATOR_LEFT[0]==1 && SEPARATOR_LEFT[1]==1 ? 1 : GROUPWIDTH_LEFT);   //TOCHECK
-  exponentStep1= (GROUPWIDTH_LEFT1 == 0 && SEPARATOR_LEFT[0]==1 && SEPARATOR_LEFT[1]==1 ? 1 : GROUPWIDTH_LEFT1);  //TOCHECK
+  exponentStep = (GROUPWIDTH_LEFT  == 0 || (SEPARATOR_LEFT[0]==1 && SEPARATOR_LEFT[1]==1) ? 1 : GROUPWIDTH_LEFT);   //TOCHECK
+  exponentStep1= (                         (SEPARATOR_LEFT[0]==1 && SEPARATOR_LEFT[1]==1) ? 1 : GROUPWIDTH_LEFT1);  //TOCHECK
 
-  exponentShift = ((exponentShift-exponentStep1) / exponentStep  + 1) * exponentStep;
+  exponentShift = (exponentShift / exponentStep  + 1) * exponentStep;
   exponentShiftLimit = ((maxExp-exponentStep1) / exponentStep + 1) * exponentStep;
   if(exponentShift > exponentShiftLimit) {
     exponentShift -= exponentShiftLimit;
@@ -1992,7 +1992,7 @@ void longIntegerRegisterToDisplayString(calcRegister_t regist, char *displayStri
   longIntegerFree(lgInt);
 
 //IPGRP IPGRP1 IPGRP1x handling
-  if(!GROUPLEFT_DISABLED || GROUPWIDTH_LEFT1 > 0) {
+  if(!GROUPLEFT_DISABLED && GROUPWIDTH_LEFT1 > 0) {
 
     //Handle IPGRP1, bearing in mind with a negative number, the digits start one deeper 
     int16_t len = strlen(displayString);
@@ -2001,6 +2001,7 @@ void longIntegerRegisterToDisplayString(calcRegister_t regist, char *displayStri
     int16_t Grp1 = ( (GROUPWIDTH_LEFT1X > 0) 
                   && (displayString[digitOne] - 48 <= GROUPWIDTH_LEFT1X)  
                   && (len - digitOne == GROUPWIDTH_LEFT1 + 1) ? GROUPWIDTH_LEFT1 + 1 : GROUPWIDTH_LEFT1);
+    Grp1 = len >= (checkHP ? 10 : 20) ? GROUPWIDTH_LEFT : Grp1; 
     int16_t i = len - Grp1;
     if(i > 0 && (i != 1 || displayString[0] != '-')) {
       if(SEPARATOR_LEFT[1]!=1) {
@@ -2014,7 +2015,7 @@ void longIntegerRegisterToDisplayString(calcRegister_t regist, char *displayStri
 
       //Handle repeating IPGRP
       len = strlen(displayString);
-      for(i=len - GROUPWIDTH_LEFT - Grp1 - 2; i>0; i-=GROUPWIDTH_LEFT) {
+      for(i=len - GROUPWIDTH_LEFT - (Grp1 + (SEPARATOR_LEFT[1] == 1 ? 1 : 2)); i>0; i-=GROUPWIDTH_LEFT) {
         if(i != 1 || displayString[0] != '-') {
           if(SEPARATOR_LEFT[1]!=1) {
             xcopy(displayString + i + 2, displayString + i, len - i + 1);
@@ -2036,10 +2037,10 @@ void longIntegerRegisterToDisplayString(calcRegister_t regist, char *displayStri
     char exponentString[14], lastRemovedDigit;
     int16_t lastChar, stringStep, tenExponent;
 
-    stringStep = (GROUPLEFT_DISABLED ? 1 : GROUPWIDTH_LEFT + 2);
+    stringStep = (GROUPLEFT_DISABLED ? 1 : GROUPWIDTH_LEFT + (SEPARATOR_LEFT[1] == 1 ? 1 : 2));
     tenExponent = exponentStep + exponentShift;
     lastChar = strlen(displayString) - stringStep;
-    lastRemovedDigit = displayString[lastChar + 2];
+    lastRemovedDigit = displayString[lastChar + (SEPARATOR_LEFT[1] == 1 ? 1 : 2)];
     displayString[lastChar] = 0;
     if(updateDisplayValueX) {
       displayValueX[strlen(displayValueX) - max(GROUPWIDTH_LEFT, 1)] = 0;
@@ -2049,7 +2050,7 @@ void longIntegerRegisterToDisplayString(calcRegister_t regist, char *displayStri
     while(stringWidth(displayString,   allowLARGELI && jm_LARGELI ? &numericFont : &standardFont, false, true) + stringWidth(exponentString,   allowLARGELI && jm_LARGELI ? &numericFont : &standardFont, true, false) > maxWidth) {  //JM jm_LARGELI
       lastChar -= stringStep;
       tenExponent += exponentStep;
-      lastRemovedDigit = displayString[lastChar + 2];
+      lastRemovedDigit = displayString[lastChar + (SEPARATOR_LEFT[1] == 1 ? 1 : 2)];
       displayString[lastChar] = 0;
       if(updateDisplayValueX) {
         displayValueX[strlen(displayValueX) - max(GROUPWIDTH_LEFT, 1)] = 0;
