@@ -455,7 +455,7 @@ void graph_text(void) {
     ii = 0;
     oo = 0;
     outstr[0] = 0;
-    while (tmpString[ii] != 0) {
+    while(tmpString[ii] != 0) {
       convertDigits(tmpString, ii, &oo,outstr);
       ii++;
     }
@@ -467,7 +467,7 @@ void graph_text(void) {
     ii = 0;
     oo = 0;
     outstr[0] = 0;
-    while (tmpString[ii] != 0) {
+    while(tmpString[ii] != 0) {
       convertDigits(tmpString, ii,&oo,outstr);
       ii++;
     }
@@ -477,7 +477,7 @@ void graph_text(void) {
 
 
     uint32_t minnx, minny;
-    if (!Aspect_Square) {
+    if(!Aspect_Square) {
       minny = SCREEN_NONSQ_HMIN;
       minnx = 0;
     }
@@ -500,7 +500,7 @@ void graph_text(void) {
     ii = 0;
     oo = 0;
     outstr[0] = 0;
-    while (tmpString[ii] != 0) {
+    while(tmpString[ii] != 0) {
       convertDigits(tmpString, ii, &oo, outstr);
       ii++;
     }
@@ -1135,7 +1135,7 @@ void graph_plotmem(void) {
       }
       else {
         displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        #if(EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "There is no statistical data available!");
           moreInfoOnError("In function graph_plotmem:", errorMessage, NULL, NULL);
         #endif // EXTRA_INFO_ON_CALC_ERROR == 1

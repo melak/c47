@@ -47,14 +47,14 @@ void fnToPolar2(uint16_t unusedButMandatoryParameter) {
   dataAtagY  = getRegisterAngularMode(REGISTER_Y);
 
   // >P needs rectangular coords, i.e. X=real and Y=real
-  if ( (( dataTypeX == dtLongInteger || (dataTypeX == dtReal34 && dataAtagX == amNone  ))         //radius not allowed to be an angle if polar entry
-     && ( dataTypeY == dtLongInteger || (dataTypeY == dtReal34 && dataAtagY == amNone  )) )       //real not allowed to be an angle if rect entry
-      ) {  //imag not allowed to be an angle if rect entry
+  if(  (( dataTypeX == dtLongInteger || (dataTypeX == dtReal34 && dataAtagX == amNone  ))  //radius not allowed to be an angle if polar entry
+     && ( dataTypeY == dtLongInteger || (dataTypeY == dtReal34 && dataAtagY == amNone  ))) //real not allowed to be an angle if rect entry
+    ) {  //imag not allowed to be an angle if rect entry
     fnToPolar(0);
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+  #if(EXTRA_INFO_ON_CALC_ERROR == 1)
     sprintf(errorMessage, "You cannot use >R or >P with %s in X and %s in Y!", getDataTypeName(getRegisterDataType(REGISTER_X), true, false), getDataTypeName(getRegisterDataType(REGISTER_Y), true, false));
     moreInfoOnError("In function fnToPolar2:", errorMessage, NULL, NULL);
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -70,7 +70,8 @@ void fnToPolar(uint16_t unusedButMandatoryParameter) {
   if(getSystemFlag(FLAG_HPRP)) {
     REG_X = REGISTER_X;
     REG_Y = REGISTER_Y;
-  } else {
+  }
+  else {
     REG_X = REGISTER_Y;
     REG_Y = REGISTER_X;
   }
@@ -123,13 +124,14 @@ void fnToPolar(uint16_t unusedButMandatoryParameter) {
 
     if(getSystemFlag(FLAG_HPRP)) {
       temporaryInformation = TI_RADIUS_THETA;
-    } else {
+    }
+    else {
       temporaryInformation = TI_RADIUS_THETA_SWAPPED;
     }
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REG_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot convert (%s, %s) to polar coordinates!", getDataTypeName(getRegisterDataType(REG_X), false, false), getDataTypeName(getRegisterDataType(REG_Y), false, false));
       moreInfoOnError("In function fnToPolar:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)

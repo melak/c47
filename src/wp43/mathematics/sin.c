@@ -48,7 +48,7 @@ TO_QSPI void (* const Sin[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \param void
  * \return void
  ***********************************************/
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
+#if(EXTRA_INFO_ON_CALC_ERROR == 1)
   void sinError(void) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     sprintf(errorMessage, "cannot calculate Sin for %s", getRegisterDataTypeName(REGISTER_X, true, false));

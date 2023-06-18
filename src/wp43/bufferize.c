@@ -71,7 +71,6 @@ TO_QSPI static const char bugScreenNoParam[] = "In function addItemToBuffer:item
   }
 
 
-
 uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
 /*JM*/ //nextChar = NC_NORMAL;
 
@@ -188,7 +187,6 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
   }
 
 
-
   int32_t findFirstItem(const char *twoLetters) {
     int16_t menuId = softmenuStack[0].softmenuId;
 
@@ -262,25 +260,22 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
   }
 
 
-
   void resetAlphaSelectionBuffer(void) {
     lgCatalogSelection = 0;
     asmBuffer[0] = 0;
     fnKeyInCatalog = 0;
     fnTimerStop(TO_ASM_ACTIVE);
-    #ifndef TESTSUITE_BUILD                         //JMvv
+    #if !defined(TESTSUITE_BUILD)                   //JMvv
       kill_ASB_icon();
     #endif // TESTSUITE_BUILD                       //JM^^
   }
 
 
-
   void addItemToBuffer(uint16_t item) {
-
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       char tmp[200]; sprintf(tmp,"bufferize.c:addItemToBuffer item=%d tam.mode=%d\n",item,tam.mode); jm_show_calc_state(tmp);
-    #endif
-//    resetKeytimers();  //JM
+    #endif // PC_BUILD
+    //resetKeytimers();  //JM
 
 
     if(item == NOPARAM) {
@@ -362,60 +357,60 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
             }
           }
         }
-        else if (stringByteLength(aimBuffer) <= AIM_BUFFER_LENGTH-1 &&
+        else if(stringByteLength(aimBuffer) <= AIM_BUFFER_LENGTH-1 &&
                  stringWidthWithLimitC43(aimBuffer, stdNoEnlarge, nocompress, SCREEN_WIDTH * MAXLINES - 16, true, true) < SCREEN_WIDTH * MAXLINES - 16 //0 means small standard font
-        ) {    //JM
-#ifdef TEXT_MULTILINE_EDIT
-          //JMCURSOR vv ADD THE CHARACTER MID-STRING =======================================================
-          uint16_t ix = 0;
-          uint16_t in = 0;
-          while (ix<T_cursorPos && in<T_cursorPos) {              //search the ix position in aimBuffer before the cursor
-            in = stringNextGlyphNoEndCheck_JM(aimBuffer, in);                  //find the in position in aimBuffer which is then the cursor position
-            ix++;
-          }
-          T_cursorPos = in;
-          char ixaa[AIM_BUFFER_LENGTH];                           //prepare temporary aimBuffer
-          xcopy(ixaa, aimBuffer,in);                              //copy everything up to the cursor position
-          ixaa[in]=0;                                             //stop new buffer at cursor position to be able to insert new character
+               ) {    //JM
+          #if defined(TEXT_MULTILINE_EDIT)
+            //JMCURSOR vv ADD THE CHARACTER MID-STRING =======================================================
+            uint16_t ix = 0;
+            uint16_t in = 0;
+            while(ix<T_cursorPos && in<T_cursorPos) {              //search the ix position in aimBuffer before the cursor
+              in = stringNextGlyphNoEndCheck_JM(aimBuffer, in);                  //find the in position in aimBuffer which is then the cursor position
+              ix++;
+            }
+            T_cursorPos = in;
+            char ixaa[AIM_BUFFER_LENGTH];                           //prepare temporary aimBuffer
+            xcopy(ixaa, aimBuffer,in);                              //copy everything up to the cursor position
+            ixaa[in]=0;                                             //stop new buffer at cursor position to be able to insert new character
 
-          //          strcat(ixaa,indexOfItems[item].itemSoftmenuName);       //add new character
-          uint16_t nq = stringByteLength(indexOfItems[item].itemSoftmenuName);
-          xcopy(ixaa + in, indexOfItems[item].itemSoftmenuName, nq+1);
-          ixaa[in + nq]=0;
+            //          strcat(ixaa,indexOfItems[item].itemSoftmenuName);       //add new character
+            uint16_t nq = stringByteLength(indexOfItems[item].itemSoftmenuName);
+            xcopy(ixaa + in, indexOfItems[item].itemSoftmenuName, nq+1);
+            ixaa[in + nq]=0;
 
-          //          strcat(ixaa,aimBuffer + in);                            //copy rest of the aimbuffer
-          uint16_t nr = stringByteLength(aimBuffer + in);
-          xcopy(ixaa + in + nq, aimBuffer + in, nr+1);
-          ixaa[in + nq + nr]=0;
+            //          strcat(ixaa,aimBuffer + in);                            //copy rest of the aimbuffer
+            uint16_t nr = stringByteLength(aimBuffer + in);
+            xcopy(ixaa + in + nq, aimBuffer + in, nr+1);
+            ixaa[in + nq + nr]=0;
 
-          //          strcpy(aimBuffer,ixaa);                                 //return temporary string to aimBuffer
-          xcopy(aimBuffer,ixaa,stringByteLength(ixaa)+1);
+            //          strcpy(aimBuffer,ixaa);                                 //return temporary string to aimBuffer
+            xcopy(aimBuffer,ixaa,stringByteLength(ixaa)+1);
 
-          T_cursorPos = stringNextGlyph(aimBuffer, T_cursorPos);  //place the cursor at the next glyph boundary
-          //JMCURSOR ^^ REPLACES THE FOLLOWING XCOPY, WHICH NORMALLY JUST ADDS A CHARACTER TO THE END OF THE STRING
-          // xcopy(aimBuffer + stringNextGlyph(aimBuffer, stringLastGlyph(aimBuffer)), indexOfItems[item].itemSoftmenuName, stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
-          switch(item) { // NOTE:cursor must jump on 3 places for the new COS_SIGN etc.
-            case ITM_LG_SIGN :   //JM C43
-            case ITM_SIN_SIGN :  //JM C43
-            case ITM_COS_SIGN :  //JM C43
-            case ITM_TAN_SIGN :  //JM C43
-            case ITM_ROOT_SIGN:
-              T_cursorPos += 2;
-              break;
-            case ITM_LN_SIGN :  //JM C43
-              T_cursorPos += 1;
-              break;
-            case ITM_PAIR_OF_PARENTHESES:
-              T_cursorPos += 1;
-              break;
-            default:;
-          }
+            T_cursorPos = stringNextGlyph(aimBuffer, T_cursorPos);  //place the cursor at the next glyph boundary
+            //JMCURSOR ^^ REPLACES THE FOLLOWING XCOPY, WHICH NORMALLY JUST ADDS A CHARACTER TO THE END OF THE STRING
+            // xcopy(aimBuffer + stringNextGlyph(aimBuffer, stringLastGlyph(aimBuffer)), indexOfItems[item].itemSoftmenuName, stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
+            switch(item) { // NOTE:cursor must jump on 3 places for the new COS_SIGN etc.
+              case ITM_LG_SIGN :   //JM C43
+              case ITM_SIN_SIGN :  //JM C43
+              case ITM_COS_SIGN :  //JM C43
+              case ITM_TAN_SIGN :  //JM C43
+              case ITM_ROOT_SIGN:
+                T_cursorPos += 2;
+                break;
+              case ITM_LN_SIGN :  //JM C43
+                T_cursorPos += 1;
+                break;
+              case ITM_PAIR_OF_PARENTHESES:
+                T_cursorPos += 1;
+                break;
+              default:;
+            }
 
-          incOffset();
+            incOffset();
 
-#else   //TEXT_MULTILINE_EDIT
-          xcopy(aimBuffer + stringByteLength(aimBuffer), indexOfItems[item].itemSoftmenuName, stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
-#endif  //TEXT_MULTILINE_EDIT
+          #else // !TEXT_MULTILINE_EDIT
+            xcopy(aimBuffer + stringByteLength(aimBuffer), indexOfItems[item].itemSoftmenuName, stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
+          #endif // TEXT_MULTILINE_EDIT
         }
       }
 
@@ -444,9 +439,9 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           softmenuStack[0].firstItem = findFirstItem(asmBuffer);
           setCatalogLastPos();
           fnTimerStart(TO_ASM_ACTIVE, TO_ASM_ACTIVE, 3000);
-#ifndef TESTSUITE_BUILD
-          light_ASB_icon();
-#endif // TESTSUITE_BUILD
+          #if !defined(TESTSUITE_BUILD)
+            light_ASB_icon();
+          #endif // !TESTSUITE_BUILD
         }
       }
 
@@ -510,14 +505,14 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
             break;
           }
 
-#ifdef SAVE_SPACE_DM42_11
+#if defined(SAVE_SPACE_DM42_11)
           case ITM_STO ://JM optimized, to be grouped, so that a single SAVE_SPACE can be used
           case ITM_RCL ://JM optimized
               lastErrorCode = ERROR_NONE;
               mimEnter(true);
               runFunction(item);
               break;
-#else //SAVE_SPACE_DM42_11
+#else // !SAVE_SPACE_DM42_11
           case ITM_STO :
           case ITM_STOADD :
           case ITM_STOSUB :
@@ -869,7 +864,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case ITM_Kk :
           case ITM_Ek:
           case ITM_ARG:
-#endif //SAVE_SPACE_DM42_11
+#endif // SAVE_SPACE_DM42_11
           case ITM_op_a :                //C43
           case ITM_op_a2:                //C43
           case ITM_EE_EXP_TH: {           //C43
@@ -906,13 +901,11 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
   }
 
 
-
   void addItemToNimBuffer(int16_t item) {
     int16_t lastChar, index;
     uint8_t savedNimNumberPart;
     bool_t done;
     char *strBase;
-
 
     if(item >= ITM_A && item <= ITM_F && lastIntegerBase == 0) lastIntegerBase = 16;
 //    if(item != ITM_EXIT1) resetKeytimers();  //JM
@@ -1339,7 +1332,9 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
 
         case ITM_op_j :                         //JM HP35s compatible, in NIM
         case ITM_CC: {
-        if (item == ITM_op_j) resetShiftState();    //JM HP35s compatible, in NIM
+        if(item == ITM_op_j) {
+          resetShiftState();    //JM HP35s compatible, in NIM
+        }
         lastChar = strlen(aimBuffer) - 1;
 
         done = true;
@@ -1546,7 +1541,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
             if(lastErrorCode == ERROR_RAM_FULL) {
               lastErrorCode = 0;
               temporaryInformation = TI_UNDO_DISABLED;
-              #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+              #if(EXTRA_INFO_ON_CALC_ERROR == 1)
                 moreInfoOnError("In function addItemToNimBuffer:", "there is not enough memory to save for undo!", NULL, NULL);
               #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
             }
@@ -1561,7 +1556,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           if(lastErrorCode == ERROR_RAM_FULL) {
             lastErrorCode = 0;
             temporaryInformation = TI_UNDO_DISABLED;
-            #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+            #if(EXTRA_INFO_ON_CALC_ERROR == 1)
               moreInfoOnError("In function addItemToNimBuffer:", "there is not enough memory to save for undo!", NULL, NULL);
             #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
           }
@@ -1641,9 +1636,10 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
             }
             return;
           }
-        } else {                      //JM
-          done = true;                //JM
-          closeNim();                 //JM
+        }
+        else {                      //JM
+          done = true;              //JM
+          closeNim();               //JM
         }
         break;
     }
@@ -1896,7 +1892,6 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
   }
 
 
-
   static int16_t insertGapIP(char *displayBuffer, int16_t numDigits, int16_t nth) {
     if(GROUPLEFT_DISABLED) {
       return 0; // no gap when none is required!
@@ -1925,6 +1920,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     return 0;
   }
 
+
   static int16_t insertGapFP(char *displayBuffer, int16_t numDigits, int16_t nth) {
     if(GROUPRIGHT_DISABLED) {
       return 0; // no gap when none is required!
@@ -1952,7 +1948,6 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
 
     return 0;
   }
-
 
 
   void nimBufferToDisplayBuffer(const char *buffer, char *displayBuffer) {
@@ -2026,7 +2021,6 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
   }
 
 
-
   void closeNimWithFraction(real34_t *dest) {
     int16_t i, posSpace, posSlash, lg;
     int32_t integer, numer, denom;
@@ -2052,7 +2046,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     for(i=1; i<posSpace; i++) {
       if(aimBuffer[i]<'0' || aimBuffer[i]>'9') { // This should never happen
         displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        #if(EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function parseNimString:", "there is a non numeric character in the integer part of the fraction!", NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         return;
@@ -2070,7 +2064,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     for(i=posSpace+1; i<posSlash; i++) {
       if(aimBuffer[i]<'0' || aimBuffer[i]>'9') { // This should never happen
        displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+       #if(EXTRA_INFO_ON_CALC_ERROR == 1)
          moreInfoOnError("In function parseNimString:", "there is a non numeric character in the numerator part of the fraction!", NULL, NULL);
        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
        return;
@@ -2081,7 +2075,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       for(i=posSlash+1; i<lg; i++) {
         if(aimBuffer[i]<'0' || aimBuffer[i]>'9') {
           displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          #if(EXTRA_INFO_ON_CALC_ERROR == 1)
             moreInfoOnError("In function parseNimString:", "there is a non numeric character in the denominator part of the fraction!", NULL, NULL);
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
           return;
@@ -2105,7 +2099,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
 
     if(denom == 0 && !getSystemFlag(FLAG_SPCRES)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function parseNimString:", "the denominator of the fraction should not be 0!", "Unless D flag (Danger) is set.", NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
@@ -2120,6 +2114,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       real34SetNegativeSign(dest);
     }
   }
+
 
   void closeNimWithComplex(real34_t *dest_r, real34_t *dest_i) {
     int16_t imaginarySign;
@@ -2163,12 +2158,13 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     fnSetFlag(FLAG_CPXRES);
   }
 
+
   void closeNim(void) {
     setSystemFlag(FLAG_ASLIFT);
-  //printf("closeNim\n");
+    //printf("closeNim\n");
 
     if(nimNumberPart == NP_INT_10) {                //JM Input default type vv
-      switch (Input_Default) {
+      switch(Input_Default) {
       case ID_43S:                                 //   Do nothing, this is default LI/DP
       case ID_LI:                                  //   Do nothing, because default is LI/DP
         break;
@@ -2254,7 +2250,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
               if(aimBuffer[i]<'0' || aimBuffer[i]>'9') {
                 // This should never happen
                 displayCalcErrorMessage(ERROR_INVALID_INTEGER_INPUT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-                #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+                #if(EXTRA_INFO_ON_CALC_ERROR == 1)
                   moreInfoOnError("In function closeNIM:", "there is a non numeric character in the base of the integer!", NULL, NULL);
                 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
                 return;
@@ -2264,7 +2260,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
             base = stringToInt32(aimBuffer + posHash + 1);
             if(base < 2 || base > 16) {
               displayCalcErrorMessage(ERROR_INVALID_INTEGER_INPUT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-              #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+              #if(EXTRA_INFO_ON_CALC_ERROR == 1)
                moreInfoOnError("In function closeNIM:", "the base of the integer must be from 2 to 16!", NULL, NULL);
               #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
               return;
@@ -2273,7 +2269,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
             for(i=aimBuffer[0] == '-' ? 1 :0; i<posHash; i++) {
               if((aimBuffer[i] > '9' ? aimBuffer[i] - 'A' + 10 :aimBuffer[i] - '0') >= base) {
                 displayCalcErrorMessage(ERROR_INVALID_INTEGER_INPUT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-                #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+                #if(EXTRA_INFO_ON_CALC_ERROR == 1)
                   sprintf(errorMessage, "digit %c is not allowed in base %d!", aimBuffer[i], base);
                   moreInfoOnError("In function closeNIM:", errorMessage, NULL, NULL);
                 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -2325,7 +2321,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
 
             if(longIntegerCompare(value, minVal) < 0 || longIntegerCompare(value, maxVal) > 0) {
               displayCalcErrorMessage(ERROR_WORD_SIZE_TOO_SMALL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-              #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+              #if(EXTRA_INFO_ON_CALC_ERROR == 1)
                 char strMin[22], strMax[22];
                 longIntegerToAllocatedString(minVal, strMin, sizeof(strMin));
                 longIntegerToAllocatedString(maxVal, strMax, sizeof(strMax));
@@ -2407,6 +2403,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       }
     }
   }
+
 
   void closeAim(void) {
     calcModeNormal();

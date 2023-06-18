@@ -70,7 +70,7 @@ bool_t registerCmp(calcRegister_t regist1, calcRegister_t regist2, int8_t *resul
 
 void registerCmpError(calcRegister_t regist1, calcRegister_t regist2) {
   displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+  #if(EXTRA_INFO_ON_CALC_ERROR == 1)
     sprintf(errorMessage, "cannot get compare: %s", getRegisterDataTypeName(regist1, true, false));
     sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "and %s", getRegisterDataTypeName(regist2, true, false));
     moreInfoOnError("In function registerCmp:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
@@ -291,7 +291,7 @@ void registerMin(calcRegister_t regist1, calcRegister_t regist2, calcRegister_t 
 
 void comparisonTypeError(uint16_t regist) {
   displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+  #if(EXTRA_INFO_ON_CALC_ERROR == 1)
     sprintf(errorMessage, "cannot compare %s and %s", getRegisterDataTypeName(REGISTER_X, true, false), getRegisterDataTypeName(regist, true, false));
     moreInfoOnError("In function comparisonTypeError:", errorMessage, NULL, NULL);
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -638,19 +638,22 @@ void fnXAlmostEqual(uint16_t regist) {
 static int getAsComplex(calcRegister_t reg, real_t *re, real_t *im, int *isComplex) {
   uint32_t type = getRegisterDataType(reg);
 
-  if (type == dtLongInteger) {
+  if(type == dtLongInteger) {
     convertLongIntegerRegisterToReal(reg, re, &ctxtReal39);
     realZero(im);
     return 1;
-  } else   if (type == dtShortInteger) {
+  }
+  else if(type == dtShortInteger) {
     convertShortIntegerRegisterToReal(reg, re, &ctxtReal39);
     realZero(im);
     return 1;
-  } else   if (type == dtReal34) {
+  }
+  else if(type == dtReal34) {
     real34ToReal(REGISTER_REAL34_DATA(reg), re);
     realZero(im);
     return 1;
-  } else if (type == dtComplex34) {
+  }
+  else if(type == dtComplex34) {
     real34ToReal(REGISTER_REAL34_DATA(reg), re);
     real34ToReal(REGISTER_IMAG34_DATA(reg), im);
     *isComplex |= 1;
@@ -664,7 +667,7 @@ void fnIsConverged(uint16_t mode) {
   int isComplex = 0;
 
   convergenceTolerence(&tol);
-  if (!getAsComplex(REGISTER_X, &xReal, &xImag, &isComplex) || !getAsComplex(REGISTER_Y, &yReal, &yImag, &isComplex)) {
+  if(!getAsComplex(REGISTER_X, &xReal, &xImag, &isComplex) || !getAsComplex(REGISTER_Y, &yReal, &yImag, &isComplex)) {
     comparisonTypeError(REGISTER_Y);
     return;
   }
@@ -676,16 +679,20 @@ void fnIsConverged(uint16_t mode) {
     temporaryInformation = (mode & 0x2) ? TI_TRUE : TI_FALSE;
   }
   else if(mode & 0x01) {
-    if (isComplex)
+    if(isComplex) {
       temporaryInformation = WP34S_ComplexAbsError(&xReal, &xImag, &yReal, &yImag, &tol, &ctxtReal39) ? TI_TRUE : TI_FALSE;
-    else
+    }
+    else {
       temporaryInformation = WP34S_AbsoluteError(&xReal, &yReal, &tol, &ctxtReal39) ? TI_TRUE : TI_FALSE;
+    }
   }
   else {
-    if (isComplex)
+    if(isComplex) {
       temporaryInformation = WP34S_ComplexRelativeError(&xReal, &xImag, &yReal, &yImag, &tol, &ctxtReal39) ? TI_TRUE : TI_FALSE;
-    else
+    }
+    else {
       temporaryInformation = WP34S_RelativeError(&xReal, &yReal, &tol, &ctxtReal39) ? TI_TRUE : TI_FALSE;
+    }
   }
 }
 

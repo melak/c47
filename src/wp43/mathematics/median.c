@@ -46,10 +46,12 @@ static int statsRealCompare(const void *v1, const void *v2)
 
   realCompare(r1, r2, &compare, &ctxtReal75);
 
-  if (realIsZero(&compare))
+  if(realIsZero(&compare)) {
     return 0;
-  if (realIsNegative(&compare))
+  }
+  if(realIsNegative(&compare)) {
     return -1;
+  }
   return 1;
 }
 
@@ -66,10 +68,11 @@ static void computePercentileSorted(real_t *data, uint16_t n, const real_t *p, r
   realToIntegralValue(&t, &d, DEC_ROUND_DOWN, &ctxtReal39);
   realToInt32(&d, k);
 
-  if (k >= n)
+  if(k >= n)
     realCopy(data + n - 1, percentile);
-  else if (k < 1)
+  else if(k < 1) {
     realCopy(data, percentile);
+  }
   else {
     realSubtract(&t, &d, &d, &ctxtReal39);   // d = FP(position)
     linpol(data + k - 1, data + k, &d, percentile);
@@ -83,31 +86,32 @@ static void computePercentileUnsorted(real_t *data, uint16_t n, const real_t *x,
 
 static void computeMedianSorted(real_t *data, uint16_t n, real_t *median) {
   // Compute directly rather than using the percentile funtion to avoid rounding
-  if (n & 1) {  // Odd number of values
+  if(n & 1) {  // Odd number of values
     realCopy(data + n / 2, median);
-  } else {      // Even number of values
+  }
+  else {      // Even number of values
     realAdd(data + n / 2 - 1, data + n / 2, median, &ctxtReal39);
     realMultiply(median, const_1on2, median, &ctxtReal39);
   }
 }
 
 static void computeQ1Sorted(real_t *data, uint16_t n, real_t *quartile) {
-#if USE_PERCENTILE_FOR_MEDIAN
-  computePercentileSorted(data, n, const_1on4, median);
-#else
-  computeMedianSorted(data, n / 2, quartile);
-#endif
+  #if USE_PERCENTILE_FOR_MEDIAN
+    computePercentileSorted(data, n, const_1on4, median);
+  #else // !USE_PERCENTILE_FOR_MEDIAN
+    computeMedianSorted(data, n / 2, quartile);
+  #endif // USE_PERCENTILE_FOR_MEDIAN
 }
 
 static void computeQ3Sorted(real_t *data, uint16_t n, real_t *quartile) {
-#if USE_PERCENTILE_FOR_MEDIAN
-  real_t p;
+  #if USE_PERCENTILE_FOR_MEDIAN
+    real_t p;
 
-  realMultiply(const_1on4, const_3, &p, &ctxtReal39);
-  computePercentileSorted(data, n, &p, median);
-#else
-  computeMedianSorted(data + n / 2 + (n & 1), n / 2, quartile);
-#endif
+    realMultiply(const_1on4, const_3, &p, &ctxtReal39);
+    computePercentileSorted(data, n, &p, median);
+  #else // !USE_PERCENTILE_FOR_MEDIAN
+    computeMedianSorted(data + n / 2 + (n & 1), n / 2, quartile);
+  #endif // USE_PERCENTILE_FOR_MEDIAN
 }
 
 static void computeMedianUnsorted(real_t *data, uint16_t n, const real_t *unusedButMandatoryParameter, real_t *median) {
@@ -133,18 +137,18 @@ static real_t *getXvalues(uint16_t *n) {
 
   strcpy(statMx, "STATS");
   regStats = findNamedVariable(statMx);
-  if (!isStatsMatrix(&rows, statMx)) {
+  if(!isStatsMatrix(&rows, statMx)) {
     displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X);
     return NULL;
   }
   data = allocWp43(rows * REAL_SIZE);
-  if (data == NULL) {
+  if(data == NULL) {
     displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
     return NULL;
   }
   linkToRealMatrixRegister(regStats, &stats);
   cols = stats.header.matrixColumns;
-  for (i = 0; i < rows; i++)
+  for(i=0; i<rows; i++)
     real34ToReal(stats.matrixElements + i * cols, data + i);
   *n = rows;
   return data;
@@ -160,18 +164,18 @@ static void getYvalues(real_t *data) {
   linkToRealMatrixRegister(regStats, &stats);
   rows = stats.header.matrixRows;
   cols = stats.header.matrixColumns;
-  for (i = 0; i < rows; i++)
+  for(i=0; i<rows; i++) {
     real34ToReal(stats.matrixElements + i * cols + 1, data + i);
+  }
 }
 
-static void doStatsOperation(void (*func)(real_t *data, uint16_t n, const real_t *arg, real_t *res),
-                             const real_t *minDataPoints, const real_t *arg, int message) {
+static void doStatsOperation(void (*func)(real_t *data, uint16_t n, const real_t *arg, real_t *res), const real_t *minDataPoints, const real_t *arg, int message) {
   uint16_t n;
   real_t *data, x;
 
-  if (checkMinimumDataPoints(minDataPoints)) {
+  if(checkMinimumDataPoints(minDataPoints)) {
     data = getXvalues(&n);
-    if (data != NULL) {
+    if(data != NULL) {
       liftStack();
       setSystemFlag(FLAG_ASLIFT);
       liftStack();
@@ -232,10 +236,11 @@ static void computeMAD(real_t *data, uint16_t n, const real_t *unusedButMandator
   uint16_t i;
 
   computeMedianUnsorted(data, n, NULL, mad);
-  for (i = 0; i < n; i++) {
+  for(i = 0; i < n; i++) {
     realSubtract(data + i, mad, data + i, &ctxtReal39);
-    if (realIsNegative(data + i))
+    if(realIsNegative(data + i)) {
       realChangeSign(data + i);
+    }
   }
   computeMedianUnsorted(data, n, NULL, mad);
 }
@@ -254,11 +259,11 @@ void fnMADXY              (uint16_t unusedButMandatoryParameter) {
 
 // Sort the data and compute the inter-quartile range
 static void computeIQR(real_t *data, uint16_t n, const real_t *unusedButMandatoryParameter, real_t *iqr) {
-    real_t t;
+  real_t t;
 
-    computeQ1Unsorted(data, n, NULL, &t);
-    computeQ3Sorted(data, n, iqr);
-    realSubtract(iqr, &t, iqr, &ctxtReal39);
+  computeQ1Unsorted(data, n, NULL, &t);
+  computeQ3Sorted(data, n, iqr);
+  realSubtract(iqr, &t, iqr, &ctxtReal39);
 }
 
 /**********************************************
@@ -269,7 +274,7 @@ static void computeIQR(real_t *data, uint16_t n, const real_t *unusedButMandator
  * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-void fnIQRXY              (uint16_t unusedButMandatoryParameter) {
+void fnIQRXY(uint16_t unusedButMandatoryParameter) {
   doStatsOperation(&computeIQR, const_3, NULL, TI_IQRX_IQRY);
 }
 
@@ -284,39 +289,38 @@ void fnIQRXY              (uint16_t unusedButMandatoryParameter) {
 void fnPercentileXY(uint16_t unusedButMandatoryParameter) {
   real_t p;
 
-  switch (getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger: {
+  switch(getRegisterDataType(REGISTER_X)) {
+    case dtLongInteger:
       convertLongIntegerRegisterToReal(REGISTER_X, &p, &ctxtReal75);
       break;
-    }
 
-    case dtShortInteger: {
+    case dtShortInteger:
       convertShortIntegerRegisterToReal(REGISTER_X, &p, &ctxtReal39);
       break;
-    }
 
-    case dtReal34: {
+    case dtReal34:
       real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &p);
       break;
-    }
 
-    default: {
+    default:
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot x%%ile with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
         moreInfoOnError("In function fnPercentileXY:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
-    }
   }
 
   // Range saturate if out of scope and scale away percentage
-  if (realIsNegative(&p))
+  if(realIsNegative(&p)) {
     realZero(&p);
-  else if (realCompareLessThan(&p, const_100))
+  }
+  else if(realCompareLessThan(&p, const_100)) {
     realDivide(&p, const_100, &p, &ctxtReal39);
-  else if (!realIsNaN(&p))
+  }
+  else if(!realIsNaN(&p)) {
     realCopy(const_1, &p);
+  }
   fnDrop(NOPARAM);
   doStatsOperation(&computePercentileUnsorted, const_1, &p, TI_PCTILEX_PCTILEY);
 }

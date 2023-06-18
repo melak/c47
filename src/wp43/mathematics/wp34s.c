@@ -815,7 +815,8 @@ bool_t WP34S_ComplexRelativeError(const real_t *xReal, const real_t *xImag, cons
 
   if(realIsZero(xReal) && realIsZero(xImag)) {
     complexMagnitude(yReal, yImag, &a, realContext);
-  } else {
+  }
+  else {
     realSubtract(xReal, yReal, &a, realContext);
     realSubtract(xImag, yImag, &b, realContext);
     divComplexComplex(&a, &b, xReal, xImag, &a, &b, realContext);

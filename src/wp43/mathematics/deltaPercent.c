@@ -59,7 +59,7 @@ TO_QSPI void (* const deltaPercent[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER
 static void dataTypeError(void) {
   displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
 
-  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+  #if(EXTRA_INFO_ON_CALC_ERROR == 1)
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     sprintf(errorMessage, "cannot calculate delta percentage for %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnDeltaPercent:", errorMessage, NULL, NULL);
@@ -105,7 +105,7 @@ static bool_t deltaPercentReal(real_t *xReal, real_t *yReal, real_t *rReal, real
       }
       else {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        #if(EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function fnDeltaPercent:", "cannot divide 0 by 0", NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         return false;
@@ -117,7 +117,7 @@ static bool_t deltaPercentReal(real_t *xReal, real_t *yReal, real_t *rReal, real
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnDeltaPercent:", "cannot divide a real by y=0", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return false;

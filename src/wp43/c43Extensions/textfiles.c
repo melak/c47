@@ -144,13 +144,13 @@ void stackregister_csv_out(int16_t reg_b, int16_t reg_e) {
         sprintf(tmp_b, "%sU%02d%s%s", CSV_STR, ix-100, CSV_STR, CSV_TAB);
       }
 
-      #if (VERBOSE_LEVEL >= 1)
+      #if(VERBOSE_LEVEL >= 1)
         print_linestr("-2b", false);
       #endif // VERBOSE_LEVEL >= 1
 
       copyRegisterToClipboardString2((calcRegister_t)ix, tmpString);
 
-      #if (VERBOSE_LEVEL >= 1)
+      #if(VERBOSE_LEVEL >= 1)
         char tmpTmp[TMP_STR_LENGTH+100];
         sprintf(tmpTmp, "-2c: len=%u:%s", (uint16_t)stringByteLength(tmpString), tmpString);
         print_linestr(tmpTmp, false);
@@ -162,14 +162,14 @@ void stackregister_csv_out(int16_t reg_b, int16_t reg_e) {
       addStrBothSides(tmpString, tmp_b, tmp_e);
       //printf(">>>: §%s§\n", tmp);
 
-      #if (VERBOSE_LEVEL >= 1)
+      #if(VERBOSE_LEVEL >= 1)
         sprintf(tmpTmp,"-2d: len=%u:%s", (uint16_t)stringByteLength(tmpString), tmpString);
         print_linestr(tmpTmp, false);
       #endif // VERBOSE_LEVEL >= 1
 
       export_append_line(tmpString);                    //Output append to CSV file
 
-      #if (VERBOSE_LEVEL >= 1)
+      #if(VERBOSE_LEVEL >= 1)
         sprintf(tmpString, ":(ix=%u)------->", ix);
         print_linestr(tmpString, false);
       #endif // VERBOSE_LEVEL >= 1
@@ -211,12 +211,12 @@ void displaywords(char *line1) {  //Preprocessor and display
   bb[1] = 0;
   bb[0] = 0;
 
-  #if (VERBOSE_LEVEL >= 2)
+  #if(VERBOSE_LEVEL >= 2)
     print_linestr("Code:", true);
   #endif // VERBOSE_LEVEL >= 2
   //printf("4:%s\n", line1);
 
-  #if (VERBOSE_LEVEL >= 2)
+  #if(VERBOSE_LEVEL >= 2)
     char tmp[400];          //Messages
     sprintf(tmp, " F: Displaywords: %lu bytes.\n", stringByteLength(line1));
     print_linestr(tmp, false);
@@ -278,7 +278,7 @@ void displaywords(char *line1) {  //Preprocessor and display
       #if defined(DISPLOADING)
         strcat(ll, aa);
         if(strlen(ll) > 30 && aa[0] == ' ') {
-          #if (VERBOSE_LEVEL >= 2)
+          #if(VERBOSE_LEVEL >= 2)
             print_linestr(ll, false);
           #endif
           ll[0] = 0;
@@ -291,7 +291,7 @@ void displaywords(char *line1) {  //Preprocessor and display
         #if defined(DISPLOADING)
           strcat(ll, aa);
           if(strlen(ll) > 36) {
-            #if (VERBOSE_LEVEL >= 2)
+            #if(VERBOSE_LEVEL >= 2)
               print_linestr(ll, false);
             #endif // VERBOSE_LEVEL >= 2
             ll[0] = 0;
@@ -303,7 +303,7 @@ void displaywords(char *line1) {  //Preprocessor and display
   }
   #if defined(DISPLOADING)
   if(ll[0] != 0) {
-    #if (VERBOSE_LEVEL >= 2)
+    #if(VERBOSE_LEVEL >= 2)
       print_linestr(ll, false);
     #endif
   }

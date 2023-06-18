@@ -281,7 +281,8 @@ bool_t   cancelFilename = false;
         /* Opens an existing file. If not exist, creates a new file. */
         if(mode == APPEND) {
           fr = f_open(&fil, filedir, FA_OPEN_APPEND | FA_WRITE);
-        } else {
+        }
+        else {
           fr = f_open(&fil, filedir, FA_WRITE|FA_CREATE_ALWAYS);
         }
         if(fr) {
@@ -412,13 +413,13 @@ char dirfile[40];
 
 
 int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename_short,  char *filename,  char *fallback, bool_t scanning) {
-    #if (VERBOSE_LEVEL >= 2)
+    #if(VERBOSE_LEVEL >= 2)
       print_inlinestr("From dir:",false);
       print_inlinestr(dirname,false);
       print_inlinestr(", ",true);
     #endif
 
-    #if (VERBOSE_LEVEL >= 2)
+    #if(VERBOSE_LEVEL >= 2)
       char line[300];         // Line buffer
     #endif
 
@@ -434,7 +435,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
     strcat(dirfile, "\\");
     strcat(dirfile, filename_short);
 
-    #if (VERBOSE_LEVEL >= 1)
+    #if(VERBOSE_LEVEL >= 1)
       print_inlinestr("1: reading:", false);
       print_inlinestr(dirfile, false);
       print_inlinestr(" ", true);
@@ -443,9 +444,9 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
     // Opens an existing file.
     fr = f_open(&fil, dirfile, FA_READ);   // | FA_OPEN_EXISTING
     if(fr != FR_OK) {
-      #if (VERBOSE_LEVEL >= 1)
+      #if(VERBOSE_LEVEL >= 1)
         print_inlinestr("Not open. ",false);
-        #if (VERBOSE_LEVEL >= 2)
+        #if(VERBOSE_LEVEL >= 2)
           if(fr == 4) {
             sprintf(line,"Not found ID006 --> %d ", fr);
             print_inlinestr(line, false);
@@ -466,7 +467,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
           }
         #endif // VERBOSE_LEVEL >= 2
       #endif // VERBOSE_LEVEL >= 1
-      #if (VERBOSE_LEVEL >= 2)
+      #if(VERBOSE_LEVEL >= 2)
         print_inlinestr(".", true);
       #endif
       f_close(&fil);
@@ -475,7 +476,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
         strcpy(dirfile, dirname);
         strcat(dirfile, "\\");
         strcat(dirfile, filename);
-        #if (VERBOSE_LEVEL >= 1)
+        #if(VERBOSE_LEVEL >= 1)
           print_inlinestr("2: reading:", false);
           print_inlinestr(dirfile, false);
           print_inlinestr(" ", true);
@@ -484,9 +485,9 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
         /* Opens an existing file. */
         fr = f_open(&fil, dirfile, FA_READ );   //| FA_OPEN_EXISTING
         if(fr != FR_OK) {
-          #if (VERBOSE_LEVEL >= 1)
+          #if(VERBOSE_LEVEL >= 1)
             print_inlinestr("Not open. ",false);
-            #if (VERBOSE_LEVEL >= 2)
+            #if(VERBOSE_LEVEL >= 2)
               if(fr == 4) {
                 sprintf(line,"Not found ID007 --> %d ", fr);
                 print_inlinestr(line, false);
@@ -499,7 +500,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
               }
             #endif // VERBOSE_LEVEL >= 2
           #endif // VERBOSE_LEVEL >= 1
-          #if (VERBOSE_LEVEL >= 1)
+          #if(VERBOSE_LEVEL >= 1)
             print_inlinestr(". Using fallback.", true);
           #endif // VERBOSE_LEVEL >= 1
           f_close(&fil);
@@ -508,7 +509,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
         }
       }
       else {
-        #if (VERBOSE_LEVEL >= 1)
+        #if(VERBOSE_LEVEL >= 1)
           print_inlinestr("Using fallback.", true);
         #endif
         strcpy(line1, fallback);
@@ -516,7 +517,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
       }
     }
 
-    #if (VERBOSE_LEVEL >= 1)
+    #if(VERBOSE_LEVEL >= 1)
       print_inlinestr("reading...",false);
     #endif
 
@@ -525,14 +526,14 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
     f_getsline(line1, (scanning ? min(100,TMP_STR_LENGTH) : TMP_STR_LENGTH), &fil);
     f_close(&fil);
 
-    #if (VERBOSE_LEVEL >= 1)
+    #if(VERBOSE_LEVEL >= 1)
       print_inlinestr("read:",true);
       print_inlinestr(line1,true);
     #endif
 
     if(stringByteLength(line1) >= TMP_STR_LENGTH-1) {
       strcpy(line1, fallback);
-      #if (VERBOSE_LEVEL >= 1)
+      #if(VERBOSE_LEVEL >= 1)
         print_inlinestr("ERROR too long file using fallback",true);
       #endif
       return 1;
@@ -608,7 +609,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
 
     fr = f_puts(inputstring, &fil);
 
-    #if (VERBOSE_LEVEL >= 1)
+    #if(VERBOSE_LEVEL >= 1)
       sprintf(line,"wrote %d, %s\n", fr, inputstring);
       print_linestr(line, false);
     #endif // VERBOSE_LEVEL >= 1
@@ -633,7 +634,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
 
     sys_disk_write_enable(0);
 
-    #if (VERBOSE_LEVEL >= 1)
+    #if(VERBOSE_LEVEL >= 1)
       print_linestr("-closed return-",false);
     #endif // VERBOSE_LEVEL >= 1
 
@@ -708,7 +709,7 @@ int16_t export_append_line(char *inputstring) {
 
 
   int16_t import_string_from_filename(char *line1,  char *dirname,   char *filename_short,  char *filename,  char *fallback, bool_t scanning) {
-    #if (VERBOSE_LEVEL >= 2)
+    #if(VERBOSE_LEVEL >= 2)
       print_inlinestr("From dir:", false);
       print_inlinestr(dirname, false);
       print_inlinestr(", ", true);
@@ -723,7 +724,7 @@ int16_t export_append_line(char *inputstring) {
     strcat(dirfile, "/");
     strcat(dirfile, filename_short);
 
-    #if (VERBOSE_LEVEL >= 1)
+    #if(VERBOSE_LEVEL >= 1)
       print_inlinestr("1: reading:", false);
       print_inlinestr(dirfile, false);
       print_inlinestr(" ", true);
@@ -732,7 +733,7 @@ int16_t export_append_line(char *inputstring) {
     // Opens an existing file.
     infile = fopen(dirfile, "rb");
     if(infile == NULL) {
-      #if (VERBOSE_LEVEL >= 1)
+      #if(VERBOSE_LEVEL >= 1)
         #if defined(PC_BUILD)
           printf("Cannot load ID010 %s\n", dirfile);
         #endif // PC_BUILD
@@ -743,7 +744,7 @@ int16_t export_append_line(char *inputstring) {
         strcpy(dirfile, dirname);
         strcat(dirfile, "/");
         strcat(dirfile, filename);
-        #if (VERBOSE_LEVEL >= 1)
+        #if(VERBOSE_LEVEL >= 1)
           print_inlinestr("2: reading:", false);
           print_inlinestr(dirfile, false);
           print_inlinestr(" ", true);
@@ -752,7 +753,7 @@ int16_t export_append_line(char *inputstring) {
         /* Opens an existing file. */
         infile = fopen(dirfile, "rb");
         if(infile == NULL) {
-          #if (VERBOSE_LEVEL >= 1)
+          #if(VERBOSE_LEVEL >= 1)
             #if defined(PC_BUILD)
               printf("Cannot load %s\n", dirfile);
             #endif // PC_BUILD
@@ -763,7 +764,7 @@ int16_t export_append_line(char *inputstring) {
         }
       }
       else {
-        #if (VERBOSE_LEVEL >= 1)
+        #if(VERBOSE_LEVEL >= 1)
           #if defined(PC_BUILD)
             printf("Cannot load %s\n", dirfile);
           #endif // PC_BUILD
@@ -774,7 +775,7 @@ int16_t export_append_line(char *inputstring) {
       }
     }
 
-    #if (VERBOSE_LEVEL >= 1)
+    #if(VERBOSE_LEVEL >= 1)
       print_inlinestr("reading...", false);
     #endif // VERBOSE_LEVEL >= 1
 
@@ -786,7 +787,7 @@ int16_t export_append_line(char *inputstring) {
     }
     fclose(infile);
 
-    #if (VERBOSE_LEVEL >= 1)
+    #if(VERBOSE_LEVEL >= 1)
       #if defined(PC_BUILD)
         printf("Loaded >>> %s\n", dirfile);
       #endif // PC_BUILD
@@ -794,7 +795,7 @@ int16_t export_append_line(char *inputstring) {
       print_inlinestr(line1, true);
     #endif // VERBOSE_LEVEL >= 1
 
-    #if (VERBOSE_LEVEL >= 2)
+    #if(VERBOSE_LEVEL >= 2)
       #if defined(PC_BUILD)
         printf("Loaded %s |%s|\n", dirfile, line1);
       #endif // PC_BUILD
@@ -803,7 +804,7 @@ int16_t export_append_line(char *inputstring) {
 
     if(stringByteLength(line1) >= TMP_STR_LENGTH-1) {
       strcpy(line1, fallback);
-      #if (VERBOSE_LEVEL >= 1)
+      #if(VERBOSE_LEVEL >= 1)
         print_inlinestr("ERROR too long file using fallback", true);
       #endif // VERBOSE_LEVEL >= 1
       printf("ERROR too long file using fallback\n");
@@ -833,7 +834,8 @@ int16_t export_append_line(char *inputstring) {
       printf("%s", line);
       fclose(outfile);
       return (int)fr;
-    } else {
+    }
+    else {
       printf("Exported to %s: %s\n", filename_csv, inputstring);
       fclose(outfile);
     }

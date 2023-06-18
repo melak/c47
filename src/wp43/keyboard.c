@@ -59,7 +59,7 @@
 #include "c43Extensions/graphText.h"
 #include "c43Extensions/xeqm.h"
 
-#if (REAL34_WIDTH_TEST == 1)
+#if(REAL34_WIDTH_TEST == 1)
   #include "registerValueConversions.h"
 #endif // (REAL34_WIDTH_TEST == 1)
 #include <string.h>
@@ -74,9 +74,9 @@ TO_QSPI static const char bugScreenItemNotDetermined[] = "In function determineI
 
   int16_t determineFunctionKeyItem(const char *data, int16_t itemShift) { //Added itemshift param JM
     int16_t item = ITM_NOP;
-#ifdef VERBOSEKEYS
-printf(">>>>Z 0090 determineFunctionKeyItem       data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",data,data[0],item,itemShift, FN_key_pressed);
-#endif //VERBOSEKEYS
+#if defined(VERBOSEKEYS)
+  printf(">>>>Z 0090 determineFunctionKeyItem       data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n", data, data[0], item, itemShift, FN_key_pressed);
+#endif // VERBOSEKEYS
 
     dynamicMenuItem = -1;
 
@@ -88,9 +88,9 @@ printf(">>>>Z 0090 determineFunctionKeyItem       data=|%s| data[0]=%d item=%d i
 
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>>Z 0090a determineFunctionKeyItem       -softmenu[menuId].menuItem=%i\n",-softmenu[menuId].menuItem);
-#endif //VERBOSEKEYS
+#endif // VERBOSEKEYS
     switch(-softmenu[menuId].menuItem) {
       case MNU_MyMenu: {
         dynamicMenuItem = firstItem + itemShift + fn;
@@ -101,7 +101,7 @@ printf(">>>>Z 0090a determineFunctionKeyItem       -softmenu[menuId].menuItem=%i
       case MNU_MyAlpha: {
         dynamicMenuItem = firstItem + itemShift + fn;
         item = userAlphaItems[dynamicMenuItem].item;
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>>Z 0091   case MNU_MyAlpha             data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",data,data[0],item,itemShift, FN_key_pressed);
 printf(">>>>  0092     dynamicMenuItem=%d\n",dynamicMenuItem);
 printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn);
@@ -209,7 +209,7 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
         item = ITM_NOP;
         if(dynamicMenuItem < dynamicSoftmenu[menuId].numItems) {
           for(uint32_t i = 0; softmenu[i].menuItem < 0; ++i) {
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>>Z 0093b determineFunctionKeyItem  case MNU_MENUS:     i=%i softmenu[i].menuItem=%i name:=%s\n",i,softmenu[i].menuItem, indexOfItems[-softmenu[i].menuItem].itemCatalogName);
 #endif //VERBOSEKEYS
             if(compareString((char *)getNthString(dynamicSoftmenu[menuId].menuContent, dynamicMenuItem), indexOfItems[-softmenu[i].menuItem].itemCatalogName, CMP_NAME) == 0) {
@@ -219,7 +219,7 @@ printf(">>>>Z 0093b determineFunctionKeyItem  case MNU_MENUS:     i=%i softmenu[
               }
               else {
                 item = softmenu[i].menuItem;
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>>Z 0093c determineFunctionKeyItem  item = %i:   name:=%s\n",item, indexOfItems[-item].itemCatalogName);
 #endif //VERBOSEKEYS
               }
@@ -268,13 +268,13 @@ printf(">>>>Z 0093c determineFunctionKeyItem  item = %i:   name:=%s\n",item, ind
             item = ITM_NULL;
           }
         }
-      #ifdef VERBOSEKEYS
+      #if defined(VERBOSEKEYS)
       printf(">>>>Z 0094 Fallthrough item=%d \n",item);
       #endif //VERBOSEKEYS
       }
     }
 
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>>Z 0094B if(calcMode == CM_ASSIGN       data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",data,data[0],item,itemShift, FN_key_pressed);
 printf(">>>>  0095     dynamicMenuItem=%d\n",dynamicMenuItem);
 printf(">>>>  0096     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn);
@@ -310,20 +310,20 @@ printf(">>>>  0096     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
               }
             }
             displayBugScreen(bugScreenNonexistentMenu);
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>>  0086 item=%d \n",item);
 #endif //VERBOSEKEYS
             return item;
           }
           else {
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>>  0087 item=%d \n",item);
 #endif //VERBOSEKEYS
             return item;
           }
         }
         default: {
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>>  0088 item=%d \n",item);
 #endif //VERBOSEKEYS
           return item;
@@ -331,7 +331,7 @@ printf(">>>>  0088 item=%d \n",item);
     }
     }
     else {
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>>  0089 item=%d \n",item);
 #endif //VERBOSEKEYS
       return item;
@@ -347,7 +347,7 @@ printf(">>>>  0089 item=%d \n",item);
 
 //      btnFnPressed(notUsed, &mouseButton, data);
 //      btnFnReleased(notUsed, &mouseButton, data);
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>>Z 0070 btnFnClicked data=|%s| data[0]=%d\n",(char*)data, ((char*)data)[0]);
 #endif //VERBOSEKEYS
       executeFunction(data, 0);
@@ -364,7 +364,7 @@ printf(">>>>Z 0070 btnFnClicked data=|%s| data[0]=%d\n",(char*)data, ((char*)dat
 
 
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     void btnFnClickedP(GtkWidget *notUsed, gpointer data) { //JM Added this portion to be able to go to NOP on emulator
       GdkEvent mouseButton;
       mouseButton.button.button = 1;
@@ -477,9 +477,9 @@ bool_t lowercaseselected;
 
   static void processAimInput(int16_t item) {
     int16_t item1 = 0;
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
     char tmp[200]; sprintf(tmp,"^^^^processAimInput:AIM %d nextChar=%d",item,nextChar); jm_show_comment(tmp);
-    #ifdef PAIMDEBUG
+    #if defined(PAIMDEBUG)
       printf("%s, |%s|\n",tmp,aimBuffer);
     #endif //PAIMDEBUG
 #endif //PC_BUILD
@@ -487,7 +487,7 @@ bool_t lowercaseselected;
     if(keyReplacements(item, &item1, numLock, lastshiftF, lastshiftG) > 0) {  //JMvv
       if(item1 > 0) {
         addItemToBuffer(item1);
-        #ifdef PAIMDEBUG
+        #if defined(PAIMDEBUG)
           printf("---#K %d\n",keyActionProcessed);
         #endif //PAIMDEBUG
         keyActionProcessed = true;
@@ -496,7 +496,7 @@ bool_t lowercaseselected;
 
     else if(lowercaseselected && (ITM_A <= item && item <= ITM_Z)) {
       addItemToBuffer(item + 26);
-        #ifdef PAIMDEBUG
+        #if defined(PAIMDEBUG)
           printf("---#J %d\n",keyActionProcessed);
         #endif //PAIMDEBUG
       keyActionProcessed = true;
@@ -504,7 +504,7 @@ bool_t lowercaseselected;
 
     else if(!lowercaseselected && (ITM_A <= item && item <= ITM_Z)) {  //JM
       addItemToBuffer(item);
-        #ifdef PAIMDEBUG
+        #if defined(PAIMDEBUG)
           printf("---#I %d +%s+\n",keyActionProcessed, aimBuffer);
         #endif //PAIMDEBUG
       keyActionProcessed = true;
@@ -512,7 +512,7 @@ bool_t lowercaseselected;
 
     else if(!lowercaseselected && (ITM_a <= item && item <= ITM_z)) {  //JM
       addItemToBuffer(item - 26);
-        #ifdef PAIMDEBUG
+        #if defined(PAIMDEBUG)
           printf("---#H %d\n",keyActionProcessed);
         #endif //PAIMDEBUG
       keyActionProcessed = true;
@@ -520,7 +520,7 @@ bool_t lowercaseselected;
 
     else if(lowercaseselected && (ITM_a <= item && item <= ITM_z)) {  //JM
       addItemToBuffer(item);
-        #ifdef PAIMDEBUG
+        #if defined(PAIMDEBUG)
           printf("---#G %d\n",keyActionProcessed);
         #endif //PAIMDEBUG
       keyActionProcessed = true;
@@ -528,7 +528,7 @@ bool_t lowercaseselected;
 
     else if(item == ITM_COLON || item == ITM_COMMA || item == ITM_QUESTION_MARK || item == ITM_SPACE || item == ITM_UNDERSCORE) {  //JM vv DIRECT LETTERS
       addItemToBuffer(item);
-        #ifdef PAIMDEBUG
+        #if defined(PAIMDEBUG)
           printf("---#F %d\n",keyActionProcessed);
         #endif //PAIMDEBUG
       keyActionProcessed = true;
@@ -536,7 +536,7 @@ bool_t lowercaseselected;
 
     else if(lowercaseselected && ((ITM_ALPHA <= item && item <= ITM_OMEGA) || (ITM_QOPPA <= item && item <= ITM_SAMPI))) {  //JM GREEK
       addItemToBuffer(item /* +(ITM_alpha - ITM_ALPHA) */); //JM Remove the ability to shift to lower cap greek for the reason that the limited greek on the keyboard are defined per case, not generic
-        #ifdef PAIMDEBUG
+        #if defined(PAIMDEBUG)
           printf("---#E %d\n",keyActionProcessed);
         #endif //PAIMDEBUG
       keyActionProcessed = true;
@@ -544,7 +544,7 @@ bool_t lowercaseselected;
 
     else if(!lowercaseselected && ((ITM_ALPHA <= item && item <= ITM_OMEGA) || (ITM_QOPPA <= item && item <= ITM_SAMPI))) {  //JM GREEK
       addItemToBuffer(item);
-        #ifdef PAIMDEBUG
+        #if defined(PAIMDEBUG)
           printf("---#D %d\n",keyActionProcessed);
         #endif //PAIMDEBUG
       keyActionProcessed = true;
@@ -552,7 +552,7 @@ bool_t lowercaseselected;
 
     else if(item == ITM_DOWN_ARROW) {
       if(nextChar == NC_NORMAL) nextChar = NC_SUBSCRIPT; else if(nextChar == NC_SUPERSCRIPT) nextChar = NC_NORMAL; //JM stack the SUP/NORMAL/SUB
-        #ifdef PAIMDEBUG
+        #if defined(PAIMDEBUG)
           printf("---#C %d\n",keyActionProcessed);
         #endif //PAIMDEBUG
       keyActionProcessed = true;
@@ -560,7 +560,7 @@ bool_t lowercaseselected;
 
     else if(item == ITM_UP_ARROW) {
       if(nextChar == NC_NORMAL) nextChar = NC_SUPERSCRIPT; else if(nextChar == NC_SUBSCRIPT) nextChar = NC_NORMAL; //JM stack the SUP/NORMAL/SUB
-        #ifdef PAIMDEBUG
+        #if defined(PAIMDEBUG)
           printf("---#B %d\n",keyActionProcessed);
         #endif //PAIMDEBUG
       keyActionProcessed = true;
@@ -568,7 +568,7 @@ bool_t lowercaseselected;
 
     else if(indexOfItems[item].func == addItemToBuffer) {
       addItemToBuffer(item);
-        #ifdef PAIMDEBUG
+        #if defined(PAIMDEBUG)
           printf("---#A %d\n",keyActionProcessed);
           printf("###---> 3, |%s|\n",aimBuffer);
         #endif //PAIMDEBUG
@@ -579,9 +579,9 @@ bool_t lowercaseselected;
       refreshScreen();
     }
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     sprintf(tmp,"^^^^processAimInput:AIM:end %d, processed %d",item,keyActionProcessed); jm_show_comment(tmp);
-    #ifdef PAIMDEBUG
+    #if defined(PAIMDEBUG)
       printf("%s, |%s|\n",tmp,aimBuffer);
     #endif //PAIMDEBUG
   #endif //PC_BUILD
@@ -613,7 +613,7 @@ bool_t lowercaseselected;
     void btnFnPressed(void *data) {
   #endif // DMCP_BUILD
 
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>>Z 0010 btnFnPressed SET FN_key_pressed            ; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
 #endif //VERBOSEKEYS
       temporaryInformation = TI_NO_INFO;
@@ -645,12 +645,12 @@ printf(">>>>Z 0010 btnFnPressed SET FN_key_pressed            ; data=|%s| data[0
       }
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && !(tam.alpha && tam.mode != TM_NEWMENU)) {
 
-#ifdef VERBOSEKEYS
-printf(">>>>Z 0011 btnFnPressed >>determineFunctionKeyItem_C43; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
+#if defined(VERBOSEKEYS)
+  printf(">>>>Z 0011 btnFnPressed >>determineFunctionKeyItem_C43; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n", (char*)data, ((char*)data)[0], shiftF, shiftG);
 #endif //VERBOSEKEYS
         int16_t item = determineFunctionKeyItem_C43((char *)data, shiftF, shiftG);
-#ifdef VERBOSEKEYS
-printf(">>>>Z 011a btnFnPressed >>determineFunctionKeyItem_C43; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
+#if defined(VERBOSEKEYS)
+  printf(">>>>Z 011a btnFnPressed >>determineFunctionKeyItem_C43; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n", (char*)data, ((char*)data)[0], shiftF, shiftG);
 #endif //VERBOSEKEYS
 
       #pragma GCC diagnostic push
@@ -667,9 +667,9 @@ printf(">>>>Z 011a btnFnPressed >>determineFunctionKeyItem_C43; data=|%s| data[0
           case MNU_CHARS:
           case MNU_PROGS:
           case MNU_VARS: {
-            #if (FN_KEY_TIMEOUT_TO_NOP == 1)
+            #if(FN_KEY_TIMEOUT_TO_NOP == 1)
               showFunctionName(item, 1000, "SF:A"); // 1000ms = 1s
-            #else // (FN_KEY_TIMEOUT_TO_NOP == 0)
+            #else // (FN_KEY_TIMEOUT_TO_NOP != 1)
               showFunctionNameItem = item;
             #endif // (FN_KEY_TIMEOUT_TO_NOP == 1)
             break;
@@ -682,7 +682,7 @@ printf(">>>>Z 011a btnFnPressed >>determineFunctionKeyItem_C43; data=|%s| data[0
         _closeCatalog();
       }
       else if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_ASN_BROWSER && calcMode != CM_FONT_BROWSER) {
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>>Z 0012 btnFnPressed >>determineFunctionKeyItem_C43; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
 #endif //VERBOSEKEYS
         int16_t item = determineFunctionKeyItem_C43((char *)data, shiftF, shiftG);
@@ -695,14 +695,14 @@ printf(">>>>Z 0012 btnFnPressed >>determineFunctionKeyItem_C43; data=|%s| data[0
         shiftF = false;
         shiftG = false;
 */
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>>Z 0012 btnFnPressed >determineFunctionKeyItem_C43?; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
 #endif //VERBOSEKEYS
         if( (item != ITM_NOP && item != ITM_NULL) ||                  //JM allow entry into statemachine if item=blank (NOP) but f(item) or g(item) is not blank
             (determineFunctionKeyItem_C43((char *)data, true, false) != ITM_NOP && determineFunctionKeyItem_C43((char *)data, true, false) != ITM_NULL) ||
             (determineFunctionKeyItem_C43((char *)data, false, true) != ITM_NOP && determineFunctionKeyItem_C43((char *)data, false, true) != ITM_NULL)
            ) {
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
 #endif //VERBOSEKEYS
 
@@ -739,9 +739,9 @@ printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%
           }
 
           else {
-            #if (FN_KEY_TIMEOUT_TO_NOP == 1)
+            #if(FN_KEY_TIMEOUT_TO_NOP == 1)
               showFunctionName(item, 1000); // 1000ms = 1s
-            #else // (FN_KEY_TIMEOUT_TO_NOP == 0)
+            #else // (FN_KEY_TIMEOUT_TO_NOP != 1)
               showFunctionNameItem = item;
             #endif // (FN_KEY_TIMEOUT_TO_NOP == 1)
           }
@@ -892,7 +892,7 @@ int16_t lastItem = 0;
   void executeFunction(const char *data, int16_t item_) {
     int16_t item = ITM_NOP;
 
-      #ifdef VERBOSEKEYS
+      #if defined(VERBOSEKEYS)
         printf("keyboard.c: executeFunction %i (beginning of executeFunction): %i, %s tam.mode=%i\n", item, softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName, tam.mode);
       #endif //VERBOSEKEYS
 
@@ -904,17 +904,17 @@ int16_t lastItem = 0;
       }
       else {
 
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>> R000A >>determineFunctionKeyItem_C43 %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
 #endif //VERBOSEKEYS
 
         item = determineFunctionKeyItem_C43((char *)data, shiftF, shiftG); }
 
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
 #endif //VERBOSEKEYS
 
-        #if defined (PC_BUILD)
+        #if defined(PC_BUILD)
           printf(">>>Function selected: executeFunction data=|%s| f=%d g=%d tam.mode=%i\n",(char *)data, shiftF, shiftG, tam.mode);
           if(item<0)  printf("    item=%d=%s f=%d g=%d\n",item,indexOfItems[-item].itemCatalogName, shiftF, shiftG);
           if(item>=0) printf("    item=%d=%s f=%d g=%d\n",item,indexOfItems[item].itemCatalogName, shiftF, shiftG);
@@ -922,7 +922,7 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d t
 
       resetShiftState();                               //shift cancelling delayed to this point after state machine
 
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>> R000C                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
 #endif //VERBOSEKEYS
 
@@ -933,7 +933,7 @@ printf(">>>> R000C                                %d |%s| shiftF=%d, shiftG=%d t
       if(/*showFunctionNameItem*/item != 0) {
 /* //JM vv Rmove the possibility for error by removing code that may conflict with the state machine
         item = showFunctionNameItem;
-      #if (FN_KEY_TIMEOUT_TO_NOP == 1)
+      #if(FN_KEY_TIMEOUT_TO_NOP == 1)
         hideFunctionName();
       #else // FN_KEY_TIMEOUT_TO_NOP != 1
 */
@@ -961,7 +961,7 @@ printf(">>>> R000C                                %d |%s| shiftF=%d, shiftG=%d t
               itemToBeAssigned = item;
             }
             else {
-              #if defined (VERBOSEKEYS)
+              #if defined(VERBOSEKEYS)
                 printf(">>>Function: executeFunction showSoftmenu(%d)\n",item);
               #endif //VERBOSEKEYS
               showSoftmenu(item);
@@ -1008,7 +1008,7 @@ printf(">>>> R000C                                %d |%s| shiftF=%d, shiftG=%d t
               hourGlassIconEnabled = false;
             }
             else {
-              #if defined (VERBOSEKEYS)
+              #if defined(VERBOSEKEYS)
                 printf(">>>Function: executeFunction runFunction(%d)\n",item);
               #endif //VERBOSEKEYS
               runFunction(item);
@@ -1019,7 +1019,7 @@ printf(">>>> R000C                                %d |%s| shiftF=%d, shiftG=%d t
             return;
           }
 
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>> R000D                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
 #endif //VERBOSEKEYS
 
@@ -1080,7 +1080,7 @@ printf(">>>> R000D                                %d |%s| shiftF=%d, shiftG=%d t
               tamLeaveMode();
             }
 
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>> R000E                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
 #endif //VERBOSEKEYS
 
@@ -1136,18 +1136,18 @@ printf(">>>> R000E                                %d |%s| shiftF=%d, shiftG=%d t
                 }
               }
               else {
-                #ifdef VERBOSEKEYS
+                #if defined(VERBOSEKEYS)
                   printf("keyboard.c: executeFunction %i (before runfunction): %i, %s tam.mode=%i\n", item, softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName, tam.mode);
                 #endif //VERBOSEKEYS
                 runFunction(item);
-                #ifdef VERBOSEKEYS
+                #if defined(VERBOSEKEYS)
                   printf("keyboard.c: executeFunction %i (after runfunction): %i, %s tam.mode=%i\n", item, softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName, tam.mode);
                 #endif //VERBOSEKEYS
               }
             }
           }
 
-#ifdef VERBOSEKEYS
+#if defined(VERBOSEKEYS)
 printf(">>>> R000F                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
 #endif //VERBOSEKEYS
 
@@ -1156,14 +1156,14 @@ printf(">>>> R000F                                %d |%s| shiftF=%d, shiftG=%d t
         }
       }
     }
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     printf(">>>  refreshScreen3 from keyboard.c executeFunction\n");
   #endif
     refreshScreen();
 //TODO 2023-04-15 check here. It needs to be changed not to always refresh the screen.
 
     screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
-    #ifdef VERBOSEKEYS
+    #if defined(VERBOSEKEYS)
       printf("keyboard.c: executeFunction (end): %i, %s\n", softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName);
     #endif //VERBOSEKEYS
   }
@@ -1182,7 +1182,7 @@ bool_t allowShiftsToClearError = false;
 
     int8_t key_no = stringToKeyNumber(data);
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     char tmp[200]; sprintf(tmp,"^^^^^^^keyboard.c: determineitem: key_no: %d:",key_no); jm_show_comment(tmp);
   #endif //PC_BUILD
 
@@ -1193,7 +1193,7 @@ bool_t allowShiftsToClearError = false;
 
     fnTimerExec(TO_FN_EXEC);                                  //dr execute queued fn
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     sprintf(tmp,"^^^^^^^keyboard.c: determineitem: key->primary1: %d:",key->primary); jm_show_comment(tmp);
   #endif //PC_BUILD
 
@@ -1206,7 +1206,7 @@ bool_t allowShiftsToClearError = false;
 
     Setup_MultiPresses( key->primary );
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     sprintf(tmp,"^^^^^^^keyboard.c: determineitem: key->primary2: %d:",key->primary); jm_show_comment(tmp);
   #endif //PC_BUILD
 
@@ -1301,7 +1301,7 @@ bool_t allowShiftsToClearError = false;
       return ITM_NOP;
     }
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     sprintf(tmp,"^^^^^^^keyboard.c: determineitem: key->primary3: %d:",key->primary); jm_show_comment(tmp);
   #endif //PC_BUILD
 
@@ -1319,7 +1319,7 @@ bool_t allowShiftsToClearError = false;
       result = shiftF ? key->fShiftedAim :
                shiftG ? key->gShiftedAim :
                         key->primaryAim;
-      if (calcMode == CM_PEM && getSystemFlag(FLAG_ALPHA)) {
+      if(calcMode == CM_PEM && getSystemFlag(FLAG_ALPHA)) {
         if(result == ITM_DOWN_ARROW) {
           nextChar = NC_SUBSCRIPT;
         }
@@ -1341,19 +1341,19 @@ bool_t allowShiftsToClearError = false;
       result = 0;
     }
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     sprintf(tmp,"^^^^^^^keyboard.c: determineitem: result1: %d:",result); jm_show_comment(tmp);
   #endif //PC_BUILD
 
     Check_SigmaPlus_Assigned(&result, key_no);  //JM
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     sprintf(tmp,"^^^^^^^keyboard.c: determineitem: result2: %d:",result); jm_show_comment(tmp);
   #endif //PC_BUILD
 
     Check_MultiPresses(&result, key_no);        //JM
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     sprintf(tmp,"^^^^^^^keyboard.c: determineitem: result3: %d:",result); jm_show_comment(tmp);
   #endif //PC_BUILD
 
@@ -1366,7 +1366,9 @@ bool_t allowShiftsToClearError = false;
 //      clearShiftState();
 //    }
 
-    if (result != ITM_SNAP) resetShiftState();
+    if(result != ITM_SNAP) {
+      resetShiftState();
+    }
 
     if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && (result == ITM_NOP || result == ITM_NULL)) {
       result = ITM_LBL;
@@ -1439,19 +1441,19 @@ bool_t allowShiftsToClearError = false;
       if((circPtr == 0 && keyCode==7) || circPtr > nbrOfElements(circ)) circPtr = 0;
       if(circ[circPtr].itm==keyCode) circPtr++; else circPtr = 0;
       if(circPtr == 9 && keyCode==29) {
-        fnSetHP35(0); 
+        fnSetHP35(0);
         return true;
       }
       if((circPtr2 == 0 && keyCode==2) || circPtr2 > nbrOfElements(circ)) circPtr2 = 0;
       if(circ[circPtr2].itm2==keyCode) circPtr2++; else circPtr2 = 0;
       if(circPtr2 == 8 && keyCode==30) {
-        fnSetC47(0); 
+        fnSetC47(0);
         return true;
       }
       if((circPtr3 == 0 && keyCode==7) || circPtr3 > nbrOfElements(circ)) circPtr3 = 0;
       if(circ[circPtr3].itm3==keyCode) circPtr3++; else circPtr3 = 0;
       if(circPtr3 == 6 && keyCode==13) {
-        fnHP35JM(0); 
+        fnHP35JM(0);
         return true;
       }
       //printf("RRRR %i %u %u\n", keyCode, circPtr, circPtr2);
@@ -1506,8 +1508,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
 
       int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
-      if (checkNumber((uint8_t)keyCode)) return;
-
+      if(checkNumber((uint8_t)keyCode)) {
+        return;
+      }
 
       asnKey[0] = ((uint8_t *)data)[0];
       asnKey[1] = ((uint8_t *)data)[1];
@@ -1564,13 +1567,13 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       char tmp[200]; sprintf(tmp,"^^^^btnPressed START item=%d data=\'%s\'",item,(char *)data); jm_show_comment(tmp);
 
       if(item != ITM_NOP && item != ITM_NULL) {
-        #if defined (PC_BUILD_TELLTALE)
+        #if defined(PC_BUILD_TELLTALE)
           sprintf(tmp,"keyboard.c: btnPressed 1--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
         #endif //PC_BUILD_TELLTALE
 
         processKeyAction(item);
 
-        #if defined (PC_BUILD_TELLTALE)
+        #if defined(PC_BUILD_TELLTALE)
           sprintf(tmp,"keyboard.c: btnPressed 2--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
         #endif //PC_BUILD_TELLTALE
 
@@ -1660,7 +1663,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
       int16_t item;
       int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
-      if (checkNumber((uint8_t)keyCode)) return;
+      if(checkNumber((uint8_t)keyCode)) {
+        return;
+      }
 
       bool_t f = shiftF;
       bool_t g = shiftG;
@@ -1770,7 +1775,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       }
       else if(showFunctionNameItem != 0) {
         item = showFunctionNameItem;
-        #ifdef PC_BUILD
+        #if defined(PC_BUILD)
           char tmp[200]; sprintf(tmp,"^^^^btnReleased %d:\'%s\'",item,(char *)data); jm_show_comment(tmp);
         #endif //PC_BUILD
 
@@ -1803,7 +1808,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
             }
             else {
               displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);
-              #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+              #if(EXTRA_INFO_ON_CALC_ERROR == 1)
                 sprintf(errorMessage, "string '%s' is not a named variable", funcParam);
                 moreInfoOnError("In function btnReleased:", errorMessage, NULL, NULL);
               #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -1816,7 +1821,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
             }
             else {
               displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
-              #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+              #if(EXTRA_INFO_ON_CALC_ERROR == 1)
                 sprintf(errorMessage, "string '%s' is not a named label", funcParam);
                 moreInfoOnError("In function btnReleased:", errorMessage, NULL, NULL);
               #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -1835,7 +1840,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
 RELEASE_END:
       if(allowShiftsToClearError || !checkShifts((char *)data)) {
-        #ifdef PC_BUILD
+        #if defined(PC_BUILD)
           char tmp[200]; sprintf(tmp,">>> btnReleased (%s):   refreshScreen from keyboard.c  which is the main normal place for it.", (char *)data); jm_show_comment(tmp);
           jm_show_calc_state("      ##### keyboard.c: btnReleased end");
         #endif //PC_BUILD
@@ -1879,16 +1884,9 @@ RELEASE_END:
     }
   }
 
-#ifndef TESTSUITE_BUILD
-
-
-
-
-
-
-
+#if !defined(TESTSUITE_BUILD)
   void processKeyAction(int16_t item) {
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       printf(">>>> processKeyAction: item=%d  programRunStop=%d\n",item,programRunStop);
     #endif //PC_BUILD
     keyActionProcessed = false;
@@ -1912,7 +1910,7 @@ RELEASE_END:
       programRunStop = PGM_STOPPED;
     }
 
-    #if (REAL34_WIDTH_TEST == 1)
+    #if(REAL34_WIDTH_TEST == 1)
       longInteger_t lgInt;
       longIntegerInit(lgInt);
     #endif // (REAL34_WIDTH_TEST == 1)
@@ -1952,7 +1950,7 @@ RELEASE_END:
           refreshScreen();
         }
         keyActionProcessed = true;
-        #if (REAL34_WIDTH_TEST == 1)
+        #if(REAL34_WIDTH_TEST == 1)
           if(++largeur > SCREEN_WIDTH) {
             largeur--;
           }
@@ -1972,7 +1970,7 @@ RELEASE_END:
           refreshScreen();
         }
         keyActionProcessed = true;
-        #if (REAL34_WIDTH_TEST == 1)
+        #if(REAL34_WIDTH_TEST == 1)
           if(--largeur < 20) {
             largeur++;
           }
@@ -2023,7 +2021,7 @@ RELEASE_END:
             }
             else {
               itemToBeAssigned = ASSIGN_CLEAR;
-              if (previousCalcMode == CM_AIM) {
+              if(previousCalcMode == CM_AIM) {
                 showSoftmenu(-MNU_MyAlpha); //JM push MyAlpha in case ALPHA is up (likely)
               }
             }
@@ -2115,7 +2113,7 @@ RELEASE_END:
 
       default:
       {
-        #if defined (PC_BUILD)
+        #if defined(PC_BUILD)
           printf("Switch - default: processKeyAction: calcMode=%d itemToBeAssigned=%d item=%d\n",calcMode, itemToBeAssigned, item);
         #endif //PC_BUILD
         if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && item == ITM_USERMODE) {
@@ -2177,8 +2175,8 @@ RELEASE_END:
         else {
           switch(calcMode) {
             case CM_NORMAL: {
-              #ifdef PC_BUILD_VERBOSE0
-                 #ifdef PC_BUILD
+              #if defined(PC_BUILD_VERBOSE0)
+                 #if defined(PC_BUILD)
                    printf("$"); //####
                  #endif
               #endif
@@ -2208,8 +2206,8 @@ RELEASE_END:
             }
 
             case CM_EIM: {
-              #ifdef PC_BUILD_VERBOSE0
-                 #ifdef PC_BUILD
+              #if defined(PC_BUILD_VERBOSE0)
+                 #if defined(PC_BUILD)
                    printf("^"); //####
                  #endif
               #endif
@@ -2219,8 +2217,8 @@ RELEASE_END:
             }
 
             case CM_NIM: {
-              #ifdef PC_BUILD_VERBOSE0
-                #ifdef PC_BUILD
+              #if defined(PC_BUILD_VERBOSE0)
+                #if defined(PC_BUILD)
                   printf("&"); //####
                 #endif
               #endif
@@ -2516,17 +2514,17 @@ RELEASE_END:
               displayBugScreen(errorMessage);
             }
           }
-          #ifdef RECORDLOG
-            #ifdef PC_BUILD
+          #if defined(RECORDLOG)
+            #if defined(PC_BUILD)
               if(keyActionProcessed) {                         //JMEXEC
                 capture_sequence("keyActionProcessed:", item);  //JMEXEC
               }                                                //JMEXEC
             #endif
-          #endif
+          #endif // RECORDLOG
         }
       }
     }
-    #if (REAL34_WIDTH_TEST == 1)
+    #if(REAL34_WIDTH_TEST == 1)
       longIntegerFree(lgInt);
     #endif // (REAL34_WIDTH_TEST == 1)
   }
@@ -2662,7 +2660,6 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
           reallocateRegister(REGISTER_X, dtString, TO_BLOCKS(len), amNone);
           xcopy(REGISTER_STRING_DATA(REGISTER_X), aimBuffer, len);
 
-
           if(!eRPN) {                                  //PHM eRPN 2021-07
             setSystemFlag(FLAG_ASLIFT);
           #if defined(DEBUGUNDO)
@@ -2683,10 +2680,11 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
             goto ram_full;
           }
           aimBuffer[0] = 0;              //PHM JM Keeping the structure like 43S, to be able to pick up changes from their side easier
-        } else {
-            setSystemFlag(FLAG_ASLIFT);
-            aimBuffer[0] = 0;              //PHM JM Keeping the structure like 43S, to be able to pick up changes from their side easier
-          }
+        }
+        else {
+          setSystemFlag(FLAG_ASLIFT);
+          aimBuffer[0] = 0;              //PHM JM Keeping the structure like 43S, to be able to pick up changes from their side easier
+        }
         }
         break;
       }
@@ -2823,7 +2821,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
     doRefreshSoftMenu = true;     //dr
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     jm_show_calc_state("fnKeyExit");
   #endif
 
@@ -3079,13 +3077,10 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         break;
       }
 
-
       case CM_LISTXY:                      //JM vv
         calcMode = CM_GRAPH;
         softmenuStack[0].firstItem = 0;
         break;                              //JM ^^
-
-
 
       case CM_GRAPH:
       case CM_PLOT_STAT: {
@@ -3100,7 +3095,8 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
               popSoftmenu();
             }
           }
-        } else {
+        }
+        else {
           popSoftmenu();
         }
 
@@ -3135,9 +3131,9 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         }
         else {
           popSoftmenu();
-          if (previousCalcMode == CM_AIM){   //JM
-            stayInAIM();                     //JM
-          }                                  //JM
+          if(previousCalcMode == CM_AIM) { //JM
+            stayInAIM();                   //JM
+          }                                //JM
         }
         break;
       }
@@ -3182,12 +3178,11 @@ void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter
 
       //CC needs in POLAR mode Y=r, X=ϑ;
       //CC needs in RECT mode, Y=real, X=imag
-      if (polarOk || rectOk) {  //imag not allowed to be an angle if rect entry
+      if(polarOk || rectOk) {  //imag not allowed to be an angle if rect entry
         runFunction(ITM_REtoCX);
       }
       else if(dataTypeX == dtComplex34) {
         runFunction(ITM_CXtoRE);
-
       }
       else if(dataTypeX == dtReal34Matrix && dataTypeY == dtReal34Matrix) {
         runFunction(ITM_REtoCX);
@@ -3202,7 +3197,7 @@ void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter
         else {
           displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
         }
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         if(!polarOk && getSystemFlag(FLAG_POLAR)) {
           sprintf(errorMessage, "You cannot use CC or COMPLEX to create a Polar complex number with %s(%s) in X and %s(%s) in Y!",       getDataTypeName(getRegisterDataType(REGISTER_X), true, false), getRegisterTagName((REGISTER_X), 0), getDataTypeName(getRegisterDataType(REGISTER_Y), true, false), getRegisterTagName((REGISTER_Y), 0));
         } else
@@ -3218,7 +3213,8 @@ void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter
 
     if(complex_Type == ITM_op_j) {
       temporaryFlagRect = true;
-    } else {
+    }
+    else {
       temporaryFlagRect = false;
     }
 
@@ -3265,7 +3261,7 @@ void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter
 void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
     uint16_t lg;
-#ifndef SAVE_SPACE_DM42_10
+#if !defined(SAVE_SPACE_DM42_10)
     uint8_t *nextStep;
 #endif //SAVE_SPACE_DM42_10
 
@@ -3296,7 +3292,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
         }
         else if(stringByteLength(aimBuffer) > 0) {
 
-#ifdef TEXT_MULTILINE_EDIT
+#if defined(TEXT_MULTILINE_EDIT)
 //JMCURSORvv SPLIT STRING AT CURSOR POSITION
           uint8_t T_cursorPos_tmp;
           T_cursorPos_tmp = aimBuffer[T_cursorPos];
@@ -3315,10 +3311,10 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
             fnT_ARROW(ITM_T_LEFT_ARROW);                               //move cursor one left
           }
 //JMCURSOR^^
-#else
+#else // !TEXT_MULTILINE_EDIT
           lg = stringLastGlyph(aimBuffer);
           aimBuffer[lg] = 0;
-#endif //TEXT_MULTILINE_EDIT
+#endif // TEXT_MULTILINE_EDIT
 
         }
         break;
@@ -3383,7 +3379,8 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
               popSoftmenu();
             }
           }
-        } else {
+        }
+        else {
           popSoftmenu();
         }
 
@@ -3416,7 +3413,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
       }
 
       case CM_PEM: {
-        #ifndef SAVE_SPACE_DM42_10
+        #if !defined(SAVE_SPACE_DM42_10)
 
         if(lastErrorCode != 0) {
           lastErrorCode = 0;
@@ -3471,7 +3468,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
             }
           }
         }
-        #endif //SAVE_SPACE_DM42_10
+        #endif // !SAVE_SPACE_DM42_10
         break;
       }
 
@@ -3534,7 +3531,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 }
 
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
 static bool_t activatescroll(void) { //jm
    //This is the portion that allows the arrows shortcut to SHOW in NORMAL MODE
    int16_t menuId = softmenuStack[0].softmenuId; //JM
@@ -3712,13 +3709,13 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
       }                                    //JM ^^
 
       case CM_MIM: {
-        #ifdef NOMATRIXCURSORS
+        #if defined(NOMATRIXCURSORS)
           if(currentSoftmenuScrolls()) {   //JM remove to allow normal arrows to work as cursors
             menuUp();                      //JM
           }                                //JM
-        #else  //NOMATRIXCURSORS             //JM
+        #else  // !NOMATRIXCURSORS             //JM
           keyActionProcessed = false;      //JM
-        #endif //NOMATRIXCURSORS             //JM
+        #endif // NOMATRIXCURSORS             //JM
         break;                             //JM
       }
 
@@ -3925,13 +3922,13 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
       }                                     //JM ^^
 
       case CM_MIM: {
-        #ifdef NOMATRIXCURSORS
+        #if defined(NOMATRIXCURSORS)
           if(currentSoftmenuScrolls()) {   //JM remove to allow normal arrows to work as cursors
             menuDown();                    //JM
           }                                //JM
-        #else  //NOMATRIXCURSORS             //JM
+        #else  // !NOMATRIXCURSORS             //JM
           keyActionProcessed = false;      //JM
-        #endif //NOMATRIXCURSORS             //JM
+        #endif // NOMATRIXCURSORS             //JM
         break;                             //JM
       }
 

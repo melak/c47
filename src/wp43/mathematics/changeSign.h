@@ -25,7 +25,7 @@
 
   void fnChangeSign(uint16_t unusedButMandatoryParameter);
 
-  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+  #if(EXTRA_INFO_ON_CALC_ERROR == 1)
     void chsError    (void);
   #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
     #define chsError typeError

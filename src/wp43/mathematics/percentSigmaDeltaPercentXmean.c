@@ -55,7 +55,7 @@ TO_QSPI void (* const pcSigmaDeltaPcXmean[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS]
 static void dataTypeError(void) {
   displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_L);
 
-  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+  #if(EXTRA_INFO_ON_CALC_ERROR == 1)
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_L);
     sprintf(errorMessage, "cannot calculate delta percentage for %s", getRegisterDataTypeName(REGISTER_L, true, false));
     moreInfoOnError("In function fnPcSigmaDeltaPcXmean:", errorMessage, NULL, NULL);

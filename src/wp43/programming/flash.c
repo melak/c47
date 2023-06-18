@@ -76,12 +76,13 @@ static void seek(uint32_t pos, void *stream) {
     int ret;
     #if defined(WIN32)
       ret = mkdir( dir );
-    #else
+    #else // !WIN32
       ret = mkdir( dir, 0775);
-    #endif // WIN3
-    if (( ret != 0) && (errno != EEXIST)) {
+    #endif // WIN32
+    if(ret != 0 && errno != EEXIST) {
       return -1;
-    } else {
+    }
+    else {
       return 0;
     }
   }
@@ -194,7 +195,7 @@ void fnPSto(uint16_t unusedButMandatoryParameter) {
       sys_disk_write_enable(1);
       if(f_open(LIBDATA, FLASH_PGM_DIR "\\" FLASH_PGM_FILE, FA_READ | FA_WRITE | FA_OPEN_EXISTING) != FR_OK) {
         displayCalcErrorMessage(ERROR_CANNOT_READ_FILE, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        #if(EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function deleteFromFlashPgmLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         sys_disk_write_enable(0);
@@ -205,7 +206,7 @@ void fnPSto(uint16_t unusedButMandatoryParameter) {
 
       if((LIBDATA = fopen(FLASH_PGM_DIR "/" FLASH_PGM_FILE, "r+b")) == NULL) {
         displayCalcErrorMessage(ERROR_CANNOT_READ_FILE, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        #if(EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function deleteFromFlashPgmLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         return;
@@ -221,14 +222,14 @@ void fnPSto(uint16_t unusedButMandatoryParameter) {
       sys_disk_write_enable(0);
     #else // !DMCP_BUILD
       fclose(LIBDATA);
-    #endif //DMCP_BUILD
+    #endif // DMCP_BUILD
 
     scanFlashPgmLibrary();
     scanLabelsAndPrograms();
   }
   else {
     displayCalcErrorMessage(ERROR_FLASH_MEMORY_WRITE_PROTECTED, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function fnPSto: cannot copy a program from FM to FM", NULL, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
@@ -241,7 +242,7 @@ void deleteFromFlashPgmLibrary(uint32_t fromAddr, uint32_t toAddr) {
     sys_disk_write_enable(1);
     if(f_open(LIBDATA, FLASH_PGM_DIR "\\" FLASH_PGM_FILE, FA_READ | FA_WRITE | FA_OPEN_EXISTING) != FR_OK) {
       displayCalcErrorMessage(ERROR_CANNOT_READ_FILE, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function deleteFromFlashPgmLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       sys_disk_write_enable(0);
@@ -252,7 +253,7 @@ void deleteFromFlashPgmLibrary(uint32_t fromAddr, uint32_t toAddr) {
 
     if((LIBDATA = fopen(FLASH_PGM_DIR "/" FLASH_PGM_FILE, "r+b")) == NULL) {
       displayCalcErrorMessage(ERROR_CANNOT_READ_FILE, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function deleteFromFlashPgmLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
@@ -275,7 +276,7 @@ void deleteFromFlashPgmLibrary(uint32_t fromAddr, uint32_t toAddr) {
     sys_disk_write_enable(0);
   #else // !DMCP_BUILD
     fclose(LIBDATA);
-  #endif //DMCP_BUILD
+  #endif // DMCP_BUILD
 }
 
 
@@ -284,7 +285,7 @@ void readStepInFlashPgmLibrary(uint8_t *buffer, uint16_t bufferSize, uint32_t po
   #if defined(DMCP_BUILD)
     if(f_open(LIBDATA, FLASH_PGM_DIR "\\" FLASH_PGM_FILE, FA_READ) != FR_OK) {
       displayCalcErrorMessage(ERROR_CANNOT_READ_FILE, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function scanFlashProgramLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
@@ -294,7 +295,7 @@ void readStepInFlashPgmLibrary(uint8_t *buffer, uint16_t bufferSize, uint32_t po
 
     if((LIBDATA = fopen(FLASH_PGM_DIR "/" FLASH_PGM_FILE, "rb")) == NULL) {
       displayCalcErrorMessage(ERROR_CANNOT_READ_FILE, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function scanFlashProgramLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
@@ -308,7 +309,7 @@ void readStepInFlashPgmLibrary(uint8_t *buffer, uint16_t bufferSize, uint32_t po
     f_close(LIBDATA);
   #else // !DMCP_BUILD
     fclose(LIBDATA);
-  #endif //DMCP_BUILD
+  #endif // DMCP_BUILD
 }
 
 
@@ -319,7 +320,7 @@ void scanFlashPgmLibrary(void) {
       initFlashPgmLibrary();
       if(f_open(LIBDATA, FLASH_PGM_DIR "\\" FLASH_PGM_FILE, FA_READ) != FR_OK) {
         displayCalcErrorMessage(ERROR_CANNOT_READ_FILE, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        #if(EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function scanFlashProgramLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         return;
@@ -332,7 +333,7 @@ void scanFlashPgmLibrary(void) {
       initFlashPgmLibrary();
       if((LIBDATA = fopen(FLASH_PGM_DIR "/" FLASH_PGM_FILE, "rb")) == NULL) {
         displayCalcErrorMessage(ERROR_CANNOT_READ_FILE, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        #if(EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function scanFlashProgramLibrary: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         return;
@@ -453,7 +454,9 @@ void initFlashPgmLibrary(void) {
 
 
   #if defined(PC_BUILD)
-      if (create_dir(FLASH_PGM_DIR) != 0) return;
+    if(create_dir(FLASH_PGM_DIR) != 0) {
+      return;
+    }
     #endif // PC_BUILD
     LIBDATA = fopen(FLASH_PGM_DIR "/" FLASH_PGM_FILE, "wb");
     if(LIBDATA == NULL) {

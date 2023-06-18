@@ -20,7 +20,7 @@
  * \file addons.h
  ***********************************************/
 
-#ifndef ADDONS_H
+#if !defined(ADDONS_H)
 #define ADDONS_H
 
 #include "typeDefinitions.h"
@@ -117,4 +117,4 @@ void fnLongPressSwitches (uint16_t option);
 void fnSetSI_All (uint16_t unusedButMandatoryParameter);
 void fnSetCPXmult (uint16_t unusedButMandatoryParameter);
 
-#endif //ADDONS_H
+#endif // !ADDONS_H

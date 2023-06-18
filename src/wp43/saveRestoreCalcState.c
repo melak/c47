@@ -111,7 +111,8 @@ static uint32_t restore(void *buffer, uint32_t size) {
     if(ret != FILE_OK ) {
       if(ret == FILE_CANCEL ) {
         return;
-      } else {
+      }
+      else {
         printf("Cannot save calc's memory in file backup.bin!\n");
         exit(0);
       }
@@ -426,7 +427,8 @@ static uint32_t restore(void *buffer, uint32_t size) {
     if(ret != FILE_OK ) {
       if(ret == FILE_CANCEL ) {
         return;
-      } else {
+      }
+      else {
         printf("Cannot restore calc's memory from file backup.bin! Performing RESET\n");
         refreshScreen();
         return;
@@ -726,8 +728,6 @@ static uint32_t restore(void *buffer, uint32_t size) {
         restore(&grpGroupingGr1LeftOverflow,         sizeof(grpGroupingGr1LeftOverflow));//JM
         restore(&grpGroupingGr1Left,                 sizeof(grpGroupingGr1Left));        //JM
         restore(&grpGroupingRight,                   sizeof(grpGroupingRight));          //JM
-      } else {
-        
       }
 
       ioFileClose();
@@ -759,7 +759,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
         temporaryInformation = TI_NO_INFO;
       }
 
-      #if (DEBUG_REGISTER_L == 1)
+      #if(DEBUG_REGISTER_L == 1)
         refreshRegisterLine(REGISTER_X); // to show L register
       #endif // (DEBUG_REGISTER_L == 1)
 
@@ -998,9 +998,10 @@ void fnSaveAuto(void) {
 }
 
 void fnSave(uint16_t saveMode) {
-  if (saveMode == SM_MANUAL_SAVE) {
+  if(saveMode == SM_MANUAL_SAVE) {
     doSave(manualSave);
-  } else if (saveMode == SM_STATE_SAVE) {
+  }
+  else if(saveMode == SM_STATE_SAVE) {
     doSave(stateSave);
   }
 }
@@ -1021,15 +1022,16 @@ flushBufferCnt = 0;
 
 #if defined(DMCP_BUILD)
   // Don't pass through if the power is insufficient
-  if ( power_check_screen() ) return;
-#endif
+  if( power_check_screen() ) return;
+#endif // DMCP_BUILD
 
-  if (saveType == autoSave) {
+  if(saveType == autoSave) {
     path = ioPathAutoSave;
   }
-  else if (saveType == manualSave) {
+  else if(saveType == manualSave) {
     path = ioPathManualSave;
-  } else {
+  }
+  else {
     path = ioPathSaveStateFile;
   }
 
@@ -1038,10 +1040,11 @@ flushBufferCnt = 0;
   if(ret != FILE_OK ) {
     if(ret == FILE_CANCEL ) {
       return;
-    } else {
+    }
+    else {
       #if !defined(DMCP_BUILD)
         printf("Cannot SAVE in file C47.sav!\n");
-      #endif
+      #endif // !DMCP_BUILD
       displayCalcErrorMessage(ERROR_CANNOT_WRITE_FILE, ERR_REGISTER_LINE, REGISTER_X);
       return;
     }
@@ -1271,7 +1274,7 @@ flushBufferCnt = 0;
   save(tmpString, strlen(tmpString));
   sprintf(tmpString, " grpGroupingGr1Left\n%" PRIu8 "\n", grpGroupingGr1Left);
   save(tmpString, strlen(tmpString));
-  sprintf(tmpString, " grpGroupingRight\n%" PRIu8 "\n", grpGroupingRight);  
+  sprintf(tmpString, " grpGroupingRight\n%" PRIu8 "\n", grpGroupingRight);
   save(tmpString, strlen(tmpString));
   sprintf(tmpString, "roundingMode\n%" PRIu8 "\n", roundingMode);
   save(tmpString, strlen(tmpString));
@@ -1374,7 +1377,7 @@ flushBufferCnt = 0;
 
   hourGlassIconEnabled = false;
   temporaryInformation = TI_SAVED;
-#endif //TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -1394,59 +1397,63 @@ void readLine(char *line) {
 
 
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
 static void UI64toString(uint64_t value, char * tmpRegisterString) {
   uint32_t v0,v1;
 
   v0 = value & 0xffffffff;
   v1 = value >> 32;
-  if (v1 != 0)
+  if(v1 != 0) {
     sprintf(tmpRegisterString, "0x%" PRIx32 "%0" PRIx32, v1, v0);
-  else
+  }
+  else {
     sprintf(tmpRegisterString, "0x%" PRIx32, v0);
+  }
 }
-#endif //TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 
 static unsigned int getBase(const char **str) {
   unsigned int base = 10;
   //fprintf(stderr,"\nget base\n");fflush(stderr);
-  if (**str == '0' && (*str)[1] != '\0') {
-      base = 8;
+  if(**str == '0' && (*str)[1] != '\0') {
+    base = 8;
+    ++*str;
+    if(**str == 'x') {
+      base = 16;
       ++*str;
-      if (**str == 'x') {
-          base = 16;
-          ++*str;
-      }
+    }
   }
   return base;
 }
 
 static unsigned int getDigit(const char *str) {
-  if ('0' <= *str && *str <= '9') {
+  if('0' <= *str && *str <= '9') {
     return *str - '0';
-  } else if ('a' <= *str && *str <= 'f') {
+  }
+  else if('a' <= *str && *str <= 'f') {
     return *str - 'a' + 10;
-  } else if ('A' <= *str && *str <= 'F') {
+  }
+  else if('A' <= *str && *str <= 'F') {
     return *str - 'A' + 10;
   }
   return 1000000;
 }
 
-#define stringToUintFunc(name, type)                \
-    type name(const char *str) {                    \
-      type value = 0;                               \
-      unsigned int digit, base = getBase(&str);     \
-                                                    \
-      for (;;) {                                    \
-        digit = getDigit(str++);                    \
-        if (digit > base)                           \
-          break;                                    \
-        value = value * base + digit;               \
-      }                                             \
-      return value;                                 \
-    }
+#define stringToUintFunc(name, type)              \
+  type name(const char *str) {                    \
+    type value = 0;                               \
+    unsigned int digit, base = getBase(&str);     \
+                                                  \
+    for(;;) {                                     \
+      digit = getDigit(str++);                    \
+      if(digit > base)                            \
+        break;                                    \
+      value = value * base + digit;               \
+    }                                             \
+    return value;                                 \
+  }
 
-stringToUintFunc(stringToUint8, uint8_t)
+stringToUintFunc(stringToUint8,  uint8_t)
 stringToUintFunc(stringToUint16, uint16_t)
 stringToUintFunc(stringToUint32, uint32_t)
 stringToUintFunc(stringToUint64, uint64_t)
@@ -1499,7 +1506,7 @@ int32_t stringToInt32(const char *str) {
 }
 
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   static void restoreRegister(calcRegister_t regist, char *type, char *value) {
     uint32_t tag = amNone;
 
@@ -1701,14 +1708,14 @@ int32_t stringToInt32(const char *str) {
     int16_t i, numberOfRegs;
     calcRegister_t regist;
     char *str;
-    #if defined (LOADDEBUG)
+    #if defined(LOADDEBUG)
       char line[100];
     #endif //LOADDEBUG
 
     hourGlassIconEnabled = true;
     showHideHourGlass();
     readLine(tmpString);
-    #if defined (LOADDEBUG)
+    #if defined(LOADDEBUG)
       sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
       debugPrintf(0, "-", tmpString);
     #endif //LOADDEBUG
@@ -1723,7 +1730,7 @@ int32_t stringToInt32(const char *str) {
         readLine(tmpString); // Register value
 
         if(loadMode == LM_ALL || (loadMode == LM_REGISTERS && regist < REGISTER_X) || (loadMode == LM_REGISTERS_PARTIAL && regist >= s && regist < (s + n))) {
-          #if defined (LOADDEBUG)
+          #if defined(LOADDEBUG)
             sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
             debugPrintf(1, "-", tmpString);
           #endif //LOADDEBUG
@@ -1739,7 +1746,7 @@ int32_t stringToInt32(const char *str) {
     else if(strcmp(tmpString, "GLOBAL_FLAGS") == 0) {
       readLine(tmpString); // Global flags
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
-        #if defined (LOADDEBUG)
+        #if defined(LOADDEBUG)
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(2, "-", tmpString);
         #endif //LOADDEBUG
@@ -1800,7 +1807,7 @@ int32_t stringToInt32(const char *str) {
       readLine(tmpString); // Number of local registers
       numberOfRegs = stringToInt16(tmpString);
       if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
-        #if defined (LOADDEBUG)
+        #if defined(LOADDEBUG)
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(3, "A", tmpString);
         #endif //LOADDEBUG
@@ -1808,7 +1815,7 @@ int32_t stringToInt32(const char *str) {
       }
 
       if((loadMode != LM_ALL && loadMode != LM_REGISTERS) || lastErrorCode == ERROR_NONE) {
-        #if defined (LOADDEBUG)
+        #if defined(LOADDEBUG)
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(3, "B", tmpString);
         #endif //LOADDEBUG
@@ -1819,7 +1826,7 @@ int32_t stringToInt32(const char *str) {
           readLine(tmpString); // Register value
 
           if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
-            #if defined (LOADDEBUG)
+            #if defined(LOADDEBUG)
               sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
               debugPrintf(3, "C", tmpString);
             #endif //LOADDEBUG
@@ -1834,13 +1841,13 @@ int32_t stringToInt32(const char *str) {
     }
 
     else if(strcmp(tmpString, "LOCAL_FLAGS") == 0) {
-      #if defined (LOADDEBUG)
+      #if defined(LOADDEBUG)
         sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
         debugPrintf(4, "A", tmpString);
       #endif //LOADDEBUG
       readLine(tmpString); // LOCAL_FLAGS
       if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
-        #if defined (LOADDEBUG)
+        #if defined(LOADDEBUG)
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(4, "B", tmpString);
         #endif //LOADDEBUG
@@ -1849,7 +1856,7 @@ int32_t stringToInt32(const char *str) {
     }
 
     else if(strcmp(tmpString, "NAMED_VARIABLES") == 0) {
-      #if defined (LOADDEBUG)
+      #if defined(LOADDEBUG)
         sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
         debugPrintf(20, "A", tmpString);
       #endif //LOADDEBUG
@@ -1863,7 +1870,7 @@ int32_t stringToInt32(const char *str) {
         if(loadMode == LM_ALL || loadMode == LM_NAMED_VARIABLES ||
           (loadMode == LM_SUMS && ((strcmp(errorMessage, "STATS") == 0) || (strcmp(errorMessage, "HISTO") == 0)))) {
 
-          #if defined (LOADDEBUG)
+          #if defined(LOADDEBUG)
             sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
             debugPrintf(20, "B", tmpString);
           #endif //LOADDEBUG
@@ -1889,7 +1896,7 @@ int32_t stringToInt32(const char *str) {
       readLine(tmpString); // Number of statistical sums
       numberOfRegs = stringToInt16(tmpString);
       if(numberOfRegs > 0 && (loadMode == LM_ALL || loadMode == LM_SUMS)) {
-        #if defined (LOADDEBUG)
+        #if defined(LOADDEBUG)
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(6, "A", tmpString);
         #endif //LOADDEBUG
@@ -1900,7 +1907,7 @@ int32_t stringToInt32(const char *str) {
           readLine(tmpString); // statistical sum
           if(statisticalSumsPointer) { // likely
             if(loadMode == LM_ALL || loadMode == LM_SUMS) {
-              #if defined (LOADDEBUG)
+              #if defined(LOADDEBUG)
                 sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
                 debugPrintf(6, "B", tmpString);
               #endif //LOADDEBUG
@@ -1914,7 +1921,7 @@ int32_t stringToInt32(const char *str) {
     else if(strcmp(tmpString, "SYSTEM_FLAGS") == 0) {
       readLine(tmpString); // Global flags
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
-        #if defined (LOADDEBUG)
+        #if defined(LOADDEBUG)
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(7, "-", tmpString);
         #endif //LOADDEBUG
@@ -1928,7 +1935,7 @@ int32_t stringToInt32(const char *str) {
       for(i=0; i<numberOfRegs; i++) {
         readLine(tmpString); // key
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
-          #if defined (LOADDEBUG)
+          #if defined(LOADDEBUG)
             sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
             debugPrintf(8, "-", tmpString);
           #endif //LOADDEBUG
@@ -2006,7 +2013,7 @@ int32_t stringToInt32(const char *str) {
       readLine(tmpString); // Number of keys
       numberOfRegs = stringToInt16(tmpString);
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
-        #if defined (LOADDEBUG)
+        #if defined(LOADDEBUG)
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(9, "A", tmpString);
         #endif //LOADDEBUG
@@ -2018,7 +2025,7 @@ int32_t stringToInt32(const char *str) {
       for(i=0; i<numberOfRegs; i++) {
         readLine(tmpString); // key
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
-          #if defined (LOADDEBUG)
+          #if defined(LOADDEBUG)
             sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
             debugPrintf(9, "B", tmpString);
           #endif //LOADDEBUG
@@ -2048,7 +2055,7 @@ int32_t stringToInt32(const char *str) {
       for(i=0; i<numberOfRegs; i++) {
         readLine(tmpString); // key
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
-          #if defined (LOADDEBUG)
+          #if defined(LOADDEBUG)
             sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
             debugPrintf(10, "-", tmpString);
           #endif //LOADDEBUG
@@ -2077,7 +2084,7 @@ int32_t stringToInt32(const char *str) {
       for(i=0; i<numberOfRegs; i++) {
         readLine(tmpString); // key
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
-          #if defined (LOADDEBUG)
+          #if defined(LOADDEBUG)
             sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
             debugPrintf(11, "-", tmpString);
           #endif //LOADDEBUG
@@ -2107,7 +2114,7 @@ int32_t stringToInt32(const char *str) {
         readLine(tmpString);
         int16_t target = -1;
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
-          #if defined (LOADDEBUG)
+          #if defined(LOADDEBUG)
             sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
             debugPrintf(12, "-", tmpString);
           #endif //LOADDEBUG
@@ -2128,7 +2135,7 @@ int32_t stringToInt32(const char *str) {
         for(i=0; i<numberOfRegs; i++) {
           readLine(tmpString); // key
           if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
-            #if defined (LOADDEBUG)
+            #if defined(LOADDEBUG)
               sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
               debugPrintf(13, "-", tmpString);
             #endif //LOADDEBUG
@@ -2153,7 +2160,7 @@ int32_t stringToInt32(const char *str) {
     }
 
     else if(strcmp(tmpString, "PROGRAMS") == 0) {
-      #if defined (LOADDEBUG)
+      #if defined(LOADDEBUG)
         if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(14, "-", tmpString);
@@ -2247,7 +2254,7 @@ int32_t stringToInt32(const char *str) {
       uint16_t formulae;
 
       if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
-        #if defined (LOADDEBUG)
+        #if defined(LOADDEBUG)
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(15, "A", tmpString);
         #endif //LOADDEBUG
@@ -2259,7 +2266,7 @@ int32_t stringToInt32(const char *str) {
       readLine(tmpString); // Number of formulae
       formulae = stringToUint16(tmpString);
       if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
-        #if defined (LOADDEBUG)
+        #if defined(LOADDEBUG)
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(15, "B", tmpString);
         #endif //LOADDEBUG
@@ -2275,7 +2282,7 @@ int32_t stringToInt32(const char *str) {
       for(i = 0; i < formulae; i++) {
         readLine(tmpString); // One formula
         if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
-          #if defined (LOADDEBUG)
+          #if defined(LOADDEBUG)
             sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
             debugPrintf(15, "C", tmpString);
           #endif //LOADDEBUG
@@ -2287,7 +2294,7 @@ int32_t stringToInt32(const char *str) {
 
     else if(strcmp(tmpString, "OTHER_CONFIGURATION_STUFF") == 0) {
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
-        #if defined (LOADDEBUG)
+        #if defined(LOADDEBUG)
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(16, "A", tmpString);
         #endif //LOADDEBUG
@@ -2300,7 +2307,7 @@ int32_t stringToInt32(const char *str) {
         readLine(aimBuffer); // param
         readLine(tmpString); // value
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
-          #if defined (LOADDEBUG)
+          #if defined(LOADDEBUG)
             sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
             debugPrintf(16, "B", tmpString);
           #endif //LOADDEBUG
@@ -2457,23 +2464,23 @@ int32_t stringToInt32(const char *str) {
       }
       hourGlassIconEnabled = false;
       return false; //Signal that this was the last section loaded and no more sections to follow
-      #if defined (LOADDEBUG)
+      #if defined(LOADDEBUG)
         debugPrintf(17, "END1", "");
-      #endif //LOADDEBUG
+      #endif // LOADDEBUG
     }
     hourGlassIconEnabled = false;
     return true; //Signal to continue loading the next section
-    #if defined (LOADDEBUG)
+    #if defined(LOADDEBUG)
       debugPrintf(18, "END2", "");
-    #endif //LOADDEBUG
+    #endif // LOADDEBUG
   }
-#endif //TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 
 
 #undef LOADDEBUG
-#if defined (LOADDEBUG)
+#if defined(LOADDEBUG)
   static void debugPrintf(int s1, const char * s2, const char * s3) {
-    #if defined (PC_BUILD)
+    #if defined(PC_BUILD)
       printf("%i %s %s\n", s1, s2, s3);
     #else
       char yy[100];
@@ -2488,19 +2495,19 @@ int32_t stringToInt32(const char *str) {
 
 void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t loadType) {
   flushBufferCnt = 0;
- #if !defined (TESTSUITE_BUILD)
+  #if !defined(TESTSUITE_BUILD)
   ioFilePath_t path;
   int ret;
-  #if defined (LOADDEBUG)
-    char yy[10];
-    sprintf(yy, "%d",loadMode);
-    debugPrintf(-1, "LoadMode", yy);
-  #endif //LOADDEBUG
+    #if defined(LOADDEBUG)
+      char yy[10];
+      sprintf(yy, "%d",loadMode);
+      debugPrintf(-1, "LoadMode", yy);
+    #endif // LOADDEBUG
 
-  if (loadType == autoLoad) {
+  if(loadType == autoLoad) {
     path = ioPathAutoSave;
   }
-  else if (loadType == manualLoad) {
+  else if(loadType == manualLoad) {
     path = ioPathManualSave;
   }
   else {
@@ -2512,7 +2519,8 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
   if(ret != FILE_OK ) {
     if(ret == FILE_CANCEL ) {
       return;
-    } else {
+    }
+    else {
       displayCalcErrorMessage(ERROR_CANNOT_READ_FILE, ERR_REGISTER_LINE, REGISTER_X);
       return;
     }
@@ -2568,7 +2576,7 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
   //
   //Code example:
   //
-  //if (loadMode == LM_ALL) {
+  //if(loadMode == LM_ALL) {
   //  if(loadedVersion <= 88) { // Program incompatibility
   //  #if defined(PC_BUILD)
   //    sprintf(tmpString,"****Program binary incompatibility****\n"
@@ -2606,28 +2614,36 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
     sys_timer_disable(TIMER_IDX_REFRESH_SLEEP);
     sys_timer_start(TIMER_IDX_REFRESH_SLEEP,1000);
     fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, JM_TO_KB_ACTV); //PROGRAM_KB_ACTV
-  #endif //DMCP_BUILD
+  #endif // DMCP_BUILD
 
 
   #if !defined(TESTSUITE_BUILD)
     if(loadType == manualLoad && loadMode == LM_ALL) {
       temporaryInformation = TI_BACKUP_RESTORED;
-    } else if((loadType == autoLoad) && (loadedVersion >= VersionAllowed) && (loadedVersion <= configFileVersion) && (loadMode == LM_ALL)) {
+    }
+    else if((loadType == autoLoad) && (loadedVersion >= VersionAllowed) && (loadedVersion <= configFileVersion) && (loadMode == LM_ALL)) {
       temporaryInformation = TI_BACKUP_RESTORED;
-    } else if(loadType == stateLoad) {
+    }
+    else if(loadType == stateLoad) {
       temporaryInformation = TI_STATEFILE_RESTORED;
-    } else if (loadMode == LM_PROGRAMS) {
+    }
+    else if(loadMode == LM_PROGRAMS) {
       temporaryInformation = TI_PROGRAMS_RESTORED;
-    } else if (loadMode == LM_REGISTERS) {
-       temporaryInformation = TI_REGISTERS_RESTORED;
-    } else if (loadMode == LM_REGISTERS) {
-       temporaryInformation = TI_REGISTERS_RESTORED;
-    } else if (loadMode == LM_SYSTEM_STATE) {
-       temporaryInformation = TI_SETTINGS_RESTORED;
-    } else if (loadMode == LM_SUMS) {
-       temporaryInformation = TI_SUMS_RESTORED;
-    } else if (loadMode == LM_NAMED_VARIABLES) {
-       temporaryInformation = TI_VARIABLES_RESTORED;
+    }
+    else if(loadMode == LM_REGISTERS) {
+      temporaryInformation = TI_REGISTERS_RESTORED;
+    }
+    else if(loadMode == LM_REGISTERS) {
+      temporaryInformation = TI_REGISTERS_RESTORED;
+    }
+    else if(loadMode == LM_SYSTEM_STATE) {
+      temporaryInformation = TI_SETTINGS_RESTORED;
+    }
+    else if(loadMode == LM_SUMS) {
+      temporaryInformation = TI_SUMS_RESTORED;
+    }
+    else if(loadMode == LM_NAMED_VARIABLES) {
+      temporaryInformation = TI_VARIABLES_RESTORED;
     }
   #endif // !TESTSUITE_BUILD
 #endif // !TESTSUITE_BUILD
@@ -2636,9 +2652,10 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
 
 
 void fnLoad(uint16_t loadMode) {
-  if (loadMode == LM_STATE_LOAD) {
+  if(loadMode == LM_STATE_LOAD) {
     doLoad(LM_ALL, 0, 0, 0, stateLoad);
-  } else {
+  }
+  else {
     doLoad(loadMode, 0, 0, 0, manualLoad);
   }
   fnClearFlag(FLAG_USER);
@@ -2653,9 +2670,7 @@ void fnLoadAuto(void) {
   refreshScreen();
 }
 
-
 #undef BACKUP
-
 
 void fnDeleteBackup(uint16_t confirmation) {
   if(confirmation == NOT_CONFIRMED) {
@@ -2681,7 +2696,7 @@ void fnDeleteBackup(uint16_t confirmation) {
           int e = errno;
           if(e != ENOENT) {
             displayCalcErrorMessage(ERROR_IO, ERR_REGISTER_LINE, REGISTER_X);
-            #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+            #if(EXTRA_INFO_ON_CALC_ERROR == 1)
               sprintf(errorMessage, "removing the backup failed with error code %d", e);
               moreInfoOnError("In function fnDeleteBackup:", errorMessage, NULL, NULL);
             #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)

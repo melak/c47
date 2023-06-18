@@ -681,11 +681,11 @@ void resetKeytimers(void) {
       (void *unused, void *data)
     #endif // DMCP_BUILD
     {
-    //#ifdef INLINE_TEST
+    //#if defined(INLINE_TEST)
     //  if(testEnabled) {
     //    fnSwStart(2);
     //  }
-    //#endif
+    //#endif // INLINE_TEST
 
     #if defined(VERBOSEKEYS)
       printf(">>>>Z 0050A btnFnReleased_StateMachine ------------------ FN_state=%d\n", FN_state);

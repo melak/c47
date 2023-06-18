@@ -149,7 +149,7 @@ int _ioFileNameFromFilePath(ioFilePath_t path, char * filename) {
       if(path == ioPathSaveProgram) {
         ret = file_selection_screen("Save Program File", base_dir, "*"PRGM_EXT, 1, 1, filename);
       }
-      else if (path == ioPathLoadProgram) {
+      else if(path == ioPathLoadProgram) {
         ret = file_selection_screen("Load Program File", base_dir, "*"PRGM_EXT, 0, 0, filename);
       }
       g_free(current_dir);

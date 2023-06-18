@@ -98,10 +98,12 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
     if(lastFunc == ITM_CNST) {
       if(lastParam < 79) {
         strcpy(lastTemp, indexOfItems[lastParam + 128].itemCatalogName);
-      } else {
-        lastTemp[0]=0;
       }
-    } else {
+      else {
+        lastTemp[0] = 0;
+      }
+    }
+    else {
       strcpy(lastTemp, indexOfItems[lastFunc].itemCatalogName);
     }
     return lastTemp;
@@ -111,10 +113,12 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
     if(lastFunc == ITM_CNST) {
       if(lastParam < 79) {
         strcpy(lastTemp, indexOfItems[lastParam + 128].itemSoftmenuName);
-      } else {
-        lastTemp[0]=0;
       }
-    } else {
+      else {
+        lastTemp[0] = 0;
+      }
+    }
+    else {
       strcpy(lastTemp, indexOfItems[lastFunc].itemSoftmenuName);
     }
     return lastTemp;
@@ -149,7 +153,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
       if(lastErrorCode == ERROR_RAM_FULL) {
         if((indexOfItems[func].status & US_STATUS) == US_ENABLED || calcMode == CM_CONFIRMATION) {
           displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          #if(EXTRA_INFO_ON_CALC_ERROR == 1)
             moreInfoOnError("In function reallyRunFunction:", "there is not enough memory to save for undo!", NULL, NULL);
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
           return;
@@ -157,7 +161,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
         else {
           lastErrorCode = ERROR_NONE;
           temporaryInformation = TI_UNDO_DISABLED;
-          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          #if(EXTRA_INFO_ON_CALC_ERROR == 1)
             moreInfoOnError("In function reallyRunFunction:", "there is not enough memory to save for undo!", NULL, NULL);
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         }
@@ -168,10 +172,10 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
     }
 
     if(programRunStop != PGM_RUNNING) {
-      #ifdef PC_BUILD
+      #if defined(PC_BUILD)
         char tmp[200]; sprintf(tmp,"^^^^reallyRunFunction func=%d param=%d\n",func, param); jm_show_comment(tmp);
         //printf("---#### Before function %s\n",tmp);
-      #endif //PC_BUILD
+      #endif // PC_BUILD
 
       if(func != ITM_SNAP) {
         hourGlassIconEnabled = true;
@@ -197,7 +201,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
     }
     else {
       force_refresh(timed); //Added this to enable 0.5 second refresh during running
-      #if defined (PC_BUILD) && VERBOSE_LEVEL > -1
+      #if defined(PC_BUILD) && VERBOSE_LEVEL > -1
         printf("   >>>   reallyRunFunction: §%s§%s§\n",indexOfItems[abs(func)].itemCatalogName, indexOfItems[abs(func)].itemSoftmenuName);
       #endif // PC_BUILD
     }
@@ -207,7 +211,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 
 
     if(lastErrorCode == ERROR_NONE) {
-      switch (softmenu[softmenuStack[0].softmenuId].menuItem) {
+      switch(softmenu[softmenuStack[0].softmenuId].menuItem) {
         case -MNU_CONVE :
         case -MNU_CONVP :
         case -MNU_CONVFP:
@@ -225,7 +229,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
           char sample[4];
           strcpy(sample, STD_RIGHT_ARROW);
           int16_t i = 0;
-          while (errorMessage[i+1] != 0) {
+          while(errorMessage[i+1] != 0) {
             if(sample[0] == errorMessage[i] && sample[1] == errorMessage[i+1]) {
               temporaryInformation = TI_STR;
               errorMessage[i++] = 0;
@@ -235,7 +239,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
             i++;
           }
           int16_t j = 0;
-          while (errorMessage[i] != 0) {
+          while(errorMessage[i] != 0) {
             errorMessage[j++] =  errorMessage[i++];
           }
           errorMessage[j] = 0;
@@ -282,11 +286,11 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 
   void runFunction(int16_t func) {
     funcOK = true;
-    #ifdef RECORDLOG                               //JMEXEC
-      #ifdef PC_BUILD
+    #if defined(RECORDLOG)                              //JMEXEC
+      #if defined(PC_BUILD)
         capture_sequence("runFunction:", func);        //JMEXEC
-      #endif
-    #endif                                         //JMEXEC
+      #endif // PC_BUILD
+    #endif // RECORDLOG                                        //JMEXEC
 
     #if defined(PC_BUILD)
       if(func >= LAST_ITEM) {
@@ -304,7 +308,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
         }
         else {
           displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);
-          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          #if(EXTRA_INFO_ON_CALC_ERROR == 1)
             sprintf(errorMessage, "string '%s' is not a named variable", varCatalogItem);
             moreInfoOnError("In function runFunction:", errorMessage, NULL, NULL);
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -319,7 +323,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
         }
         else {
           displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
-          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          #if(EXTRA_INFO_ON_CALC_ERROR == 1)
             sprintf(errorMessage, "string '%s' is not a named label", varCatalogItem);
             moreInfoOnError("In function runFunction:", errorMessage, NULL, NULL);
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -327,13 +331,13 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
         return;
       }
       else if(tam.mode == 0 && TM_VALUE <= indexOfItems[func].param && indexOfItems[func].param <= TM_CMP && (calcMode != CM_PEM || aimBuffer[0] == 0 || nimNumberPart != NP_INT_BASE)) {
-        #ifdef VERBOSEKEYS
+        #if defined(VERBOSEKEYS)
           printf("itmes.c: runfunction (before tamEnterMode): %i, %s\n", softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName);
-        #endif //VERBOSEKEYS
+        #endif // VERBOSEKEYS
         tamEnterMode(func);
-        #ifdef VERBOSEKEYS
+        #if defined(VERBOSEKEYS)
           printf("itmes.c: runfunction (after tamEnterMode): %i, %s\n", softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName);
-        #endif //VERBOSEKEYS
+        #endif // VERBOSEKEYS
         return;
       }
 
@@ -343,9 +347,9 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
       }
     }
 
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       char tmp[200]; sprintf(tmp,"^^^^RunFunction func=%d\n",func); jm_show_comment(tmp);
-    #endif //PC_BUILD
+    #endif // PC_BUILD
 
     reallyRunFunction(func, indexOfItems[func].param);
 

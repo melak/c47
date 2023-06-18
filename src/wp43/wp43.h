@@ -74,11 +74,11 @@
     extern uint32_t            *screenData;
     extern bool_t               screenChange;
     extern char                 debugString[10000];
-    #if (DEBUG_REGISTER_L == 1)
+    #if(DEBUG_REGISTER_L == 1)
       extern GtkWidget         *lblRegisterL1;
       extern GtkWidget         *lblRegisterL2;
     #endif // (DEBUG_REGISTER_L == 1)
-    #if (SHOW_MEMORY_STATUS == 1)
+    #if(SHOW_MEMORY_STATUS == 1)
       extern GtkWidget         *lblMemoryStatus;
     #endif // (SHOW_MEMORY_STATUS == 1)
     extern calcKeyboard_t       calcKeyboard[43];
@@ -95,10 +95,10 @@
   extern const calcKey_t                 kbd_std_DM42[37];
   extern const calcKey_t                 kbd_std_C43[37];
   extern const calcKey_t                 kbd_std_C43AltA[37];
-  #ifndef SAVE_SPACE_DM42
+  #if !defined(SAVE_SPACE_DM42)
     extern const calcKey_t                 kbd_std_D47[37];
     extern const calcKey_t                 kbd_std_N47[37];
-  #endif //SAVE_SPACE_DM42
+  #endif // !SAVE_SPACE_DM42
   extern const font_t                    standardFont, numericFont;
   extern const font_t                   *fontForShortInteger;
   extern const font_t                   *cursorFont;
@@ -348,7 +348,7 @@
   extern uint16_t               userKeyLabelSize;
   extern uint16_t               currentInputVariable;
   extern uint16_t               currentMvarLabel;
-  #if (REAL34_WIDTH_TEST == 1)
+  #if(REAL34_WIDTH_TEST == 1)
     extern uint16_t               largeur;
   #endif // (REAL34_WIDTH_TEST == 1)
 
@@ -395,9 +395,9 @@
 
   #if defined(DMCP_BUILD)
     extern bool_t              backToDMCP;
-  #ifdef BUFFER_CLICK_DETECTION
+  #if defined(BUFFER_CLICK_DETECTION)
     extern uint32_t            timeStampKey;                                      //dr - internal keyBuffer POC
-  #endif
+  #endif // BUFFER_CLICK_DETECTION
 //  extern int                  keyAutoRepeat; // Key repetition
 //  extern int16_t              previousItem;
     extern uint32_t             nextTimerRefresh;

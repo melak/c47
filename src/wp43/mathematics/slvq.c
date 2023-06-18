@@ -41,7 +41,7 @@
  * \return void
  ***********************************************/
 void fnSlvq(uint16_t unusedButMandatoryParameter) {
-#ifndef SAVE_SPACE_DM42_12
+#if !defined(SAVE_SPACE_DM42_12)
   bool_t realCoefs=true, realRoots=true;
   real_t aReal, bReal, cReal, rReal, x1Real, x2Real;
   real_t aImag, bImag, cImag, rImag, x1Imag, x2Imag;
@@ -68,7 +68,7 @@ void fnSlvq(uint16_t unusedButMandatoryParameter) {
 
     default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot SLVQ with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
         moreInfoOnError("In function fnSlqv:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -98,7 +98,7 @@ void fnSlvq(uint16_t unusedButMandatoryParameter) {
 
     default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_Y);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot SLVQ with %s in Y", getRegisterDataTypeName(REGISTER_Y, true, false));
         moreInfoOnError("In function fnSlqv:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -128,7 +128,7 @@ void fnSlvq(uint16_t unusedButMandatoryParameter) {
 
     default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_Z);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot SLVQ with %s in Z", getRegisterDataTypeName(REGISTER_Z, true, false));
         moreInfoOnError("In function fnSlqv:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -139,7 +139,7 @@ void fnSlvq(uint16_t unusedButMandatoryParameter) {
   if(   realIsZero(&aReal) && realIsZero(&aImag)
      && realIsZero(&bReal) && realIsZero(&bImag)) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function fnSlqv:", "cannot use 0 for Y and Z as input of SLVQ", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
@@ -200,7 +200,7 @@ void fnSlvq(uint16_t unusedButMandatoryParameter) {
   adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
   adjustResult(REGISTER_Y, false, true, REGISTER_Y, -1, -1);
   adjustResult(REGISTER_Z, false, true, REGISTER_Z, -1, -1);
-#endif //SAVE_SPACE_DM42_12
+#endif // !SAVE_SPACE_DM42_12
 }
 
 

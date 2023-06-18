@@ -26,7 +26,7 @@
 
   void fnSqrt1Px2   (uint16_t unusedButMandatoryParameter);
 
-  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+  #if(EXTRA_INFO_ON_CALC_ERROR == 1)
     void sqrt1Px2Error(void);
   #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
     #define sqrt1Px2Error typeError

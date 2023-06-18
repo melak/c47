@@ -163,9 +163,9 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
 
     uint_fast8_t ix = 0;
     while(ix < SOFTMENU_STACK_SIZE && softmenuStack[0].softmenuId != 0) {
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       jm_show_comment("^^^^fnClrModb");
-    #endif //PC_BUILD
+    #endif // PC_BUILD
       popSoftmenu();
       ix++;
     }
@@ -320,7 +320,7 @@ void fnFrom_ms(uint16_t unusedButMandatoryParameter){
       if(tmpString100_OUT[0] != 0) {
         reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
         stringToReal34(tmpString100_OUT, REGISTER_REAL34_DATA(REGISTER_X));
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        #if(EXTRA_INFO_ON_CALC_ERROR == 1)
           printf("\n ------- 003 >>>%s<<<\n",tmpString100_OUT);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
@@ -931,7 +931,7 @@ void fnP_All_Regs(uint16_t option) {
 
     create_filename(".REGS.TSV");
 
-    #if (VERBOSE_LEVEL >= 1)
+    #if(VERBOSE_LEVEL >= 1)
       clearScreen();
       print_linestr("Output regs to drive:", true);
       print_linestr(filename_csv, false);
@@ -943,19 +943,19 @@ void fnP_All_Regs(uint16_t option) {
         stackregister_csv_out(REGISTER_L, REGISTER_K);
         stackregister_csv_out(0, 99);
         //stackregister_csv_out(FIRST_LOCAL_REGISTER,FIRST_LOCAL_REGISTER+100);
-      break;
+        break;
 
       case 1:                    //Stack only
         stackregister_csv_out(REGISTER_X, REGISTER_D);
-      break;
+        break;
 
       case 2:                    //Global Registers
         stackregister_csv_out(0, 99);
-      break;
+        break;
 
       case 3:                    //USER Registers
         stackregister_csv_out(FIRST_LOCAL_REGISTER, LAST_LOCAL_REGISTER);
-      break;
+        break;
 
       default: ;
     }
@@ -1258,7 +1258,7 @@ void dms34ToReal34(uint16_t dms) {
 void notSexa(void) {
   copySourceRegisterToDestRegister(REGISTER_L, REGISTER_X);
   displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+  #if(EXTRA_INFO_ON_CALC_ERROR == 1)
     sprintf(errorMessage, "data type %s cannot be converted!", getRegisterDataTypeName(REGISTER_X, false, false));
     moreInfoOnError("In function notSexagecimal:", errorMessage, NULL, NULL);
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -1436,7 +1436,7 @@ void fnToTime(uint16_t unusedButMandatoryParameter) {
 
       default:
         displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        #if(EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "data type %s cannot be converted to a time!", getRegisterDataTypeName(toTimeParamReg[i], false, false));
           moreInfoOnError("In function fnToTime:", errorMessage, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -1572,7 +1572,8 @@ void changeToSub(char *str) {
         str[insertAt + 1] = STD_SUB_0[1];
         str[insertAt + 1] += u;
         insertAt += 2;
-      } else {
+      }
+      else {
         str[insertAt]     = strtmp[src];
         insertAt ++;
       }

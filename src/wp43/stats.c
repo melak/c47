@@ -407,7 +407,7 @@ bool_t isStatsMatrix(uint16_t *rows, char *mx) {
 bool_t checkMinimumDataPoints(const real_t *n) {
   if(statisticalSumsPointer == NULL) {
     displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function checkMinimumDataPoints:", "There is no statistical data available!", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return false;
@@ -415,7 +415,7 @@ bool_t checkMinimumDataPoints(const real_t *n) {
 
   if(realCompareLessThan(SIGMA_N, n)) {
     displayCalcErrorMessage(ERROR_TOO_FEW_DATA, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function checkMinimumDataPoints:", "There is insufficient statistical data available!", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return false;
@@ -528,7 +528,7 @@ static void getLastRowStatsMatrix(real_t *x, real_t *y) {
   }
   else {
     displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "STATS matrix not found");
       moreInfoOnError("In function getLastRowStatsMatrix:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -564,7 +564,7 @@ static void getLastRowStatsMatrix(real_t *x, real_t *y) {
     }
     else {
       displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "additional matrix line not added; rows = %i",rows);
         moreInfoOnError("In function AddtoStatsMatrix:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -578,7 +578,7 @@ static void getLastRowStatsMatrix(real_t *x, real_t *y) {
     strcpy(statMx,"STATS");                     //any stats operation restores the stats matrix. The purpose of the changed names are just to be able to exchange the matrixes for reading and graphing
     if(!isStatsMatrix(&rows,statMx)) {
       displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "no STATS matrix");
         moreInfoOnError("In function removeLastRowFromStatsMatrix:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -597,7 +597,7 @@ static void getLastRowStatsMatrix(real_t *x, real_t *y) {
     }
     if(regStats == INVALID_VARIABLE) {
       displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "matrix/line not removed");
         moreInfoOnError("In function removeFromStatsMatrix:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -615,7 +615,7 @@ static calcRegister_t fnClHisto(bool_t deleteVariable) {
     }
     if(regHisto == INVALID_VARIABLE) {
       displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "HISTO matrix not created");
         moreInfoOnError("In function fnClHisto:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -645,7 +645,7 @@ void fnClSigma(uint16_t unusedButMandatoryParameter) {
   }
   if(regStats == INVALID_VARIABLE) {
     displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "STATS matrix not created");
       moreInfoOnError("In function fnClSigma:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -745,7 +745,7 @@ void fnSigma(uint16_t plusMinus) {
         }
         else {
           displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          #if(EXTRA_INFO_ON_CALC_ERROR == 1)
             sprintf(errorMessage, "cannot use %" PRIu16 STD_CROSS "%" PRId16 "-matrix as statistical data!", matrix.header.matrixRows, matrix.header.matrixColumns);
             moreInfoOnError("In function fnSigma:", errorMessage, NULL, NULL);
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -753,7 +753,7 @@ void fnSigma(uint16_t plusMinus) {
       }
       else {
         displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        #if(EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "cannot use (%s, %s) as statistical data!", getDataTypeName(getRegisterDataType(REGISTER_X), false, false), getDataTypeName(getRegisterDataType(REGISTER_Y), false, false));
           moreInfoOnError("In function fnSigma:", errorMessage, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -921,7 +921,7 @@ void fnRangeXY(uint16_t unusedButMandatoryParameter) {
     }
     else {
       displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "additional matrix line not added; rows = %i",rows);
         moreInfoOnError("In function initHistoMatrix:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -1038,9 +1038,10 @@ void fnConvertStatsToHisto(uint16_t statsVariableToHistogram) {
       realToReal34(&nb, &nBins);                                      //set up the user variables from auto estimates from the data
 
       convertStatsMatrixToHistoMatrix(statsVariableToHistogram);
-    } else {
+    }
+    else {
       displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "Wrong statistical matrix is selected: %s!", statMx);
         moreInfoOnError("In function convertStatsMatrixToHistoMatrix:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -1064,7 +1065,7 @@ static void convertStatsMatrixToHistoMatrix(uint16_t statsVariableToHistogram) {
     }
     if(statMx[0]!='S') {
       displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "Wrong statistical matrix is selected: %s!", statMx);
         moreInfoOnError("In function convertStatsMatrixToHistoMatrix:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -1098,7 +1099,7 @@ static void convertStatsMatrixToHistoMatrix(uint16_t statsVariableToHistogram) {
           //printRealToConsole(&ii,"midpoint "," \n");
           initHistoMatrix(&ii);                                     // Set up all x-mid-points of the bins in HISTO, with 0 in y
           linkToRealMatrixRegister(regHisto, &histo);
-          //#if defined (PC_BUILD)
+          //#if defined(PC_BUILD)
           //  printf("Histo Matrix init: %d ",i);
           //  printReal34ToConsole(&histo.matrixElements[(i) * histo.header.matrixColumns    ],"X:","  ");
           //  printReal34ToConsole(&histo.matrixElements[(i) * histo.header.matrixColumns +1 ],"Y:","  \n");
@@ -1112,14 +1113,14 @@ static void convertStatsMatrixToHistoMatrix(uint16_t statsVariableToHistogram) {
               real_t t, tl, th;
               real34ToReal(&stats.matrixElements[i * cols + histElementXorY], &t);  //from X or Y, depending
               real34ToReal(&histo.matrixElements[j * histo.header.matrixColumns    ], &tl); //get the bin mid x
-              //#if defined (PC_BUILD)
+              //#if defined(PC_BUILD)
               //  printf("Histo Matrix recalled: %d\n",i);
               //  printReal34ToConsole(&histo.matrixElements[j * histo.header.matrixColumns      ],"HISTO(col1):"," ");
               //  printReal34ToConsole(&histo.matrixElements[j * histo.header.matrixColumns + 1  ],"HISTO(col2):","  \n");
               //#endif // PC_BUILD
               realSubtract(&tl, &bwon2, &tl, &ctxtReal39);   //get the bin x low
               realAdd     (&tl, &bw   , &th, &ctxtReal39);   //get the bin x hi
-              //#if defined (PC_BUILD)
+              //#if defined(PC_BUILD)
               //  printRealToConsole(&tl,"low:","  ");
               //  printRealToConsole(&t,"t (midpoint):","  ");
               //  printRealToConsole(&th,"hi:","\n");
@@ -1132,15 +1133,16 @@ static void convertStatsMatrixToHistoMatrix(uint16_t statsVariableToHistogram) {
                   printRealToConsole(&tl,"low (inclusive):"," and ");
                   if(j == NN - 1) {
                     printRealToConsole(&th,"hi (inclusive):","\n");
-                  } else {
+                  }
+                  else {
                     printRealToConsole(&th,"hi (exclusive):","\n");
                   }
-                #endif // PC_BUILD  &&  HISTDEBUG
+                #endif // PC_BUILD && HISTDEBUG
                 break;
               }
             }
           }
-          //#if defined (PC_BUILD)
+          //#if defined(PC_BUILD)
           //  for(i = 0; i < NN; i++) {
           //    printf("Histo Matrix populated: %d ",i);
           //    printReal34ToConsole(&histo.matrixElements[(i) * histo.header.matrixColumns    ],"X:","  ");
@@ -1162,7 +1164,7 @@ static void convertStatsMatrixToHistoMatrix(uint16_t statsVariableToHistogram) {
       }
       else {
         displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        #if(EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, " Matrix columns not right: %s!", statMx);
           moreInfoOnError("In function convertStatsMatrixToHistoMatrix:", errorMessage, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -1171,7 +1173,7 @@ static void convertStatsMatrixToHistoMatrix(uint16_t statsVariableToHistogram) {
     }
     else {
         displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        #if(EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, " invalid STATS or HISTO variable!");
           moreInfoOnError("In function convertStatsMatrixToHistoMatrix:", errorMessage, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)

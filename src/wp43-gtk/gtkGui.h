@@ -64,12 +64,12 @@
    */
   void setupUI                     (void);
 
-  #if (SCREEN_800X480 == 0)
+  #if(SCREEN_800X480 == 0)
     void moveLabels       (void);     //JM Keep here: legacy of old gui
     void calcModeNormalGui(void);
     void calcModeAimGui   (void);
     void calcModeTamGui   (void);
-  #endif // SCREEN_800X480
+  #endif // SCREEN_800X480==0
 #endif // PC_BUILD
 
 #endif // !GTKGUI_H

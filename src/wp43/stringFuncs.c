@@ -36,7 +36,7 @@ void fnAlphaLeng(uint16_t regist) {
 
   if(getRegisterDataType(regist) != dtString) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot get the " STD_alpha "LENG? from %s", getRegisterDataTypeName(regist, true, false));
       moreInfoOnError("In function fnAlphaLeng:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -60,7 +60,7 @@ void fnAlphaToX(uint16_t regist) {
 
   if(getRegisterDataType(regist) != dtString) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot use " STD_alpha STD_RIGHT_ARROW "x on %s", getRegisterDataTypeName(regist, true, false));
       moreInfoOnError("In function fnAlphaToX:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -69,7 +69,7 @@ void fnAlphaToX(uint16_t regist) {
 
   if(stringByteLength(REGISTER_STRING_DATA(regist)) == 0) {
     displayCalcErrorMessage(ERROR_EMPTY_STRING, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot use " STD_alpha STD_RIGHT_ARROW "x on an empty string");
       moreInfoOnError("In function fnAlphaToX:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -131,7 +131,7 @@ void fnXToAlpha(uint16_t unusedButMandatoryParameter) {
 
     default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot x" STD_RIGHT_ARROW STD_alpha " when X is %s", getRegisterDataTypeName(REGISTER_X, true, false));
         moreInfoOnError("In function fnXToAlpha:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -143,7 +143,7 @@ void fnXToAlpha(uint16_t unusedButMandatoryParameter) {
   //if(longIntegerCompareUInt(lgInt, standardFont.glyphs[standardFont.numberOfGlyphs - 1].charCode & 0x7fff) > 0) {
   if(longIntegerCompareUInt(lgInt, 0x8000) >= 0) {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "for x" STD_RIGHT_ARROW STD_alpha ", X must be < 32768. Here X = %" PRIu32, (uint32_t)lgInt->_mp_d[0]); // OK for 32 and 64 bit limbs
       moreInfoOnError("In function fnXToAlpha:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -183,7 +183,7 @@ void fnAlphaPos(uint16_t regist) {
 
   if(getRegisterDataType(regist) != dtString) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot use " STD_alpha "POS? on %s (reg %" PRIu16 ")", getRegisterDataTypeName(regist, true, false), regist);
       moreInfoOnError("In function fnAlphaPos:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -192,7 +192,7 @@ void fnAlphaPos(uint16_t regist) {
 
   if(getRegisterDataType(REGISTER_X) != dtString) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot use " STD_alpha "POS? on %s (reg X)", getRegisterDataTypeName(regist, true, false));
       moreInfoOnError("In function fnAlphaPos:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -201,7 +201,7 @@ void fnAlphaPos(uint16_t regist) {
 
   if(stringGlyphLength(REGISTER_STRING_DATA(regist)) == 0 || stringGlyphLength(REGISTER_STRING_DATA(REGISTER_X)) == 0) {
     displayCalcErrorMessage(ERROR_EMPTY_STRING, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot use " STD_alpha "POS? on or with an empty string");
       moreInfoOnError("In function fnAlphaPos:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -248,7 +248,7 @@ void fnAlphaRR(uint16_t regist) {
 
   if(getRegisterDataType(regist) != dtString) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot use " STD_alpha "RR on %s", getRegisterDataTypeName(regist, true, false));
       moreInfoOnError("In function fnAlphaRR:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -258,7 +258,7 @@ void fnAlphaRR(uint16_t regist) {
   stringGlyphLen = stringGlyphLength(REGISTER_STRING_DATA(regist));
   if(stringGlyphLen == 0) {
     displayCalcErrorMessage(ERROR_EMPTY_STRING, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot use " STD_alpha "RR on an empty string");
       moreInfoOnError("In function fnAlphaRR:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -293,7 +293,7 @@ void fnAlphaRR(uint16_t regist) {
 
     default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot " STD_alpha "RR when X is %s", getRegisterDataTypeName(REGISTER_X, true, false));
         moreInfoOnError("In function fnAlphaRR:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -333,7 +333,7 @@ void fnAlphaRL(uint16_t regist) {
 
   if(getRegisterDataType(regist) != dtString) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot use " STD_alpha "RL on %s", getRegisterDataTypeName(regist, true, false));
       moreInfoOnError("In function fnAlphaRL:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -343,7 +343,7 @@ void fnAlphaRL(uint16_t regist) {
   stringGlyphLen = stringGlyphLength(REGISTER_STRING_DATA(regist));
   if(stringGlyphLen == 0) {
     displayCalcErrorMessage(ERROR_EMPTY_STRING, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot use " STD_alpha "RL on an empty string");
       moreInfoOnError("In function fnAlphaRL:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -378,7 +378,7 @@ void fnAlphaRL(uint16_t regist) {
 
     default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot " STD_alpha "RL when X is %s", getRegisterDataTypeName(REGISTER_X, true, false));
         moreInfoOnError("In function fnAlphaRL:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -416,7 +416,7 @@ void fnAlphaSR(uint16_t regist) {
 
   if(getRegisterDataType(regist) != dtString) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot use " STD_alpha "SR on %s", getRegisterDataTypeName(regist, true, false));
       moreInfoOnError("In function fnAlphaSR:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -426,7 +426,7 @@ void fnAlphaSR(uint16_t regist) {
   stringGlyphLen = stringGlyphLength(REGISTER_STRING_DATA(regist));
   if(stringGlyphLen == 0) {
     displayCalcErrorMessage(ERROR_EMPTY_STRING, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot use " STD_alpha "SR on an empty string");
       moreInfoOnError("In function fnAlphaSR:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -457,7 +457,7 @@ void fnAlphaSR(uint16_t regist) {
 
     default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot " STD_alpha "SR when X is %s", getRegisterDataTypeName(REGISTER_X, true, false));
         moreInfoOnError("In function fnAlphaSR:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -495,7 +495,7 @@ void fnAlphaSL(uint16_t regist) {
 
   if(getRegisterDataType(regist) != dtString) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot use " STD_alpha "SL on %s", getRegisterDataTypeName(regist, true, false));
       moreInfoOnError("In function fnAlphaSL:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -506,7 +506,7 @@ void fnAlphaSL(uint16_t regist) {
   stringGlyphLen = stringGlyphLength(ptr);
   if(stringGlyphLen == 0) {
     displayCalcErrorMessage(ERROR_EMPTY_STRING, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot use " STD_alpha "SL on an empty string");
       moreInfoOnError("In function fnAlphaSL:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -537,7 +537,7 @@ void fnAlphaSL(uint16_t regist) {
 
     default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot " STD_alpha "SL when X is %s", getRegisterDataTypeName(REGISTER_X, true, false));
         moreInfoOnError("In function fnAlphaSL:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)

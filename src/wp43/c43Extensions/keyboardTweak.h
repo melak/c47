@@ -21,20 +21,20 @@
  * \file keyboardTweak.h
  ***********************************************/
 
-#ifndef KEYBOARDTWEAK_H
+#if !defined(KEYBOARDTWEAK_H)
 #define KEYBOARDTWEAK_H
 
 #include "defines.h"
 #include "typeDefinitions.h"
 #include <stdint.h>
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
   #include <gtk/gtk.h>
   #include <gdk/gdk.h>
 #endif // PC_BUILD
 
-//#ifdef DMCP_BUILD
+//#if defined(DMCP_BUILD)
 //extern uint32_t nextTimerRefresh;
-//#endif
+//#endif // DMCP_BUILD
 
 void     keyClick(uint8_t length);
 
@@ -44,7 +44,7 @@ void     showShiftState       (void);
 void     fnSHIFTf(uint16_t unusedButMandatoryParameter);
 void     fnSHIFTg(uint16_t unusedButMandatoryParameter);
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
 void     show_f_jm           (void);
 void     show_g_jm           (void);
 void     clear_fg_jm         (void);
@@ -58,49 +58,49 @@ void     Check_MultiPresses  (int16_t  * result, int8_t key_no);
 void     Setup_MultiPresses  (int16_t  result                 );
 int16_t  nameFunction        (int16_t  fn, int16_t itemShift  );   //JM LONGPRESS FN
 void     resetKeytimers      (void);
-#endif
+#endif // !TESTSUITE_BUILD
 
 uint16_t numlockReplacements(uint16_t id, int16_t item, bool_t NL, bool_t SHFT, bool_t GSHFT);
 bool_t keyReplacements(int16_t item, int16_t * item1, bool_t NL, bool_t SHFT, bool_t GSHFT);
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
 void     btnFnPressed_StateMachine (GtkWidget *unused, gpointer data);
 void     btnFnReleased_StateMachine(GtkWidget *unused, gpointer data);
-#endif
+#endif // PC_BUILD
 
-#ifndef TESTSUITE_BUILD
-int16_t determineFunctionKeyItem_C43(const char *data, bool_t ShiftF, bool_t ShiftG);
-#endif
+#if !defined(TESTSUITE_BUILD)
+  int16_t determineFunctionKeyItem_C43(const char *data, bool_t ShiftF, bool_t ShiftG);
+#endif // !TESTSUITE_BUILD
 
-#ifdef DMCP_BUILD
+#if defined(DMCP_BUILD)
 #define BUFFER_FAIL     0                                   //vv dr - internal keyBuffer POC
 #define BUFFER_SUCCESS  1
 #define BUFFER_MASK (BUFFER_SIZE-1) // Klammern auf keinen Fall vergessen
 
 typedef struct {
   uint8_t   data[BUFFER_SIZE];
-  #ifdef    BUFFER_CLICK_DETECTION
+  #if defined(BUFFER_CLICK_DETECTION)
   uint32_t  time[BUFFER_SIZE];
-  #endif
+  #endif // BUFFER_CLICK_DETECTION
   uint8_t   read;   // zeigt auf das Feld mit dem ältesten Inhalt
   uint8_t   write;  // zeigt immer auf leeres Feld
 } kb_buffer_t;
 
 void     keyBuffer_pop        ();
 uint8_t  inKeyBuffer          (uint8_t byte);
-#ifdef BUFFER_CLICK_DETECTION
-#ifdef BUFFER_KEY_COUNT
+#if defined(BUFFER_CLICK_DETECTION)
+#if defined(BUFFER_KEY_COUNT)
 uint8_t  outKeyBuffer         (uint8_t *pByte, uint8_t *pByteCount, uint32_t *pTime, uint32_t *pTimeSpan_1, uint32_t *pTimeSpan_B);
-#else
+#else // !BUFFER_KEY_COUNT
 uint8_t  outKeyBuffer         (uint8_t *pByte, uint32_t *pTime, uint32_t *pTimeSpan_1, uint32_t *pTimeSpan_B);
-#endif
-#else
-#ifdef BUFFER_KEY_COUNT
+#endif // BUFFER_KEY_COUNT
+#else // !BUFFER_CLICK_DETECTION
+#if defined(BUFFER_KEY_COUNT)
 uint8_t  outKeyBuffer         (uint8_t *pByte, uint8_t *pByteCount);
-#else
+#else // !BUFFER_KEY_COUNT
 uint8_t  outKeyBuffer         (uint8_t *pByte);
-#endif
-#endif
+#endif // BUFFER_KEY_COUNT
+#endif // BUFFER_CLICK_DETECTION
 uint8_t  outKeyBufferDoubleClick();
 bool_t   fullKeyBuffer        ();
 bool_t   emptyKeyBuffer       ();                           //^^
@@ -108,7 +108,7 @@ bool_t   emptyKeyBuffer       ();                           //^^
 
 void     btnFnPressed_StateMachine (void *unused, void *data);
 void     btnFnReleased_StateMachine(void *unused, void *data);
-#endif
+#endif // DMCP_BUILD
 
 void fnCla                   (uint16_t unusedButMandatoryParameter);
 void fnCln                   (uint16_t unusedButMandatoryParameter);
@@ -117,4 +117,4 @@ void fnT_ARROW(uint16_t command);
 
 void     refreshModeGui       (void);
 
-#endif // KEYBOARDTWEAK_H
+#endif // !KEYBOARDTWEAK_H

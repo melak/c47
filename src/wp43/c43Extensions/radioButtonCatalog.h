@@ -21,7 +21,7 @@
  * \file radioButtonCatalog.h
  ***********************************************/
 
-#ifndef RADIOBUTTONCATALOG_H
+#if !defined(RADIOBUTTONCATALOG_H)
 #define RADIOBUTTONCATALOG_H
 
 #include <stdint.h>
@@ -79,4 +79,4 @@ typedef struct {
   char     radioButton;       ///< Menu of RADIO in which the item is located: see #define RB_*
 } radiocb_t;
 
-#endif // RADIOBUTTONCATALOG_H
+#endif // !RADIOBUTTONCATALOG_H

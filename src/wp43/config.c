@@ -90,9 +90,10 @@ TO_QSPI static const struct {
 };
 
 static void setFlag(int f, int v) {
-  if (v) {
+  if(v) {
     setSystemFlag(f);
-  } else {
+  }
+  else {
     clearSystemFlag(f);
   }
 }
@@ -102,7 +103,7 @@ void configCommon(uint16_t idx) {
     if(checkHP) {
       fnSetC47(0);
     }
-  #endif //TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 
   setFlag(FLAG_TDM24, configSettings[idx].tdm24);
   setFlag(FLAG_DMY, configSettings[idx].dmy);
@@ -128,7 +129,7 @@ void configCommon(uint16_t idx) {
     fnClearStack(0);                         //Clear stack
     fnPi(0);                                 //Put pi on X
 
-    fnInDefault(ID_DP);                      //Change to Real input only :                                     ID, if changed, also set the conditions for checkHP in defines.h 
+    fnInDefault(ID_DP);                      //Change to Real input only :                                     ID, if changed, also set the conditions for checkHP in defines.h
     fnDisplayFormatSigFig(9);                //SIG 9
     jm_BASE_SCREEN = false;                  //Switch off base = MyMenu
     SH_BASE_HOME = false;                    //Ensure base = HOME is off
@@ -214,10 +215,10 @@ void fnSetGapChar (uint16_t charParam) {
   //printf(">>>> charParam=%u %u \n", charParam, charParam & 16383);
   if((charParam & 49152) == 0) {                        //+0 for the left hand separator
     gapItemLeft = charParam & 16383;
-  } else 
+  } else
   if((charParam & 49152) == 32768) {                        //+32768 for the right hand separator
     gapItemRight = charParam & 16383;
-  } else 
+  } else
   if((charParam & 49152) == 49152) {                        //+49152 for the radix separator
     gapItemRadix = charParam & 16383;
   }
@@ -238,46 +239,49 @@ printf(">>>> charParam=%u %u \n", charParam, charParam & 16383);
     if((charParam & 16383) == ITM_NULL) {
       gapCharRight[0]=1;                         //set skip character 0x01
       gapCharRight[1]=1;                         //set skip character 0x01
-    } else {
+    }
+    else {
       gapCharRight[0] = (indexOfItems[charParam & 16383].itemSoftmenuName)[0];
       gapCharRight[1] = (indexOfItems[charParam & 16383].itemSoftmenuName)[1];
-      #ifdef PC_BUILD
+      #if defined(PC_BUILD)
         printf(">>>> RIGHT GRP Character selected: %u %u\n",(uint8_t)gapCharRight[0] , (uint8_t)gapCharRight[1]);
-      #endif //PC_BUILD
-      if (gapCharRight[0] != 0 && gapCharRight[1] == 0) {
+      #endif // PC_BUILD
+      if(gapCharRight[0] != 0 && gapCharRight[1] == 0) {
         gapCharRight[1] = 1;                      //set second character to skip character 0x01
       }
     }
-  } else 
+  } else
   if((charParam & 49152) == 0) {                        //+0 for the left hand separator
     if((charParam & 16383) == ITM_NULL) {
       gapCharLeft[0]=1;                          //set skip character 0x01
       gapCharLeft[1]=1;                          //set skip character 0x01
-    } else {
+    }
+    else {
       gapCharLeft[0] = (indexOfItems[charParam & 16383].itemSoftmenuName)[0];
       gapCharLeft[1] = (indexOfItems[charParam & 16383].itemSoftmenuName)[1];
-      #ifdef PC_BUILD
+      #if defined(PC_BUILD)
         printf(">>>> LEFT GRP Character selected: %u %u\n",(uint8_t)gapCharLeft[0] , (uint8_t)gapCharLeft[1]);
-      #endif //PC_BUILD
-      if (gapCharLeft[0] != 0 && gapCharLeft[1] == 0) {
+      #endif // PC_BUILD
+      if(gapCharLeft[0] != 0 && gapCharLeft[1] == 0) {
         gapCharLeft[1] = 1;                      //set second character to skip character 0x01
       }
-    }        
-  } else 
+    }
+  } else
   if((charParam & 49152) == 49152) {                        //+49152 for the radix separator
     if((charParam & 16383) == ITM_NULL) {
       gapCharRadix[0]=1;                          //set skip character 0x01
       gapCharRadix[1]=1;                          //set skip character 0x01
-    } else {
+    }
+    else {
       gapCharRadix[0] = (indexOfItems[charParam & 16383].itemSoftmenuName)[0];
       gapCharRadix[1] = (indexOfItems[charParam & 16383].itemSoftmenuName)[1];
-      #ifdef PC_BUILD
+      #if defined(PC_BUILD)
         printf(">>>> RADIX Character selected: %u %u, %c\n",(uint8_t)gapCharLeft[0] , (uint8_t)gapCharLeft[1], RADIX34_MARK_CHAR);
-      #endif //PC_BUILD
-      if (gapCharRadix[0] != 0 && gapCharRadix[1] == 0) {
+      #endif // PC_BUILD
+      if(gapCharRadix[0] != 0 && gapCharRadix[1] == 0) {
         gapCharRadix[1] = 1;                      //set second character to skip character 0x01
       }
-    }        
+    }
   }
 //printf("Post: %u %u %u %u %u %u  \n", (uint8_t)gapCharLeft[0], (uint8_t)gapCharLeft[1], (uint8_t)gapCharRight[0], (uint8_t)gapCharRight[1],  (uint8_t)gapCharRadix[0], (uint8_t)gapCharRadix[1]);
 }
@@ -290,32 +294,34 @@ void fnSettingsToXEQ            (uint16_t unusedButMandatoryParameter) {
 
 
 void fnSettingsDispFormatGrpL   (uint16_t param) {
-   grpGroupingLeft = param;
+  grpGroupingLeft = param;
 }
 void fnSettingsDispFormatGrp1Lo  (uint16_t param) {
-   grpGroupingGr1LeftOverflow = param;
+  grpGroupingGr1LeftOverflow = param;
 }
 void fnSettingsDispFormatGrp1L  (uint16_t param) {
-   grpGroupingGr1Left = param;
+  grpGroupingGr1Left = param;
 }
 void fnSettingsDispFormatGrpR   (uint16_t param) {
-   grpGroupingRight = param;    
+  grpGroupingRight = param;
 }
 
 void fnMenuGapL (uint16_t unusedButMandatoryParameter) {
-#if !defined(TESTSUITE_BUILD)
-  showSoftmenu(-MNU_GAP_L);
-#endif // !TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
+    showSoftmenu(-MNU_GAP_L);
+  #endif // ! TESTSUITE_BUILD
 }
+
 void fnMenuGapRX (uint16_t unusedButMandatoryParameter) {
-#if !defined(TESTSUITE_BUILD)
-  showSoftmenu(-MNU_GAP_RX);
-#endif // !TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
+    showSoftmenu(-MNU_GAP_RX);
+  #endif // ! TESTSUITE_BUILD
 }
+
 void fnMenuGapR (uint16_t unusedButMandatoryParameter) {
-#if !defined(TESTSUITE_BUILD)
-  showSoftmenu(-MNU_GAP_R);
-#endif // !TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
+    showSoftmenu(-MNU_GAP_R);
+  #endif // ! TESTSUITE_BUILD
 }
 
 
@@ -534,10 +540,11 @@ void fnSetSignificantDigits(uint16_t S) {
 
 
 void fnRoundingMode(uint16_t RM) {
-  if (RM < sizeof(roundingModeTable) / sizeof(*roundingModeTable)) {
+  if(RM < sizeof(roundingModeTable) / sizeof(*roundingModeTable)) {
     roundingMode = RM;
     ctxtReal34.round = roundingModeTable[RM];
-  } else {
+  }
+  else {
     sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "fnRoundingMode", RM, "RM");
     sprintf(errorMessage + strlen(errorMessage), "Must be from 0 to 6");
     displayBugScreen(errorMessage);
@@ -564,7 +571,8 @@ void fnFractionType(uint16_t unusedButMandatoryParameter) {
       setSystemFlag(FLAG_PROPFR);
     }
     clearSystemFlag(FLAG_FRACT);
-  } else {
+  }
+  else {
     if(getSystemFlag(FLAG_FRACT)) {
       flipSystemFlag(FLAG_PROPFR);
     }
@@ -604,7 +612,7 @@ void fnRange(uint16_t R) {
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot use %s for setting RANGE", getRegisterDataTypeName(REGISTER_X, true, true));
       moreInfoOnError("In function fnRange:", errorMessage, NULL, NULL);
     #endif //  (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -659,10 +667,10 @@ void fnHide(uint16_t H) {
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot use %s for setting HIDE", getRegisterDataTypeName(REGISTER_X, true, true));
       moreInfoOnError("In function fnHide:", errorMessage, NULL, NULL);
-    #endif //  (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
   }
 
@@ -892,18 +900,18 @@ void restoreStats(void){
 uint16_t searchMsg(uint16_t idStr) {
   uint_fast16_t n = nbrOfElements(indexOfMsgs);
   uint_fast16_t i;
-  for (i = 0; i < n; i++) {
-    if( indexOfMsgs[i].count == idStr) {
+  for(i=0; i<n; i++) {
+    if(indexOfMsgs[i].count == idStr) {
        break;
     }
   }
-return i;
+  return i;
 }
 
 
 void fnShowVersion(uint8_t option) {  //KEYS VERSION LOADED
-    strcpy(errorMessage, indexOfMsgs[searchMsg(option)].itemName);
-    temporaryInformation = TI_KEYS;
+  strcpy(errorMessage, indexOfMsgs[searchMsg(option)].itemName);
+  temporaryInformation = TI_KEYS;
 }
 
 
@@ -915,7 +923,7 @@ void resetOtherConfigurationStuff(void) {
   displayFormat = DF_ALL;
   displayFormatDigits = 3;
   timeDisplayFormatDigits = 0;
-    clearSystemFlag(FLAG_FRACT);                              //Not saved in file, but restored here:  fnDisplayFormatAll(3);
+  clearSystemFlag(FLAG_FRACT);                                //Not saved in file, but restored here:  fnDisplayFormatAll(3);
 
   shortIntegerMode = SIM_2COMPL;                              //64:2
   fnSetWordSize(64);
@@ -1268,28 +1276,21 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     memset(userKeyLabel,   0, TO_BYTES(TO_BLOCKS(userKeyLabelSize)));
 
     fnClearMenu(NOPARAM);
+    clearSystemFlag(FLAG_DENANY);                              //JM Default
+    clearSystemFlag(FLAG_ASLIFT);  //JM??
+    setSystemFlag(FLAG_SSIZE8);                                //JM Default
+    setSystemFlag(FLAG_CPXRES);                                //JM Default
+    clearSystemFlag(FLAG_FRCSRN);  //JM??                      //JM Default
 
-
-
-
-        clearSystemFlag(FLAG_DENANY);                              //JM Default
-        clearSystemFlag(FLAG_ASLIFT);  //JM??
-        setSystemFlag(FLAG_SSIZE8);                                //JM Default
-        setSystemFlag(FLAG_CPXRES);                                //JM Default
-        clearSystemFlag(FLAG_FRCSRN);  //JM??                      //JM Default
-
-    #ifndef TESTSUITE_BUILD
+    #if !defined(TESTSUITE_BUILD)
       mm_MNU_HOME       = mm(-MNU_HOME);     //printf("####BB> %i \n",mm_MNU_HOME);                      //JM
       mm_MNU_ALPHA      = mm(-MNU_ALPHA);    //printf("####CC> %i \n",mm_MNU_ALPHA);                      //JM
 
       calcModeNormal();
       if(SH_BASE_HOME) showSoftmenu(mm_MNU_HOME); //JM Reset to BASE MENU HOME;
-    #endif // TESTSUITE_BUILD
-
-
+    #endif // !TESTSUITE_BUILD
 
     SHOWregis = 9999;                                          //JMSHOW
-
 
     //JM defaults vv: CONFIG STO/RCL
 
@@ -1309,7 +1310,6 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
 
     ListXYposition = 0;
 
-
      //JM defaults ^^
 
                                                                //Find fnXEQMENU in the indexOfItems array
@@ -1327,18 +1327,13 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
       ix++;
     }
 
-
     fnClrMod(0);
     XEQMENU_loadAllfromdisk();
 
     displayAIMbufferoffset = 0;
     T_cursorPos = 0;
 
-
 //********** JM CHECKQQ
-
-
-
     //JM Default USER
     #if defined(PC_BUILD)
       printf("Doing A.RESET, M.RESET & K.RESET\n");
@@ -1354,14 +1349,14 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     temporaryInformation = TI_NO_INFO;
     refreshScreen();
 
-//    kbd_usr[0].primary     = ITM_CC;                         //JM CPX TEMP DEFAULT        //JM note. over-writing the content of setupdefaults
-//    kbd_usr[0].gShifted    = KEY_TYPCON_UP;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
-//    kbd_usr[0].fShifted    = KEY_TYPCON_DN;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
+    //kbd_usr[0].primary     = ITM_CC;                         //JM CPX TEMP DEFAULT        //JM note. over-writing the content of setupdefaults
+    //kbd_usr[0].gShifted    = KEY_TYPCON_UP;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
+    //kbd_usr[0].fShifted    = KEY_TYPCON_DN;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
 
     // The following lines are test data
-  #ifndef SAVE_SPACE_DM42_14
-    addTestPrograms();
-  #endif //SAVE_SPACE_DM42_14
+    #if !defined(SAVE_SPACE_DM42_14)
+      addTestPrograms();
+    #endif // !SAVE_SPACE_DM42_14
     //fnSetFlag(  3);
     //fnSetFlag( 11);
     //fnSetFlag( 33);
@@ -1382,7 +1377,6 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     //strcpy(tmpString, "Pure ASCII string requiring 38 bytes!");
     //reallocateRegister(FIRST_LOCAL_REGISTER+1, dtString, TO_BLOCKS(strlen(tmpString) + 1), amNone);
     //strcpy(REGISTER_STRING_DATA(FIRST_LOCAL_REGISTER + 1), tmpString);
-
 
     //allocateNamedVariable("Z" STD_a_DIARESIS "hler");
     //allocateNamedVariable(STD_omega STD_SUB_1);
@@ -1406,17 +1400,15 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     timerStartTime         = TIMER_APP_STOPPED;
     timerTotalTime         = 0u;
 
-    #if (DEBUG_PANEL == 1)
+    #if(DEBUG_PANEL == 1)
       debugWindow = DBG_REGISTERS;
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkHexaString), false);
       refreshDebugPanel();
-    #endif //  (DEBUG_PANEL == 1)
-
-
+    #endif // (DEBUG_PANEL == 1)
 
     //JM TEMPORARY TEST DATA IN REGISTERS
     uint_fast16_t n = nbrOfElements(indexOfStrings);
-    for (uint_fast16_t i = 0; i < n; i++) {
+    for(uint_fast16_t i=0; i<n; i++) {
       if( indexOfStrings[i].itemType== 0) {
         fnStrtoX(indexOfStrings[i].itemName);
       } else
@@ -1427,7 +1419,6 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
       fnDrop(0);
     }
 
-
     #if !defined(TESTSUITE_BUILD)
       runFunction(ITM_VERS);
     #endif // !TESTSUITE_BUILD
@@ -1435,10 +1426,10 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
 
     //Autoloading of C47Auto.sav
     #if defined(DMCP_BUILD)
-      if (autoSav == loadAutoSav) {
+      if(autoSav == loadAutoSav) {
         fnLoadAuto();
       }
-    #endif
+    #endif // DMCP_BUILD
 
     #if !defined(TESTSUITE_BUILD)
       showSoftmenuCurrentPart();
@@ -1449,8 +1440,6 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
 
     fnClearFlag(FLAG_USER);
     fnRefreshState();
-
-
   }
 }
 
@@ -1461,7 +1450,7 @@ void backToSystem(uint16_t confirmation) {
     setConfirmationMode(backToSystem);
   }
   else {
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       fnOff(NOPARAM);
     #endif // PC_BUILD
 

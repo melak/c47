@@ -56,7 +56,7 @@ TO_QSPI void (* const m1Pow[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \param void
  * \return void
  ***********************************************/
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
+#if(EXTRA_INFO_ON_CALC_ERROR == 1)
   void m1PowError(void) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     sprintf(errorMessage, "cannot calculate (-1)" STD_SUP_x " for %s", getRegisterDataTypeName(REGISTER_X, true, false));
@@ -149,11 +149,13 @@ void m1PowReal(void) {
 
   real34ToReal(stk, &x);
   WP34S_Mod(&x, const_2, &x, &ctxtReal39);
-  if (realIsZero(&x)) {
+  if(realIsZero(&x)) {
     convertRealToReal34ResultRegister(const_1, REGISTER_X);
-  } else if (realCompareEqual(&x, const_1)) {
+  }
+  else if(realCompareEqual(&x, const_1)) {
     convertRealToReal34ResultRegister(const__1, REGISTER_X);
-  } else { /* Complex result */
+  }
+  else { /* Complex result */
     fnSetFlag(FLAG_CPXRES);
     fnRefreshState();
 
@@ -184,12 +186,13 @@ void m1PowCplx(void) {
   WP34S_Mod(&zReal, const_2, &zReal, &ctxtReal39);
 
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &zImag);
-  if (realIsZero(&zImag)) {
-    if (realIsZero(&zReal)) {
+  if(realIsZero(&zImag)) {
+    if(realIsZero(&zReal)) {
       convertRealToReal34ResultRegister(const_1, REGISTER_X);
       convertRealToImag34ResultRegister(const_0, REGISTER_X);
       return;
-    } else if (realCompareEqual(&zReal, const_1)) {
+    }
+    else if(realCompareEqual(&zReal, const_1)) {
       convertRealToReal34ResultRegister(const__1, REGISTER_X);
       convertRealToImag34ResultRegister(const_0, REGISTER_X);
       return;

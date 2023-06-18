@@ -26,7 +26,7 @@
 
   void fnSquareRoot(uint16_t unusedButMandatoryParameter);
 
-  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+  #if(EXTRA_INFO_ON_CALC_ERROR == 1)
     void sqrtError   (void);
   #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
     #define sqrtError typeError

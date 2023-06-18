@@ -33,7 +33,7 @@ Modes available in the mode menu:
 8. ALPHAHOME
 */
 
-#ifndef JM_H
+#if !defined(JM_H)
 #define JM_H
 
 #include "longIntegerType.h"
@@ -190,11 +190,11 @@ void fnRCL          (int16_t inp);
 #define JC_SI_All              69
 #define JC_CPXMULT             70
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
 //keyboard.c
 void JM_DOT(int16_t xx, int16_t yy);
-#endif
+#endif // PC_BUILD
 
 void fnShowJM  (uint16_t jmConfig);
 
-#endif // JM_H
+#endif // !JM_H

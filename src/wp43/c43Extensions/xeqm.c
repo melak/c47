@@ -441,24 +441,24 @@ TO_QSPI const function_t indexOfFunctions[] = {
 
 
 //SPECIAL CODE TODO FOR XEQMnn
-//                      if (strcompare(str,"XEQM01" ) && exec) { *com = ITM_X_P1;} else
-//                      if (strcompare(str,"XEQM02" ) && exec) { *com = ITM_X_P2;} else
-//                      if (strcompare(str,"XEQM03" ) && exec) { *com = ITM_X_P3;} else
-//                      if (strcompare(str,"XEQM04" ) && exec) { *com = ITM_X_P4;} else
-//                      if (strcompare(str,"XEQM05" ) && exec) { *com = ITM_X_P5;} else
-//                      if (strcompare(str,"XEQM06" ) && exec) { *com = ITM_X_P6;} else
-//                      if (strcompare(str,"XEQM07" ) && exec) { *com = ITM_X_f1;} else
-//                      if (strcompare(str,"XEQM08" ) && exec) { *com = ITM_X_f2;} else
-//                      if (strcompare(str,"XEQM09" ) && exec) { *com = ITM_X_f3;} else
-//                      if (strcompare(str,"XEQM10" ) && exec) { *com = ITM_X_f4;} else
-//                      if (strcompare(str,"XEQM11" ) && exec) { *com = ITM_X_f5;} else
-//                      if (strcompare(str,"XEQM12" ) && exec) { *com = ITM_X_f6;} else
-//                      if (strcompare(str,"XEQM13" ) && exec) { *com = ITM_X_g1;} else
-//                      if (strcompare(str,"XEQM14" ) && exec) { *com = ITM_X_g2;} else
-//                      if (strcompare(str,"XEQM15" ) && exec) { *com = ITM_X_g3;} else
-//                      if (strcompare(str,"XEQM16" ) && exec) { *com = ITM_X_g4;} else
-//                      if (strcompare(str,"XEQM17" ) && exec) { *com = ITM_X_g5;} else
-//                      if (strcompare(str,"XEQM18" ) && exec) { *com = ITM_X_g6;} else
+//                           if(strcompare(str,"XEQM01") && exec) *com = ITM_X_P1;
+//                      else if(strcompare(str,"XEQM02") && exec) *com = ITM_X_P2;
+//                      else if(strcompare(str,"XEQM03") && exec) *com = ITM_X_P3;
+//                      else if(strcompare(str,"XEQM04") && exec) *com = ITM_X_P4;
+//                      else if(strcompare(str,"XEQM05") && exec) *com = ITM_X_P5;
+//                      else if(strcompare(str,"XEQM06") && exec) *com = ITM_X_P6;
+//                      else if(strcompare(str,"XEQM07") && exec) *com = ITM_X_f1;
+//                      else if(strcompare(str,"XEQM08") && exec) *com = ITM_X_f2;
+//                      else if(strcompare(str,"XEQM09") && exec) *com = ITM_X_f3;
+//                      else if(strcompare(str,"XEQM10") && exec) *com = ITM_X_f4;
+//                      else if(strcompare(str,"XEQM11") && exec) *com = ITM_X_f5;
+//                      else if(strcompare(str,"XEQM12") && exec) *com = ITM_X_f6;
+//                      else if(strcompare(str,"XEQM13") && exec) *com = ITM_X_g1;
+//                      else if(strcompare(str,"XEQM14") && exec) *com = ITM_X_g2;
+//                      else if(strcompare(str,"XEQM15") && exec) *com = ITM_X_g3;
+//                      else if(strcompare(str,"XEQM16") && exec) *com = ITM_X_g4;
+//                      else if(strcompare(str,"XEQM17") && exec) *com = ITM_X_g5;
+//                      else if(strcompare(str,"XEQM18") && exec) *com = ITM_X_g6;
 
 #if !defined(SAVE_SPACE_DM42_2)
   bool_t checkindexes(int16_t *com, char *str, bool_t exec) {
@@ -479,7 +479,7 @@ TO_QSPI const function_t indexOfFunctions[] = {
 void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
   #if !defined(SAVE_SPACE_DM42_2)
     #if !defined(TESTSUITE_BUILD)
-      #if (VERBOSE_LEVEL > 0)
+      #if(VERBOSE_LEVEL > 0)
         uint32_t ttt = getUptimeMs();
         while(ttt + 300 != getUptimeMs()); // This is bad for battery
         print_linestr(inputstring, true);
@@ -670,7 +670,7 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
                               starttoken = 1;
                             }
                             else if(strcompare(commandnumber, "XEQLBL")) { //EXPECTING FOLLOWING OPERAND Mn
-                              #if (VERBOSE_LEVEL > 0)
+                              #if(VERBOSE_LEVEL > 0)
                                 print_linestr("->XEQLBL", false);
                               #endif // (VERBOSE_LEVEL > 0)
                               xeqlblinprogress =  1;
@@ -951,7 +951,7 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
       char fn_long[200];      // Long file name
       char fn_short[16];      // standard file name
 
-      #if (VERBOSE_LEVEL >= 1)
+      #if(VERBOSE_LEVEL >= 1)
         char tmp[400];          // Messages
       #endif // (VERBOSE_LEVEL >= 1)
 
@@ -965,7 +965,7 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
       strcpy(fn_long,  "");
       strcpy(fallback, "XEQM01:HELP;");
 
-      #if (VERBOSE_LEVEL >= 1)
+      #if(VERBOSE_LEVEL >= 1)
         strcpy(tmp, fn_short);
         strcat(tmp, " A: Loading XEQMENU mapping");
         print_linestr(tmp, false);
@@ -973,12 +973,12 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
 
       import_string_from_filename(line1, pgmpath, fn_short, fn_long, fallback, !SCAN);
 
-      #if (VERBOSE_LEVEL >= 1)
+      #if(VERBOSE_LEVEL >= 1)
         sprintf(tmp, " B: XEQMENU mapping Loaded: %u bytes.\n", (uint16_t)stringByteLength(line1));
         print_linestr(tmp, false);
       #endif // (VERBOSE_LEVEL >= 1)
 
-      #if (VERBOSE_LEVEL >= 2)
+      #if(VERBOSE_LEVEL >= 2)
         #if defined(DMCP_BUILD)
           press_key();
         #endif // DMCP_BUILD
@@ -1016,7 +1016,7 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
       strcat(fn_short, ".TXT");
       strcat(fn_long, ".TXT");
 
-      #if (VERBOSE_LEVEL >= 1)
+      #if(VERBOSE_LEVEL >= 1)
         sprintf(tmp," C: Trying %s then %s.", fn_short, fn_long);
         print_linestr(tmp, false);
       #endif // (VERBOSE_LEVEL >= 1)
@@ -1031,52 +1031,52 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
         sprintf(fallback, "XEQLBL %s X%s ", nn, nn);
       }
 
-      #if (VERBOSE_LEVEL >= 2)
+      #if(VERBOSE_LEVEL >= 2)
         sprintf(tmp, "  Fallback:%s", fallback);
         print_linestr(tmp, false);
       #endif // (VERBOSE_LEVEL >= 2)
 
       import_string_from_filename(line1,pgmpath,fn_short,fn_long,fallback,scanning);
 
-      #if (VERBOSE_LEVEL >= 1)
+      #if(VERBOSE_LEVEL >= 1)
         sprintf(tmp, " D: PGM Loaded: %u bytes.\n", (uint16_t)stringByteLength(line1) );
         print_linestr(tmp, false);
       #endif // (VERBOSE_LEVEL >= 1)
 
       replaceFF(nn,line1);
 
-      #if (VERBOSE_LEVEL >= 1)
+      #if(VERBOSE_LEVEL >= 1)
         sprintf(tmp, " E: FF: %u bytes.\n", (uint16_t)stringByteLength(line1) );
         print_linestr(tmp, false);
         print_linestr(line1, false);
       #endif // (VERBOSE_LEVEL >= 1)
 
-      #if (VERBOSE_LEVEL >= 2)
+      #if(VERBOSE_LEVEL >= 2)
         #if defined(DMCP_BUILD)
           press_key();
         #endif // DMCP_BUILD
       #endif // (VERBOSE_LEVEL >= 2)
 
-      #if (VERBOSE_LEVEL >= 1)
+      #if(VERBOSE_LEVEL >= 1)
         clearScreen_old(false, true, true);
       #endif // (VERBOSE_LEVEL >= 1)
 
       displaywords(line1);       //output  is  in  tmpString
 
       strcpy(line1,tmpString);
-      #if (VERBOSE_LEVEL >= 2)
+      #if(VERBOSE_LEVEL >= 2)
         #if defined(DMCP_BUILD)
           press_key();
         #endif // DMCP_BUILD
       #endif // (VERBOSE_LEVEL >= 2)
 
-      #if (VERBOSE_LEVEL >= 1)
+      #if(VERBOSE_LEVEL >= 1)
         clearScreen_old(false, true, true);
       #endif // (VERBOSE_LEVEL >= 1)
 
       execute_string(line1,exec, scanning);
 
-      #if (VERBOSE_LEVEL >= 2)
+      #if(VERBOSE_LEVEL >= 2)
         #if defined(DMCP_BUILD)
           press_key();
           clearScreen_old(false, true, true);

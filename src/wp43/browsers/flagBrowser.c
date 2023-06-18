@@ -36,7 +36,7 @@
 
 
 #if !defined(TESTSUITE_BUILD)
-#ifndef SAVE_SPACE_DM42_8
+#if !defined(SAVE_SPACE_DM42_8)
   TO_QSPI const char flagLetter[] = "XYZTABCDLIJK";
 
   static void oneSystemFlag(uint16_t systemFlag, const char *systemFlagNamename, int16_t *line, bool_t *firstSystemFlag) {
@@ -55,7 +55,7 @@
       }
     }
   }
-#endif //SAVE_SPACE_DM42_8
+#endif // !SAVE_SPACE_DM42_8
 
 
   /********************************************//**
@@ -65,7 +65,7 @@
    * \return void
    ***********************************************/
   void flagBrowser(uint16_t init) {
-  #ifndef SAVE_SPACE_DM42_8
+  #if !defined(SAVE_SPACE_DM42_8)
 
     static int16_t line;
     int16_t f;
@@ -409,7 +409,7 @@
 
       }
 
-  #ifdef OOO
+  #if defined(OOO)
       if(currentNumberOfLocalRegisters > 0) {
         // Local registers
         sprintf(tmpString, "%" PRIu16 " local register%s allocated.", currentNumberOfLocalRegisters, currentNumberOfLocalRegisters==1 ? " is" : "s are");
@@ -425,10 +425,10 @@
           showString(tmpString, &standardFont, f<=9 ? 40*(f%10) + 17 : 40*(f%10) + 12, 22*(f/10)+176-1-44, getFlag(NUMBER_OF_GLOBAL_FLAGS+f) ? vmReverse : vmNormal, true, true);     //JM-44
         }
       }
-  #endif
+  #endif // OOO
 
     }
     lastFlgScr = currentFlgScr;
-  #endif //SAVE_SPACE_DM42_8
+  #endif // !SAVE_SPACE_DM42_8
   }
 #endif // !TESTSUITE_BUILD

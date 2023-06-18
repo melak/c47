@@ -22,7 +22,7 @@
 
 //graphs.h
 
-#ifndef GRAPHS_H
+#if !defined(GRAPHS_H)
 #define GRAPHS_H
 
 #include <stdint.h>
@@ -50,4 +50,4 @@ void    fnPlotSQ           (uint16_t unusedButMandatoryParameter);
 void    fnPlotReset        (uint16_t unusedButMandatoryParameter);
 void    fnPlotStatAdv      (uint16_t unusedButMandatoryParameter);
 
-#endif //GRAPHS_H
+#endif // !GRAPHS_H
