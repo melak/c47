@@ -686,7 +686,7 @@
         else if(tam.indirect && (currentNumberOfLocalRegisters || calcMode == CM_PEM)) {
           tam.dot = true;
         }
-        else if(tam.mode != TM_VALUE && tam.mode != TM_VALUE_CHB) {
+        else if(tam.mode != TM_VALUE && tam.mode != TM_VALUE_CHB && tam.mode != TM_LABEL) {
           if(calcMode == CM_PEM || ((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) && currentLocalFlags != NULL) || ((tam.mode != TM_FLAGR && tam.mode != TM_FLAGW) && currentNumberOfLocalRegisters)) {
             tam.dot = true;
           }
