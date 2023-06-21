@@ -960,6 +960,7 @@ void pemAddNumber(int16_t item) {
   }
   else {
     aimBuffer[0] = 0;
+    nimNumberPart = NP_EMPTY;
   }
   #endif // !TESTSUITE_BUILD
 }
@@ -977,7 +978,6 @@ void pemCloseNumberInput(void) {
       //case NP_INT_16:
       case NP_INT_BASE: {
         char *basePtr = numBuffer;
-        *(tmpPtr++) = STRING_SHORT_INTEGER;
         while(*basePtr != '#') {
           ++basePtr;
         }
@@ -1085,6 +1085,7 @@ void pemCloseNumberInput(void) {
   }
 
   aimBuffer[0] = '!';
+  nimNumberPart = NP_EMPTY;
 #endif // TESTSUITE_BUILD
 }
 
