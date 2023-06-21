@@ -226,11 +226,9 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
           errorMessage[0]=0;
           strcat(errorMessage,indexOfItems[func].itemCatalogName);
           temporaryInformation = TI_NO_INFO;
-          char sample[4];
-          strcpy(sample, STD_RIGHT_ARROW);
           int16_t i = 0;
           while(errorMessage[i+1] != 0) {
-            if(sample[0] == errorMessage[i] && sample[1] == errorMessage[i+1]) {
+            if(STD_RIGHT_ARROW[0] == errorMessage[i] && (STD_RIGHT_ARROW[1] == errorMessage[i+1] || STD_RIGHT_SHORT_ARROW[1] == errorMessage[i+1])) {
               temporaryInformation = TI_STR;
               errorMessage[i++] = 0;
               errorMessage[i++] = 0;
@@ -239,13 +237,14 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
             i++;
           }
           int16_t j = 0;
+          errorMessage[j] = 0;
           while(errorMessage[i] != 0) {
             errorMessage[j++] =  errorMessage[i++];
           }
           errorMessage[j] = 0;
           break;
-        default: break;
         }
+        default:break;
       }
     }
 
