@@ -129,14 +129,13 @@ void configCommon(uint16_t idx) {
     fnClearStack(0);                         //Clear stack
     fnPi(0);                                 //Put pi on X
 
-    fnInDefault(ID_DP);                      //Change to Real input only :                                     ID, if changed, also set the conditions for checkHP in defines.h
-    fnDisplayFormatSigFig(9);                //SIG 9
+    fnInDefault(ID_DP);                      //Change to Real input only :                                     ID, if changed, also set the conditions for checkHP in defines.h (DP)
+    fnDisplayFormatSigFig(9);                //SIG 9                                                           There is special treatment for the Sig mode in the display driver, to restrict to 9+1 digits while SDIGS > 10
     jm_BASE_SCREEN = false;                  //Switch off base = MyMenu
     SH_BASE_HOME = false;                    //Ensure base = HOME is off
-    exponentHideLimit = 12;                  //Set the '0' limit to 2 digits more than the 10 digit display :  ID, if changed, also set the conditions for checkHP in defines.h
-    exponentLimit     = 99;                  //Set the exponent limit the same as HP35, i.e. 99                ID, if changed, also set the conditions for checkHP in defines.h
-    significantDigits = 10;                  //SDIGS = 10                                                      ID, if changed, also set the conditions for checkHP in defines.h
-    displayStack = cachedDisplayStack = 1;   //Change to single stack register display                         ID, if changed, also set the conditions for checkHP in defines.h
+    exponentLimit     = 99;                  //Set the exponent limit the same as HP35, i.e. 99                ID, if changed, also set the conditions for checkHP in defines.h (99)
+    significantDigits = 16;                  //SDIGS = 16                                                      ID, if changed, also set the conditions for checkHP in defines.h (10-16)
+    displayStack = cachedDisplayStack = 1;   //Change to single stack register display                         ID, if changed, also set the conditions for checkHP in defines.h (1)
     currentAngularMode = amDegree;           //Set to DEG
     SetSetting(SS_4);                        //SSTACK4
     SetSetting(ITM_CPXRES0);                 //Clear CPXRES
@@ -145,7 +144,7 @@ void configCommon(uint16_t idx) {
     setFGLSettings(RB_FGLNOFF);              //fgLine OFF
     temporaryInformation = TI_NO_INFO;       //Clear any pending TI
 
-    grpGroupingLeft   =  3;                  //IPGRP 3
+    grpGroupingLeft    =  3;                 //IPGRP 3
     grpGroupingRight   =  3;                 //FPGRP 3
     grpGroupingGr1Left =  0;                 //IPGRP1 0
     grpGroupingGr1LeftOverflow = 0;          //IPGRP1x 0
@@ -167,6 +166,7 @@ void configCommon(uint16_t idx) {
     SetSetting(SS_8);                        //SSTACK 8
     SetSetting(ITM_CPXRES1);                 //Set CPXRES
     SetSetting(ITM_SPCRES1);                 //Set SPCRES
+    setSystemFlag(FLAG_CPXj);
   }
 
 
@@ -175,18 +175,19 @@ void configCommon(uint16_t idx) {
     fnClrMod(0);
     addItemToBuffer(ITM_EXIT1);
 
-    fnInDefault(ID_43S);
+    fnInDefault(ID_43S);                     //!ID
     fnDisplayFormatAll(3);
     jm_BASE_SCREEN = true;
     SH_BASE_HOME = false;
-    exponentHideLimit = 0;
-    exponentLimit     = 6145;
-    significantDigits = 34;
-    displayStack = cachedDisplayStack = 4;
+    exponentLimit     = 6145;                //!ID
+    significantDigits = 34;                  //!ID
+    displayStack = cachedDisplayStack = 4;   //!ID
     currentAngularMode = amDegree;
     SetSetting(SS_8);
     SetSetting(ITM_CPXRES1);
     SetSetting(ITM_SPCRES1);
+    clearSystemFlag(FLAG_CPXj);
+
     fneRPN(1); //eRPN
     setFGLSettings(RB_FGLNFUL); //fgLine ON
     temporaryInformation = TI_NO_INFO;

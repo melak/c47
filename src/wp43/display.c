@@ -281,15 +281,15 @@ void real34ToDisplayString(const real34_t *real34, uint32_t tag, char *displaySt
   }
 
   if(displayFormat == DF_SF) {        //This portion limits the SIGFIG digits to really n digits, even in the case of SIG3 12345000000000 to be displayed as 1.2340 x 10^5
+      uint8_t digits = checkHP ? 10 : displayHasNDigits;
       if(tag == amNone) {
-        uint8_t digits = checkHP ? significantDigits : displayHasNDigits;
         real34ToDisplayString2(real34, displayString, digits, limitExponent, false, frontSpace);
         if(stringWidth(displayString, font, true, true) > maxWidth) {
           real34ToDisplayString2(real34, displayString, digits, limitExponent, true, frontSpace);
         }
       }
       else {
-        angle34ToDisplayString2(real34, tag, displayString, displayHasNDigits, limitExponent, frontSpace);
+        angle34ToDisplayString2(real34, tag, displayString, digits, limitExponent, frontSpace);
       }
 
   }
@@ -451,6 +451,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
   ctxtReal39.digits =  ((displayFormat == DF_FIX || displayFormat == DF_SF) ? 24 : displayHasNDigits); // This line is for FIX n displaying more than 16 digits. e.g. in FIX 15: 123 456.789 123 456 789 123
   //ctxtReal39.digits =  displayHasNDigits; // This line is for fixed number of displayed digits, e.g. in FIX 15: 123 456.789 123 456 8
+  if(checkHP) ctxtReal39.digits = 10;
   realPlus(&value, &value, &ctxtReal39);
   ctxtReal39.digits = 39;
   realToReal34(&value, &value34);
@@ -732,7 +733,10 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
   // FIX mode //
   //////////////
   if(displayFormat == DF_FIX || displayFormat == DF_SF) {
-    if(noFix || exponent >= displayHasNDigits || exponent < -(int32_t)displayFormatDigits) { // Display in SCI or ENG format
+    if(noFix || exponent >= displayHasNDigits || 
+         exponent < -(int32_t)displayFormatDigits ||
+         ( displayFormat == DF_SF && exponent -(int32_t)displayFormatDigits < -(checkHP ? 10+1 : displayHasNDigits))
+      ) { // Display in SCI or ENG format
       digitsToDisplay = displayFormatDigits;
       digitToRound    = min(firstDigit + digitsToDisplay, lastDigit);
       ovrSCI = !getSystemFlag(FLAG_ALLENG);
