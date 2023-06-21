@@ -1396,6 +1396,16 @@ bool_t maxfgLines(int16_t y) {
     int16_t x1, y1;
     int16_t x2, y2;
 
+    if(labelSM1[0] !=0 ) {
+      if(ySoftKey==1) {
+        maxfLines |= 1; //set bit 0 for any non-blank softkey in f
+      }
+      if(ySoftKey == 2) {
+        maxgLines |= 1; //set bit 0 for any non-blank softkey in g
+        maxfLines |= 1; //set bit 0 for any non-blank softkey in g (add f, for a g softkey otherwise g cannot be reached)
+      }
+    }
+
     if((calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) && xSoftkey >= 2) {           //prevent softkeys columns 3-6 from displaying over the graph
       return;
     }
