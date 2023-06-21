@@ -978,7 +978,6 @@ void pemCloseNumberInput(void) {
       //case NP_INT_16:
       case NP_INT_BASE: {
         char *basePtr = numBuffer;
-        *(tmpPtr++) = STRING_SHORT_INTEGER;
         while(*basePtr != '#') {
           ++basePtr;
         }
