@@ -10,6 +10,7 @@
 #include "integers.h"
 #include "items.h"
 #include "mathematics/matrix.h"
+#include "mathematics/power.h"
 #include "mathematics/toPolar.h"
 #include "mathematics/toRect.h"
 #include "registers.h"
@@ -76,11 +77,11 @@ void curtLonI(void) {
     convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
     if(realIsPositive(&x)) {
-      realPower(&x, const_1on3, &x, &ctxtReal39);
+      PowerReal(&x, const_1on3, &x, &ctxtReal39);
     }
     else {
       realSetPositiveSign(&x);
-      realPower(&x, const_1on3, &x, &ctxtReal39);
+      PowerReal(&x, const_1on3, &x, &ctxtReal39);
       realSetNegativeSign(&x);
     }
     convertRealToReal34ResultRegister(&x, REGISTER_X);
@@ -110,11 +111,11 @@ void curtShoI(void) {
   convertShortIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
 
   if(realIsPositive(&x)) {
-    realPower(&x, const_1on3, &x, &ctxtReal39);
+    PowerReal(&x, const_1on3, &x, &ctxtReal39);
   }
   else {
     realSetPositiveSign(&x);
-    realPower(&x, const_1on3, &x, &ctxtReal39);
+    PowerReal(&x, const_1on3, &x, &ctxtReal39);
     realSetNegativeSign(&x);
   }
 
@@ -144,11 +145,11 @@ void curtReal(void) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
 
   if(realIsPositive(&x)) {
-    realPower(&x, const_1on3, &x, &ctxtReal39);
+    PowerReal(&x, const_1on3, &x, &ctxtReal39);
   }
   else {
     realSetPositiveSign(&x);
-    realPower(&x, const_1on3, &x, &ctxtReal39);
+    PowerReal(&x, const_1on3, &x, &ctxtReal39);
     realSetNegativeSign(&x);
   }
   convertRealToReal34ResultRegister(&x, REGISTER_X);
@@ -179,18 +180,18 @@ void curtComplex(const real_t *real, const real_t *imag, real_t *resReal, real_t
 
   if(realIsZero(&b)) {
     if(realIsPositive(&a)) {
-      realPower(&a, const_1on3, resReal, realContext);
+      PowerReal(&a, const_1on3, resReal, realContext);
     }
     else {
       realSetPositiveSign(&a);
-      realPower(&a, const_1on3, resReal, realContext);
+      PowerReal(&a, const_1on3, resReal, realContext);
       realSetNegativeSign(resReal);
     }
     realZero(resImag);
   }
   else {
     realRectangularToPolar(&a, &b, &a, &b, realContext);
-    realPower(&a, const_1on3, &a, realContext);
+    PowerReal(&a, const_1on3, &a, realContext);
     realMultiply(&b, const_1on3, &b, realContext);
     realPolarToRectangular(&a, &b, resReal, resImag, realContext);
   }
