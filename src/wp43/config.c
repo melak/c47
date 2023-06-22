@@ -159,6 +159,7 @@ void configCommon(uint16_t idx) {
 
   void fnHP35JM(uint16_t unusedButMandatoryParameter){
     fnSetHP35(0);
+    jm_BASE_SCREEN = true;
     fneRPN(1);                               //eRPN
     setFGLSettings(RB_FGLNFUL);              //fgLine FULL
     clearSystemFlag(FLAG_HPRP);              //Clear HP Rect/Polar
