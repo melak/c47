@@ -406,7 +406,6 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
     uint16_t line, firstLine;
     uint16_t stepsThatWouldBeDisplayed = 7;
     uint8_t *step, *nextStep;
-    uint8_t *tmpSteps = NULL;
     bool_t lblOrEnd;
     bool_t inTamMode = tam.mode && programList[currentProgramNumber - 1].step > 0;
     uint16_t numberOfSteps = getNumberOfSteps();
