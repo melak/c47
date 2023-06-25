@@ -671,7 +671,7 @@
 #define STD_SUB_S                     "\xa4\xe2"
 #define STD_SUB_T                     "\xa4\xe3"
 #define STD_SUB_U                     "\xa4\xe4"
-#define STD_SUB_V                     "\xa4\xe4"
+#define STD_SUB_V                     "\xa4\xe5"
 #define STD_SUB_W                     "\xa4\xe6"
 #define STD_SUB_X                     "\xa4\xe7"
 #define STD_SUB_Y                     "\xa4\xe8"
