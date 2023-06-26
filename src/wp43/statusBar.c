@@ -361,7 +361,7 @@ void showFracMode(void) {
                 }
 
       if(status >0 && status <=18) {
-        showGlyphCode(ITM_SPACE_EM,    &standardFont, X_ALPHA_MODE, 0, vmNormal, true, true); // is 0+0+10 pixel wide
+        lcd_fill_rect(X_ALPHA_MODE,0,11,18,0);
         switch(status) {
           case  1: showString(STD_SUB_N, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub    // STD_ALPHA is 0+9+2 pixel wide
           case  2: showString(STD_SUB_N, &standardFont, X_ALPHA_MODE,-11, vmNormal, true, false); break; //sup
