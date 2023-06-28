@@ -120,8 +120,7 @@
 
       case ITM_DELITM: {
         switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
-          case MNU_RAM:
-          case MNU_FLASH: {
+          case MNU_PROGS: {
             return ITM_DELITM_PROG;
           }
           case MNU_MENUS: {
@@ -478,7 +477,7 @@
           }
 
           if(item == ITM_Min) { // DOWN
-            if(currentProgramNumber == numberOfPrograms - 1) { // We are in the last program in memory
+            if(currentProgramNumber == numberOfPrograms) { // We are in the last program in memory
               return;
             }
 
@@ -663,14 +662,14 @@
         return;
       }
       else if(tam.function == ITM_GTOP) {
-        tam.value = programList[numberOfPrograms - numberOfProgramsInFlash - 1].step;
+        tam.value = programList[numberOfPrograms - 1].step;
         pemCursorIsZerothStep = true;
         reallyRunFunction(ITM_GTOP, tam.value);
-        if((*currentStep.ram != 0xff) || (*(currentStep.ram + 1) != 0xff)) {
-          currentStep.ram = firstFreeProgramByte;
+        if((*currentStep != 0xff) || (*(currentStep + 1) != 0xff)) {
+          currentStep = firstFreeProgramByte;
           insertStepInProgram(ITM_END);
           scanLabelsAndPrograms();
-          tam.value = programList[numberOfPrograms - numberOfProgramsInFlash - 1].step;
+          tam.value = programList[numberOfPrograms - 1].step;
           reallyRunFunction(ITM_GTOP, tam.value);
         }
         tamLeaveMode();
@@ -838,7 +837,7 @@
           }
         }
       }
-      else if(tam.mode == TM_LABEL || tam.mode == TM_SOLVE || (tam.mode == TM_KEY && tam.keyInputFinished) || (tam.mode == TM_DELITM && (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_RAM || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_FLASH))) {
+      else if(tam.mode == TM_LABEL || tam.mode == TM_SOLVE || (tam.mode == TM_KEY && tam.keyInputFinished) || (tam.mode == TM_DELITM && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PROGS)) {
         value = findNamedLabelWithDuplicate(buffer, dupNum);
         if(value == INVALID_VARIABLE && tam.function != ITM_LBL && tam.function != ITM_LBLQ && (calcMode != CM_PEM || tam.mode != TM_SOLVE)) {
           if(calcMode != CM_PEM && getSystemFlag(FLAG_IGN1ER)) {

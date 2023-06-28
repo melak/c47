@@ -197,8 +197,7 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
         break;
       }
 
-      case MNU_RAM:
-      case MNU_FLASH: {
+      case MNU_PROGS: {
         dynamicMenuItem = firstItem + itemShift + fn;
         item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : (tam.mode == TM_DELITM) ? MNU_DYNAMIC : ITM_XEQ);
         break;
@@ -286,8 +285,7 @@ printf(">>>>  0096     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
     if(calcMode == CM_ASSIGN && item != ITM_NOP && item != ITM_NULL) {
       switch(-softmenu[menuId].menuItem) {
         case MNU_PROG:
-        case MNU_RAM:
-        case MNU_FLASH: {
+        case MNU_PROGS: {
           return findNamedLabel((char *)getNthString(dynamicSoftmenu[menuId].menuContent, dynamicMenuItem)) - FIRST_LABEL + ASSIGN_LABELS;
         }
         case MNU_VAR:
@@ -416,11 +414,9 @@ printf(">>>>Z 0070 btnFnClicked data=|%s| data[0]=%d\n",(char*)data, ((char*)dat
           case MNU_CPXS :
           case MNU_DATES :
           case MNU_FCNS :
-          case MNU_FLASH :
           case MNU_LINTS :
           case MNU_MATRS :
           case MNU_MENUS :
-          case MNU_RAM :
           case MNU_REALS :
           case MNU_SINTS :
           case MNU_STRINGS :
@@ -1863,10 +1859,10 @@ RELEASE_END:
       uint16_t fdLocalStepNumber = firstDisplayedLocalStepNumber;
       bool_t inRam = (programList[currentProgramNumber - 1].step > 0);
       if(inRam) {
-        currentStep.ram           += (freeProgramBytes & 0xfffc);
-        firstDisplayedStep.ram    += (freeProgramBytes & 0xfffc);
-        beginOfCurrentProgram.ram += (freeProgramBytes & 0xfffc);
-        endOfCurrentProgram.ram   += (freeProgramBytes & 0xfffc);
+        currentStep           += (freeProgramBytes & 0xfffc);
+        firstDisplayedStep    += (freeProgramBytes & 0xfffc);
+        beginOfCurrentProgram += (freeProgramBytes & 0xfffc);
+        endOfCurrentProgram   += (freeProgramBytes & 0xfffc);
       }
       freeProgramBytes &= 0x03;
       resizeProgramMemory(TO_BLOCKS(newProgramSize));
@@ -3425,11 +3421,6 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
           lastErrorCode = 0;
           return;
         }
-        if(programList[currentProgramNumber - 1].step < 0) {
-          // attempt to modify a program in the flash memory
-          displayCalcErrorMessage(ERROR_FLASH_MEMORY_WRITE_PROTECTED, ERR_REGISTER_LINE, REGISTER_X);
-          return;
-        }
         if(getSystemFlag(FLAG_ALPHA)) {
           pemAlpha(ITM_BACKSPACE);
           if(aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA)) {
@@ -3450,9 +3441,9 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
             pemCursorIsZerothStep = false;
           }
           if(!pemCursorIsZerothStep) {
-            nextStep = findNextStep_ram(currentStep.ram);
-            if(*currentStep.ram != 255 || *(currentStep.ram + 1) != 255) { // Not the last END
-              deleteStepsFromTo(currentStep.ram, nextStep);
+            nextStep = findNextStep(currentStep);
+            if(*currentStep != 255 || *(currentStep + 1) != 255) { // Not the last END
+              deleteStepsFromTo(currentStep, nextStep);
             }
             if(currentLocalStepNumber > 1) {
               --currentLocalStepNumber;
