@@ -436,6 +436,12 @@ TO_QSPI const function_t indexOfFunctions[] = {
     {ITM_GRP1_L_OF,         "IPGRP1X"},
     {ITM_GRP1_L,            "IPGRP1"},
     {ITM_GRP_R,             "FPGRP"},
+
+
+    {ITM_BEEP,              "BEEP"},
+    {ITM_TONE,              "TONE"},
+
+
   #endif // !SAVE_SPACE_DM42_2
 };
 
@@ -667,6 +673,9 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
                               xeqlblinprogress = 10;
                             }
                             else if(strcompare(commandnumber, "XEQC43")) { //EXPECTING FOLLOWING OPERAND Mn
+                              starttoken = 1;
+                            }
+                            else if(strcompare(commandnumber, "XEQC47")) { //EXPECTING FOLLOWING OPERAND Mn
                               starttoken = 1;
                             }
                             else if(strcompare(commandnumber, "XEQLBL")) { //EXPECTING FOLLOWING OPERAND Mn
@@ -1352,7 +1361,7 @@ void fnXEQMXXEQ (uint16_t unusedButMandatoryParameter) {
 
 void fnXEQNEW (uint16_t unusedButMandatoryParameter) {
   #if !defined(SAVE_SPACE_DM42_2)
-    fnStrtoX("XEQC43 XEQLBL 01 XXXXXX ");
+    fnStrtoX("XEQC47 XEQLBL 01 XXXXXX ");
     fnXEQMEDIT(0);
   #endif // !SAVE_SPACE_DM42_2
 }
