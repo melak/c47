@@ -2717,8 +2717,6 @@ static void printXAngle(int16_t cc, int16_t d) {
 
 void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified by JM from the original fnShow
 #if !defined(SAVE_SPACE_DM42_9)
-
-  //printRegisterToConsole(REGISTER_X,"","");
   #if !defined(TESTSUITE_BUILD)
     uint8_t savedDisplayFormat = displayFormat, savedDisplayFormatDigits = displayFormatDigits;
     bool_t thereIsANextLine;
@@ -2917,7 +2915,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
         source = 2100;
         for(d=0; d<=900 ; d+=300) {
           dest = d;
-          while(source < last && stringWidth(tmpString + d, &numericFont, true, true) <= SCREEN_WIDTH - 8*2) {
+          while(source < last && stringWidth(tmpString + d, &numericFont, true, true) <= SCREEN_WIDTH - 8*2-5) {
             //check if a full triplet of digits will fit otherwise break line
             if((tmpString[source] == SEPARATOR_LEFT[0] && (SEPARATOR_LEFT[1]==1 ? true : tmpString[source + 1] == SEPARATOR_LEFT[1])     ) ||
                (tmpString[source] == SEPARATOR_RIGHT[0] && (SEPARATOR_RIGHT[1]==1 ? true : tmpString[source + 1] == SEPARATOR_RIGHT[1]) )) {
@@ -2930,7 +2928,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
               tmpString20[0]=0;
               xcopy(tmpString20, tmpString + source, aa - source);
               tmpString20[aa - source]=0;
-              if(stringWidth(tmpString + d, &numericFont, true, true) + stringWidth(tmpString20, &numericFont, true, true) > SCREEN_WIDTH - 8*2) break;
+              if(stringWidth(tmpString + d, &numericFont, true, true) + stringWidth(tmpString20, &numericFont, true, true) > SCREEN_WIDTH - 8*2-5) break;
             }
 
             tmpString[dest] = tmpString[source];

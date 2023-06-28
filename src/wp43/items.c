@@ -210,7 +210,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
     indexOfItems[func].func(param);
 
 
-    if(lastErrorCode == ERROR_NONE) {
+    if(lastErrorCode == ERROR_NONE && temporaryInformation == TI_NO_INFO) {
       switch(softmenu[softmenuStack[0].softmenuId].menuItem) {
         case -MNU_CONVE :
         case -MNU_CONVP :
@@ -221,7 +221,6 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
         case -MNU_CONVA :
         case -MNU_CONVS :
         case -MNU_CONVANG :
-        case -MNU_UNITCONV :
         case -MNU_MISC : {
           errorMessage[0]=0;
           strcat(errorMessage,indexOfItems[func].itemCatalogName);
