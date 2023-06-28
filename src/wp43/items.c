@@ -1093,6 +1093,11 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
                                                                               //JM ^^
 #endif // GENERATE_CATALOGS
 
+#ifdef TESTSUITE_BUILD
+  void fnDiskInfo                 (uint16_t unusedButMandatoryParameter) {}
+#endif //TEST_SUITE
+
+
 #define NPER_   "n" STD_SUB_P STD_SUB_E STD_SUB_R                    //
 #define RANGE_  STD_SUB_R STD_SUB_A STD_SUB_N STD_SUB_G STD_SUB_E    // Strings to maintain table columns below
 
