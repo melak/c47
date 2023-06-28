@@ -174,5 +174,11 @@
    * \param[in] string to display in the dialog
    */
   void show_warning(char *string);
-
+  
+   /**
+   * Display the DMCP Disk Info dialog.
+   * Only relevant for the DMCP version, not used for the simulator
+   */
+  void fnDiskInfo(uint16_t unusedButMandatoryParameter);
+  
 #endif // IO_H

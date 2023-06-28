@@ -33,6 +33,7 @@
 #include "flags.h"
 #include "fonts.h"
 #include "fractions.h"
+#include "hal/io.h"
 #include "c43Extensions/graphs.h"
 #include "c43Extensions/inlineTest.h"
 #include "integers.h"
@@ -1082,10 +1083,17 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnMenuGapRX                (uint16_t unusedButMandatoryParameter) {}
   void fnSetHP35                  (uint16_t unusedButMandatoryParameter) {}
   void fnSetC47                   (uint16_t unusedButMandatoryParameter) {}
+  void fnDiskInfo                 (uint16_t unusedButMandatoryParameter) {}
+
 
 
                                                                               //JM ^^
 #endif // GENERATE_CATALOGS
+
+#ifdef TESTSUITE_BUILD
+  void fnDiskInfo                 (uint16_t unusedButMandatoryParameter) {}
+#endif //TEST_SUITE
+
 
 #define NPER_   "n" STD_SUB_P STD_SUB_E STD_SUB_R                    //
 #define RANGE_  STD_SUB_R STD_SUB_A STD_SUB_N STD_SUB_G STD_SUB_E    // Strings to maintain table columns below
@@ -2604,7 +2612,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1471 */  { fnGetFirstGregorianDay,       NOPARAM,                     "J/G?",                                        "J/G?",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1472 */  { fnFib,                        NOPARAM,                     "FIB",                                         "FIB",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_ENABLED  | PTP_NONE         },
 /* 1473 */  { fnDisplayFormatFix,           TM_VALUE,                    "FIX",                                         "FIX",                                         (0 << TAM_MAX_BITS) | DSP_MAX, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NUMBER_8     },
-/* 1474 */  { itemToBeCoded,                NOPARAM,                     "FLASH?",                                      "FLASH?",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 1474 */  { fnDiskInfo,                   NOPARAM,                     "DISK?",                                       "DISK?",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1475 */  { fn1stDeriv,                   TM_LABEL,                    "f'(x)",                                       "f'(x)",                                       (0 << TAM_MAX_BITS) |    99, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_LABEL        },
 /* 1476 */  { fn2ndDeriv,                   TM_LABEL,                    "f\"(x)",                                      "f\"(x)",                                      (0 << TAM_MAX_BITS) |    99, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_LABEL        },
 /* 1477 */  { itemToBeCoded,                NOPARAM,                     "1477",                                        "1477",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NUMBER_8     },

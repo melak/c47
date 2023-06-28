@@ -230,3 +230,7 @@ void show_warning(char *string) {
   gtk_widget_destroy(dialog);
   #pragma GCC diagnostic pop
 }
+
+
+void fnDiskInfo(uint16_t unusedButMandatoryParameter) {
+}
