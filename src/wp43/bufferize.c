@@ -821,7 +821,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case ITM_ERFC :
           case ITM_EXPT :
           case ITM_FIB :
-          case ITM_FLASH :
+          case ITM_DISK :
           case ITM_GD :
           case ITM_GDM1 :
           case ITM_IM :

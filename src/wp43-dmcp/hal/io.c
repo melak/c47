@@ -257,3 +257,8 @@ void show_warning(char *str) {
     }
   }
 }
+
+void fnDiskInfo(uint16_t unusedButMandatoryParameter) {
+  disp_disk_info("Disk Info");
+  wait_for_key_press();
+}

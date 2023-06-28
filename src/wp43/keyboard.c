@@ -1499,8 +1499,6 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
 
     void btnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
-      temporaryInformation = TI_NO_INFO;
-
       nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
 
       int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
@@ -1899,7 +1897,7 @@ RELEASE_END:
         temporaryInformation = TI_VIEW;
       }
     }
-    else if(item != ITM_UP1 && item != ITM_DOWN1 && item != ITM_EXIT1) {
+    else if(item != ITM_UP1 && item != ITM_DOWN1 && item != ITM_EXIT1 && item != ITM_BACKSPACE) {
       temporaryInformation = TI_NO_INFO;
     }
     if(programRunStop == PGM_WAITING) {
@@ -1926,6 +1924,7 @@ RELEASE_END:
     switch(item) {
       case ITM_BACKSPACE: {
         if(calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_EIM) {
+          temporaryInformation = TI_NO_INFO;
           refreshRegisterLine(NIM_REGISTER_LINE); }
         else {
           //JM No if needed, it does nothing if not in NIM. TO DISPLAY NUMBER KEYPRESS DIRECTLY AFTER PRESS, NOT ONLY UPON RELEASE          break;
@@ -3261,6 +3260,12 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 #if !defined(SAVE_SPACE_DM42_10)
     uint8_t *nextStep;
 #endif //SAVE_SPACE_DM42_10
+
+    if(temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) {
+      temporaryInformation = TI_NO_INFO;
+      keyActionProcessed = true;
+      return;
+    }
 
     if(tam.mode) {
       tamProcessInput(ITM_BACKSPACE);

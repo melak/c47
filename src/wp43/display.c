@@ -2717,8 +2717,6 @@ static void printXAngle(int16_t cc, int16_t d) {
 
 void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified by JM from the original fnShow
 #if !defined(SAVE_SPACE_DM42_9)
-
-  //printRegisterToConsole(REGISTER_X,"","");
   #if !defined(TESTSUITE_BUILD)
     uint8_t savedDisplayFormat = displayFormat, savedDisplayFormatDigits = displayFormatDigits;
     bool_t thereIsANextLine;
@@ -2776,13 +2774,14 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
         #endif // VERBOSE_SCREEN && PC_BUILD
 
         strcpy(errorMessage,tmpString + 2100);
-        longIntegerRegisterToDisplayString(SHOWregis, errorMessage + stringByteLength(tmpString + 2100), WRITE_BUFFER_LEN, 4*400, 350, false);  //JM added last parameter: Allow LARGELI
+        longIntegerRegisterToDisplayString(SHOWregis, errorMessage + stringByteLength(tmpString + 2100), WRITE_BUFFER_LEN, 9*400, 9*50-3, false);  //JM added last parameter: Allow LARGELI
 
         last = stringByteLength(errorMessage);
         source = 0;
         dest = 0;
 
 
+        //LARGE font
         { //printf("2: %d\n",stringGlyphLength(tmpString + 2100));
           temporaryInformation = TI_SHOW_REGISTER_BIG;
           if(GROUPLEFT_DISABLED) {
@@ -2803,7 +2802,10 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
             maxWidth = SCREEN_WIDTH - stringWidth(tmp , &numericFont, true, true);          //Add the separator that gets added to the last character
           }
 
-          for(d=0; d<=1800 ; d+=300) {                                                      //LARGE font, fill 6 lines at 0, 300, 600, 900, 1200, 1500
+          //LARGE font, fill 6 lines at 0, 300, 600, 900, 1200, 1500
+          #define maxLarge 1800
+          for(d=0; d<=maxLarge ; d+=300) {
+            //printf("LARGE>>> source:%u|%s|d:%u|%s|\n",source,errorMessage+source,d,tmpString+d);
             dest = d;
             while(source < last && stringWidth(tmpString + d, &numericFont, true, true) <=  maxWidth) {
               tmpString[dest] = errorMessage[source];
@@ -2814,55 +2816,47 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
               tmpString[++dest] = 0;
             }
 
-            while(source < last && !GROUPLEFT_DISABLED && !(tmpString[dest-2] & 0x80)) { //Not in the last line. Eat away characters at the end to line up the last space.
-              dest--;
-              source--;
-            }
-
-            if((SEPARATOR_LEFT[0]==1 && SEPARATOR_LEFT[1]==1) && stringWidth(tmpString + d, &standardFont, true, true) >= maxWidth - 20) {
-              break;
+            uint8_t cnt = GROUPWIDTH_LEFT+1;
+            while(cnt-- != 0 && source < last && !GROUPLEFT_DISABLED ) { //Eat away characters at the end to line, up to and excluding the last seperator.
+              if(  !((SEPARATOR_LEFT[1] != 1 && tmpString[dest-2] == SEPARATOR_LEFT[0] && tmpString[dest-1] == SEPARATOR_LEFT[1]) || 
+                     (SEPARATOR_LEFT[1] == 1 && tmpString[dest-1] == SEPARATOR_LEFT[0])) ) {
+                dest--;  //line does not end on separator, so reduce the characters until is does
+                source--;
+              } else {
+                dest--; //line ends on a seperator so reduce only the target and let the next line begins onthe number, not separator
+                if(SEPARATOR_LEFT[1] != 1) dest--; //line ends on a double byte seperator
+                break;
+              }
             }
 
             tmpString[dest] = 0;
-            //printf("last:%u %u\n",(uint8_t)tmpString[dest+0], (uint8_t)tmpString[dest+1]);
-            if((SEPARATOR_LEFT[0]!=1 && SEPARATOR_LEFT[0]!=1) && !(source < last) && !GROUPLEFT_DISABLED && (tmpString[dest+0] != 0) && !(tmpString[dest+0] == SEPARATOR_LEFT[0] && (tmpString[dest+1] == SEPARATOR_LEFT[1] || SEPARATOR_LEFT[0] == 1) )) {               //Last line
-              tmpString[dest+0] = SEPARATOR_LEFT[0]; //0xa0;       //Add a space to the very end to space last line nicely.
-              if(SEPARATOR_LEFT[1] != 1) {
-                tmpString[dest+1] = SEPARATOR_LEFT[1]; //0x05;
-                tmpString[dest+2] = 0;
-                dest+=2;
-              }
-              else if(SEPARATOR_LEFT[0]!=1) {
-                tmpString[dest+1] = 0;
-                dest+=1;
-              }
-            }
-            //printf("%u %u %s\n", d, (uint8_t)tmpString[d], tmpString+d);
+            //printf(">>>AA %u %u |%s|\n", d, (uint8_t)tmpString[d], tmpString+d);
           }
-          //printf("%u %u %s\n", d, (uint8_t)tmpString[d], tmpString+d);
         }
 
-        printf("### %d %d %d\n",(uint8_t)tmpString[1200],(uint8_t)tmpString[1201], (uint8_t)tmpString[1202]);
-        if(tmpString[1800] != 0) {
+
+
+        if(tmpString[maxLarge] != 0) {    //overflow
           #if defined(VERBOSE_SCREEN) && defined(PC_BUILD)
             printf("SHOW:Longint too long\n");
           #endif // VERBOSE_SCREEN && PC_BUILD
 
           SHOW_reset();
           strcpy(errorMessage,tmpString + 2100);
-          longIntegerRegisterToDisplayString(SHOWregis, errorMessage + stringByteLength(tmpString + 2100), WRITE_BUFFER_LEN, 7*400, 350, false);  //JM added last parameter: Allow LARGELI
+          longIntegerRegisterToDisplayString(SHOWregis, errorMessage + stringByteLength(tmpString + 2100), WRITE_BUFFER_LEN, 9*400, 9*50-3, false);  //JM added last parameter: Allow LARGELI
+          //printf("1: %d\n",stringGlyphLength(tmpString + 2100));
+          tmpString[2100] = 0;
 
           last = stringByteLength(errorMessage);
           source = 0;
           dest = 0;
 
-          //printf("1: %d\n",stringGlyphLength(tmpString + 2100));
-
+          //Small font start
           if(GROUPLEFT_DISABLED) {
             maxWidth = SCREEN_WIDTH - stringWidth("0", &standardFont, true, true);
           }
           else {
-            char tt[4]; tt[0]=0;
+            char tt[4];
             if(SEPARATOR_LEFT[1]!=1) {
               strcpy(tt,SEPARATOR_LEFT);
             }
@@ -2873,22 +2867,36 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
             maxWidth = SCREEN_WIDTH - stringWidth("0", &standardFont, true, true)*GROUPWIDTH_LEFT - stringWidth(tt, &standardFont, true, true);
           }
 
-          for(d=0; d<=1800 ; d+=300) {                                                      //Small font, fill 7 lines at 0, 300, 600, 900, 1200, 1500, 1800
-
+          //SMALL font, fill 7 lines at 0, 300, 600, 900, 1200, 1500, 1800
+          for(d=0; d<=2400 ; d+=300) {
+            //printf("SMALL>>> source:%u|%s|d:%u|%s|\n",source,errorMessage+source,d,tmpString+d);
             dest = d;
-            while(source < last && stringWidth(tmpString + d, &standardFont, true, true) <= maxWidth) {
-              do {
-                tmpString[dest] = errorMessage[source];
-                if(tmpString[dest] & 0x80) {
-                  tmpString[++dest] = errorMessage[++source];
-                }
-                source++;
-                tmpString[++dest] = 0;
-                if((SEPARATOR_LEFT[0]==1 && SEPARATOR_LEFT[1]==1) && stringWidth(tmpString + d, &standardFont, true, true) >= maxWidth - 20) break;
+            while(source < last && stringWidth(tmpString + d, &standardFont, true, true) <=  maxWidth) {
+              tmpString[dest] = errorMessage[source];
+              if(tmpString[dest] & 0x80) {
+                tmpString[++dest] = errorMessage[++source];
               }
-            while(source < last && !GROUPLEFT_DISABLED && (errorMessage[source] != SEPARATOR_LEFT[0] || (SEPARATOR_LEFT[1]==1 ? false : errorMessage[source + 1] != SEPARATOR_LEFT[1]))); //the text and digits cannot be 0x01 so additional logic not needed.
+              source++;
+              tmpString[++dest] = 0;
             }
+
+            uint8_t cnt = GROUPWIDTH_LEFT+1;
+            while(cnt-- != 0 && source < last && !GROUPLEFT_DISABLED ) { //Eat away characters at the end to line, up to and excluding the last seperator.
+              if(  !((SEPARATOR_LEFT[1] != 1 && tmpString[dest-2] == SEPARATOR_LEFT[0] && tmpString[dest-1] == SEPARATOR_LEFT[1]) || 
+                     (SEPARATOR_LEFT[1] == 1 && tmpString[dest-1] == SEPARATOR_LEFT[0])) ) {
+                dest--;  //line does not end on separator, so reduce the characters until is does
+                source--;
+              } else {
+                dest--; //line ends on a seperator so reduce only the target and let the next line begins onthe number, not separator
+                if(SEPARATOR_LEFT[1] != 1) dest--; //line ends on a double byte seperator
+                break;
+              }
+            }
+            tmpString[dest] = 0;
+            //printf(">>>AA %u %u |%s|\n", d, (uint8_t)tmpString[d], tmpString+d);
           }
+
+
           if(source < last) { // The long integer is too long
             xcopy(tmpString + dest - 2, STD_ELLIPSIS, 2);
             xcopy(tmpString + dest, STD_SPACE_6_PER_EM, 2);
@@ -2907,7 +2915,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
         source = 2100;
         for(d=0; d<=900 ; d+=300) {
           dest = d;
-          while(source < last && stringWidth(tmpString + d, &numericFont, true, true) <= SCREEN_WIDTH - 8*2) {
+          while(source < last && stringWidth(tmpString + d, &numericFont, true, true) <= SCREEN_WIDTH - 8*2-5) {
             //check if a full triplet of digits will fit otherwise break line
             if((tmpString[source] == SEPARATOR_LEFT[0] && (SEPARATOR_LEFT[1]==1 ? true : tmpString[source + 1] == SEPARATOR_LEFT[1])     ) ||
                (tmpString[source] == SEPARATOR_RIGHT[0] && (SEPARATOR_RIGHT[1]==1 ? true : tmpString[source + 1] == SEPARATOR_RIGHT[1]) )) {
@@ -2920,7 +2928,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
               tmpString20[0]=0;
               xcopy(tmpString20, tmpString + source, aa - source);
               tmpString20[aa - source]=0;
-              if(stringWidth(tmpString + d, &numericFont, true, true) + stringWidth(tmpString20, &numericFont, true, true) > SCREEN_WIDTH - 8*2) break;
+              if(stringWidth(tmpString + d, &numericFont, true, true) + stringWidth(tmpString20, &numericFont, true, true) > SCREEN_WIDTH - 8*2-5) break;
             }
 
             tmpString[dest] = tmpString[source];
