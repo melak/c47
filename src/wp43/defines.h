@@ -24,7 +24,7 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
-#define VERSION1 "0.108.10-03-snapshot"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
+#define VERSION1 "0.108.10-03-sshot"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
 //2023-06-28-0.108.10-03-snapshot
 
