@@ -116,12 +116,35 @@ void fnSaveProgram(uint16_t label) {
     // Find program boundaries
     const uint16_t savedCurrentLocalStepNumber = currentLocalStepNumber;
     uint16_t savedCurrentProgramNumber = currentProgramNumber;
+    
     // no argument – need to save current program
     if(label == 0 && !tam.alpha && tam.digitsSoFar == 0) {
+        // find the first global label in the current program
+        uint16_t currentLabel = 0;
+        strcpy(tmpStringLabelOrVariableName, "untitled");       
+        while (currentLabel < numberOfLabels) {
+          if (labelList[currentLabel].program == currentProgramNumber) {
+            break;
+          }
+          currentLabel++;
+        }
+        // get the first global label name
+        while (currentLabel < numberOfLabels) {
+          if (labelList[currentLabel].step > 0) {  // global label
+            // get current label name (to be used as default file name)
+            xcopy(tmpStringLabelOrVariableName, labelList[currentLabel].labelPointer + 1, *(labelList[currentLabel].labelPointer));
+            tmpStringLabelOrVariableName[*(labelList[currentLabel].labelPointer)] = 0;
+            break;
+          }
+          currentLabel++;
+        }
     }
     // Existing global label
     else if(label >= FIRST_LABEL && label <= LAST_LABEL) {
       fnGoto(label);
+      // get current label name (to be used as default file name)
+      xcopy(tmpStringLabelOrVariableName, labelList[label - FIRST_LABEL].labelPointer + 1, *(labelList[label - FIRST_LABEL].labelPointer));
+      tmpStringLabelOrVariableName[*(labelList[label - FIRST_LABEL].labelPointer)] = 0;
     }
     // Invalid label
     else {
@@ -130,12 +153,6 @@ void fnSaveProgram(uint16_t label) {
         sprintf(errorMessage, "label %" PRIu16 " is not a global label", label);
         moreInfoOnError("In function fnSaveProgram:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      return;
-    }
-
-    // program in flash memory : return without saving
-    if(programList[currentProgramNumber - 1].step < 0) { // flash memory
-      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       return;
     }
 

@@ -119,6 +119,7 @@ char    *stringAppend     (char *dest, const char *source);
 
 void     stringToUtf8     (const char *str, uint8_t *utf8);
 void     utf8ToString     (const uint8_t *utf8, char *str);
+void     stringToASCII    (const char *str, char *ascii);
 void    *xcopy            (void *dest, const void *source, int n);
   #if !defined(DMCP_BUILD)
     void strReplace         (char *haystack, const char *needle, const char *newNeedle);

@@ -3,6 +3,7 @@
 
 #include "hal/io.h"
 
+#include "charString.h"
 #include "dateTime.h"
 #include "defines.h"
 #include "wp43-gtk.h"
@@ -11,6 +12,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
+
+#include "wp43.h"
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
@@ -38,7 +41,8 @@ int file_selection_screen(const char * title, const char * base_dir, const char 
   static char untitled[16];
   gint res;
 
-  strcpy(untitled, "untitled");
+
+  strcpy(untitled, data);
   strcat(untitled, ext+1);
 
   if(disp_save) {
@@ -147,6 +151,9 @@ int _ioFileNameFromFilePath(ioFilePath_t path, char * filename) {
       }
       strcat(base_dir, "/" PROGRAMS_DIR);
       if(path == ioPathSaveProgram) {
+        // set current label name as default file name
+        stringToASCII(tmpStringLabelOrVariableName, filename);
+        //strcpy(filename, tmpStringLabelOrVariableName);
         ret = file_selection_screen("Save Program File", base_dir, "*"PRGM_EXT, 1, 1, filename);
       }
       else if(path == ioPathLoadProgram) {
@@ -165,6 +172,7 @@ int ioFileOpen(ioFilePath_t path, ioFileMode_t mode) {
   assert(_ioFileHandle == NULL);
   const char *filemode;
   static char filename[40];
+  strcpy(filename, "untitled");
   int ret = _ioFileNameFromFilePath(path, filename);
   if(ret != FILE_OK) {
     return ret;
