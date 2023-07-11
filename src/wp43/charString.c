@@ -423,6 +423,29 @@ void utf8ToString(const uint8_t *utf8, char *str) {
   *str = 0;
 }
 
+void stringToASCII(const char *str, char *ascii) {
+  int16_t len;
+
+  len = stringGlyphLength(str);
+
+  if(len == 0) {
+    *ascii = 0;
+    return;
+  }
+
+  for(int16_t i=0; i<len; i++) {  // WP43 supports only unicode code points from 0x0000 to 0x7FFF
+    if(*str & 0x80) { 
+      *ascii = 0x5F;    // underscore
+      str += 2;
+    }
+    else {
+      *ascii = *str;
+      str++;
+    }
+    ascii++;
+    *ascii = 0;
+  }
+}
 
 void *xcopy(void *dest, const void *source, int n) {
   char       *pDest   = (char *)dest;
