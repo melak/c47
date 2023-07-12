@@ -943,7 +943,7 @@ void execTimerApp(uint16_t timerType) {
       //}
 
       if(x == 0 && y == 0 && dx == SCREEN_WIDTH && dy == SCREEN_HEIGHT) {  //JMTOCHECK is this needed?
-        printf(">>> screen.c: clearScreen: clearScreenCounter=%d\n",clearScreenCounter++);    //JMYY ClearScreen Test  #endif
+        printf("   >>> screen.c: clearScreen: clearScreenCounter=%d\n",clearScreenCounter++);    //JMYY ClearScreen Test  #endif
         clear_ul(); //JMUL
       }
 
@@ -3984,12 +3984,21 @@ void execTimerApp(uint16_t timerType) {
         }
         else {
           if(!(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR)) {
+            #if defined(PC_BUILD)
+              printf("   >>> lcd_fill_rect SCRUPD_MANUAL_STATUSBAR\n");
+            #endif // PC_BUILD
             lcd_fill_rect(0, 0, SCREEN_WIDTH, Y_POSITION_OF_REGISTER_T_LINE, LCD_SET_VALUE);
           }
           if(!(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME))) {
+            #if defined(PC_BUILD)
+              printf("   >>> lcd_fill_rect SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME\n");
+            #endif // PC_BUILD
             lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, SCREEN_WIDTH, 240 - Y_POSITION_OF_REGISTER_T_LINE - SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
           }
-          if(!(screenUpdatingMode & (SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME))) {
+          if((calcMode != CM_NIM) && !(screenUpdatingMode & (SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME))) {
+            #if defined(PC_BUILD)
+              printf("   >>> lcd_fill_rect SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME\n");
+            #endif // PC_BUILD
             lcd_fill_rect(0, 240 - SOFTMENU_HEIGHT * 3, SCREEN_WIDTH, SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
           }
         }

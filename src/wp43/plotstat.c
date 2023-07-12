@@ -1925,8 +1925,8 @@ void fnPlotRegressionLine(uint16_t plotMode){
 
 
 void fnPlotZoom(uint16_t unusedButMandatoryParameter){
-   PLOT_ZOOM = (PLOT_ZOOM + 1) & 0x03;
-   switch(calcMode) {
+  PLOT_ZOOM = (PLOT_ZOOM + 1) & 0x03;
+  switch(calcMode) {
     case CM_PLOT_STAT: {
       if(PLOT_ZOOM != 0) {
          PLOT_AXIS = true;
@@ -1943,10 +1943,7 @@ void fnPlotZoom(uint16_t unusedButMandatoryParameter){
     default: {
       break;
     }
-   }
-  #if !defined(TESTSUITE_BUILD)
-     void refreshScreen(void);
-  #endif // !TESTSUITE_BUILD
+  }
 }
 
 

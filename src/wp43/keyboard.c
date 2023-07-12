@@ -1881,7 +1881,7 @@ RELEASE_END:
 #if !defined(TESTSUITE_BUILD)
   void processKeyAction(int16_t item) {
     #if defined(PC_BUILD)
-      printf(">>>> processKeyAction: item=%d  programRunStop=%d\n",item,programRunStop);
+//      printf(">>>> processKeyAction: item=%d  programRunStop=%d\n",item,programRunStop);
     #endif //PC_BUILD
     keyActionProcessed = false;
     lowercaseselected = ((alphaCase == AC_LOWER && !lastshiftF) || (alphaCase == AC_UPPER && lastshiftF /*&& !numLock*/)); //JM remove last !numlock if you want the shift, during numlock, to produce lower case
@@ -2109,7 +2109,7 @@ RELEASE_END:
       default:
       {
         #if defined(PC_BUILD)
-          printf("Switch - default: processKeyAction: calcMode=%d itemToBeAssigned=%d item=%d\n",calcMode, itemToBeAssigned, item);
+//          printf("Switch - default: processKeyAction: calcMode=%d itemToBeAssigned=%d item=%d\n",calcMode, itemToBeAssigned, item);
         #endif //PC_BUILD
         if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && item == ITM_USERMODE) {
           while(softmenuStack[0].softmenuId > 1) {
@@ -2341,7 +2341,6 @@ RELEASE_END:
               if(item == ITM_USERMODE) {
                 runFunction(item);
                 keyActionProcessed = true;
-//                refreshScreen();
               }
               break;
             }
