@@ -425,6 +425,7 @@ void utf8ToString(const uint8_t *utf8, char *str) {
 
 void stringToASCII(const char *str, char *ascii) {
   int16_t len;
+  uint8_t a1, a2;
 
   len = stringGlyphLength(str);
 
@@ -435,8 +436,15 @@ void stringToASCII(const char *str, char *ascii) {
 
   for(int16_t i=0; i<len; i++) {  // WP43 supports only unicode code points from 0x0000 to 0x7FFF
     if(*str & 0x80) { 
+    a1=(uint8_t)*str;
+    str++;
+    a2=(uint8_t)*str;
+    str++;
+    if(a1==(uint8_t)(STD_LEFT_SINGLE_QUOTE[0]) && a2==(uint8_t)(STD_LEFT_SINGLE_QUOTE[1])) *ascii = STD_QUOTE[0];else
+    if(a1==(uint8_t)(STD_RIGHT_SINGLE_QUOTE[0]) && a2==(uint8_t)(STD_RIGHT_SINGLE_QUOTE[1])) *ascii = STD_QUOTE[0];else
+    if(a1==(uint8_t)(STD_op_i[0]) && a2==(uint8_t)(STD_op_i[1])) *ascii = STD_i[0]; else
+    if(a1==(uint8_t)(STD_op_j[0]) && a2==(uint8_t)(STD_op_j[1])) *ascii = STD_j[0]; else
       *ascii = 0x5F;    // underscore
-      str += 2;
     }
     else {
       *ascii = *str;

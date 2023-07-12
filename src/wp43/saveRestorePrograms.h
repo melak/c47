@@ -10,7 +10,8 @@
   #include "typeDefinitions.h"
   #include <stdint.h>
 
-  void fnSaveProgram (uint16_t label);
-  void fnLoadProgram (uint16_t unusedButMandatoryParameter);
+  void fnSaveProgram   (uint16_t label);
+  void fnExportProgram (uint16_t label);
+  void fnLoadProgram   (uint16_t unusedButMandatoryParameter);
 
 #endif // !SAVERESTOREPROGRAMS_H
