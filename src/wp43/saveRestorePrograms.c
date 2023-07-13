@@ -100,11 +100,7 @@ void fnPExport(uint16_t unusedButMandatoryParameter) {
 #if !defined(SAVE_SPACE_DM42_10)
   #if !defined(TESTSUITE_BUILD)
     ///////////////////////////////////////////////////////////////////////////////////////
-    // For this function to work properly we need the following variables set properly:
-    //  - currentProgramNumber
-    //  - currentLocalStepNumber
-    //  - firstDisplayedLocalStepNumber
-    //  - firstDisplayedStep
+    // For details, see fnPem(). This is a modified copy.
     //
     uint16_t line, firstLine;
     uint8_t *step, *nextStep;
@@ -138,7 +134,7 @@ void fnPExport(uint16_t unusedButMandatoryParameter) {
       //printf("%s",tmpString);
       ioFileWrite(tmpString, strlen(tmpString));
 
-      decodeOneStep(step);
+      decodeOneStepXEQM(step);
       stringAppend(tmpString + stringByteLength(tmpString), "\n");
       stringToASCII(tmpString, errorMessage);
       //printf("%s\n",errorMessage);

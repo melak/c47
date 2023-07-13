@@ -20,6 +20,7 @@
 
 #include "programming/decode.h"
 
+#include "c43Extensions/xeqm.h"
 #include "charString.h"
 #include "dateTime.h"
 #include "display.h"
@@ -719,8 +720,8 @@ static void decodeLiteral(uint8_t *literalAddress) {
 }
 
 
-
-void decodeOneStep(uint8_t *step) {
+#define textOK true
+static void _decodeOneStep(uint8_t *step, bool_t textVersion) {
   uint16_t op = *(step++);
   if(op & 0x80) {
     op &= 0x7f;
@@ -732,9 +733,15 @@ void decodeOneStep(uint8_t *step) {
     xcopy(tmpString, ".END.", 6);
   }
   else {
+    char nameOp[16];
+    nameOp[0]=0;
     switch(indexOfItems[op].status & PTP_STATUS) {
       case PTP_NONE: {
-        sprintf(tmpString, "%s%s", (CST_01 <= op && op <= CST_79) ? "# " : "", indexOfItems[op].itemCatalogName);
+        if(textVersion) {
+          getXeqmText(op, nameOp);
+        }
+        if(nameOp[0] == 0) strcpy(nameOp,indexOfItems[op].itemCatalogName);
+        sprintf(tmpString, "%s%s", (CST_01 <= op && op <= CST_79) ? "# " : "", nameOp);
         break;
       }
 
@@ -749,8 +756,25 @@ void decodeOneStep(uint8_t *step) {
       }
 
       default: {
-        decodeOp(step, (op == ITM_INTEGRAL) ? STD_INTEGRAL "fd" : indexOfItems[op].itemCatalogName, (indexOfItems[op].status & PTP_STATUS) >> 9, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
+        if(op == ITM_INTEGRAL) {
+          strcpy(nameOp,STD_INTEGRAL "fd");
+        }
+        else {
+          if(textVersion) {
+            getXeqmText(op, nameOp);
+          } 
+          if(nameOp[0] == 0) strcpy(nameOp,indexOfItems[op].itemCatalogName);
+        }
+        decodeOp(step, nameOp, (indexOfItems[op].status & PTP_STATUS) >> 9, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
       }
     }
   }
+}
+
+void decodeOneStep(uint8_t *step) {
+  _decodeOneStep(step, !textOK);
+}
+
+void decodeOneStepXEQM(uint8_t *step) {
+  _decodeOneStep(step, textOK);
 }

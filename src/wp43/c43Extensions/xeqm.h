@@ -28,6 +28,7 @@
 extern bool_t running_program_jm;
 
 bool_t strcompare            (char *in1, char *in2);
+bool_t getXeqmText           (int16_t com, char *str);
 void fnXEQMENU               (uint16_t unusedButMandatoryParameter);
 void capture_sequence        (char *origin, uint16_t item);
 void XEQMENU_loadAllfromdisk (void);

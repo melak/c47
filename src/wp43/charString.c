@@ -436,15 +436,56 @@ void stringToASCII(const char *str, char *ascii) {
 
   for(int16_t i=0; i<len; i++) {  // WP43 supports only unicode code points from 0x0000 to 0x7FFF
     if(*str & 0x80) { 
-    a1=(uint8_t)*str;
-    str++;
-    a2=(uint8_t)*str;
-    str++;
-    if(a1==(uint8_t)(STD_LEFT_SINGLE_QUOTE[0]) && a2==(uint8_t)(STD_LEFT_SINGLE_QUOTE[1])) *ascii = STD_QUOTE[0];else
-    if(a1==(uint8_t)(STD_RIGHT_SINGLE_QUOTE[0]) && a2==(uint8_t)(STD_RIGHT_SINGLE_QUOTE[1])) *ascii = STD_QUOTE[0];else
-    if(a1==(uint8_t)(STD_op_i[0]) && a2==(uint8_t)(STD_op_i[1])) *ascii = STD_i[0]; else
-    if(a1==(uint8_t)(STD_op_j[0]) && a2==(uint8_t)(STD_op_j[1])) *ascii = STD_j[0]; else
-      *ascii = 0x5F;    // underscore
+      a1=(uint8_t)*str;
+      str++;
+      a2=(uint8_t)*str;
+      str++;
+      if(a1==(uint8_t)(STD_SUP_0  [0]) && (a2>=(uint8_t)(STD_SUP_0 [1]) && a2<=(uint8_t)(STD_SUP_9  [1])) ) *ascii = ('0'+a2)-(uint8_t)(STD_SUP_0 [1]); else
+      if(a1==(uint8_t)(STD_BASE_16[0]) && (a2>=(uint8_t)(STD_BASE_1[1]) && a2<=(uint8_t)(STD_BASE_16[1])) ) *ascii = ('0'+a2)-(uint8_t)(STD_BASE_1[1]); else
+
+      if(a1==(uint8_t)(STD_RIGHT_ARROW[0]) && a2==(uint8_t)(STD_RIGHT_ARROW[1])) {
+        *ascii = '-'; //to change to ->
+        ascii++;
+        *ascii = '>'; //to change to ->        
+      } else
+      if(a1==(uint8_t)(STD_SUB_10[0]) && a2==(uint8_t)(STD_SUB_10[1])) {
+        *ascii = '1'; //to change to 10^
+        ascii++;
+        *ascii = '0'; //to change to 10^
+        ascii++;
+        *ascii = '^'; //to change to 10^
+      } else
+      if(a1==(uint8_t)(STD_NOT_EQUAL[0]) && a2==(uint8_t)(STD_NOT_EQUAL[1])) {
+        *ascii = '<'; //to change to <>
+        ascii++;
+        *ascii = '>'; //to change to <>
+      } else
+      if(a1==(uint8_t)(STD_LEFT_RIGHT_ARROWS[0]) && a2==(uint8_t)(STD_LEFT_RIGHT_ARROWS[1])) {
+        *ascii = '>'; //to change to ><
+        ascii++;
+        *ascii = '<'; //to change to ><
+      } else
+
+      if(a1==(uint8_t)(STD_LEFT_SINGLE_QUOTE [0]) && a2==(uint8_t)(STD_LEFT_SINGLE_QUOTE [1])) *ascii = STD_QUOTE[0];else
+      if(a1==(uint8_t)(STD_RIGHT_SINGLE_QUOTE[0]) && a2==(uint8_t)(STD_RIGHT_SINGLE_QUOTE[1])) *ascii = STD_QUOTE[0];else
+      if(a1==(uint8_t)(STD_CROSS             [0]) && a2==(uint8_t)(STD_CROSS             [1])) *ascii = '*'; else
+      if(a1==(uint8_t)(STD_op_i              [0]) && a2==(uint8_t)(STD_op_i              [1])) *ascii = 'i'; else
+      if(a1==(uint8_t)(STD_op_j              [0]) && a2==(uint8_t)(STD_op_j              [1])) *ascii = 'j'; else
+      if(a1==(uint8_t)(STD_DOWN_ARROW        [0]) && a2==(uint8_t)(STD_DOWN_ARROW        [1])) *ascii = 'v'; else
+      if(a1==(uint8_t)(STD_UP_ARROW          [0]) && a2==(uint8_t)(STD_UP_ARROW          [1])) *ascii = '^'; else
+      if(a1==(uint8_t)(STD_SPACE_EM          [0]) && a2==(uint8_t)(STD_SPACE_EM          [1])) *ascii = ' '; else
+      if(a1==(uint8_t)(STD_SPACE_3_PER_EM    [0]) && a2==(uint8_t)(STD_SPACE_3_PER_EM    [1])) *ascii = ' '; else
+      if(a1==(uint8_t)(STD_SPACE_4_PER_EM    [0]) && a2==(uint8_t)(STD_SPACE_4_PER_EM    [1])) *ascii = ' '; else
+      if(a1==(uint8_t)(STD_SPACE_6_PER_EM    [0]) && a2==(uint8_t)(STD_SPACE_6_PER_EM    [1])) *ascii = ' '; else
+      if(a1==(uint8_t)(STD_SPACE_FIGURE      [0]) && a2==(uint8_t)(STD_SPACE_FIGURE      [1])) *ascii = ' '; else
+      if(a1==(uint8_t)(STD_SPACE_PUNCTUATION [0]) && a2==(uint8_t)(STD_SPACE_PUNCTUATION [1])) *ascii = ' '; else
+      if(a1==(uint8_t)(STD_SPACE_HAIR        [0]) && a2==(uint8_t)(STD_SPACE_HAIR        [1])) *ascii = ' '; else
+      {
+        #ifdef PC_BUILD
+          printf("Not decoded, replace with _: --a1=%u--a2=%u\n",a1,a2);
+        #endif// PC_BUILD
+        *ascii = 0x5F;    // underscore
+      }
     }
     else {
       *ascii = *str;
