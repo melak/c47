@@ -440,7 +440,8 @@ TO_QSPI const function_t indexOfFunctions[] = {
 
               {ITM_BEEP,                      "@"},
               {ITM_TONE,                      "@"},
-
+              {ITM_SQRT1PX2,                  "SQRT1+XSQR"},
+              
   #endif // !SAVE_SPACE_DM42_2
 };
 

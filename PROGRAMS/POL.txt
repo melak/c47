@@ -4,5 +4,5 @@ C47 Program file export, version 1
 0002:  BestF 510
 0003:  L.R.
 0004:  0
-0005:  _
+0005:  x_circ
 0006:  END

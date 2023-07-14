@@ -60,13 +60,13 @@ C47 Program file export, version 1
 0058:  GTO 55
 0059:  RTN
 0060:  LBL 50
-0061:  0?
+0061:  0#16
 0062:  LBL 56
 0063:  STO ->44
 0064:  DSL 44
 0065:  GTO 56
 0066:  Rv
-0067:  1 00 00 00 00 00 00 00?
+0067:  1 00 00 00 00 00 00 00#16
 0068:  STO 08
 0069:  Rv
 0070:  RTN
@@ -83,7 +83,7 @@ C47 Program file export, version 1
 0081:  37.02
 0082:  STO 44
 0083:  LBL 65
-0084:  0?
+0084:  0#16
 0085:  STO ->44
 0086:  DSL 44
 0087:  GTO 65
@@ -98,7 +98,7 @@ C47 Program file export, version 1
 0096:  STO 88
 0097:  LBL 63
 0098:  RCL ->45
-0099:  3?
+0099:  3#16
 0100:  SF C
 0101:  RLC ->88
 0102:  AND

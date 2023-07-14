@@ -733,12 +733,18 @@ static void _decodeOneStep(uint8_t *step, bool_t textVersion) {
     xcopy(tmpString, ".END.", 6);
   }
   else {
-    char nameOp[16];
+    char nameOp[36];
     nameOp[0]=0;
     switch(indexOfItems[op].status & PTP_STATUS) {
       case PTP_NONE: {
         if(textVersion) {
-          getXeqmText(op, nameOp);
+          if(CST_01 <= op && op <= CST_79) {
+            strcpy(nameOp,indexOfItems[op].itemCatalogName);
+            strcat(nameOp," ");
+            strcat(nameOp,indexOfItems[op].itemSoftmenuName);
+          } else {
+            getXeqmText(op, nameOp);
+          }
         }
         if(nameOp[0] == 0) strcpy(nameOp,indexOfItems[op].itemCatalogName);
         sprintf(tmpString, "%s%s", (CST_01 <= op && op <= CST_79) ? "# " : "", nameOp);
