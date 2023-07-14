@@ -37,11 +37,11 @@ TO_QSPI void (* const CheckValue[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(uint16_
 
 
 void checkValueError(uint16_t unusedButMandatoryParameter) {
-  displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-  #if(EXTRA_INFO_ON_CALC_ERROR == 1)
-    sprintf(errorMessage, "cannot do this for %s", getRegisterDataTypeName(REGISTER_X, true, false));
-    moreInfoOnError("In function fnCheckValue:", errorMessage, NULL, NULL);
-  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  //displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+  //#if(EXTRA_INFO_ON_CALC_ERROR == 1)
+  //  sprintf(errorMessage, "cannot do this for %s", getRegisterDataTypeName(REGISTER_X, true, false));
+  //  moreInfoOnError("In function fnCheckValue:", errorMessage, NULL, NULL);
+  //#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   temporaryInformation = TI_FALSE;
 }
 
