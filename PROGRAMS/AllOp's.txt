@@ -612,85 +612,85 @@ C47 Program file export, version 1
 0610:  x>< ->.00
 0611:  x>< ->.98
 0612:  x>< ->'Var'
-0613:  # a yr.gregor
-0614:  # a0 rad.bohr
-0615:  # aMoon orb.moon
-0616:  # a_earth orb.earth
-0617:  # c lightspeed
-0618:  # c1 c.radiatn1
-0619:  # c2 c.radiatn2
-0620:  # e charge.elem
-0621:  # eE e.euler
-0622:  # F c.faraday
-0623:  # F_alpha alpha.feigenbm
-0624:  # F_delta delta.feigenbm
-0625:  # G c.grav.nwt
-0626:  # G0 cond.quant
-0627:  # GC c.catalan
-0628:  # ge gfact.elec
-0629:  # GM_earth c.grav.geo
-0630:  # g_earth acc.earth
-0631:  # _Plank c.planck
-0632:  # _Plank2pi red.planck
-0633:  # k c.boltzmn
-0634:  # KJ c.josephsn
-0635:  # lPL len.planck
-0636:  # me mass.elec
-0637:  # MMoon mass.moon
-0638:  # mn mass.neu
-0639:  # mn/mp r.neu.prot
-0640:  # mp mass.prot
-0641:  # mPL mass.planck
-0642:  # mp/me r.prot.elec
-0643:  # mu mass.atom
-0644:  # muc2 energy.atom
-0645:  # m_mu mass.muon
-0646:  # M_sun mass.sun
-0647:  # M_earth mass.earth
-0648:  # NA nr.avogadro
-0649:  # NaN not.a.nr
-0650:  # p0 press.atm
-0651:  # R c.mol.gas
-0652:  # re rad.elec
-0653:  # RK c.klitzing
-0654:  # RMoon rad.moon
-0655:  # Rinf c.rydberg
-0656:  # R_sun rad.sun
-0657:  # R_earth rad.earth
-0658:  # Sa majax.earth
-0659:  # Sb minax.earth
-0660:  # Se2 sq.eccent1
-0661:  # Se'2 sq.eccent2
-0662:  # Sf`-1 f.flatteng
-0663:  # T0 temp.stand
-0664:  # TP temp.planck
-0665:  # tPL time.planck
-0666:  # Vm volume.gas
-0667:  # Z0 imped.vac
-0668:  # alpha c.finestruc
-0669:  # gamma c.grav.nwt
-0670:  # gammaEM c.eul.masc
-0671:  # gammap r.gyro.prot
-0672:  # Delta_Cs frq.hypf.cs
-0673:  # epsilon0 epermt.vac
-0674:  # _C wavln.elec
-0675:  # _Cn wavln.neu
-0676:  # _Cp wavln.prot
-0677:  # _0 mpermb.vac
-0678:  # _B magn.both
-0679:  # _e mgmom.elec
-0680:  # _e/_B r.elec.bohr
-0681:  # _n magmom.neu
-0682:  # _p mgmom.prot
-0683:  # _u magn.nucl
-0684:  # __mu mgmom.muon
-0685:  # sigmaB c.stephbol
-0686:  # phi r.golden
-0687:  # phi0 fluxq.magn
-0688:  # _ vangl.earth
-0689:  # -inf inf.minus
-0690:  # inf inf.plus
-0691:  # # zero
+0613:  #  1 a yr.gregor
+0614:  #  2 a0 rad.bohr
+0615:  #  3 aMoon orb.moon
+0616:  #  4 a`earth orb.earth
+0617:  #  5 c lightspeed
+0618:  #  6 c1 c.radiatn1
+0619:  #  7 c2 c.radiatn2
+0620:  #  8 e charge.elem
+0621:  #  9 eE e.euler
+0622:  # 10 F c.faraday
+0623:  # 11 F`alpha alpha.feigenbm
+0624:  # 12 F`delta delta.feigenbm
+0625:  # 13 G c.grav.nwt
+0626:  # 14 G0 cond.quant
+0627:  # 15 GC c.catalan
+0628:  # 16 ge gfact.elec
+0629:  # 17 GM`earth c.grav.geo
+0630:  # 18 g`earth acc.earth
+0631:  # 19 Planck c.planck
+0632:  # 20 Planck2pi red.planck
+0633:  # 21 k c.boltzmn
+0634:  # 22 KJ c.josephsn
+0635:  # 23 lPL len.planck
+0636:  # 24 me mass.elec
+0637:  # 25 MMoon mass.moon
+0638:  # 26 mn mass.neu
+0639:  # 27 mn/mp r.neu.prot
+0640:  # 28 mp mass.prot
+0641:  # 29 mPL mass.planck
+0642:  # 30 mp/me r.prot.elec
+0643:  # 31 mu mass.atom
+0644:  # 32 muc2 energy.atom
+0645:  # 33 m`mu mass.muon
+0646:  # 34 M`sun mass.sun
+0647:  # 35 M`earth mass.earth
+0648:  # 36 NA nr.avogadro
+0649:  # 37 NaN not.a.nr
+0650:  # 38 p0 press.atm
+0651:  # 39 R c.mol.gas
+0652:  # 40 re rad.elec
+0653:  # 41 RK c.klitzing
+0654:  # 42 RMoon rad.moon
+0655:  # 43 Rinf c.rydberg
+0656:  # 44 R`sun rad.sun
+0657:  # 45 R`earth rad.earth
+0658:  # 46 Sa majax.earth
+0659:  # 47 Sb minax.earth
+0660:  # 48 Se2 sq.eccent1
+0661:  # 49 Se'2 sq.eccent2
+0662:  # 50 Sf`-1 f.flatteng
+0663:  # 51 T0 temp.stand
+0664:  # 52 TP temp.planck
+0665:  # 53 tPL time.planck
+0666:  # 54 Vm volume.gas
+0667:  # 55 Z0 imped.vac
+0668:  # 56 alpha c.finestruc
+0669:  # 57 gamma c.grav.nwt
+0670:  # 58 gammaEM c.eul.masc
+0671:  # 59 gammap r.gyro.prot
+0672:  # 60 Delta_Cs frq.hypf.cs
+0673:  # 61 epsilon0 epermt.vac
+0674:  # 62 lambdaC wavln.elec
+0675:  # 63 lambdaCn wavln.neu
+0676:  # 64 lambdaCp wavln.prot
+0677:  # 65 mu0 mpermb.vac
+0678:  # 66 muB magn.both
+0679:  # 67 mue mgmom.elec
+0680:  # 68 mue/muB r.elec.bohr
+0681:  # 69 mun magmom.neu
+0682:  # 70 mup mgmom.prot
+0683:  # 71 muu magn.nucl
+0684:  # 72 mu`mu mgmom.muon
+0685:  # 73 sigmaB c.stephbol
+0686:  # 74 phi r.golden
+0687:  # 75 phi0 fluxq.magn
+0688:  # 76 omega vangl.earth
+0689:  # 77 -inf inf.minus
+0690:  # 78 inf inf.plus
+0691:  # 79 # zero
 0692:  CNST 001
 0693:  CNST 079
 0694:  CNST ->00
@@ -1599,7 +1599,7 @@ C47 Program file export, version 1
 1597:  LBL? E
 1598:  LEAP?
 1599:  LM
-1600:  Lm_alpha
+1600:  Lm`alpha
 1601:  LNBETA
 1602:  LNGAMMA
 1603:  LocR 00

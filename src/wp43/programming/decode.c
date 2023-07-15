@@ -739,7 +739,9 @@ static void _decodeOneStep(uint8_t *step, bool_t textVersion) {
       case PTP_NONE: {
         if(textVersion) {
           if(CST_01 <= op && op <= CST_79) {
-            strcpy(nameOp,indexOfItems[op].itemCatalogName);
+            sprintf(nameOp, "%2i",op - CST_01 + 1); 
+            strcat(nameOp," ");
+            strcat(nameOp,indexOfItems[op].itemCatalogName);
             strcat(nameOp," ");
             strcat(nameOp,indexOfItems[op].itemSoftmenuName);
           } else {
