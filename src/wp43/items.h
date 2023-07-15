@@ -1635,7 +1635,7 @@
 #define ITM_STDDEVWEIGHTED          1585
 #define ITM_SAVE                    1586
 #define ITM_SCI                     1587
-#define ITM_SDIGS                   1588
+#define ITM_GETSDIGS                1588
 #define ITM_SEED                    1589
 #define ITM_WRITEP                  1590
 #define ITM_SETCHN                  1591

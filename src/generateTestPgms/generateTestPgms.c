@@ -10033,7 +10033,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_DENMAX2 >> 8) | 0x80;
     *(currentStep++) =  ITM_DENMAX2       & 0xff;
-    *(currentStep++) = 9999;
+    *(currentStep++) = 88;
 
     *(currentStep++) = (ITM_DOT_PROD >> 8) | 0x80;
     *(currentStep++) =  ITM_DOT_PROD       & 0xff;
@@ -13360,8 +13360,8 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = LAST_LOCAL_REGISTER;
 
-    *(currentStep++) = (ITM_SDIGS >> 8) | 0x80;
-    *(currentStep++) =  ITM_SDIGS       & 0xff;
+    *(currentStep++) = (ITM_SETSIG2>> 8) | 0x80;
+    *(currentStep++) =  ITM_SETSIG2      & 0xff;
     *(currentStep++) = 20;
 
     *(currentStep++) = (ITM_SEED >> 8) | 0x80;
@@ -13382,9 +13382,8 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = (ITM_SETJPN >> 8) | 0x80;
     *(currentStep++) =  ITM_SETJPN       & 0xff;
 
-    *(currentStep++) = (ITM_SDIGS >> 8) | 0x80;
-    *(currentStep++) =  ITM_SDIGS       & 0xff;
-    *(currentStep++) = 24;
+    *(currentStep++) = (ITM_GETSDIGS >> 8) | 0x80;
+    *(currentStep++) =  ITM_GETSDIGS       & 0xff;
 
     *(currentStep++) = (ITM_SETTIM >> 8) | 0x80;
     *(currentStep++) =  ITM_SETTIM       & 0xff;
@@ -14643,7 +14642,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_RNG >> 8) | 0x80;
     *(currentStep++) =  ITM_RNG       & 0xff;
-    *(currentStep++) = 1000;
+    *(currentStep++) = 20;
 
     *(currentStep++) = (ITM_GETRANGE >> 8) | 0x80;
     *(currentStep++) =  ITM_GETRANGE       & 0xff;
@@ -15089,9 +15088,9 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = (ITM_TRANS >> 8) | 0x80;
     *(currentStep++) =  ITM_TRANS       & 0xff;
 
-//    *(currentStep++) = (ITM_HIDE >> 8) | 0x80;
-  //  *(currentStep++) =  ITM_HIDE       & 0xff;
-    //*(currentStep++) = 99;
+    *(currentStep++) = (ITM_HIDE >> 8) | 0x80;
+    *(currentStep++) =  ITM_HIDE       & 0xff;
+    *(currentStep++) = 99;
 
     *(currentStep++) = (ITM_Ephik >> 8) | 0x80;
     *(currentStep++) =  ITM_Ephik       & 0xff;

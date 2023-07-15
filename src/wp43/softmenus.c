@@ -161,7 +161,7 @@ TO_QSPI const int16_t menu_FLAGS[]       = { ITM_SF,                        ITM_
 
 
 TO_QSPI const int16_t menu_INFO[]        = { ITM_SSIZE,                     ITM_MEM,                    ITM_RMODEQ,               ITM_ISM,               ITM_WSIZEQ,                  ITM_KTYP,
-                                             ITM_LocRQ,                     ITM_DSK,                    ITM_ULP,                  ITM_NEIGHB,            ITM_SDIGS,                   ITM_BATT,
+                                             ITM_LocRQ,                     ITM_DSK,                    ITM_ULP,                  ITM_NEIGHB,            ITM_GETSDIGS,                ITM_BATT,
                                              ITM_WHO,                       ITM_VERS,                   ITM_M_DIMQ,               ITM_PMINFINITY,        ITM_ALPHAPOS,                ITM_ALPHALENG,
                                              ITM_GETRANGE,                  ITM_GETHIDE,                ITM_GET_JUL_GREG,         ITM_NULL,              ITM_SH_ERPN,                 ITM_BESTFQ                      };    //JM INFO
 

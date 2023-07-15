@@ -133,7 +133,7 @@ void configCommon(uint16_t idx) {
     jm_BASE_SCREEN = false;                  //Switch off base = MyMenu
     SH_BASE_HOME = false;                    //Ensure base = HOME is off
     exponentLimit     = 99;                  //Set the exponent limit the same as HP35, i.e. 99                ID, if changed, also set the conditions for checkHP in defines.h (99)
-    significantDigits = 16;                  //SDIGS = 16                                                      ID, if changed, also set the conditions for checkHP in defines.h (10-16)
+    significantDigits = 16;                  //SETSIG2 = 16                                                    ID, if changed, also set the conditions for checkHP in defines.h (10-16)
     displayStack = cachedDisplayStack = 1;   //Change to single stack register display                         ID, if changed, also set the conditions for checkHP in defines.h (1)
     currentAngularMode = amDegree;           //Set to DEG
     SetSetting(SS_4);                        //SSTACK4

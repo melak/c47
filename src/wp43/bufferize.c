@@ -839,7 +839,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case ITM_RMODEQ :
           case ITM_EX1 :
           case ITM_ROUNDI2 :
-          case ITM_SDIGS :
+          case ITM_SETSIG2 :
           case ITM_SIGN :
           case ITM_ISM :
           case ITM_SMW :
