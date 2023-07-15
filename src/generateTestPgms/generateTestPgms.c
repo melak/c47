@@ -13141,9 +13141,6 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = (ITM_RE >> 8) | 0x80;
     *(currentStep++) =  ITM_RE       & 0xff;
 
-    *(currentStep++) = (ITM_READP >> 8) | 0x80;
-    *(currentStep++) =  ITM_READP       & 0xff;
-
     *(currentStep++) = (ITM_REtoCX >> 8) | 0x80;
     *(currentStep++) =  ITM_REtoCX       & 0xff;
 
@@ -13367,9 +13364,6 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_SEED >> 8) | 0x80;
     *(currentStep++) =  ITM_SEED       & 0xff;
-
-    *(currentStep++) = (ITM_WRITEP >> 8) | 0x80;
-    *(currentStep++) =  ITM_WRITEP       & 0xff;
 
     *(currentStep++) = (ITM_SETCHN >> 8) | 0x80;
     *(currentStep++) =  ITM_SETCHN       & 0xff;

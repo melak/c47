@@ -205,8 +205,8 @@ typedef struct {
 
 TO_QSPI const function_t indexOfFunctions[] = {
   #if !defined(SAVE_SPACE_DM42_2)
-    //function              functionName
-    //XEQM TYPE2 ORIGINAL FULL SELECTED LIST
+    //        function              functionName
+    //        XEQM CODE 2023-07-15
               {ITM_PRIME,                     "@"},
               {ITM_ENTER,                     "ENTER"},
               {ITM_XexY,                      "X<>Y"},

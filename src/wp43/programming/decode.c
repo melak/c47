@@ -754,7 +754,7 @@ static void _decodeOneStep(uint8_t *step, bool_t textVersion) {
       }
 
       case PTP_DISABLED: {
-        printf("\nERROR in decodeOneStep: instruction %u is not programmable!\n", op);
+        printf("\nERROR in decodeOneStep: instruction %u:%s is not programmable!\n", op, indexOfItems[op].itemCatalogName);
         break;
       }
 
