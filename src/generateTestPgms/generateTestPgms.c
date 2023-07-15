@@ -15089,9 +15089,9 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = (ITM_TRANS >> 8) | 0x80;
     *(currentStep++) =  ITM_TRANS       & 0xff;
 
-    *(currentStep++) = (ITM_HIDE >> 8) | 0x80;
-    *(currentStep++) =  ITM_HIDE       & 0xff;
-    *(currentStep++) = 99;
+//    *(currentStep++) = (ITM_HIDE >> 8) | 0x80;
+  //  *(currentStep++) =  ITM_HIDE       & 0xff;
+    //*(currentStep++) = 99;
 
     *(currentStep++) = (ITM_Ephik >> 8) | 0x80;
     *(currentStep++) =  ITM_Ephik       & 0xff;
