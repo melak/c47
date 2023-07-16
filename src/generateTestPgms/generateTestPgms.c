@@ -10034,6 +10034,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = (ITM_DENMAX2 >> 8) | 0x80;
     *(currentStep++) =  ITM_DENMAX2       & 0xff;
     *(currentStep++) = 88;
+    *(currentStep++) = 88;
 
     *(currentStep++) = (ITM_DOT_PROD >> 8) | 0x80;
     *(currentStep++) =  ITM_DOT_PROD       & 0xff;
@@ -14642,6 +14643,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_RNG >> 8) | 0x80;
     *(currentStep++) =  ITM_RNG       & 0xff;
+    *(currentStep++) = 20;
     *(currentStep++) = 20;
 
     *(currentStep++) = (ITM_GETRANGE >> 8) | 0x80;

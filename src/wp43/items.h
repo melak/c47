@@ -1524,7 +1524,7 @@
 #define ITM_DISK                    1474
 #define ITM_FQX                     1475
 #define ITM_FDQX                    1476
-#define ITM_GAP                     1477
+#define ITM_1477                    1477
 #define ITM_GD                      1478
 #define ITM_GDM1                    1479
 #define ITM_GRAD                    1480
@@ -1623,7 +1623,7 @@
 #define ITM_DSP                     1573
 #define ITM_RNORM                   1574
 #define ITM_EX1                     1575
-#define ITM_EXPORTP                 1576
+#define ITM_READP                   1576
 #define ITM_RSD                     1577
 #define ITM_RSUM                    1578
 #define ITM_RTNP1                   1579
