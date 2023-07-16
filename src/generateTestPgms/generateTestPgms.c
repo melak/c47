@@ -10033,8 +10033,8 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_DENMAX2 >> 8) | 0x80;
     *(currentStep++) =  ITM_DENMAX2       & 0xff;
-    *(currentStep++) = 88;
-    *(currentStep++) = 88;
+    *(currentStep++) = 21;
+    *(currentStep++) = 21;
 
     *(currentStep++) = (ITM_DOT_PROD >> 8) | 0x80;
     *(currentStep++) =  ITM_DOT_PROD       & 0xff;

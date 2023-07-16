@@ -1,5 +1,5 @@
 C47 Program file export, version 1
-0000: { Prgm #35: 2066226685 bytes / 1248 steps }
+0000: { Prgm #35: 7810 bytes / 2194 steps }
 0001:  LBL 'AllOp's'
 0002:  LBL 00
 0003:  LBL 99
@@ -1190,4 +1190,1007 @@ C47 Program file export, version 1
 1188:  CASE 'Var'
 1189:  CASE ->00
 1190:  CASE ->99
-1191:  CASE
+1191:  CASE ->X
+1192:  CASE ->K
+1193:  CASE ->.00
+1194:  CASE ->.98
+1195:  CASE ->'Var'
+1196:  CLCVAR
+1197:  CLFALL
+1198:  a b/c
+1199:  CLLCD
+1200:  CLMENU
+1201:  CLSTK
+1202:  CLSUM
+1203:  STO^ 00
+1204:  STO^ 99
+1205:  STO^ X
+1206:  STO^ K
+1207:  STO^ .00
+1208:  STO^ .98
+1209:  STO^ 'Var'
+1210:  STO^ ->00
+1211:  STO^ ->99
+1212:  STO^ ->X
+1213:  STO^ ->K
+1214:  STO^ ->.00
+1215:  STO^ ->.98
+1216:  STO^ ->'Var'
+1217:  CONJ
+1218:  RCL^ 00
+1219:  RCL^ 99
+1220:  RCL^ X
+1221:  RCL^ K
+1222:  RCL^ .00
+1223:  RCL^ .98
+1224:  RCL^ 'Var'
+1225:  RCL^ ->00
+1226:  RCL^ ->99
+1227:  RCL^ ->X
+1228:  RCL^ ->K
+1229:  RCL^ ->.00
+1230:  RCL^ ->.98
+1231:  RCL^ ->'Var'
+1232:  CORR
+1233:  COV
+1234:  BestF?
+1235:  CROSS
+1236:  CX->RE
+1237:  DATE
+1238:  DATE->
+1239:  DAY
+1240:  DBLR
+1241:  DBL*
+1242:  DBL/
+1243:  DECOMP
+1244:  DEG
+1245:  s(a)
+1246:  DMX 5397
+1247:  DOT
+1248:  DSTACK 0
+1249:  DSTACK 4
+1250:  DSTACK ->00
+1251:  DSTACK ->99
+1252:  DSTACK ->X
+1253:  DSTACK ->K
+1254:  DSTACK ->.00
+1255:  DSTACK ->.98
+1256:  DSTACK ->'Var'
+1257:  D.MS
+1258:  DMY
+1259:  D->J
+1260:  DELITM 'Var'
+1261:  EIGVAL
+1262:  EIGVEC
+1263:  ENDP
+1264:  ENG 00
+1265:  ENG 15
+1266:  ENG ->00
+1267:  ENG ->99
+1268:  ENG ->X
+1269:  ENG ->K
+1270:  ENG ->.00
+1271:  ENG ->.98
+1272:  ENG ->'Var'
+1273:  ENORM
+1274:  RCLv 00
+1275:  RCLv 99
+1276:  RCLv X
+1277:  RCLv K
+1278:  RCLv .00
+1279:  RCLv .98
+1280:  RCLv 'Var'
+1281:  RCLv ->00
+1282:  RCLv ->99
+1283:  RCLv ->X
+1284:  RCLv ->K
+1285:  RCLv ->.00
+1286:  RCLv ->.98
+1287:  RCLv ->'Var'
+1288:  erf
+1289:  erfc
+1290:  ERR 00
+1291:  ERR 55
+1292:  ERR ->00
+1293:  ERR ->99
+1294:  ERR ->X
+1295:  ERR ->K
+1296:  ERR ->.00
+1297:  ERR ->.98
+1298:  ERR ->'Var'
+1299:  EXITALL
+1300:  EXPT
+1301:  J/G?
+1302:  FIB
+1303:  FIX 00
+1304:  FIX 15
+1305:  FIX ->00
+1306:  FIX ->99
+1307:  FIX ->X
+1308:  FIX ->K
+1309:  FIX ->.00
+1310:  FIX ->.98
+1311:  FIX ->'Var'
+1312:  DISK?
+1313:  f'(x) 'Lbl'
+1314:  f'(x) 00
+1315:  f'(x) 99
+1316:  f'(x) A
+1317:  f'(x) E
+1318:  f"(x) 'Lbl'
+1319:  f"(x) 00
+1320:  f"(x) 99
+1321:  f"(x) A
+1322:  f"(x) E
+1323:  IPGRP 0
+1324:  IPGRP 9
+1325:  IPGRP ->00
+1326:  IPGRP ->99
+1327:  IPGRP ->X
+1328:  IPGRP ->K
+1329:  IPGRP ->.00
+1330:  IPGRP ->.98
+1331:  IPGRP ->'Var'
+1332:  GD
+1333:  GD^-1
+1334:  GRAD
+1335:  Hn
+1336:  HnP
+1337:  IM
+1338:  INDEX 00
+1339:  INDEX 99
+1340:  INDEX X
+1341:  INDEX K
+1342:  INDEX .00
+1343:  INDEX .98
+1344:  INDEX 'Var'
+1345:  INDEX ->00
+1346:  INDEX ->99
+1347:  INDEX ->X
+1348:  INDEX ->K
+1349:  INDEX ->.00
+1350:  INDEX ->.98
+1351:  INDEX ->'Var'
+1352:  Ixyz
+1353:  IGammap
+1354:  IGammaq
+1355:  I+
+1356:  I-
+1357:  Jy(x)
+1358:  J+
+1359:  J-
+1360:  J/G
+1361:  KEY 01 GTO 00
+1362:  KEY 01 GTO 99
+1363:  KEY 01 GTO A
+1364:  KEY 01 GTO E
+1365:  KEY 01 GTO 'Label'
+1366:  KEY 01 GTO ->00
+1367:  KEY 01 GTO ->99
+1368:  KEY 01 GTO ->X
+1369:  KEY 01 GTO ->K
+1370:  KEY 01 GTO ->.00
+1371:  KEY 01 GTO ->.98
+1372:  KEY 01 GTO ->'Var'
+1373:  KEY 21 GTO 00
+1374:  KEY 21 GTO 99
+1375:  KEY 21 GTO A
+1376:  KEY 21 GTO E
+1377:  KEY 21 GTO 'Label'
+1378:  KEY 21 GTO ->00
+1379:  KEY 21 GTO ->99
+1380:  KEY 21 GTO ->X
+1381:  KEY 21 GTO ->K
+1382:  KEY 21 GTO ->.00
+1383:  KEY 21 GTO ->.98
+1384:  KEY 21 GTO ->'Var'
+1385:  KEY ->00 GTO 00
+1386:  KEY ->00 GTO 99
+1387:  KEY ->00 GTO A
+1388:  KEY ->00 GTO E
+1389:  KEY ->00 GTO 'Label'
+1390:  KEY ->00 GTO ->00
+1391:  KEY ->00 GTO ->99
+1392:  KEY ->00 GTO ->X
+1393:  KEY ->00 GTO ->K
+1394:  KEY ->00 GTO ->.00
+1395:  KEY ->00 GTO ->.98
+1396:  KEY ->00 GTO ->'Var'
+1397:  KEY ->99 GTO 00
+1398:  KEY ->99 GTO 99
+1399:  KEY ->99 GTO A
+1400:  KEY ->99 GTO E
+1401:  KEY ->99 GTO 'Label'
+1402:  KEY ->99 GTO ->00
+1403:  KEY ->99 GTO ->99
+1404:  KEY ->99 GTO ->X
+1405:  KEY ->99 GTO ->K
+1406:  KEY ->99 GTO ->.00
+1407:  KEY ->99 GTO ->.98
+1408:  KEY ->99 GTO ->'Var'
+1409:  KEY ->X GTO 00
+1410:  KEY ->X GTO 99
+1411:  KEY ->X GTO A
+1412:  KEY ->X GTO E
+1413:  KEY ->X GTO 'Label'
+1414:  KEY ->X GTO ->00
+1415:  KEY ->X GTO ->99
+1416:  KEY ->X GTO ->X
+1417:  KEY ->X GTO ->K
+1418:  KEY ->X GTO ->.00
+1419:  KEY ->X GTO ->.98
+1420:  KEY ->X GTO ->'Var'
+1421:  KEY ->K GTO 00
+1422:  KEY ->K GTO 99
+1423:  KEY ->K GTO A
+1424:  KEY ->K GTO E
+1425:  KEY ->K GTO 'Label'
+1426:  KEY ->K GTO ->00
+1427:  KEY ->K GTO ->99
+1428:  KEY ->K GTO ->X
+1429:  KEY ->K GTO ->K
+1430:  KEY ->K GTO ->.00
+1431:  KEY ->K GTO ->.98
+1432:  KEY ->K GTO ->'Var'
+1433:  KEY ->.00 GTO 00
+1434:  KEY ->.00 GTO 99
+1435:  KEY ->.00 GTO A
+1436:  KEY ->.00 GTO E
+1437:  KEY ->.00 GTO 'Label'
+1438:  KEY ->.00 GTO ->00
+1439:  KEY ->.00 GTO ->99
+1440:  KEY ->.00 GTO ->X
+1441:  KEY ->.00 GTO ->K
+1442:  KEY ->.00 GTO ->.00
+1443:  KEY ->.00 GTO ->.98
+1444:  KEY ->.00 GTO ->'Var'
+1445:  KEY ->.98 GTO 00
+1446:  KEY ->.98 GTO 99
+1447:  KEY ->.98 GTO A
+1448:  KEY ->.98 GTO E
+1449:  KEY ->.98 GTO 'Label'
+1450:  KEY ->.98 GTO ->00
+1451:  KEY ->.98 GTO ->99
+1452:  KEY ->.98 GTO ->X
+1453:  KEY ->.98 GTO ->K
+1454:  KEY ->.98 GTO ->.00
+1455:  KEY ->.98 GTO ->.98
+1456:  KEY ->.98 GTO ->'Var'
+1457:  KEY ->'Var' GTO 00
+1458:  KEY ->'Var' GTO 99
+1459:  KEY ->'Var' GTO A
+1460:  KEY ->'Var' GTO E
+1461:  KEY ->'Var' GTO 'Label'
+1462:  KEY ->'Var' GTO ->00
+1463:  KEY ->'Var' GTO ->99
+1464:  KEY ->'Var' GTO ->X
+1465:  KEY ->'Var' GTO ->K
+1466:  KEY ->'Var' GTO ->.00
+1467:  KEY ->'Var' GTO ->.98
+1468:  KEY ->'Var' GTO ->'Var'
+1469:  KEY 01 XEQ 00
+1470:  KEY 01 XEQ 99
+1471:  KEY 01 XEQ A
+1472:  KEY 01 XEQ E
+1473:  KEY 01 XEQ 'Label'
+1474:  KEY 01 XEQ ->00
+1475:  KEY 01 XEQ ->99
+1476:  KEY 01 XEQ ->X
+1477:  KEY 01 XEQ ->K
+1478:  KEY 01 XEQ ->.00
+1479:  KEY 01 XEQ ->.98
+1480:  KEY 01 XEQ ->'Var'
+1481:  KEY 21 XEQ 00
+1482:  KEY 21 XEQ 99
+1483:  KEY 21 XEQ A
+1484:  KEY 21 XEQ E
+1485:  KEY 21 XEQ 'Label'
+1486:  KEY 21 XEQ ->00
+1487:  KEY 21 XEQ ->99
+1488:  KEY 21 XEQ ->X
+1489:  KEY 21 XEQ ->K
+1490:  KEY 21 XEQ ->.00
+1491:  KEY 21 XEQ ->.98
+1492:  KEY 21 XEQ ->'Var'
+1493:  KEY ->00 XEQ 00
+1494:  KEY ->00 XEQ 99
+1495:  KEY ->00 XEQ A
+1496:  KEY ->00 XEQ E
+1497:  KEY ->00 XEQ 'Label'
+1498:  KEY ->00 XEQ ->00
+1499:  KEY ->00 XEQ ->99
+1500:  KEY ->00 XEQ ->X
+1501:  KEY ->00 XEQ ->K
+1502:  KEY ->00 XEQ ->.00
+1503:  KEY ->00 XEQ ->.98
+1504:  KEY ->00 XEQ ->'Var'
+1505:  KEY ->99 XEQ 00
+1506:  KEY ->99 XEQ 99
+1507:  KEY ->99 XEQ A
+1508:  KEY ->99 XEQ E
+1509:  KEY ->99 XEQ 'Label'
+1510:  KEY ->99 XEQ ->00
+1511:  KEY ->99 XEQ ->99
+1512:  KEY ->99 XEQ ->X
+1513:  KEY ->99 XEQ ->K
+1514:  KEY ->99 XEQ ->.00
+1515:  KEY ->99 XEQ ->.98
+1516:  KEY ->99 XEQ ->'Var'
+1517:  KEY ->X XEQ 00
+1518:  KEY ->X XEQ 99
+1519:  KEY ->X XEQ A
+1520:  KEY ->X XEQ E
+1521:  KEY ->X XEQ 'Label'
+1522:  KEY ->X XEQ ->00
+1523:  KEY ->X XEQ ->99
+1524:  KEY ->X XEQ ->X
+1525:  KEY ->X XEQ ->K
+1526:  KEY ->X XEQ ->.00
+1527:  KEY ->X XEQ ->.98
+1528:  KEY ->X XEQ ->'Var'
+1529:  KEY ->K XEQ 00
+1530:  KEY ->K XEQ 99
+1531:  KEY ->K XEQ A
+1532:  KEY ->K XEQ E
+1533:  KEY ->K XEQ 'Label'
+1534:  KEY ->K XEQ ->00
+1535:  KEY ->K XEQ ->99
+1536:  KEY ->K XEQ ->X
+1537:  KEY ->K XEQ ->K
+1538:  KEY ->K XEQ ->.00
+1539:  KEY ->K XEQ ->.98
+1540:  KEY ->K XEQ ->'Var'
+1541:  KEY ->.00 XEQ 00
+1542:  KEY ->.00 XEQ 99
+1543:  KEY ->.00 XEQ A
+1544:  KEY ->.00 XEQ E
+1545:  KEY ->.00 XEQ 'Label'
+1546:  KEY ->.00 XEQ ->00
+1547:  KEY ->.00 XEQ ->99
+1548:  KEY ->.00 XEQ ->X
+1549:  KEY ->.00 XEQ ->K
+1550:  KEY ->.00 XEQ ->.00
+1551:  KEY ->.00 XEQ ->.98
+1552:  KEY ->.00 XEQ ->'Var'
+1553:  KEY ->.98 XEQ 00
+1554:  KEY ->.98 XEQ 99
+1555:  KEY ->.98 XEQ A
+1556:  KEY ->.98 XEQ E
+1557:  KEY ->.98 XEQ 'Label'
+1558:  KEY ->.98 XEQ ->00
+1559:  KEY ->.98 XEQ ->99
+1560:  KEY ->.98 XEQ ->X
+1561:  KEY ->.98 XEQ ->K
+1562:  KEY ->.98 XEQ ->.00
+1563:  KEY ->.98 XEQ ->.98
+1564:  KEY ->.98 XEQ ->'Var'
+1565:  KEY ->'Var' XEQ 00
+1566:  KEY ->'Var' XEQ 99
+1567:  KEY ->'Var' XEQ A
+1568:  KEY ->'Var' XEQ E
+1569:  KEY ->'Var' XEQ 'Label'
+1570:  KEY ->'Var' XEQ ->00
+1571:  KEY ->'Var' XEQ ->99
+1572:  KEY ->'Var' XEQ ->X
+1573:  KEY ->'Var' XEQ ->K
+1574:  KEY ->'Var' XEQ ->.00
+1575:  KEY ->'Var' XEQ ->.98
+1576:  KEY ->'Var' XEQ ->'Var'
+1577:  SINC
+1578:  KTYP? 00
+1579:  KTYP? 99
+1580:  KTYP? X
+1581:  KTYP? K
+1582:  KTYP? .00
+1583:  KTYP? .98
+1584:  KTYP? 'Var'
+1585:  KTYP? ->00
+1586:  KTYP? ->99
+1587:  KTYP? ->X
+1588:  KTYP? ->K
+1589:  KTYP? ->.00
+1590:  KTYP? ->.98
+1591:  KTYP? ->'Var'
+1592:  LASTx
+1593:  LBL? 'Lbl'
+1594:  LBL? 00
+1595:  LBL? 99
+1596:  LBL? A
+1597:  LBL? E
+1598:  LEAP?
+1599:  LM
+1600:  Lm`alpha
+1601:  LNBETA
+1602:  LNGAMMA
+1603:  LocR 00
+1604:  LocR 64
+1605:  LocR ->00
+1606:  LocR ->99
+1607:  LocR ->X
+1608:  LocR ->K
+1609:  LocR ->.00
+1610:  LocR ->.98
+1611:  LocR ->'Var'
+1612:  LocR?
+1613:  L.R.
+1614:  MANT
+1615:  MEM?
+1616:  MENU
+1617:  MONTH
+1618:  MSG 00
+1619:  MSG 99
+1620:  MSG X
+1621:  MSG K
+1622:  MSG .00
+1623:  MSG .98
+1624:  MSG 'Var'
+1625:  MSG ->00
+1626:  MSG ->99
+1627:  MSG ->X
+1628:  MSG ->K
+1629:  MSG ->.00
+1630:  MSG ->.98
+1631:  MSG ->'Var'
+1632:  MULPI
+1633:  MVAR 'Var'
+1634:  M.DIM 00
+1635:  M.DIM 99
+1636:  M.DIM X
+1637:  M.DIM K
+1638:  M.DIM .00
+1639:  M.DIM .98
+1640:  M.DIM 'Var'
+1641:  M.DIM ->00
+1642:  M.DIM ->99
+1643:  M.DIM ->X
+1644:  M.DIM ->K
+1645:  M.DIM ->.00
+1646:  M.DIM ->.98
+1647:  M.DIM ->'Var'
+1648:  M.DIM?
+1649:  MDY
+1650:  M.GET
+1651:  M.LU
+1652:  M.NEW
+1653:  M.PUT
+1654:  M.R><R
+1655:  SINCPI
+1656:  NOP
+1657:  OFF
+1658:  DROPy
+1659:  STOv 00
+1660:  STOv 99
+1661:  STOv X
+1662:  STOv K
+1663:  STOv .00
+1664:  STOv .98
+1665:  STOv 'Var'
+1666:  STOv ->00
+1667:  STOv ->99
+1668:  STOv ->X
+1669:  STOv ->K
+1670:  STOv ->.00
+1671:  STOv ->.98
+1672:  STOv ->'Var'
+1673:  PGMINT 'Lbl'
+1674:  PGMINT 00
+1675:  PGMINT 99
+1676:  PGMINT A
+1677:  PGMINT E
+1678:  PGMSLV 'Lbl'
+1679:  PGMSLV 00
+1680:  PGMSLV 99
+1681:  PGMSLV A
+1682:  PGMSLV E
+1683:  PIXEL
+1684:  PLOT
+1685:  Pn
+1686:  POINT
+1687:  PopLR
+1688:  PUTK 00
+1689:  PUTK 99
+1690:  PUTK X
+1691:  PUTK K
+1692:  PUTK .00
+1693:  PUTK .98
+1694:  PUTK 'Var'
+1695:  PUTK ->00
+1696:  PUTK ->99
+1697:  PUTK ->X
+1698:  PUTK ->K
+1699:  PUTK ->.00
+1700:  PUTK ->.98
+1701:  PUTK ->'Var'
+1702:  RAD
+1703:  RAN#
+1704:  RCLCFG 00
+1705:  RCLCFG 99
+1706:  RCLCFG X
+1707:  RCLCFG K
+1708:  RCLCFG .00
+1709:  RCLCFG .98
+1710:  RCLCFG 'Var'
+1711:  RCLCFG ->00
+1712:  RCLCFG ->99
+1713:  RCLCFG ->X
+1714:  RCLCFG ->K
+1715:  RCLCFG ->.00
+1716:  RCLCFG ->.98
+1717:  RCLCFG ->'Var'
+1718:  RCLEL
+1719:  RCLIJ
+1720:  RCLS 00
+1721:  RCLS 99
+1722:  RCLS X
+1723:  RCLS K
+1724:  RCLS .00
+1725:  RCLS .98
+1726:  RCLS 'Var'
+1727:  RCLS ->00
+1728:  RCLS ->99
+1729:  RCLS ->X
+1730:  RCLS ->K
+1731:  RCLS ->.00
+1732:  RCLS ->.98
+1733:  RCLS ->'Var'
+1734:  RDP 00
+1735:  RDP 64
+1736:  RDP ->00
+1737:  RDP ->99
+1738:  RDP ->X
+1739:  RDP ->K
+1740:  RDP ->.00
+1741:  RDP ->.98
+1742:  RDP ->'Var'
+1743:  RE
+1744:  RE->CX
+1745:  RE<>IM
+1746:  RMODE 0
+1747:  RMODE 6
+1748:  RMODE ->00
+1749:  RMODE ->99
+1750:  RMODE ->X
+1751:  RMODE ->K
+1752:  RMODE ->.00
+1753:  RMODE ->.98
+1754:  RMODE ->'Var'
+1755:  DSP 00
+1756:  DSP 15
+1757:  DSP ->00
+1758:  DSP ->99
+1759:  DSP ->X
+1760:  DSP ->K
+1761:  DSP ->.00
+1762:  DSP ->.98
+1763:  DSP ->'Var'
+1764:  RMODE?
+1765:  RNORM
+1766:  E^X-1
+1767:  ROUND
+1768:  ROUNDI
+1769:  RSD 00
+1770:  RSD 34
+1771:  RSD ->00
+1772:  RSD ->99
+1773:  RSD ->X
+1774:  RSD ->K
+1775:  RSD ->.00
+1776:  RSD ->.98
+1777:  RSD ->'Var'
+1778:  RSUM
+1779:  RTN+1
+1780:  R-CLR
+1781:  R-COPY
+1782:  R-SORT
+1783:  R-SWAP
+1784:  s
+1785:  SCI 00
+1786:  SCI 15
+1787:  SCI ->00
+1788:  SCI ->99
+1789:  SCI ->X
+1790:  SCI ->K
+1791:  SCI ->.00
+1792:  SCI ->.98
+1793:  SDIGS 20
+1794:  SEED
+1795:  SETCHN
+1796:  SETDAT
+1797:  SETEUR
+1798:  SETIND
+1799:  SETJPN
+1800:  SDIGS?
+1801:  SETTIM
+1802:  SETUK
+1803:  SETUSA
+1804:  SIGN
+1805:  SIGNMT
+1806:  SIM_EQ 00
+1807:  SIM_EQ 64
+1808:  SIM_EQ ->00
+1809:  SIM_EQ ->99
+1810:  SIM_EQ ->X
+1811:  SIM_EQ ->K
+1812:  SIM_EQ ->.00
+1813:  SIM_EQ ->.98
+1814:  SKIP 000
+1815:  SKIP 255
+1816:  SLVQ
+1817:  sm
+1818:  ISM?
+1819:  smw
+1820:  SOLVE 'Lbl'
+1821:  SOLVE 00
+1822:  SOLVE 99
+1823:  SOLVE X
+1824:  SOLVE A
+1825:  SSIZE?
+1826:  STOCFG 00
+1827:  STOCFG 99
+1828:  STOCFG X
+1829:  STOCFG K
+1830:  STOCFG .00
+1831:  STOCFG .98
+1832:  STOCFG 'Var'
+1833:  STOCFG ->00
+1834:  STOCFG ->99
+1835:  STOCFG ->X
+1836:  STOCFG ->K
+1837:  STOCFG ->.00
+1838:  STOCFG ->.98
+1839:  STOCFG ->'Var'
+1840:  STOEL
+1841:  STOIJ
+1842:  LN(1+X)
+1843:  STOS 00
+1844:  STOS 99
+1845:  STOS X
+1846:  STOS K
+1847:  STOS .00
+1848:  STOS .98
+1849:  STOS 'Var'
+1850:  STOS ->00
+1851:  STOS ->99
+1852:  STOS ->X
+1853:  STOS ->K
+1854:  STOS ->.00
+1855:  STOS ->.98
+1856:  STOS ->'Var'
+1857:  SUM
+1858:  sw
+1859:  sxy
+1860:  TDISP 0
+1861:  TDISP 6
+1862:  TDISP ->00
+1863:  TDISP ->99
+1864:  TDISP ->X
+1865:  TDISP ->K
+1866:  TDISP ->.00
+1867:  TDISP ->.98
+1868:  TICKS
+1869:  TIME
+1870:  Tn
+1871:  TONE 0
+1872:  TONE 9
+1873:  TONE ->00
+1874:  TONE ->99
+1875:  TONE ->X
+1876:  TONE ->K
+1877:  TONE ->.00
+1878:  TONE ->.98
+1879:  t>< 00
+1880:  t>< 99
+1881:  t>< X
+1882:  t>< K
+1883:  t>< .00
+1884:  t>< .98
+1885:  t>< 'Var'
+1886:  t>< ->00
+1887:  t>< ->99
+1888:  t>< ->X
+1889:  t>< ->K
+1890:  t>< ->.00
+1891:  t>< ->.98
+1892:  t>< ->'Var'
+1893:  ULP?
+1894:  Un
+1895:  UNITV
+1896:  UNSIGN
+1897:  VARMNU 'Lbl'
+1898:  VARMNU 00
+1899:  VARMNU 99
+1900:  VARMNU A
+1901:  VARMNU E
+1902:  IDIVR
+1903:  WDAY
+1904:  Wm
+1905:  Wp
+1906:  W`-1
+1907:  WSIZE 00
+1908:  WSIZE 64
+1909:  WSIZE ->00
+1910:  WSIZE ->99
+1911:  WSIZE ->X
+1912:  WSIZE ->K
+1913:  WSIZE ->.00
+1914:  WSIZE ->.98
+1915:  WSIZE?
+1916:  x_mean
+1917:  x_meanG
+1918:  x_meanw
+1919:  x_circ
+1920:  x->DATE
+1921:  x->alpha
+1922:  YEAR
+1923:  `y
+1924:  YMD
+1925:  y>< 00
+1926:  y>< 99
+1927:  y>< X
+1928:  y>< K
+1929:  y>< .00
+1930:  y>< .98
+1931:  y>< 'Var'
+1932:  y>< ->00
+1933:  y>< ->99
+1934:  y>< ->X
+1935:  y>< ->K
+1936:  y>< ->.00
+1937:  y>< ->.98
+1938:  y>< ->'Var'
+1939:  z>< 00
+1940:  z>< 99
+1941:  z>< X
+1942:  z>< K
+1943:  z>< .00
+1944:  z>< .98
+1945:  z>< 'Var'
+1946:  z>< ->00
+1947:  z>< ->99
+1948:  z>< ->X
+1949:  z>< ->K
+1950:  z>< ->.00
+1951:  z>< ->.98
+1952:  z>< ->'Var'
+1953:  alphaLENG? 00
+1954:  alphaLENG? 99
+1955:  alphaLENG? X
+1956:  alphaLENG? K
+1957:  alphaLENG? .00
+1958:  alphaLENG? .98
+1959:  alphaLENG? 'Var'
+1960:  alphaLENG? ->00
+1961:  alphaLENG? ->99
+1962:  alphaLENG? ->X
+1963:  alphaLENG? ->K
+1964:  alphaLENG? ->.00
+1965:  alphaLENG? ->.98
+1966:  alphaLENG? ->'Var'
+1967:  xMAX
+1968:  xMIN
+1969:  alphaPOS? 00
+1970:  alphaPOS? 99
+1971:  alphaPOS? X
+1972:  alphaPOS? K
+1973:  alphaPOS? .00
+1974:  alphaPOS? .98
+1975:  alphaPOS? 'Var'
+1976:  alphaPOS? ->00
+1977:  alphaPOS? ->99
+1978:  alphaPOS? ->X
+1979:  alphaPOS? ->K
+1980:  alphaPOS? ->.00
+1981:  alphaPOS? ->.98
+1982:  alphaPOS? ->'Var'
+1983:  alphaRL 00
+1984:  alphaRL 99
+1985:  alphaRL X
+1986:  alphaRL K
+1987:  alphaRL .00
+1988:  alphaRL .98
+1989:  alphaRL 'Var'
+1990:  alphaRL ->00
+1991:  alphaRL ->99
+1992:  alphaRL ->X
+1993:  alphaRL ->K
+1994:  alphaRL ->.00
+1995:  alphaRL ->.98
+1996:  alphaRL ->'Var'
+1997:  alphaRR 00
+1998:  alphaRR 99
+1999:  alphaRR X
+2000:  alphaRR K
+2001:  alphaRR .00
+2002:  alphaRR .98
+2003:  alphaRR 'Var'
+2004:  alphaRR ->00
+2005:  alphaRR ->99
+2006:  alphaRR ->X
+2007:  alphaRR ->K
+2008:  alphaRR ->.00
+2009:  alphaRR ->.98
+2010:  alphaRR ->'Var'
+2011:  alphaSL 00
+2012:  alphaSL 99
+2013:  alphaSL X
+2014:  alphaSL K
+2015:  alphaSL .00
+2016:  alphaSL .98
+2017:  alphaSL 'Var'
+2018:  alphaSL ->00
+2019:  alphaSL ->99
+2020:  alphaSL ->X
+2021:  alphaSL ->K
+2022:  alphaSL ->.00
+2023:  alphaSL ->.98
+2024:  alphaSL ->'Var'
+2025:  alphaSR 00
+2026:  alphaSR 99
+2027:  alphaSR X
+2028:  alphaSR K
+2029:  alphaSR .00
+2030:  alphaSR .98
+2031:  alphaSR 'Var'
+2032:  alphaSR ->00
+2033:  alphaSR ->99
+2034:  alphaSR ->X
+2035:  alphaSR ->K
+2036:  alphaSR ->.00
+2037:  alphaSR ->.98
+2038:  alphaSR ->'Var'
+2039:  alpha->x 00
+2040:  alpha->x 99
+2041:  alpha->x X
+2042:  alpha->x K
+2043:  alpha->x .00
+2044:  alpha->x .98
+2045:  alpha->x 'Var'
+2046:  alpha->x ->00
+2047:  alpha->x ->99
+2048:  alpha->x ->X
+2049:  alpha->x ->K
+2050:  alpha->x ->.00
+2051:  alpha->x ->.98
+2052:  alpha->x ->'Var'
+2053:  beta(x,y)
+2054:  gammaxy
+2055:  Gammaxy
+2056:  GAMMA
+2057:  DELTA%
+2058:  epsilon
+2059:  epsilonm
+2060:  epsilonp
+2061:  zeta(x)
+2062:  Pin 'Lbl'
+2063:  Pin 00
+2064:  Pin 99
+2065:  Pin A
+2066:  Pin E
+2067:  Sigman 'Lbl'
+2068:  Sigman 00
+2069:  Sigman 99
+2070:  Sigman A
+2071:  Sigman E
+2072:  STDDEV
+2073:  sigmaw
+2074:  RANI#
+2075:  Printx
+2076:  RNG 5140
+2077:  RANGE?
+2078:  (-1)^X
+2079:  *MOD
+2080:  ITM_sn
+2081:  ITM_cn
+2082:  ITM_dn
+2083:  ->DATE
+2084:  ITM_sn
+2085:  ITM_cn
+2086:  ITM_dn
+2087:  ->HR
+2088:  ->h.ms
+2089:  ->INT 02
+2090:  ->INT 16
+2091:  ->INT ->00
+2092:  ->INT ->99
+2093:  ->INT ->X
+2094:  ->INT ->K
+2095:  ->INT ->.00
+2096:  ->INT ->.98
+2097:  ->INT ->'Var'
+2098:  >POLAR
+2099:  >REAL
+2100:  >RECT
+2101:  >< xxxx
+2102:  >< tttt
+2103:  %
+2104:  %MRR
+2105:  %T
+2106:  %Sigma
+2107:  %+MG
+2108:  integralfd 'Lbl'
+2109:  integralfd 00
+2110:  integralfd 99
+2111:  integralfd X
+2112:  integralfd A
+2113:  ^MOD
+2114:  |M|
+2115:  ||
+2116:  [M]T
+2117:  [M]`-1
+2118:  angle
+2119:  PrintADV
+2120:  PrintCHAR 000
+2121:  PrintCHAR 127
+2122:  PrintCHAR ->00
+2123:  PrintCHAR ->99
+2124:  PrintCHAR ->X
+2125:  PrintCHAR ->K
+2126:  PrintCHAR ->.00
+2127:  PrintCHAR ->.98
+2128:  PrintDLAY 000
+2129:  PrintDLAY 064
+2130:  PrintDLAY ->00
+2131:  PrintDLAY ->99
+2132:  PrintDLAY ->X
+2133:  PrintDLAY ->K
+2134:  PrintDLAY ->.00
+2135:  PrintDLAY ->.98
+2136:  PrintLCD
+2137:  PrintMODE 0
+2138:  PrintMODE 3
+2139:  PrintMODE ->00
+2140:  PrintMODE ->99
+2141:  PrintMODE ->X
+2142:  PrintMODE ->K
+2143:  PrintMODE ->.00
+2144:  PrintMODE ->.98
+2145:  PrintPROG
+2146:  Printr 00
+2147:  Printr 99
+2148:  Printr X
+2149:  Printr K
+2150:  Printr .00
+2151:  Printr .98
+2152:  Printr 'Var'
+2153:  Printr ->00
+2154:  Printr ->99
+2155:  Printr ->X
+2156:  Printr ->K
+2157:  Printr ->.00
+2158:  Printr ->.98
+2159:  Printr ->'Var'
+2160:  PrintREGS
+2161:  PRN
+2162:  PrintTAB 000
+2163:  PrintTAB 127
+2164:  PrintTAB ->00
+2165:  PrintTAB ->99
+2166:  PrintTAB ->X
+2167:  PrintTAB ->K
+2168:  PrintTAB ->.00
+2169:  PrintTAB ->.98
+2170:  PrintUSER
+2171:  PrintWIDTH
+2172:  PrintSigma
+2173:  Print#
+2174:  K(m)
+2175:  E(m)
+2176:  Pi(n,m)
+2177:  SHOW
+2178:  Vangle
+2179:  x_meanH
+2180:  x_meanRMS
+2181:  ACOS
+2182:  ASIN
+2183:  ATAN
+2184:  DET
+2185:  INVRT
+2186:  TRANS
+2187:  HIDE 99
+2188:  E(phi,m)
+2189:  F(phi,m)
+2190:  Zeta(phi,m)
+2191:  HIDE?
+2192:  SQRT
+2193:  ATAN2
+2194:  END
