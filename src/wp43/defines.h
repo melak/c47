@@ -24,9 +24,9 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
-#define VERSION1 "0.108.10-00"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
+#define VERSION1 "0.108.11-00"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
-//2023-06-18-0.108.10-00
+//2023-07-03-0.108.11-00
 
   #undef SAVE_SPACE_DM42
   #undef SAVE_SPACE_DM42_0
@@ -78,7 +78,7 @@
 
   #if defined(TWO_FILE_PGM) //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT INTO AVAILABLE FLASH EVEN WHILE USING QSPI
     #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2;
-    #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
+//    #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
 //    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
     #define SAVE_SPACE_DM42_15       //           without all distributions, i.e. binomial, cauchy, chi
 //    #define SAVE_SPACE_DM42_16       //           without Norml
@@ -614,7 +614,7 @@ typedef enum {
 #define Y_POSITION_OF_REGISTER_Y_LINE             96
 #define Y_POSITION_OF_REGISTER_X_LINE            132
 
-#define NUMBER_OF_DYNAMIC_SOFTMENUS               19
+#define NUMBER_OF_DYNAMIC_SOFTMENUS               18
 #define SOFTMENU_HEIGHT                           23
 
 // Horizontal offsets in the status bar

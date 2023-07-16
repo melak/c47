@@ -33,7 +33,6 @@
 #include "items.h"
 #include "memory.h"
 #include "programming/decode.h"
-#include "programming/flash.h"
 #include "programming/lblGtoXeq.h"
 #include "programming/nextStep.h"
 #include "realType.h"
@@ -122,7 +121,6 @@ void scanLabelsAndPrograms(void) {
 #if !defined(SAVE_SPACE_DM42_10)
   uint32_t stepNumber = 0;
   uint8_t *nextStep, *step = beginOfProgramMemory;
-  uint16_t numberOfProgramsInRam;
 
   freeWp43(labelList, TO_BLOCKS(sizeof(labelList_t)) * numberOfLabels);
   freeWp43(programList, TO_BLOCKS(sizeof(programList_t)) * numberOfPrograms);
@@ -136,17 +134,17 @@ void scanLabelsAndPrograms(void) {
     if(isAtEndOfProgram(step)) { // END
       numberOfPrograms++;
     }
-    step = findNextStep_ram(step);
+    step = findNextStep(step);
   }
 
-  labelList = allocWp43(TO_BLOCKS(sizeof(labelList_t)) * (numberOfLabels + numberOfLabelsInFlash));
+  labelList = allocWp43(TO_BLOCKS(sizeof(labelList_t)) * numberOfLabels);
   if(labelList == NULL) {
     // unlikely
     lastErrorCode = ERROR_RAM_FULL;
     return;
   }
 
-  programList = allocWp43(TO_BLOCKS(sizeof(programList_t)) * (numberOfPrograms + numberOfProgramsInFlash));
+  programList = allocWp43(TO_BLOCKS(sizeof(programList_t)) * numberOfPrograms);
   if(programList == NULL) {
     // unlikely
     lastErrorCode = ERROR_RAM_FULL;
@@ -155,47 +153,35 @@ void scanLabelsAndPrograms(void) {
 
   numberOfLabels = 0;
   step = beginOfProgramMemory;
-  programList[0].instructionPointer.ram = step;
+  programList[0].instructionPointer = step;
   programList[0].step = (0 + 1);
   numberOfPrograms = 1;
   stepNumber = 1;
   while(!isAtEndOfPrograms(step)) { // .END.
-    nextStep = findNextStep_ram(step);
+    nextStep = findNextStep(step);
     if(checkOpCodeOfStep(step, ITM_LBL)) { // LBL
       labelList[numberOfLabels].program = numberOfPrograms;
       if(*(step + 1) <= 109) { // Local label
         labelList[numberOfLabels].step = -stepNumber;
-        labelList[numberOfLabels].labelPointer.ram = step + 1;
+        labelList[numberOfLabels].labelPointer = step + 1;
       }
       else { // Global label
         labelList[numberOfLabels].step = stepNumber;
-        labelList[numberOfLabels].labelPointer.ram = step + 2;
+        labelList[numberOfLabels].labelPointer = step + 2;
       }
 
-      labelList[numberOfLabels].instructionPointer.ram = nextStep;
+      labelList[numberOfLabels].instructionPointer = nextStep;
       numberOfLabels++;
     }
 
     if(isAtEndOfProgram(step)) { // END
-      programList[numberOfPrograms].instructionPointer.ram = step + 2;
+      programList[numberOfPrograms].instructionPointer = step + 2;
       programList[numberOfPrograms].step = stepNumber + 1;
       numberOfPrograms++;
     }
 
     step = nextStep;
     stepNumber++;
-  }
-
-  numberOfProgramsInRam = numberOfPrograms;
-
-  for(int i = 0; i < numberOfLabelsInFlash; ++i) {
-    labelList[numberOfLabels] = flashLabelList[i];
-    labelList[numberOfLabels].program -= numberOfProgramsInRam;
-    numberOfLabels++;
-  }
-  for(int i = 0; i < numberOfProgramsInFlash; ++i) {
-    programList[numberOfPrograms] = flashProgramList[i];
-    numberOfPrograms++;
   }
 
   defineCurrentProgramFromCurrentStep();
@@ -231,12 +217,12 @@ void fnClPAll(uint16_t confirmation) {
     temporaryInformation          = TI_NO_INFO;
     programRunStop                = PGM_STOPPED;
     if(wasInRam) {
-      currentStep.ram               = beginOfProgramMemory;
-      firstDisplayedStep.ram        = beginOfProgramMemory;
+      currentStep                   = beginOfProgramMemory;
+      firstDisplayedStep            = beginOfProgramMemory;
       firstDisplayedLocalStepNumber = 0;
       currentLocalStepNumber        = 1;
-      beginOfCurrentProgram.ram     = beginOfProgramMemory;
-      endOfCurrentProgram.ram       = firstFreeProgramByte;
+      beginOfCurrentProgram         = beginOfProgramMemory;
+      endOfCurrentProgram           = firstFreeProgramByte;
     }
     scanLabelsAndPrograms();
   }
@@ -245,35 +231,19 @@ void fnClPAll(uint16_t confirmation) {
 
 
 static int _clearProgram(void) {
-  if(programList[currentProgramNumber - 1].step < 0) { // flash memory
-    uint16_t savedCurrentProgramNumber = currentProgramNumber;
-
-    deleteFromFlashPgmLibrary(beginOfCurrentProgram.flash, endOfCurrentProgram.flash - ((currentProgramNumber == numberOfPrograms) ? 2 : 0));
-
-    scanFlashPgmLibrary();
-    scanLabelsAndPrograms();
-
-    if(savedCurrentProgramNumber >= numberOfPrograms) { // The last program
-      goToPgmStep(numberOfPrograms - 1, 1);
-    }
-    else { // Not the last program
-      goToPgmStep(savedCurrentProgramNumber, 1);
-    }
-    return 2;
-  }
-  else if(programList[currentProgramNumber - 1].step > 0 && beginOfCurrentProgram.ram == beginOfProgramMemory && (endOfCurrentProgram.ram >= firstFreeProgramByte || (*endOfCurrentProgram.ram == 255 && *(endOfCurrentProgram.ram + 1) == 255))) { // There is only one program in memory
+  if(beginOfCurrentProgram == beginOfProgramMemory && (endOfCurrentProgram >= firstFreeProgramByte || (*endOfCurrentProgram == 255 && *(endOfCurrentProgram + 1) == 255))) { // There is only one program in memory
     fnClPAll(CONFIRMED);
     return 1;
   }
   else {
     uint16_t savedCurrentProgramNumber = currentProgramNumber;
 
-    deleteStepsFromTo(beginOfCurrentProgram.ram, endOfCurrentProgram.ram - ((currentProgramNumber == (numberOfPrograms - numberOfProgramsInFlash)) ? 2 : 0));
+    deleteStepsFromTo(beginOfCurrentProgram, endOfCurrentProgram - ((currentProgramNumber == numberOfPrograms) ? 2 : 0));
     scanLabelsAndPrograms();
     // unlikely fails
 
-    if(savedCurrentProgramNumber >= (numberOfPrograms - numberOfProgramsInFlash)) { // The last program
-      goToPgmStep(numberOfPrograms - numberOfProgramsInFlash - 1, 1);
+    if(savedCurrentProgramNumber >= numberOfPrograms) { // The last program
+      goToPgmStep(numberOfPrograms - 1, 1);
     }
     else { // Not the last program
       goToPgmStep(savedCurrentProgramNumber, 1);
@@ -343,19 +313,18 @@ void fnClP(uint16_t label) {
 
 
 
-static uint32_t _getProgramSize(void) {
-  if(currentProgramNumber == (numberOfPrograms - numberOfProgramsInFlash)) {
+uint32_t _getProgramSize(void) {
+  if(currentProgramNumber == numberOfPrograms) {
     uint16_t numberOfSteps = 1;
-    uint8_t *step = programList[currentProgramNumber - 1].instructionPointer.ram;
+    uint8_t *step = programList[currentProgramNumber - 1].instructionPointer;
     while(!isAtEndOfPrograms(step)) { // .END.
       ++numberOfSteps;
-      step = findNextStep_ram(step);
+      step = findNextStep(step);
     }
-    return (uint32_t)(step - programList[currentProgramNumber - 1].instructionPointer.ram + 2);
-    // TODO: last program in flash
+    return (uint32_t)(step - programList[currentProgramNumber - 1].instructionPointer + 2);
   }
   else {
-    return (uint32_t)(programList[currentProgramNumber].instructionPointer.any - programList[currentProgramNumber - 1].instructionPointer.any);
+    return (uint32_t)(programList[currentProgramNumber].instructionPointer - programList[currentProgramNumber - 1].instructionPointer);
   }
 }
 
@@ -363,55 +332,41 @@ static uint32_t _getProgramSize(void) {
 
 void defineCurrentProgramFromGlobalStepNumber(int16_t globalStepNumber) {
   currentProgramNumber = 0;
-  while(abs(globalStepNumber) >= abs(programList[currentProgramNumber].step) || (globalStepNumber < 0 && programList[currentProgramNumber].step > 0)) {
+  while(globalStepNumber >= programList[currentProgramNumber].step) {
     currentProgramNumber++;
-    if(globalStepNumber > 0 && currentProgramNumber >= (numberOfPrograms - numberOfProgramsInFlash)) {
-      break;
-    }
     if(currentProgramNumber >= numberOfPrograms) {
       break;
     }
   }
 
-  if(programList[currentProgramNumber - 1].step < 0) {
-    if(currentProgramNumber >= numberOfPrograms) {
-      endOfCurrentProgram.flash = programList[currentProgramNumber - 1].instructionPointer.flash + _getProgramSize();
-    }
-    else {
-      endOfCurrentProgram.flash = programList[currentProgramNumber].instructionPointer.flash;
-    }
-    beginOfCurrentProgram.flash = programList[currentProgramNumber - 1].instructionPointer.flash;
+  if(currentProgramNumber == numberOfPrograms) {
+    endOfCurrentProgram = programList[currentProgramNumber - 1].instructionPointer + _getProgramSize();
   }
   else {
-    if(currentProgramNumber == (numberOfPrograms - numberOfProgramsInFlash)) {
-      endOfCurrentProgram.ram = programList[currentProgramNumber - 1].instructionPointer.ram + _getProgramSize();
-    }
-    else {
-      endOfCurrentProgram.ram = programList[currentProgramNumber].instructionPointer.ram;
-    }
-    beginOfCurrentProgram.ram = programList[currentProgramNumber - 1].instructionPointer.ram;
+    endOfCurrentProgram = programList[currentProgramNumber].instructionPointer;
   }
+  beginOfCurrentProgram = programList[currentProgramNumber - 1].instructionPointer;
 }
 
 
 
 void defineCurrentProgramFromCurrentStep(void) {
-  if(beginOfProgramMemory <= currentStep.ram && currentStep.ram <= firstFreeProgramByte) {
+  if(beginOfProgramMemory <= currentStep && currentStep <= firstFreeProgramByte) {
     currentProgramNumber = 0;
-    while(currentStep.ram >= programList[currentProgramNumber].instructionPointer.ram) {
+    while(currentStep >= programList[currentProgramNumber].instructionPointer) {
       currentProgramNumber++;
-      if(currentProgramNumber >= (numberOfPrograms - numberOfProgramsInFlash)) {
+      if(currentProgramNumber >= numberOfPrograms) {
         break;
       }
     }
 
-    if(currentProgramNumber >= (numberOfPrograms - numberOfProgramsInFlash)) {
-      endOfCurrentProgram.ram = programList[currentProgramNumber - 1].instructionPointer.ram + _getProgramSize();
+    if(currentProgramNumber >= numberOfPrograms) {
+      endOfCurrentProgram = programList[currentProgramNumber - 1].instructionPointer + _getProgramSize();
     }
     else {
-      endOfCurrentProgram.ram = programList[currentProgramNumber].instructionPointer.ram;
+      endOfCurrentProgram = programList[currentProgramNumber].instructionPointer;
     }
-    beginOfCurrentProgram.ram = programList[currentProgramNumber - 1].instructionPointer.ram;
+    beginOfCurrentProgram = programList[currentProgramNumber - 1].instructionPointer;
   }
 }
 
@@ -451,7 +406,6 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
     uint16_t line, firstLine;
     uint16_t stepsThatWouldBeDisplayed = 7;
     uint8_t *step, *nextStep;
-    uint8_t *tmpSteps = NULL;
     bool_t lblOrEnd;
     bool_t inTamMode = tam.mode && programList[currentProgramNumber - 1].step > 0;
     uint16_t numberOfSteps = getNumberOfSteps();
@@ -479,7 +433,7 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
     }
     currentStepNumber        = currentLocalStepNumber        + abs(programList[currentProgramNumber - 1].step) - 1;
     firstDisplayedStepNumber = firstDisplayedLocalStepNumber + abs(programList[currentProgramNumber - 1].step) - 1;
-    step                     = firstDisplayedStep.any;
+    step                     = firstDisplayedStep;
     programListEnd           = false;
     lastProgramListEnd       = false;
 
@@ -496,25 +450,14 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
 
     int lineOffset = 0, lineOffsetTam = 0;
 
-    if(programList[currentProgramNumber - 1].step < 0) { // Flash
-      tmpSteps = allocWp43(400 * 7);
-      readStepInFlashPgmLibrary(tmpSteps, 400 * 7, firstDisplayedStep.flash);
-      step = tmpSteps;
-    }
-
     for(line=firstLine; line<7; line++) {
-      nextStep = findNextStep_ram(step);
+      nextStep = findNextStep(step);
       //uint16_t stepSize = (uint16_t)(nextStep - step);
       sprintf(tmpString, "%04d:" STD_SPACE_4_PER_EM, firstDisplayedLocalStepNumber + line - lineOffset + lineOffsetTam);
       if(firstDisplayedStepNumber + line - lineOffset == currentStepNumber) {
         tamOverPemYPos = Y_POSITION_OF_REGISTER_T_LINE + 21 * line;
         showString(tmpString, &standardFont, 1, tamOverPemYPos, ((pemCursorIsZerothStep && !tam.mode && aimBuffer[0] == 0) || (tam.mode && (programList[currentProgramNumber - 1].step > 0))) ? vmNormal : vmReverse, false, true);
-        if(programList[currentProgramNumber - 1].step < 0) { // Flash
-          currentStep.flash = step - tmpSteps + firstDisplayedStep.flash;
-        }
-        else { // RAM
-          currentStep.ram = step;
-        }
+        currentStep = step;
       }
       else {
         showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 21 * line, vmNormal,  false, true);
@@ -549,7 +492,7 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
           }
         }
       }
-      decodeOneStep_ram(step);
+      decodeOneStep(step);
       if(firstDisplayedStepNumber + line - lineOffset == currentStepNumber && !tam.mode) {
         if(getSystemFlag(FLAG_ALPHA)) {
           xcopy(tmpString + 2 + T_cursorPos + 2, tmpString + 2 + T_cursorPos, stringByteLength(tmpString + 2 + T_cursorPos) + 1);
@@ -608,10 +551,6 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       refreshRegisterLine(errorMessageRegisterLine);
     }
 
-    if(programList[currentProgramNumber - 1].step < 0) { // Flash
-      freeWp43(tmpSteps, 400 * 7);
-    }
-
     if(aimBuffer[0] != 0 && linesOfCurrentStep > 4) { // Limited to 4 lines so as not to cause crash or freeze
       if(getSystemFlag(FLAG_ALPHA)) {
         pemAlpha(ITM_BACKSPACE);
@@ -648,21 +587,21 @@ static void _insertInProgram(const uint8_t *dat, uint16_t size) {
     uint32_t newProgramSizeInBlocks = TO_BLOCKS(TO_BYTES(programSizeInBlocks) - freeProgramBytes + size);
     freeProgramBytes      += TO_BYTES(newProgramSizeInBlocks - programSizeInBlocks);
     resizeProgramMemory(newProgramSizeInBlocks);
-    currentStep.ram           = currentStep.ram           - oldBeginOfProgramMemory + beginOfProgramMemory;
-    firstDisplayedStep.ram    = firstDisplayedStep.ram    - oldBeginOfProgramMemory + beginOfProgramMemory;
-    beginOfCurrentProgram.ram = beginOfCurrentProgram.ram - oldBeginOfProgramMemory + beginOfProgramMemory;
-    endOfCurrentProgram.ram   = endOfCurrentProgram.ram   - oldBeginOfProgramMemory + beginOfProgramMemory;
+    currentStep           = currentStep           - oldBeginOfProgramMemory + beginOfProgramMemory;
+    firstDisplayedStep    = firstDisplayedStep    - oldBeginOfProgramMemory + beginOfProgramMemory;
+    beginOfCurrentProgram = beginOfCurrentProgram - oldBeginOfProgramMemory + beginOfProgramMemory;
+    endOfCurrentProgram   = endOfCurrentProgram   - oldBeginOfProgramMemory + beginOfProgramMemory;
   }
-  for(uint8_t *pos = firstFreeProgramByte + 1 + size; pos > currentStep.ram; --pos) {
+  for(uint8_t *pos = firstFreeProgramByte + 1 + size; pos > currentStep; --pos) {
     *pos = *(pos - size);
   }
   for(uint16_t i = 0; i < size; ++i) {
-    *(currentStep.ram++) = *(dat++);
+    *(currentStep++) = *(dat++);
   }
   firstFreeProgramByte    += size;
   freeProgramBytes        -= size;
   currentLocalStepNumber  += 1;
-  endOfCurrentProgram.ram += size;
+  endOfCurrentProgram     += size;
   globalStepNumber = currentLocalStepNumber + programList[currentProgramNumber - 1].step - 1;
   scanLabelsAndPrograms();
   dynamicMenuItem = -1;
@@ -756,7 +695,7 @@ void pemAlpha(int16_t item) {
   }
   else if(item == ITM_BACKSPACE) {
     if(aimBuffer[0] == 0) {
-      deleteStepsFromTo(currentStep.ram, findNextStep_ram(currentStep.ram));
+        deleteStepsFromTo(currentStep, findNextStep(currentStep));
       clearSystemFlag(FLAG_ALPHA);
         calcModeNormalGui();
       _closeAlphaMenus();
@@ -829,7 +768,7 @@ void pemAlpha(int16_t item) {
     return;
   }
 
-  deleteStepsFromTo(currentStep.ram, findNextStep_ram(currentStep.ram));
+  deleteStepsFromTo(currentStep, findNextStep(currentStep));
   tmpString[0] = ITM_LITERAL;
   tmpString[1] = (char)STRING_LABEL_VARIABLE;
   tmpString[2] = stringByteLength(aimBuffer);
@@ -920,7 +859,7 @@ void pemAddNumber(int16_t item) {
   clearSystemFlag(FLAG_ALPHA);
 
   if(aimBuffer[0] != '!') {
-    deleteStepsFromTo(currentStep.ram, findNextStep_ram(currentStep.ram));
+    deleteStepsFromTo(currentStep, findNextStep(currentStep));
     if(aimBuffer[0] != 0) {
       const char *numBuffer = aimBuffer[0] == '+' ? aimBuffer + 1 : aimBuffer;
       tmpString[0] = ITM_LITERAL;
@@ -967,7 +906,7 @@ void pemAddNumber(int16_t item) {
 
 void pemCloseNumberInput(void) {
   #if !defined(TESTSUITE_BUILD)
-  deleteStepsFromTo(currentStep.ram, findNextStep_ram(currentStep.ram));
+  deleteStepsFromTo(currentStep, findNextStep(currentStep));
   if(aimBuffer[0] != 0) {
     char *numBuffer = aimBuffer[0] == '+' ? aimBuffer + 1 : aimBuffer;
     char *tmpPtr = tmpString;
@@ -1093,8 +1032,8 @@ static void _pemCloseTimeInput(void) {
   #if !defined(TESTSUITE_BUILD)
   switch(nimNumberPart) {
     case NP_INT_10:
-      case NP_REAL_FLOAT_PART: {
-      deleteStepsFromTo(currentStep.ram, findNextStep_ram(currentStep.ram));
+    case NP_REAL_FLOAT_PART: {
+      deleteStepsFromTo(currentStep, findNextStep(currentStep));
       if(aimBuffer[0] != 0) {
         char *numBuffer = aimBuffer[0] == '+' ? aimBuffer + 1 : aimBuffer;
         char *tmpPtr = tmpString;
@@ -1107,15 +1046,15 @@ static void _pemCloseTimeInput(void) {
 
       aimBuffer[0] = '!';
       break;
-  }
     }
+  }
   #endif // !TESTSUITE_BUILD
 }
 
 static void _pemCloseDateInput(void) {
   #if !defined(TESTSUITE_BUILD)
   if(nimNumberPart == NP_REAL_FLOAT_PART) {
-    deleteStepsFromTo(currentStep.ram, findNextStep_ram(currentStep.ram));
+    deleteStepsFromTo(currentStep, findNextStep(currentStep));
     if(aimBuffer[0] != 0) {
       char *numBuffer = aimBuffer[0] == '+' ? aimBuffer + 1 : aimBuffer;
       char *tmpPtr = tmpString;
@@ -1143,8 +1082,8 @@ static void _pemCloseDmsInput(void) {
   #if !defined(TESTSUITE_BUILD)
   switch(nimNumberPart) {
     case NP_INT_10:
-      case NP_REAL_FLOAT_PART: {
-      deleteStepsFromTo(currentStep.ram, findNextStep_ram(currentStep.ram));
+    case NP_REAL_FLOAT_PART: {
+      deleteStepsFromTo(currentStep, findNextStep(currentStep));
       if(aimBuffer[0] != 0) {
         char *numBuffer = aimBuffer[0] == '+' ? aimBuffer + 1 : aimBuffer;
         char *tmpPtr = tmpString;
@@ -1157,19 +1096,13 @@ static void _pemCloseDmsInput(void) {
 
       aimBuffer[0] = '!';
       break;
-  }
     }
+  }
   #endif // !TESTSUITE_BUILD
 }
 
 void insertStepInProgram(int16_t func) {
   uint32_t opBytes = (func >= 128) ? 2 : 1;
-
-  if(programList[currentProgramNumber - 1].step < 0) {
-    // attempt to modify a program in the flash memory
-    displayCalcErrorMessage(ERROR_FLASH_MEMORY_WRITE_PROTECTED, ERR_REGISTER_LINE, REGISTER_X);
-    return;
-  }
 
   if(func == ITM_AIM || (!tam.mode && getSystemFlag(FLAG_ALPHA))) {
     if(aimBuffer[0] != 0 && !getSystemFlag(FLAG_ALPHA)) {
@@ -1400,17 +1333,7 @@ void insertStepInProgram(int16_t func) {
 
 
 void addStepInProgram(int16_t func) {
-  if(programList[currentProgramNumber - 1].step < 0) { // attempt to modify a program in the flash memory
-    //if(func == ITM_CLP) {
-    //  fnClP(NOPARAM);
-    //}
-    //else {
-      displayCalcErrorMessage(ERROR_FLASH_MEMORY_WRITE_PROTECTED, ERR_REGISTER_LINE, REGISTER_X);
-    //}
-    aimBuffer[0] = 0;
-    return;
-  }
-  if((!pemCursorIsZerothStep) && ((aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA)) || tam.mode) && !isAtEndOfProgram(currentStep.ram) && !isAtEndOfPrograms(currentStep.ram)) {
+  if((!pemCursorIsZerothStep) && ((aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA)) || tam.mode) && !isAtEndOfProgram(currentStep) && !isAtEndOfPrograms(currentStep)) {
     currentStep = findNextStep(currentStep);
     ++currentLocalStepNumber;
   }
@@ -1455,30 +1378,14 @@ calcRegister_t findNamedLabel(const char *labelName) {
 calcRegister_t findNamedLabelWithDuplicate(const char *labelName, int16_t dupNum) {
   for(uint16_t lbl = 0; lbl < numberOfLabels; lbl++) {
     if(labelList[lbl].step > 0) {
-      if(labelList[lbl].program < 0) { // Flash
-        uint8_t tmpLabel[16];
-        readStepInFlashPgmLibrary(tmpLabel, 16, labelList[lbl].labelPointer.flash);
-        xcopy(tmpString, tmpLabel + 1, *tmpLabel);
-        tmpString[*tmpLabel] = 0;
-        if(compareString(tmpString, labelName, CMP_BINARY) == 0) {
-          if(dupNum <= 0) {
-            return lbl + FIRST_LABEL;
-          }
-          else {
-            --dupNum;
-          }
+      xcopy(tmpString, labelList[lbl].labelPointer + 1, *(labelList[lbl].labelPointer));
+      tmpString[*(labelList[lbl].labelPointer)] = 0;
+      if(compareString(tmpString, labelName, CMP_BINARY) == 0) {
+        if(dupNum <= 0) {
+          return lbl + FIRST_LABEL;
         }
-      }
-      else { // RAM
-        xcopy(tmpString, labelList[lbl].labelPointer.ram + 1, *(labelList[lbl].labelPointer.ram));
-        tmpString[*(labelList[lbl].labelPointer.ram)] = 0;
-        if(compareString(tmpString, labelName, CMP_BINARY) == 0) {
-          if(dupNum <= 0) {
-            return lbl + FIRST_LABEL;
-          }
-          else {
-            --dupNum;
-          }
+        else {
+          --dupNum;
         }
       }
     }
@@ -1489,12 +1396,12 @@ calcRegister_t findNamedLabelWithDuplicate(const char *labelName, int16_t dupNum
 
 
 uint16_t getNumberOfSteps(void) {
-  if(currentProgramNumber == (numberOfPrograms - numberOfProgramsInFlash) || currentProgramNumber == numberOfPrograms) {
+  if(currentProgramNumber == numberOfPrograms) {
     uint16_t numberOfSteps = 1;
-    uint8_t *step = programList[currentProgramNumber - 1].instructionPointer.ram;
+    uint8_t *step = programList[currentProgramNumber - 1].instructionPointer;
     while(!isAtEndOfPrograms(step)) { // .END.
       ++numberOfSteps;
-      step = findNextStep_ram(step);
+      step = findNextStep(step);
     }
     return numberOfSteps;
   }

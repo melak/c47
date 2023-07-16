@@ -20,12 +20,12 @@
 
 #include "programming/decode.h"
 
+#include "c43Extensions/xeqm.h"
 #include "charString.h"
 #include "dateTime.h"
 #include "display.h"
 #include "fonts.h"
 #include "items.h"
-#include "programming/flash.h"
 #include "programming/manage.h"
 #include "programming/nextStep.h"
 #include "registers.h"
@@ -45,7 +45,7 @@ TO_QSPI const char baseChars[36] = "??" STD_BASE_1 STD_BASE_2 STD_BASE_3 STD_BAS
     printf("\nProgram listing");
     step = beginOfProgramMemory;
     while(step) {
-      if(step == programList[programNumber].instructionPointer.ram) {
+      if(step == programList[programNumber].instructionPointer) {
         programNumber++;
         if(programNumber != 1) {
           printf("\n------------------------------------------------------------");
@@ -53,7 +53,7 @@ TO_QSPI const char baseChars[36] = "??" STD_BASE_1 STD_BASE_2 STD_BASE_3 STD_BAS
         printf("\nPgm Step   Bytes         OP");
       }
 
-      nextStep = findNextStep_ram(step);
+      nextStep = findNextStep(step);
       if(nextStep) {
         numberOfBytesInStep = (uint16_t)(nextStep - step);
         printf("\n%02d  %4d  ", programNumber, ++stepNumber - programList[programNumber - 1].step + 1); fflush(stdout);
@@ -61,7 +61,7 @@ TO_QSPI const char baseChars[36] = "??" STD_BASE_1 STD_BASE_2 STD_BASE_3 STD_BAS
         for(i=0; i<numberOfBytesInStep; i++) {
           printf(" %02x", *(step + i)); fflush(stdout);
           if(i == 3 && numberOfBytesInStep > 4) {
-            decodeOneStep_ram(step);
+            decodeOneStep(step);
             stringToUtf8(tmpString, (uint8_t *)(tmpString + 2000));
 
             if(!checkOpCodeOfStep(step, ITM_LBL) && !isAtEndOfProgram(step)) { // Not LBL and not END
@@ -80,7 +80,7 @@ TO_QSPI const char baseChars[36] = "??" STD_BASE_1 STD_BASE_2 STD_BASE_3 STD_BAS
           for(i=1; i<=4 - ((numberOfBytesInStep - 1) % 4); i++) {
             printf("   "); fflush(stdout);
           }
-          decodeOneStep_ram(step);
+          decodeOneStep(step);
           stringToUtf8(tmpString, (uint8_t *)(tmpString + 2000));
 
           if(!checkOpCodeOfStep(step, ITM_LBL) && !isAtEndOfProgram(step)) { // Not LBL and not END
@@ -102,55 +102,28 @@ TO_QSPI const char baseChars[36] = "??" STD_BASE_1 STD_BASE_2 STD_BASE_3 STD_BAS
     printf("num program  step label\n");
     for(int i=0; i<numberOfLabels; i++) {
       printf("%3d%8d%6d ", i, labelList[i].program, labelList[i].step);
-      if(labelList[i].program < 0) { // Flash
-        readStepInFlashPgmLibrary((uint8_t *)(tmpString + 200), 32, labelList[i].labelPointer.flash);
-        if(labelList[i].step < 0) { // Local label
-          if(*((uint8_t *)(tmpString + 200)) < 100) {
-            printf("%02d\n", *((uint8_t *)(tmpString + 200)));
-          }
-          else if(*((uint8_t *)(tmpString + 200)) < 105) {
-            printf("%c\n", *((uint8_t *)(tmpString + 200)) - 100 + 'A');
-          }
+      if(labelList[i].step < 0) { // Local label
+        if(*(labelList[i].labelPointer) < 100) {
+          printf("%02d\n", *(labelList[i].labelPointer));
         }
-        else { // Global label
-          xcopy(tmpString + 100, (uint8_t *)(tmpString + 200) + 1, *((uint8_t *)(tmpString + 200)));
-          tmpString[100 + *((uint8_t *)(tmpString + 200))] = 0;
-          stringToUtf8(tmpString + 100, (uint8_t *)tmpString);
-          printf("'%s'\n", tmpString);
+        else if(*(labelList[i].labelPointer) < 105) {
+          printf("%c\n", *(labelList[i].labelPointer) - 100 + 'A');
         }
       }
-      else { // RAM
-        if(labelList[i].step < 0) { // Local label
-          if(*(labelList[i].labelPointer.ram) < 100) {
-            printf("%02d\n", *(labelList[i].labelPointer.ram));
-          }
-          else if(*(labelList[i].labelPointer.ram) < 105) {
-            printf("%c\n", *(labelList[i].labelPointer.ram) - 100 + 'A');
-          }
-        }
-        else { // Global label
-          xcopy(tmpString + 100, labelList[i].labelPointer.ram + 1, *(labelList[i].labelPointer.ram));
-          tmpString[100 + *(labelList[i].labelPointer.ram)] = 0;
-          stringToUtf8(tmpString + 100, (uint8_t *)tmpString);
-          printf("'%s'\n", tmpString);
-        }
+      else { // Global label
+        xcopy(tmpString + 100, labelList[i].labelPointer + 1, *(labelList[i].labelPointer));
+        tmpString[100 + *(labelList[i].labelPointer)] = 0;
+        stringToUtf8(tmpString + 100, (uint8_t *)tmpString);
+        printf("'%s'\n", tmpString);
       }
     }
 
     printf("\nContent of programList\n");
     printf("program  step OP\n");
     for(int i=0; i<numberOfPrograms; i++) {
-      if(programList[i].step < 0) { // Flash
-        readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, programList[i].instructionPointer.flash);
-        decodeOneStep_ram((uint8_t *)(tmpString + 1600));
-        stringToUtf8(tmpString, (uint8_t *)(tmpString + 2000));
-        printf("%7d %5d %s\n", i, programList[i].step, tmpString);
-      }
-      else {
-        decodeOneStep_ram(programList[i].instructionPointer.ram);
-        stringToUtf8(tmpString, (uint8_t *)(tmpString + 2000));
-        printf("%7d %5d %s\n", i, programList[i].step, tmpString);
-      }
+      decodeOneStep(programList[i].instructionPointer);
+      stringToUtf8(tmpString, (uint8_t *)(tmpString + 2000));
+      printf("%7d %5d %s\n", i, programList[i].step, tmpString);
     }
   }
 #endif // !DMCP_BUILD
@@ -393,7 +366,7 @@ static void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode, 
     }
 
     case PARAM_KEYG_KEYX: {
-      uint8_t *secondParam = findKey2ndParam_ram(paramAddress - 3);
+      uint8_t *secondParam = findKey2ndParam(paramAddress - 3);
       decodeOp(secondParam + 1, indexOfItems[*secondParam].itemCatalogName, PARAM_LABEL, indexOfItems[*secondParam].tamMinMax & TAM_MAX_MASK);
       xcopy(tmpString + TMP_STR_LENGTH / 2, tmpString, stringByteLength(tmpString) + 1);
       decodeOp(paramAddress - 1, op, PARAM_NUMBER_8, 21);
@@ -618,7 +591,7 @@ static void decodeLiteral(uint8_t *literalAddress) {
         *(dispStringPtr++) = PRODUCT_SIGN[0];
         *(dispStringPtr++) = PRODUCT_SIGN[1];
       }
-      _decodeNumeral(dispStringPtr, sourceStringPtr, calcMode == CM_PEM && aimBuffer[0] != 0 && (currentStep.ram + 2 == literalAddress), &dispStringPtr, NULL);
+      _decodeNumeral(dispStringPtr, sourceStringPtr, calcMode == CM_PEM && aimBuffer[0] != 0 && (currentStep + 2 == literalAddress), &dispStringPtr, NULL);
       if(!CPXMULT && aimBuffer[0] == 0) {
         *(dispStringPtr++) = COMPLEX_UNIT[0];
         *(dispStringPtr++) = COMPLEX_UNIT[1];
@@ -747,17 +720,8 @@ static void decodeLiteral(uint8_t *literalAddress) {
 }
 
 
-void decodeOneStep(pgmPtr_t step) {
-  if(currentProgramNumber > (numberOfPrograms - numberOfProgramsInFlash)) { // Flash
-    readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, step.flash);
-    decodeOneStep_ram((uint8_t *)(tmpString + 1600));
-  }
-  else {
-    decodeOneStep_ram(step.ram);
-  }
-}
-
-void decodeOneStep_ram(uint8_t *step) {
+#define textOK true
+static void _decodeOneStep(uint8_t *step, bool_t textVersion) {
   uint16_t op = *(step++);
   if(op & 0x80) {
     op &= 0x7f;
@@ -769,14 +733,28 @@ void decodeOneStep_ram(uint8_t *step) {
     xcopy(tmpString, ".END.", 6);
   }
   else {
+    char nameOp[36];
+    nameOp[0]=0;
     switch(indexOfItems[op].status & PTP_STATUS) {
       case PTP_NONE: {
-        sprintf(tmpString, "%s%s", (CST_01 <= op && op <= CST_79) ? "# " : "", indexOfItems[op].itemCatalogName);
+        if(textVersion) {
+          if(CST_01 <= op && op <= CST_79) {
+            sprintf(nameOp, "%2i",op - CST_01 + 1); 
+            strcat(nameOp," ");
+            strcat(nameOp,indexOfItems[op].itemCatalogName);
+            strcat(nameOp," ");
+            strcat(nameOp,indexOfItems[op].itemSoftmenuName);
+          } else {
+            getXeqmText(op, nameOp);
+          }
+        }
+        if(nameOp[0] == 0) strcpy(nameOp,indexOfItems[op].itemCatalogName);
+        sprintf(tmpString, "%s%s", (CST_01 <= op && op <= CST_79) ? "# " : "", nameOp);
         break;
       }
 
       case PTP_DISABLED: {
-        printf("\nERROR in decodeOneStep: instruction %u is not programmable!\n", op);
+        printf("\nERROR in decodeOneStep: instruction %u:%s is not programmable!\n", op, indexOfItems[op].itemCatalogName);
         break;
       }
 
@@ -786,8 +764,25 @@ void decodeOneStep_ram(uint8_t *step) {
       }
 
       default: {
-        decodeOp(step, (op == ITM_INTEGRAL) ? STD_INTEGRAL "fd" : indexOfItems[op].itemCatalogName, (indexOfItems[op].status & PTP_STATUS) >> 9, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
+        if(op == ITM_INTEGRAL) {
+          strcpy(nameOp,STD_INTEGRAL "fd");
+        }
+        else {
+          if(textVersion) {
+            getXeqmText(op, nameOp);
+          } 
+          if(nameOp[0] == 0) strcpy(nameOp,indexOfItems[op].itemCatalogName);
+        }
+        decodeOp(step, nameOp, (indexOfItems[op].status & PTP_STATUS) >> 9, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
       }
     }
   }
+}
+
+void decodeOneStep(uint8_t *step) {
+  _decodeOneStep(step, !textOK);
+}
+
+void decodeOneStepXEQM(uint8_t *step) {
+  _decodeOneStep(step, textOK);
 }

@@ -32,7 +32,6 @@
 #include "keyboard.h"
 #include "longIntegerType.h"
 #include "memory.h"
-#include "programming/flash.h"
 #include "programming/manage.h"
 #include "programming/nextStep.h"
 #include "realType.h"
@@ -61,22 +60,15 @@ void fnGoto(uint16_t label) {
     if(label <= 104) {
       // Search for local label
       for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
-        if(labelList[lbl].program == currentProgramNumber && labelList[lbl].step < 0 && *(labelList[lbl].labelPointer.ram) == label) { // Is in the current program and is a local label and is the searched label
+        if(labelList[lbl].program == currentProgramNumber && labelList[lbl].step < 0 && *(labelList[lbl].labelPointer) == label) { // Is in the current program and is a local label and is the searched label
           if(programRunStop == PGM_RUNNING) {
             currentLocalStepNumber = (-labelList[lbl].step) - programList[currentProgramNumber - 1].step + 1;
-            currentStep.any = labelList[lbl].labelPointer.any - 1;
+            currentStep = labelList[lbl].labelPointer - 1;
           }
           else {
             goToGlobalStep(-labelList[lbl].step);
           }
           return;
-        }
-        else if(labelList[lbl].program == -currentProgramNumber && labelList[lbl].step < 0) { // Is in the current program and is a local label and is the searched label
-          readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, labelList[lbl].labelPointer.flash);
-          if(*((uint8_t *)(tmpString + 1600)) == label) {
-            goToGlobalStep(labelList[lbl].step);
-            return;
-          }
         }
       }
 
@@ -93,7 +85,7 @@ void fnGoto(uint16_t label) {
     }
     else if(label >= FIRST_LABEL && label <= LAST_LABEL) { // Global named label
       if((label - FIRST_LABEL) < numberOfLabels) {
-        goToGlobalStep((int16_t)labelList[label - FIRST_LABEL].step * (labelList[label - FIRST_LABEL].program < 0 ? -1 : 1));
+        goToGlobalStep((int16_t)labelList[label - FIRST_LABEL].step);
         return;
       }
       else {
@@ -130,21 +122,8 @@ void goToGlobalStep(int32_t step) {
 
     int16_t c, len = stringByteLength((char *)labelName);
     for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
-      uint8_t tmpLabel[16];
       uint8_t *lblPtr;
-      if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_RAM   && labelList[lbl].program < 0) {
-        continue;
-      }
-      if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_FLASH && labelList[lbl].program > 0) {
-        continue;
-      }
-      if(labelList[lbl].program < 0) {
-        readStepInFlashPgmLibrary(tmpLabel, 16, labelList[lbl].labelPointer.flash);
-        lblPtr = tmpLabel;
-      }
-      else {
-        lblPtr = labelList[lbl].labelPointer.ram;
-      }
+      lblPtr = labelList[lbl].labelPointer;
       if(labelList[lbl].step > 0 && *lblPtr == len) { // It's a global label and the length is OK
         for(c=0; c<len; c++) {
           if(labelName[c] != lblPtr[c + 1]) {
@@ -153,12 +132,7 @@ void goToGlobalStep(int32_t step) {
         }
         if(c == len) {
           if(dupNum <= 0) {
-            if(labelList[lbl].program < 0) {
-              step = -labelList[lbl].step;
-            }
-            else {
-              step = labelList[lbl].step;
-            }
+            step = labelList[lbl].step;
             break;
           }
           else {
@@ -172,11 +146,11 @@ void goToGlobalStep(int32_t step) {
   defineCurrentProgramFromGlobalStepNumber(step);
   currentLocalStepNumber = abs(step) - abs(programList[currentProgramNumber - 1].step) + 1;
 
-  pgmPtr_t stepPointer = beginOfCurrentProgram;
+  uint8_t *stepPointer = beginOfCurrentProgram;
   step = 1;
   while(true) {
     if(step == currentLocalStepNumber) {
-      currentStep.any = stepPointer.any;
+      currentStep = stepPointer;
       break;
     }
 
@@ -198,7 +172,7 @@ void goToGlobalStep(int32_t step) {
   }
   else {
     firstDisplayedLocalStepNumber = 0;
-    firstDisplayedStep.any = beginOfCurrentProgram.any;
+    firstDisplayedStep = beginOfCurrentProgram;
   }
 }
 
@@ -206,12 +180,7 @@ void goToGlobalStep(int32_t step) {
 
 void goToPgmStep(uint16_t program, uint16_t step) {
   int32_t globalStepNumber = programList[program - 1].step;
-  if(globalStepNumber < 0) { // flash memory
-    goToGlobalStep(globalStepNumber - step + 1);
-  }
-  else { // RAM
-    goToGlobalStep(globalStepNumber + step - 1);
-  }
+  goToGlobalStep(globalStepNumber + step - 1);
 }
 
 
@@ -298,7 +267,7 @@ void fnReturn(uint16_t skip) {
       goToGlobalStep(returnGlobalStepNumber);
     }
 
-    if(skip > 0 && !isAtEndOfProgram(currentStep.ram) && !isAtEndOfPrograms(currentStep.ram)) {
+    if(skip > 0 && !isAtEndOfProgram(currentStep) && !isAtEndOfPrograms(currentStep)) {
       ++currentLocalStepNumber;
       currentStep = findNextStep(currentStep);
     }
@@ -725,21 +694,19 @@ static void _putLiteral(uint8_t *literalAddress) {
 }
 #endif // !TESTSUITE_BUILD
 
-int16_t executeOneStep(pgmPtr_t step) {
-  #if defined(TESTSUITE_BUILD)
-  return 0;
-#else // TESTSUITE_BUILD
-  uint16_t op;
-  if(programList[currentProgramNumber - 1].step < 0) {
-    readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, step.flash);
-    step.ram = (uint8_t *)(tmpString + 1600);
-  }
 
-  op = *(step.ram++);
+
+int16_t executeOneStep(uint8_t *step) {
+  #if defined(TESTSUITE_BUILD)
+    return 0;
+  #else // TESTSUITE_BUILD
+  uint16_t op;
+
+  op = *(step++);
   if(op & 0x80) {
     op &= 0x7f;
     op <<= 8;
-    op |= *(step.ram++);
+    op |= *(step++);
   }
 
   switch(op) {
@@ -747,25 +714,25 @@ int16_t executeOneStep(pgmPtr_t step) {
     case ITM_XEQ:         //     3
     case ITM_BACK:        //  1412
     case ITM_CASE:        //  1418
-      case ITM_SKIP: {      //  1603
-      _executeOp(step.ram, op, (indexOfItems[op].status & PTP_STATUS) >> 9);
+    case ITM_SKIP: {      //  1603
+      _executeOp(step, op, (indexOfItems[op].status & PTP_STATUS) >> 9);
       return -1;
       }
 
     case ITM_RTN:         //     4
     case ITM_END:         //  1458
-      case ITM_RTNP1: {     //  1579
+    case ITM_RTNP1: {     //  1579
       runFunction(op);
       return 0;
-      }
+    }
 
-      case 0x7fff: {        // 32767  .END.
+    case 0x7fff: {        // 32767  .END.
       fnReturn(0);
       return 0;
-      }
+    }
 
-      case ITM_SOLVE: {     //  1608
-      _executeOp(step.ram, op, PARAM_REGISTER);
+    case ITM_SOLVE: {     //  1608
+      _executeOp(step, op, PARAM_REGISTER);
       if(temporaryInformation == TI_SOLVER_FAILED) {
         lastErrorCode = ERROR_NONE;
         return 2;
@@ -773,44 +740,44 @@ int16_t executeOneStep(pgmPtr_t step) {
       else {
         return 1;
       }
-      }
+    }
 
-      default: {
+    default: {
       switch(indexOfItems[op].status & PTP_STATUS) {
-          case PTP_NONE: {
+        case PTP_NONE: {
           runFunction(op);
           break;
-          }
+        }
 
-          case PTP_DECLARE_LABEL: {
+        case PTP_DECLARE_LABEL: {
           return 1;
-          }
+        }
 
-          case PTP_DISABLED: {
+        case PTP_DISABLED: {
           displayCalcErrorMessage(ERROR_NON_PROGRAMMABLE_COMMAND, ERR_REGISTER_LINE, REGISTER_X);
           #if(EXTRA_INFO_ON_CALC_ERROR == 1)
             moreInfoOnError("In function decodeOneStep:", "non-programmable function", indexOfItems[op].itemCatalogName, "appeared in the program!");
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
           return 0;
-          }
-
-          case PTP_LITERAL: {
-          _putLiteral(step.ram);
-          return 1;
-          }
-
-          case PTP_KEYG_KEYX: {
-          _executeOp(step.ram, op, PARAM_NUMBER_8);
-          break;
-          }
-
-          default: {
-          _executeOp(step.ram, op, (indexOfItems[op].status & PTP_STATUS) >> 9);
-      }
         }
+
+        case PTP_LITERAL: {
+          _putLiteral(step);
+          return 1;
+        }
+
+        case PTP_KEYG_KEYX: {
+          _executeOp(step, op, PARAM_NUMBER_8);
+          break;
+        }
+
+        default: {
+          _executeOp(step, op, (indexOfItems[op].status & PTP_STATUS) >> 9);
+        }
+      }
       return temporaryInformation == TI_FALSE ? 2 : 1;
-  }
     }
+  }
   #endif // !TESTSUITE_BUILD
 }
 
@@ -825,7 +792,7 @@ void runProgram(bool_t singleStep, uint16_t menuLabel) {
   programRunStop = PGM_RUNNING;
   if(!getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
     showHideHourGlass();
-      #if defined(DMCP_BUILD)
+    #if defined(DMCP_BUILD)
       lcd_refresh();
     #else // !DMCP_BUILD
       refreshLcd(NULL);
@@ -845,22 +812,10 @@ void runProgram(bool_t singleStep, uint16_t menuLabel) {
   while(1) {
     int16_t stepsToBeAdvanced;
     uint16_t subLevel = currentSubroutineLevel;
-    uint16_t opCode;
-    if(programList[currentProgramNumber - 1].step < 0) {
-      readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, currentStep.flash);
-      opCode = *((uint8_t *)(tmpString + 1600));
-    }
-    else {
-      opCode = *currentStep.ram;
-    }
+    uint16_t opCode = *currentStep;
     currentInputVariable = INVALID_VARIABLE; // INPUT is already executed
     if(opCode & 0x80) {
-      if(programList[currentProgramNumber - 1].step < 0) {
-        opCode = ((uint16_t)(opCode & 0x7F) << 8) | *((uint8_t *)(tmpString + 1601));
-      }
-      else {
-        opCode = ((uint16_t)(opCode & 0x7F) << 8) | *(currentStep.ram + 1);
-      }
+      opCode = ((uint16_t)(opCode & 0x7F) << 8) | *(currentStep + 1);
     }
     if(temporaryInformation == TI_TRUE || temporaryInformation == TI_FALSE || temporaryInformation == TI_SOLVER_FAILED || (opCode != ITM_RTN && opCode != ITM_STOP && opCode != ITM_END && opCode != 0x7fff)) {
       temporaryInformation = TI_NO_INFO;
@@ -868,27 +823,27 @@ void runProgram(bool_t singleStep, uint16_t menuLabel) {
     stepsToBeAdvanced = executeOneStep(currentStep);
     if(lastErrorCode == ERROR_NONE) {
       switch(stepsToBeAdvanced) {
-          case -1: { // Already the pointer is set
+        case -1: { // Already the pointer is set
           break;
-          }
+        }
 
-          case 0: { // End of the routine
+        case 0: { // End of the routine
           if(subLevel == startingSubLevel) {
             goto stopProgram;
           }
           break;
-          }
+        }
 
-          default: { // Find the next step
+        default: { // Find the next step
           fnSkip((uint16_t)(stepsToBeAdvanced - 1));
           break;
+        }
       }
     }
-      }
     else {
       break;
     }
-      #if defined(DMCP_BUILD)
+    #if defined(DMCP_BUILD)
       if(!nestedEngine) {
         int key = key_pop();
         key = convertKeyCode(key);
@@ -941,13 +896,12 @@ stopProgram:
 
 void execProgram(uint16_t label) {
   uint16_t origLocalStepNumber = currentLocalStepNumber;
-  pgmPtr_t origStep;
-  origStep.any = currentStep.any;
+  uint8_t *origStep = currentStep;
   fnExecute(label);
   if(programRunStop == PGM_RUNNING && (getSystemFlag(FLAG_INTING) || getSystemFlag(FLAG_SOLVING))) {
     runProgram(false, INVALID_VARIABLE);
     currentLocalStepNumber = origLocalStepNumber;
-    currentStep.any = origStep.any;
+    currentStep = origStep;
   }
 }
 
@@ -962,16 +916,9 @@ void fnCheckLabel(uint16_t label) {
   if(label <= 104) {
     // Search for local label
     for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
-      if(labelList[lbl].program == currentProgramNumber && labelList[lbl].step < 0 && *(labelList[lbl].labelPointer.ram) == label) { // Is in the current program and is a local label and is the searched label
+      if(labelList[lbl].program == currentProgramNumber && labelList[lbl].step < 0 && *(labelList[lbl].labelPointer) == label) { // Is in the current program and is a local label and is the searched label
         temporaryInformation = TI_TRUE;
         return;
-      }
-      else if(labelList[lbl].program == -currentProgramNumber && labelList[lbl].step < 0) { // Is in the current program and is a local label and is the searched label
-        readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 32, labelList[lbl].labelPointer.flash);
-        if(*((uint8_t *)(tmpString + 1600)) == label) {
-          temporaryInformation = TI_TRUE;
-          return;
-        }
       }
     }
     temporaryInformation = TI_FALSE;

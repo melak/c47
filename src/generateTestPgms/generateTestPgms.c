@@ -7455,6 +7455,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = ITM_RAD2;
 
     *(currentStep++) = ITM_RMODE;
+    *(currentStep++) = 5;
 
     *(currentStep++) = ITM_LOGICALNOT;
 
@@ -10032,6 +10033,8 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_DENMAX2 >> 8) | 0x80;
     *(currentStep++) =  ITM_DENMAX2       & 0xff;
+    *(currentStep++) = 21;
+    *(currentStep++) = 21;
 
     *(currentStep++) = (ITM_DOT_PROD >> 8) | 0x80;
     *(currentStep++) =  ITM_DOT_PROD       & 0xff;
@@ -10337,8 +10340,8 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = 'a';
     *(currentStep++) = 'r';
 
-    *(currentStep++) = (ITM_FLASH >> 8) | 0x80;
-    *(currentStep++) =  ITM_FLASH       & 0xff;
+    *(currentStep++) = (ITM_DISK >> 8) | 0x80;
+    *(currentStep++) =  ITM_DISK       & 0xff;
 
     *(currentStep++) = (ITM_FQX >> 8) | 0x80;
     *(currentStep++) =  ITM_FQX       & 0xff;
@@ -10394,7 +10397,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_GRP_L >> 8) | 0x80;
     *(currentStep++) =  ITM_GRP_L       & 0xff;
-    *(currentStep++) = 15;
+    *(currentStep++) = 9;
 
     *(currentStep++) = (ITM_GRP_L >> 8) | 0x80;
     *(currentStep++) =  ITM_GRP_L       & 0xff;
@@ -12869,9 +12872,6 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = (ITM_POPLR >> 8) | 0x80;
     *(currentStep++) =  ITM_POPLR       & 0xff;
 
-    *(currentStep++) = (ITM_PRCL >> 8) | 0x80;
-    *(currentStep++) =  ITM_PRCL       & 0xff;
-
     *(currentStep++) = (ITM_PUTK >> 8) | 0x80;
     *(currentStep++) =  ITM_PUTK       & 0xff;
     *(currentStep++) = 0;
@@ -13143,9 +13143,6 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = (ITM_RE >> 8) | 0x80;
     *(currentStep++) =  ITM_RE       & 0xff;
 
-    *(currentStep++) = (ITM_READP >> 8) | 0x80;
-    *(currentStep++) =  ITM_READP       & 0xff;
-
     *(currentStep++) = (ITM_REtoCX >> 8) | 0x80;
     *(currentStep++) =  ITM_REtoCX       & 0xff;
 
@@ -13364,14 +13361,12 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = LAST_LOCAL_REGISTER;
 
-    *(currentStep++) = (ITM_SDIGS >> 8) | 0x80;
-    *(currentStep++) =  ITM_SDIGS       & 0xff;
+    *(currentStep++) = (ITM_SETSIG2>> 8) | 0x80;
+    *(currentStep++) =  ITM_SETSIG2      & 0xff;
+    *(currentStep++) = 20;
 
     *(currentStep++) = (ITM_SEED >> 8) | 0x80;
     *(currentStep++) =  ITM_SEED       & 0xff;
-
-    *(currentStep++) = (ITM_WRITEP >> 8) | 0x80;
-    *(currentStep++) =  ITM_WRITEP       & 0xff;
 
     *(currentStep++) = (ITM_SETCHN >> 8) | 0x80;
     *(currentStep++) =  ITM_SETCHN       & 0xff;
@@ -13388,8 +13383,8 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = (ITM_SETJPN >> 8) | 0x80;
     *(currentStep++) =  ITM_SETJPN       & 0xff;
 
-    *(currentStep++) = (ITM_SDIGS >> 8) | 0x80;
-    *(currentStep++) =  ITM_SDIGS       & 0xff;
+    *(currentStep++) = (ITM_GETSDIGS >> 8) | 0x80;
+    *(currentStep++) =  ITM_GETSDIGS       & 0xff;
 
     *(currentStep++) = (ITM_SETTIM >> 8) | 0x80;
     *(currentStep++) =  ITM_SETTIM       & 0xff;
@@ -14648,6 +14643,8 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_RNG >> 8) | 0x80;
     *(currentStep++) =  ITM_RNG       & 0xff;
+    *(currentStep++) = 20;
+    *(currentStep++) = 20;
 
     *(currentStep++) = (ITM_GETRANGE >> 8) | 0x80;
     *(currentStep++) =  ITM_GETRANGE       & 0xff;
@@ -15095,6 +15092,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_HIDE >> 8) | 0x80;
     *(currentStep++) =  ITM_HIDE       & 0xff;
+    *(currentStep++) = 99;
 
     *(currentStep++) = (ITM_Ephik >> 8) | 0x80;
     *(currentStep++) =  ITM_Ephik       & 0xff;
@@ -15598,7 +15596,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '9';
     *(currentStep++) = '6';
     *(currentStep++) = '4';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '1';
     *(currentStep++) = '1';
@@ -15635,7 +15633,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '4';
     *(currentStep++) = '2';
     *(currentStep++) = '4';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '1';
     *(currentStep++) = '1';
@@ -15672,7 +15670,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '1';
     *(currentStep++) = '4';
     *(currentStep++) = '5';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '1';
     *(currentStep++) = '1';
@@ -15709,7 +15707,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '1';
     *(currentStep++) = '9';
     *(currentStep++) = '4';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '1';
     *(currentStep++) = '0';
@@ -15746,7 +15744,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '6';
     *(currentStep++) = '0';
     *(currentStep++) = '2';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '1';
     *(currentStep++) = '0';
@@ -15783,7 +15781,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '5';
     *(currentStep++) = '5';
     *(currentStep++) = '8';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '9';
@@ -15820,7 +15818,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '4';
     *(currentStep++) = '7';
     *(currentStep++) = '9';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '9';
@@ -15857,7 +15855,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '4';
     *(currentStep++) = '8';
     *(currentStep++) = '1';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '9';
@@ -15894,7 +15892,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '5';
     *(currentStep++) = '4';
     *(currentStep++) = '2';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '8';
@@ -15931,7 +15929,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '6';
     *(currentStep++) = '9';
     *(currentStep++) = '1';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '8';
@@ -15968,7 +15966,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '2';
     *(currentStep++) = '5';
     *(currentStep++) = '6';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '7';
@@ -16005,7 +16003,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '4';
     *(currentStep++) = '9';
     *(currentStep++) = '6';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '7';
@@ -16042,7 +16040,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '2';
     *(currentStep++) = '9';
     *(currentStep++) = '7';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '7';
@@ -16079,7 +16077,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '7';
     *(currentStep++) = '9';
     *(currentStep++) = '4';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '6';
@@ -16116,7 +16114,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '9';
     *(currentStep++) = '7';
     *(currentStep++) = '2';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '6';
@@ -16153,7 +16151,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '8';
     *(currentStep++) = '9';
     *(currentStep++) = '1';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '6';
@@ -16190,7 +16188,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '9';
     *(currentStep++) = '0';
     *(currentStep++) = '4';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '6';
@@ -16227,7 +16225,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '1';
     *(currentStep++) = '6';
     *(currentStep++) = '5';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '5';
@@ -16264,7 +16262,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '3';
     *(currentStep++) = '4';
     *(currentStep++) = '6';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '5';
@@ -16301,7 +16299,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '0';
     *(currentStep++) = '9';
     *(currentStep++) = '9';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '5';
@@ -18416,7 +18414,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '1';
     *(currentStep++) = '0';
     *(currentStep++) = '9';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '5';
@@ -18452,7 +18450,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '3';
     *(currentStep++) = '5';
     *(currentStep++) = '1';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '5';
@@ -18488,7 +18486,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '1';
     *(currentStep++) = '6';
     *(currentStep++) = '8';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '5';
@@ -18524,7 +18522,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '9';
     *(currentStep++) = '1';
     *(currentStep++) = '8';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '6';
@@ -18560,7 +18558,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '8';
     *(currentStep++) = '9';
     *(currentStep++) = '7';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '6';
@@ -18596,7 +18594,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '9';
     *(currentStep++) = '7';
     *(currentStep++) = '6';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '6';
@@ -18632,7 +18630,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '7';
     *(currentStep++) = '9';
     *(currentStep++) = '6';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '6';
@@ -18668,7 +18666,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '3';
     *(currentStep++) = '0';
     *(currentStep++) = '6';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '7';
@@ -18704,7 +18702,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '5';
     *(currentStep++) = '0';
     *(currentStep++) = '1';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '7';
@@ -18740,7 +18738,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '2';
     *(currentStep++) = '5';
     *(currentStep++) = '8';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '7';
@@ -18776,7 +18774,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '7';
     *(currentStep++) = '0';
     *(currentStep++) = '1';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '8';
@@ -18812,7 +18810,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '5';
     *(currentStep++) = '4';
     *(currentStep++) = '8';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '8';
@@ -18848,7 +18846,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '5';
     *(currentStep++) = '0';
     *(currentStep++) = '1';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '9';
@@ -18884,7 +18882,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '4';
     *(currentStep++) = '8';
     *(currentStep++) = '8';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '9';
@@ -18920,7 +18918,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '5';
     *(currentStep++) = '6';
     *(currentStep++) = '2';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '0';
     *(currentStep++) = '9';
@@ -18956,7 +18954,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '6';
     *(currentStep++) = '1';
     *(currentStep++) = '8';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '1';
     *(currentStep++) = '0';
@@ -18992,7 +18990,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '2';
     *(currentStep++) = '0';
     *(currentStep++) = '1';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '1';
     *(currentStep++) = '0';
@@ -19028,7 +19026,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '1';
     *(currentStep++) = '6';
     *(currentStep++) = '9';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '1';
     *(currentStep++) = '1';
@@ -19064,7 +19062,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '4';
     *(currentStep++) = '3';
     *(currentStep++) = '5';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';
     *(currentStep++) = '-';
     *(currentStep++) = '1';
     *(currentStep++) = '1';

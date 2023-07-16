@@ -41,7 +41,6 @@
 #include "mathematics/matrix.h"
 #include "memory.h"
 #include "plotstat.h"
-#include "programming/flash.h"
 #include "programming/manage.h"
 #include "programming/programmableMenu.h"
 #include "c43Extensions/graphs.h"
@@ -134,7 +133,7 @@ void configCommon(uint16_t idx) {
     jm_BASE_SCREEN = false;                  //Switch off base = MyMenu
     SH_BASE_HOME = false;                    //Ensure base = HOME is off
     exponentLimit     = 99;                  //Set the exponent limit the same as HP35, i.e. 99                ID, if changed, also set the conditions for checkHP in defines.h (99)
-    significantDigits = 16;                  //SDIGS = 16                                                      ID, if changed, also set the conditions for checkHP in defines.h (10-16)
+    significantDigits = 16;                  //SETSIG2 = 16                                                    ID, if changed, also set the conditions for checkHP in defines.h (10-16)
     displayStack = cachedDisplayStack = 1;   //Change to single stack register display                         ID, if changed, also set the conditions for checkHP in defines.h (1)
     currentAngularMode = amDegree;           //Set to DEG
     SetSetting(SS_4);                        //SSTACK4
@@ -160,6 +159,7 @@ void configCommon(uint16_t idx) {
 
   void fnHP35JM(uint16_t unusedButMandatoryParameter){
     fnSetHP35(0);
+    jm_BASE_SCREEN = true;
     fneRPN(1);                               //eRPN
     setFGLSettings(RB_FGLNFUL);              //fgLine FULL
     clearSystemFlag(FLAG_HPRP);              //Clear HP Rect/Polar
@@ -484,7 +484,7 @@ void fnBatteryVoltage(uint16_t unusedButMandatoryParameter) {
 
 
 uint32_t getFreeFlash(void) {
-  return FLASH_PGM_PAGE_SIZE * FLASH_PGM_NUMBER_OF_PAGES - sizeOfFlashPgmLibrary - 2;
+  return 0;
 }
 
 
@@ -751,11 +751,11 @@ void fnClAll(uint16_t confirmation) {
 
 
 void addTestPrograms(void) {
-  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(15200));
+  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(16000));
 
   resizeProgramMemory(TO_BLOCKS(numberOfBytesForTheTestPrograms));
-  firstDisplayedStep.ram        = beginOfProgramMemory;
-  currentStep.ram               = beginOfProgramMemory;
+  firstDisplayedStep            = beginOfProgramMemory;
+  currentStep                   = beginOfProgramMemory;
   currentLocalStepNumber        = 1;
   firstDisplayedLocalStepNumber = 0;
 
@@ -1017,21 +1017,18 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
 
     // Empty program initialization
     beginOfProgramMemory          = (uint8_t *)(ram + freeMemoryRegions[0].sizeInBlocks);
-    currentStep.ram               = beginOfProgramMemory;
+    currentStep                   = beginOfProgramMemory;
     firstFreeProgramByte          = beginOfProgramMemory + 2;
-    firstDisplayedStep.ram        = beginOfProgramMemory;
+    firstDisplayedStep            = beginOfProgramMemory;
     firstDisplayedLocalStepNumber = 0;
     labelList                     = NULL;
     programList                   = NULL;
-    flashLabelList                = NULL;
-    flashProgramList              = NULL;
     *(beginOfProgramMemory + 0) = (ITM_END >> 8) | 0x80;
     *(beginOfProgramMemory + 1) =  ITM_END       & 0xff;
     *(beginOfProgramMemory + 2) = 255; // .END.
     *(beginOfProgramMemory + 3) = 255; // .END.
     freeProgramBytes            = 0;
 
-    scanFlashPgmLibrary();
     scanLabelsAndPrograms();
 
     // "Not found glyph" initialization

@@ -52,6 +52,10 @@ int _ioFileNameFromFilePath(ioFilePath_t path, char * filename) {
       check_create_dir(PROGRAMS_DIR);
       ret = file_selection_screen("Save Program", PROGRAMS_DIR, PRGM_EXT, save_programfile, 1, 1, filename);
       return (ret == MRET_EXIT? FILE_CANCEL : FILE_OK);
+   case ioPathExportProgram:
+      check_create_dir(PROGRAMS_DIR);
+      ret = file_selection_screen("Export Program", PROGRAMS_DIR, TXT_EXT, save_programfile, 1, 1, filename);
+      return (ret == MRET_EXIT? FILE_CANCEL : FILE_OK);
    case ioPathLoadProgram:
       check_create_dir(PROGRAMS_DIR);
       ret = file_selection_screen("Load Program", PROGRAMS_DIR, PRGM_EXT, load_programfile, 0, 0, filename);
@@ -256,4 +260,9 @@ void show_warning(char *str) {
       break;
     }
   }
+}
+
+void fnDiskInfo(uint16_t unusedButMandatoryParameter) {
+  disp_disk_info("Disk Info");
+  wait_for_key_press();
 }

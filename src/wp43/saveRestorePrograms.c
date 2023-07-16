@@ -17,10 +17,10 @@
 #include "mathematics/matrix.h"
 #include "memory.h"
 #include "plotstat.h"
-#include "programming/flash.h"
 #include "programming/lblGtoXeq.h"
 #include "programming/manage.h"
 #include "programming/nextStep.h"
+#include "programming/decode.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "solver/equation.h"
@@ -70,12 +70,10 @@ static void _addSpaceAfterPrograms(uint16_t size) {
     uint32_t newProgramSizeInBlocks = TO_BLOCKS(TO_BYTES(programSizeInBlocks) - freeProgramBytes + size);
     freeProgramBytes      += TO_BYTES(newProgramSizeInBlocks - programSizeInBlocks);
     resizeProgramMemory(newProgramSizeInBlocks);
-    if(programList[currentProgramNumber - 1].step > 0) { // RAM
-      currentStep.ram           = currentStep.ram           - oldBeginOfProgramMemory + beginOfProgramMemory;
-      firstDisplayedStep.ram    = firstDisplayedStep.ram    - oldBeginOfProgramMemory + beginOfProgramMemory;
-      beginOfCurrentProgram.ram = beginOfCurrentProgram.ram - oldBeginOfProgramMemory + beginOfProgramMemory;
-      endOfCurrentProgram.ram   = endOfCurrentProgram.ram   - oldBeginOfProgramMemory + beginOfProgramMemory;
-    }
+    currentStep           = currentStep           - oldBeginOfProgramMemory + beginOfProgramMemory;
+    firstDisplayedStep    = firstDisplayedStep    - oldBeginOfProgramMemory + beginOfProgramMemory;
+    beginOfCurrentProgram = beginOfCurrentProgram - oldBeginOfProgramMemory + beginOfProgramMemory;
+    endOfCurrentProgram   = endOfCurrentProgram   - oldBeginOfProgramMemory + beginOfProgramMemory;
   }
 
   firstFreeProgramByte   += size;
@@ -83,7 +81,7 @@ static void _addSpaceAfterPrograms(uint16_t size) {
 }
 
 
-static bool _addEndNeeded(void) {
+static bool_t _addEndNeeded(void) {
   if(firstFreeProgramByte <= beginOfProgramMemory) {
     return false;
   }
@@ -94,6 +92,159 @@ static bool _addEndNeeded(void) {
     return false;
   }
   return true;
+}
+
+
+
+void fnPExport(uint16_t unusedButMandatoryParameter) {
+#if !defined(SAVE_SPACE_DM42_10)
+  #if !defined(TESTSUITE_BUILD)
+    ///////////////////////////////////////////////////////////////////////////////////////
+    // For details, see fnPem(). This is a modified copy.
+    //
+    uint16_t line, firstLine;
+    uint8_t *step, *nextStep;
+    uint16_t numberOfSteps = getNumberOfSteps();
+
+    firstDisplayedLocalStepNumber = 0;
+    defineFirstDisplayedStep();
+
+    step                     = firstDisplayedStep;
+    programListEnd           = false;
+    lastProgramListEnd       = false;
+
+    if(firstDisplayedLocalStepNumber == 0) {
+      sprintf(tmpString, "0000: { Prgm #%d: %" PRIu32 " bytes / %" PRIu16 " step%s }", currentProgramNumber, _getProgramSize(),                                                                               numberOfSteps, numberOfSteps == 1 ? "" : "s");
+      //printf("%s\n",tmpString);
+
+      stringAppend(tmpString + stringByteLength(tmpString), "\n");
+      ioFileWrite(tmpString, strlen(tmpString));
+
+      firstLine = 1;
+    }
+    else {
+      firstLine = 0;
+    }
+
+    int lineOffset = 0, lineOffsetTam = 0;
+
+    for(line=firstLine; line<9999; line++) {
+      nextStep = findNextStep(step);
+      sprintf(tmpString, "%04d:  " , firstDisplayedLocalStepNumber + line - lineOffset + lineOffsetTam);
+      //printf("%s",tmpString);
+      ioFileWrite(tmpString, strlen(tmpString));
+
+      decodeOneStepXEQM(step);
+      stringAppend(tmpString + stringByteLength(tmpString), "\n");
+      stringToASCII(tmpString, errorMessage);
+      //printf("%s\n",errorMessage);
+      ioFileWrite(errorMessage, strlen(errorMessage));
+
+      if(isAtEndOfProgram(step)) {
+        programListEnd = true;
+        if(*nextStep == 255 && *(nextStep + 1) == 255) {
+          lastProgramListEnd = true;
+        }
+        break;
+      }
+      if((*step == 255) && (*(step + 1) == 255)) {
+        programListEnd = true;
+        lastProgramListEnd = true;
+        break;
+      }
+      step = nextStep;
+    }
+  #endif // !TESTSUITE_BUILD
+#endif // !SAVE_SPACE_DM42_10
+}
+
+
+
+
+
+
+void fnExportProgram(uint16_t label) {
+  #if !defined(TESTSUITE_BUILD)
+    uint32_t programVersion = PROGRAM_VERSION;
+    ioFilePath_t path;
+    //char tmpString[3000];           //The concurrent use of the global tmpString
+    //                                //as target does not work while the source is at
+    //                                //tmpRegisterString = tmpString + START_REGISTER_VALUE;
+    //                                //Temporary solution is to use a local variable of sufficient length for the target.
+    int ret;
+
+    // Find program boundaries
+    const uint16_t savedCurrentLocalStepNumber = currentLocalStepNumber;
+    uint16_t savedCurrentProgramNumber = currentProgramNumber;
+    
+    // no argument – need to save current program
+    if(label == 0 && !tam.alpha && tam.digitsSoFar == 0) {
+        // find the first global label in the current program
+        uint16_t currentLabel = 0;
+        strcpy(tmpStringLabelOrVariableName, "untitled");       
+        while (currentLabel < numberOfLabels) {
+          if (labelList[currentLabel].program == currentProgramNumber) {
+            break;
+          }
+          currentLabel++;
+        }
+        // get the first global label name
+        while (currentLabel < numberOfLabels) {
+          if (labelList[currentLabel].step > 0) {  // global label
+            // get current label name (to be used as default file name)
+            xcopy(tmpStringLabelOrVariableName, labelList[currentLabel].labelPointer + 1, *(labelList[currentLabel].labelPointer));
+            tmpStringLabelOrVariableName[*(labelList[currentLabel].labelPointer)] = 0;
+            break;
+          }
+          currentLabel++;
+        }
+    }
+    // Existing global label
+    else if(label >= FIRST_LABEL && label <= LAST_LABEL) {
+      fnGoto(label);
+      // get current label name (to be used as default file name)
+      xcopy(tmpStringLabelOrVariableName, labelList[label - FIRST_LABEL].labelPointer + 1, *(labelList[label - FIRST_LABEL].labelPointer));
+      tmpStringLabelOrVariableName[*(labelList[label - FIRST_LABEL].labelPointer)] = 0;
+    }
+    // Invalid label
+    else {
+      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "label %" PRIu16 " is not a global label", label);
+        moreInfoOnError("In function fnSaveProgram:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return;
+    }
+
+    path = ioPathExportProgram;
+    ret = ioFileOpen(path, ioModeWrite);
+
+    if(ret != FILE_OK ) {
+      if(ret == FILE_CANCEL ) {
+        return;
+      }
+      else {
+        #if !defined(DMCP_BUILD)
+          printf("Cannot export program!\n");
+        #endif
+        displayCalcErrorMessage(ERROR_CANNOT_WRITE_FILE, ERR_REGISTER_LINE, REGISTER_X);
+        return;
+      }
+    }
+
+    // PROGRAM file version
+    sprintf(tmpString, "C47 Program file export, version %" PRIu32 "\n", (uint32_t)programVersion);
+    ioFileWrite(tmpString, strlen(tmpString));
+
+    fnPExport(0);
+
+    ioFileClose();
+
+    currentLocalStepNumber = savedCurrentLocalStepNumber;
+    currentProgramNumber = savedCurrentProgramNumber;
+
+    temporaryInformation = TI_SAVED;
+  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -119,12 +270,35 @@ void fnSaveProgram(uint16_t label) {
     // Find program boundaries
     const uint16_t savedCurrentLocalStepNumber = currentLocalStepNumber;
     uint16_t savedCurrentProgramNumber = currentProgramNumber;
+    
     // no argument – need to save current program
     if(label == 0 && !tam.alpha && tam.digitsSoFar == 0) {
+        // find the first global label in the current program
+        uint16_t currentLabel = 0;
+        strcpy(tmpStringLabelOrVariableName, "untitled");       
+        while (currentLabel < numberOfLabels) {
+          if (labelList[currentLabel].program == currentProgramNumber) {
+            break;
+          }
+          currentLabel++;
+        }
+        // get the first global label name
+        while (currentLabel < numberOfLabels) {
+          if (labelList[currentLabel].step > 0) {  // global label
+            // get current label name (to be used as default file name)
+            xcopy(tmpStringLabelOrVariableName, labelList[currentLabel].labelPointer + 1, *(labelList[currentLabel].labelPointer));
+            tmpStringLabelOrVariableName[*(labelList[currentLabel].labelPointer)] = 0;
+            break;
+          }
+          currentLabel++;
+        }
     }
     // Existing global label
     else if(label >= FIRST_LABEL && label <= LAST_LABEL) {
       fnGoto(label);
+      // get current label name (to be used as default file name)
+      xcopy(tmpStringLabelOrVariableName, labelList[label - FIRST_LABEL].labelPointer + 1, *(labelList[label - FIRST_LABEL].labelPointer));
+      tmpStringLabelOrVariableName[*(labelList[label - FIRST_LABEL].labelPointer)] = 0;
     }
     // Invalid label
     else {
@@ -133,12 +307,6 @@ void fnSaveProgram(uint16_t label) {
         sprintf(errorMessage, "label %" PRIu16 " is not a global label", label);
         moreInfoOnError("In function fnSaveProgram:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      return;
-    }
-
-    // program in flash memory : return without saving
-    if(programList[currentProgramNumber - 1].step < 0) { // flash memory
-      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       return;
     }
 
@@ -165,17 +333,17 @@ void fnSaveProgram(uint16_t label) {
     ioFileWrite(tmpString, strlen(tmpString));
 
     // Program
-    size_t currentSizeInBytes = endOfCurrentProgram.ram - ((currentProgramNumber == (numberOfPrograms - numberOfProgramsInFlash)) ? 2 : 0) - beginOfCurrentProgram.ram;
+    size_t currentSizeInBytes = endOfCurrentProgram - ((currentProgramNumber == numberOfPrograms) ? 2 : 0) - beginOfCurrentProgram;
     sprintf(tmpString, "PROGRAM\n%" PRIu32 "\n", (uint32_t)currentSizeInBytes);
     ioFileWrite(tmpString, strlen(tmpString));
 
     // Save program bytes
     for(i=0; i<currentSizeInBytes; i++) {
-      sprintf(tmpString, "%" PRIu8 "\n", beginOfCurrentProgram.ram[i]);
+      sprintf(tmpString, "%" PRIu8 "\n", beginOfCurrentProgram[i]);
       ioFileWrite(tmpString, strlen(tmpString));
     }
     // If last program in memory then add .END. statement
-    if(currentProgramNumber == (numberOfPrograms - numberOfProgramsInFlash)) {
+    if(currentProgramNumber == numberOfPrograms) {
       sprintf(tmpString, "255\n255\n");
       ioFileWrite(tmpString, strlen(tmpString));
     }

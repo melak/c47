@@ -898,7 +898,7 @@ TO_QSPI const font_t numericFont = {
      .data="\x1f\x80\x70\xe0\x40\x20\xc0\x30\x86\x10\x8f\x10\x8f\x10\x86\x10\xc0\x30\x40\x20\x70\xe0\x1f\x80"},
 
     // dotmath
-    {.charCode=0xa2c5, .colsBeforeGlyph= 3, .colsGlyph= 7, .colsAfterGlyph= 6, .rowsAboveGlyph=17, .rowsGlyph= 7, .rowsBelowGlyph= 8, .rank1=  0, .rank2=  0,
+    {.charCode=0xa2c5, .colsBeforeGlyph= 4, .colsGlyph= 7, .colsAfterGlyph= 5, .rowsAboveGlyph=17, .rowsGlyph= 7, .rowsBelowGlyph= 8, .rank1=  0, .rank2=  0,
      .data="\x00\x78\xfc\xfc\xfc\xfc\x78"},
 
     // uni2399

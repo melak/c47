@@ -24,6 +24,7 @@
   #include "typeDefinitions.h"
   #include <stdint.h>
 
+  uint32_t _getProgramSize                     (void);
   void scanLabelsAndPrograms                   (void);
   void defineCurrentProgramFromGlobalStepNumber(int16_t globalStepNumber);
   void defineCurrentProgramFromCurrentStep     (void);

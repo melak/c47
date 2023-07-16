@@ -1360,8 +1360,28 @@ void execTimerApp(uint16_t timerType) {
   }
 
 
+  void showDispSmall(uint16_t offset, uint8_t _h1) {
+    #define line_h0 21
+    const uint32_t line_h_offset = Y_POSITION_OF_REGISTER_T_LINE;
+    if(tmpString[offset]) {
+      uint32_t w = stringWidth(tmpString + offset, &standardFont, true, true);
+      showString(tmpString + offset, &standardFont, SCREEN_WIDTH - w, line_h_offset + line_h0 * _h1, vmNormal, true, true);
+      #if defined(VERBOSE_SCREEN) && defined(PC_BUILD)
+        printf("^^^^NEW SHOW: %s\n", tmpString + offset);
+      #endif // VERBOSE_SCREEN && PC_BUILD
+      if(_h1 == 0) {
+        if(temporaryInformation == TI_SHOW_REGISTER_SMALL && tmpString[1500] != 0) {
+        }
+        else {
+          lcd_fill_rect(0,240-3*SOFTMENU_HEIGHT,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);
+        }
+      }
+    }
+  }
+
+
   void showDisp(uint16_t offset, uint8_t _h1) {
-    #define line_h1 38
+    #define line_h1 37
     const uint32_t line_h_offset = Y_POSITION_OF_REGISTER_T_LINE - 3;
 
     uint32_t w = stringWidthWithLimitC43(tmpString + offset, stdnumEnlarge, nocompress, SCREEN_WIDTH, true, true);
@@ -2027,7 +2047,7 @@ void execTimerApp(uint16_t timerType) {
 
     if((temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) && regist == REGISTER_X) { //JM frame the SHOW window
       lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE-4, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
-      if(temporaryInformation != TI_SHOW_REGISTER_BIG) {                                 //JM TI_SHOW_REGISTER_BIG is drawn elsewhere
+      if(temporaryInformation != TI_SHOW_REGISTER_BIG && temporaryInformation != TI_SHOW_REGISTER_SMALL) {   //JM TI_SHOW_REGISTER_BIG is drawn elsewhere (showDisplay)
         lcd_fill_rect(0, 240-3*SOFTMENU_HEIGHT, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
       }
     }
@@ -2166,8 +2186,8 @@ void execTimerApp(uint16_t timerType) {
       else if(temporaryInformation == TI_VERSION && regist == REGISTER_X) {
         clearRegisterLine(REGISTER_X, true, true);
         clearRegisterLine(REGISTER_Y, true, true);
-        showString(versionStr, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
-        showString(versionStr2, &standardFont, 1, Y_POSITION_OF_REGISTER_Y_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
+        showStringEnhanced(versionStr,  &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
+        showStringEnhanced(versionStr2, &standardFont, 1, Y_POSITION_OF_REGISTER_Y_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
       }
 
       else if(temporaryInformation == TI_DISP_JULIAN) {
@@ -2211,8 +2231,8 @@ void execTimerApp(uint16_t timerType) {
         clearRegisterLine(REGISTER_Y, true, true);
         clearRegisterLine(REGISTER_Z, true, true);
         showString("Backup restored", &standardFont, 1, Y_POSITION_OF_REGISTER_Z_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
-        showString(versionStr, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
-        showString(versionStr2, &standardFont, 1, Y_POSITION_OF_REGISTER_Y_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
+        showStringEnhanced(versionStr,  &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
+        showStringEnhanced(versionStr2, &standardFont, 1, Y_POSITION_OF_REGISTER_Y_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
       }
 
       else if(temporaryInformation == TI_STATEFILE_RESTORED && regist == REGISTER_X) {
@@ -2304,53 +2324,24 @@ void execTimerApp(uint16_t timerType) {
         switch(regist) {
           // L1
           case REGISTER_T:
-            w = stringWidth(tmpString, &standardFont, true, true);
-            showString(tmpString, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true);
-            #if defined(VERBOSE_SCREEN) && defined(PC_BUILD)
-              printf("^^^^NEW SHOW A: Display Register T: %s\n", tmpString);
-            #endif // VERBOSE_SCREEN && PC_BUILD
+            showDispSmall(   0, 0);
             break;
           // L2 & L3
-          case REGISTER_Z: w = stringWidth(tmpString + 300, &standardFont, true, true);
-            showString(tmpString + 300, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h0, vmNormal, true, true);
-            #if defined(VERBOSE_SCREEN) && defined(PC_BUILD)
-              printf("^^^^NEW SHOW A: Display Register Z: %s\n", tmpString + 300);
-            #endif // VERBOSE_SCREEN && PC_BUILD
-            if(tmpString[600]) {
-              w = stringWidth(tmpString + 600, &standardFont, true, true);
-              showString(tmpString + 600, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h0*2, vmNormal, true, true);
-              #if defined(VERBOSE_SCREEN) && defined(PC_BUILD)
-                printf("^^^^NEW SHOW A: Display Register Z2: %s\n", tmpString + 600);
-              #endif // VERBOSE_SCREEN && PC_BUILD
-            }
+          case REGISTER_Z:
+            showDispSmall( 300, 1);
+            showDispSmall( 600, 2);
             break;
           // L4 & L5
-          case REGISTER_Y: w = stringWidth(tmpString + 900, &standardFont, true, true);
-            showString(tmpString + 900, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h0*3, vmNormal, true, true);
-            #if defined(VERBOSE_SCREEN) && defined(PC_BUILD)
-              printf("^^^^NEW SHOW A: Display Register Y: %s\n", tmpString + 900);
-            #endif // VERBOSE_SCREEN && PC_BUILD
-            if(tmpString[1200]) {
-              w = stringWidth(tmpString + 1200, &standardFont, true, true);
-              showString(tmpString + 1200, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h0*4, vmNormal, true, true);
-              #if defined(VERBOSE_SCREEN) && defined(PC_BUILD)
-                printf("^^^^NEW SHOW A: Display Register Y2: %s\n", tmpString + 1200);
-              #endif // VERBOSE_SCREEN && PC_BUILD
-            }
+          case REGISTER_Y:
+            showDispSmall( 900, 3);
+            showDispSmall(1200, 4);
             break;
           // L6 & L7
-          case REGISTER_X: w = stringWidth(tmpString + 1500, &standardFont, true, true);
-            showString(tmpString + 1500, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h0*5, vmNormal, true, true);
-            #if defined(VERBOSE_SCREEN) && defined(PC_BUILD)
-              printf("^^^^NEW SHOW A: Display Register X: %s\n", tmpString + 1500);
-            #endif // VERBOSE_SCREEN && PC_BUILD
-            if(tmpString[1800]) {
-              w = stringWidth(tmpString + 1800, &standardFont, true, true);
-              showString(tmpString + 1800, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h0*6, vmNormal, true, true);
-              #if defined(VERBOSE_SCREEN) && defined(PC_BUILD)
-                printf("^^^^NEW SHOW A: Display Register X2: %s\n", tmpString + 1800);
-              #endif // VERBOSE_SCREEN && PC_BUILD
-            }
+          case REGISTER_X:
+            showDispSmall(1500, 5);
+            showDispSmall(1800, 6);
+            showDispSmall(2100, 7);
+            showDispSmall(2400, 8);
             break;
           default: ;
         }
@@ -4079,7 +4070,7 @@ void execTimerApp(uint16_t timerType) {
           doRefreshSoftMenu = false;
           displayShiftAndTamBuffer();
 
-          if(temporaryInformation != TI_SHOW_REGISTER_BIG) {       //JM
+          if(temporaryInformation != TI_SHOW_REGISTER_BIG && temporaryInformation != TI_SHOW_REGISTER_SMALL) {       //JM
             showSoftmenuCurrentPart();
           }
         }

@@ -16,6 +16,7 @@
 
 #define PROGRAMS_DIR   "PROGRAMS"
 #define PRGM_EXT       ".p47"
+#define TXT_EXT        ".txt"
 
 #define SAVE_DIR       "SAVFILES"
 #define SAVE_FILE      "C47.sav"
@@ -48,7 +49,8 @@
     ioPathSaveStateFile = 6, ///< state file used in SAVEST function
     ioPathLoadStateFile = 7, ///< state file used in LOADST function
     ioPathSaveProgram   = 8, ///< program file used in WRITEP function
-    ioPathLoadProgram   = 9, ///< program file used in READP function
+    ioPathExportProgram = 9, ///< program file used in EXPORTP function
+    ioPathLoadProgram   =10, ///< program file used in READP function
   } ioFilePath_t;
 
   /**
@@ -174,5 +176,11 @@
    * \param[in] string to display in the dialog
    */
   void show_warning(char *string);
-
+  
+   /**
+   * Display the DMCP Disk Info dialog.
+   * Only relevant for the DMCP version, not used for the simulator
+   */
+  void fnDiskInfo(uint16_t unusedButMandatoryParameter);
+  
 #endif // IO_H
