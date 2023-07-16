@@ -1623,7 +1623,7 @@
 #define ITM_DSP                     1573
 #define ITM_RNORM                   1574
 #define ITM_EX1                     1575
-#define ITM_READP                   1576
+#define ITM_EXPORTP                 1576
 #define ITM_RSD                     1577
 #define ITM_RSUM                    1578
 #define ITM_RTNP1                   1579
