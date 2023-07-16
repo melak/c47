@@ -1524,7 +1524,7 @@
 #define ITM_DISK                    1474
 #define ITM_FQX                     1475
 #define ITM_FDQX                    1476
-#define ITM_GAP                     1477
+#define ITM_1477                    1477
 #define ITM_GD                      1478
 #define ITM_GDM1                    1479
 #define ITM_GRAD                    1480
@@ -1635,7 +1635,7 @@
 #define ITM_STDDEVWEIGHTED          1585
 #define ITM_SAVE                    1586
 #define ITM_SCI                     1587
-#define ITM_SDIGS                   1588
+#define ITM_GETSDIGS                1588
 #define ITM_SEED                    1589
 #define ITM_WRITEP                  1590
 #define ITM_SETCHN                  1591
