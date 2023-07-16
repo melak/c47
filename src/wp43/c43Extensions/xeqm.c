@@ -206,7 +206,7 @@ typedef struct {
 TO_QSPI const function_t indexOfFunctions[] = {
   #if !defined(SAVE_SPACE_DM42_2)
     //        function              functionName
-    //        XEQM CODE 2023-07-15
+    //        XEQM CODE 2023-07-16
               {ITM_PRIME,                     "@"},
               {ITM_ENTER,                     "ENTER"},
               {ITM_XexY,                      "X<>Y"},
@@ -441,7 +441,9 @@ TO_QSPI const function_t indexOfFunctions[] = {
               {ITM_BEEP,                      "@"},
               {ITM_TONE,                      "@"},
               {ITM_SQRT1PX2,                  "SQRT1+XSQR"},
-              
+              {ITM_PRTACT1,                   "PRNTR1"},
+              {ITM_PRTACT0,                   "PRNTR0"},
+
   #endif // !SAVE_SPACE_DM42_2
 };
 

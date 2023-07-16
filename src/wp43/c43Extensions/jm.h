@@ -145,6 +145,7 @@ void fnRCL          (int16_t inp);
 #define DM_FIX                 17    // DENFIX
 #define JC_FRC                 18    // CB FRACTION MODE
 #define PR_HPRP                19    // POLAR RECT CLASSIC MODE
+#define PRTACT                 20    // PRTACT checkbox
 
 #define JC_BASE_SCREEN         21    // screen setup
 #define JC_G_DOUBLETAP         22    // screen setup
