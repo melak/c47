@@ -105,7 +105,7 @@ void fnPExport(uint16_t unusedButMandatoryParameter) {
     uint16_t line, firstLine;
     uint8_t *step, *nextStep;
     uint16_t numberOfSteps = getNumberOfSteps();
-    char asciiString[256];           //cannot use errorMessage buffer in disk write operations
+    char asciiString[448];           //cannot use errorMessage buffer in disk write operations
                                      //solution is to use a local variable of sufficient length to contain a step string.
 
     firstDisplayedLocalStepNumber = 0;
