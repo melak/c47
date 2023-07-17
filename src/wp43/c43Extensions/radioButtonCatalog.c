@@ -97,6 +97,8 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   {ITM_DENFIX,           DM_FIX,                 CB_JC},  //  --fnDenMode
 
   {ITM_PRTACT,           PRTACT,                 CB_JC},  // SFL_PRTACT
+  {ITM_PRTACT0,          PRTACT0,                RB_PRN},  // SFL_PRTACT
+  {ITM_PRTACT1,          PRTACT1,                RB_PRN},  // SFL_PRTACT
 
   {ITM_T_LINF,           JC_LINEAR_FITTING,      CB_JC},  //fnCurveFitting
   {ITM_T_EXPF,           JC_EXPONENTIAL_FITTING, CB_JC},  //fnCurveFitting
@@ -289,6 +291,10 @@ int8_t fnCbIsSet(int16_t item) {
                      break;
 
         case RB_RX:  rb_param = gapItemRadix;
+                     break;
+
+        case RB_PRN: if(getSystemFlag(FLAG_PRTACT)) rb_param = PRTACT1;
+                     else                           rb_param = PRTACT0;
                      break;
 
         case CB_JC:  is_cb = true;

@@ -1,9 +1,9 @@
 XPORTP rules
-2023-07-16
+2023-07-17
 
 All commands/functions are translated according to the XEQM commands
 
-//XEQM CODE 2023-07-16
+//XEQM CODE 2023-07-17
               {ITM_PRIME,                     "@"},
               {ITM_ENTER,                     "ENTER"},
               {ITM_XexY,                      "X<>Y"},
@@ -238,8 +238,8 @@ All commands/functions are translated according to the XEQM commands
               {ITM_BEEP,                      "@"},
               {ITM_TONE,                      "@"},
               {ITM_SQRT1PX2,                  "SQRT1+XSQR"},
-              {ITM_PRTACT1,                   "PRNTR1"},
-              {ITM_PRTACT0,                   "PRNTR0"},
+              {ITM_PRTACT1,                   "PRON"},
+              {ITM_PRTACT0,                   "PROFF"},
 
 All remaining commands & functions are translated on a character level, that is, the characters are replaced according to the character translation to ASCII below:
 
