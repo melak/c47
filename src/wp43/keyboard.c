@@ -1841,7 +1841,7 @@ RELEASE_END:
         refreshScreen(); //JM PROBLEM. THIS MUST BE REMOVED FOR MOST CASES
 //TODO 2023-04-15 check here. It needs to be changed not to always refresh the screen.
       }
-      screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
+      screenUpdatingMode = (uint8_t)~SCRUPD_ONE_TIME_FLAGS; //speedup
       allowShiftsToClearError = false;
 
       fnTimerStop(TO_CL_LONG);    //dr
