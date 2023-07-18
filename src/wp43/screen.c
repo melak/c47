@@ -3934,63 +3934,16 @@ void execTimerApp(uint16_t timerType) {
     }
   }
 
+  static void _refreshPemScreen(void) {
+    clearScreen();
+    showSoftmenuCurrentPart();
+    fnPem(NOPARAM);
+    displayShiftAndTamBuffer();
+    refreshStatusBar();
+  }
 
-  int16_t refreshScreenCounter = 0;        //JM
-  void refreshScreen(void) {
-    if(running_program_jm) { //JM TEST PROGRAM!
-      return;
-    }
 
-    #if defined(PC_BUILD)
-      jm_show_calc_state("refreshScreen");
-      printf(">>> refreshScreenCounter=%d calcMode=%d last_CM=%d screenUpdatingMode=%d\n", refreshScreenCounter++, calcMode, last_CM, screenUpdatingMode);    //JMYY
-    #endif // PC_BUILD
-    //screenUpdatingMode = 0; //0 is ALL REFRESHES; ~0 is NO REFRESHES
-
-    if(calcMode!=CM_AIM && calcMode!=CM_NIM && calcMode!=CM_PLOT_STAT && calcMode!=CM_GRAPH && calcMode!=CM_LISTXY) {
-      last_CM = 254;  //JM Force NON-CM_AIM and NON-CM_NIM to refresh to be compatible to 43S
-    }
-
-    switch(calcMode) {
-      case CM_FLAG_BROWSER:
-        last_CM = calcMode;
-        clearScreen();
-        flagBrowser(NOPARAM);
-        refreshStatusBar();
-        break;
-
-      case CM_FONT_BROWSER:
-        last_CM = calcMode;
-        clearScreen();
-        fontBrowser(NOPARAM);
-        refreshStatusBar();
-        break;
-
-      case CM_REGISTER_BROWSER:
-        last_CM = calcMode;
-        clearScreen();
-        registerBrowser(NOPARAM);
-        refreshStatusBar();
-        break;
-
-      case CM_PEM:
-        clearScreen();
-        showSoftmenuCurrentPart();
-        fnPem(NOPARAM);
-        displayShiftAndTamBuffer();
-        refreshStatusBar();
-        break;
-
-      case CM_ASN_BROWSER:
-      case CM_NORMAL:
-      case CM_AIM:
-      case CM_NIM:
-      case CM_MIM:
-      case CM_EIM:
-      case CM_ASSIGN:
-      case CM_ERROR_MESSAGE:
-      case CM_CONFIRMATION:
-      case CM_TIMER:
+  static void _refreshNormalScreen(void) {
         if(last_CM != calcMode || calcMode == CM_CONFIRMATION) {
           screenUpdatingMode = SCRUPD_AUTO;
         }
@@ -4114,6 +4067,72 @@ void execTimerApp(uint16_t timerType) {
             setBlackPixel(SCREEN_WIDTH - largeur - 1, y);
           }
         #endif // (REAL34_WIDTH_TEST == 1)
+  }
+
+
+  int16_t refreshScreenCounter = 0;        //JM
+  void refreshScreen(void) {
+    if(running_program_jm) { //JM TEST PROGRAM!
+      return;
+    }
+
+    #if defined(PC_BUILD)
+      jm_show_calc_state("refreshScreen");
+      printf(">>> refreshScreenCounter=%d calcMode=%d last_CM=%d screenUpdatingMode=%d\n", refreshScreenCounter++, calcMode, last_CM, screenUpdatingMode);    //JMYY
+    #endif // PC_BUILD
+    //screenUpdatingMode = 0; //0 is ALL REFRESHES; ~0 is NO REFRESHES
+
+    if(calcMode!=CM_AIM && calcMode!=CM_NIM && calcMode!=CM_PLOT_STAT && calcMode!=CM_GRAPH && calcMode!=CM_LISTXY) {
+      last_CM = 254;  //JM Force NON-CM_AIM and NON-CM_NIM to refresh to be compatible to 43S
+    }
+
+    switch(calcMode) {
+      case CM_FLAG_BROWSER:
+        last_CM = calcMode;
+        clearScreen();
+        flagBrowser(NOPARAM);
+        refreshStatusBar();
+        break;
+
+      case CM_FONT_BROWSER:
+        last_CM = calcMode;
+        clearScreen();
+        fontBrowser(NOPARAM);
+        refreshStatusBar();
+        break;
+
+      case CM_REGISTER_BROWSER:
+        last_CM = calcMode;
+        clearScreen();
+        registerBrowser(NOPARAM);
+        refreshStatusBar();
+        break;
+
+      case CM_PEM:
+       _refreshPemScreen();
+        break;
+
+
+      case CM_CONFIRMATION: {
+        if(previousCalcMode == CM_PEM) {
+          _refreshPemScreen();
+        }
+        else {
+          _refreshNormalScreen();
+        }
+        break;
+      }
+
+      case CM_ASN_BROWSER:
+      case CM_NORMAL:
+      case CM_AIM:
+      case CM_NIM:
+      case CM_MIM:
+      case CM_EIM:
+      case CM_ASSIGN:
+      case CM_ERROR_MESSAGE:
+      case CM_TIMER:
+        _refreshNormalScreen();
         break;
 
       case CM_LISTXY:                     //JM
