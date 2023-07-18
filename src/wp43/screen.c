@@ -3922,17 +3922,42 @@ void execTimerApp(uint16_t timerType) {
         printf("   >>> lcd_fill_rect SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME\n");
       #endif // PC_BUILD
       lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, SCREEN_WIDTH, 240 - Y_POSITION_OF_REGISTER_T_LINE - SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
+      //C47 had 0,-4,0,+4 to clear from y=20, not y=24.
     }
     if((calcMode != CM_NIM) && !(screenUpdatingMode & (SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME))) {
       #if defined(PC_BUILD)
         printf("   >>> lcd_fill_rect SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME\n");
       #endif // PC_BUILD
       lcd_fill_rect(0, 240 - SOFTMENU_HEIGHT * 3, SCREEN_WIDTH - 240, SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
+      clear_ul(); //JMUL
+      lcd_fill_rect(0, 240 - SOFTMENU_HEIGHT * 3, 20, 5, LCD_SET_VALUE);
       if(calcMode != CM_GRAPH) {
         lcd_fill_rect(SCREEN_WIDTH - 240, 240 - SOFTMENU_HEIGHT * 3, 240, SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
       }
     }
   }
+
+
+  #if !defined(TESTSUITE_BUILD)
+    void clearScreen_old(bool_t clearStatusBar, bool_t clearRegisterLines, bool_t clearSoftkeys) {
+      uint8_t origScreenUpdatingMode = screenUpdatingMode;
+      if(clearStatusBar) {
+        screenUpdatingMode = SCRUPD_MANUAL_STATUSBAR;
+        _selectiveClearScreen();
+      }
+      if(clearRegisterLines) {
+        screenUpdatingMode = SCRUPD_MANUAL_STACK;
+        _selectiveClearScreen();
+      }
+      if(clearSoftkeys) {
+        screenUpdatingMode = SCRUPD_MANUAL_MENU;
+        _selectiveClearScreen();
+      }
+      screenUpdatingMode = origScreenUpdatingMode;
+    }
+  #endif // !TESTSUITE_BUILD
+
+
 
   static void _refreshPemScreen(void) {
     clearScreen();
@@ -4499,20 +4524,3 @@ void fnAGraph(uint16_t regist) {
     }
   #endif // !TESTSUITE_BUILD
 }
-
-
-#if !defined(TESTSUITE_BUILD)
-  void clearScreen_old(bool_t clearStatusBar, bool_t clearRegisterLines, bool_t clearSoftkeys) {      //JMOLD
-    if(clearStatusBar) {
-      lcd_fill_rect(0, 0, SCREEN_WIDTH, 20, 0);
-    }
-    if(clearRegisterLines) {
-      lcd_fill_rect(0, 20, SCREEN_WIDTH, 151, 0);
-    }
-    if(clearSoftkeys) {
-      clear_ul(); //JMUL
-      lcd_fill_rect(0, 171, SCREEN_WIDTH, 69, 0);
-      lcd_fill_rect(0, 171-5, 20, 5, 0);
-    }
-  }                                                       //JM ^^
-#endif // !TESTSUITE_BUILD
