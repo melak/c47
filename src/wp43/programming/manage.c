@@ -313,7 +313,7 @@ void fnClP(uint16_t label) {
 
 
 
-static uint32_t _getProgramSize(void) {
+uint32_t _getProgramSize(void) {
   if(currentProgramNumber == numberOfPrograms) {
     uint16_t numberOfSteps = 1;
     uint8_t *step = programList[currentProgramNumber - 1].instructionPointer;

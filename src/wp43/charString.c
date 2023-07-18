@@ -423,8 +423,121 @@ void utf8ToString(const uint8_t *utf8, char *str) {
   *str = 0;
 }
 
+
+typedef struct {
+  char     *item_in;            ///<
+  char     *item_out;           ///<
+} function_t2;
+
+TO_QSPI const function_t2 indexOfStrings2[] = {
+              //number                  replacement string
+//XPORTP CODE 2023-07-15
+              {STD_NOT,                       "<>"},
+              {STD_DEGREE,                    "deg"},
+              {STD_PLUS_MINUS,                "+-"},
+              {STD_A_GRAVE,                   "`A"},
+              {STD_CROSS,                     "*"},
+              {STD_U_GRAVE,                   "`U"},
+              {STD_a_GRAVE,                   "`a"},
+              {STD_DIVIDE,                    "/"},
+              {STD_u_GRAVE,                   "`u"},
+              {STD_A_BREVE,                   "`A"},
+              {STD_a_BREVE,                   "`a"},
+              {STD_E_MACRON,                  "`E"},
+              {STD_e_MACRON,                  "`e"},
+              {STD_I_MACRON,                  "`I"},
+              {STD_i_MACRON,                  "`i"},
+              {STD_I_BREVE,                   "`I"},
+              {STD_i_BREVE,                   "`i"},
+              {STD_U_BREVE,                   "`U"},
+              {STD_u_BREVE,                   "`u"},
+              {STD_Y_CIRC,                    "`Y"},
+              {STD_y_CIRC,                    "`y"},
+              {STD_y_BAR,                     "y_mean"},
+              {STD_x_BAR,                     "x_mean"},
+              {STD_x_CIRC,                    "x_circ"},
+              {STD_ALPHA,                     "Alpha"},
+              {STD_BETA,                      "Beta"},
+              {STD_GAMMA,                     "Gamma"},
+              {STD_DELTA,                     "Delta"},
+              {STD_EPSILON,                   "Epsilon"},
+              {STD_ZETA,                      "Zeta"},
+              {STD_PI,                        "Pi"},
+              {STD_SIGMA,                     "Sigma"},
+              {STD_PHI,                       "Phi"},
+              {STD_CHI,                       "Chi"},
+              {STD_PSI,                       "Psi"},
+              {STD_alpha,                     "alpha"},
+              {STD_beta,                      "beta"},
+              {STD_gamma,                     "gamma"},
+              {STD_delta,                     "delta"},
+              {STD_epsilon,                   "epsilon"},
+              {STD_zeta,                      "zeta"},
+              {STD_lambda,                    "lambda"},
+              {STD_mu,                        "mu"},
+              {STD_pi,                        "pi"},
+              {STD_sigma,                     "sigma"},
+              {STD_phi,                       "phi"},
+              {STD_chi,                       "chi"},
+              {STD_psi,                       "psi"},
+              {STD_omega,                     "omega"},
+              {STD_ELLIPSIS,                  "…"},
+              {STD_BINARY_ONE,                "1"},
+              {STD_SUP_MINUS_1,               "`-1"},
+              {STD_SUB_E_OUTLINE,             "`E"},
+              {STD_SUB_PLUS,                  "`+"},
+              {STD_SUB_MINUS,                 "`-"},
+              {STD_SUP_ASTERISK,              "`*"},
+              {STD_SUP_INFINITY,              "inf"},
+              {STD_SUB_INFINITY,              "inf"},
+              {STD_PLANCK,                    "Planck"},
+              {STD_PLANCK_2PI,                "Planck2pi"},
+              {STD_SUP_PLUS,                  "+"},
+              {STD_SUP_MINUS,                 "-"},
+              {STD_BINARY_ZERO,               "0"},
+              {STD_INFINITY,                  "inf"},
+              {STD_MEASURED_ANGLE,            "angle"},
+              {STD_INTEGRAL,                  "integral"},
+              {STD_ALMOST_EQUAL,              "approx"},
+              {STD_NOT_EQUAL,                 "<>"},
+              {STD_LESS_EQUAL,                "<="},
+              {STD_GREATER_EQUAL,             ">="},
+              {STD_SUB_EARTH,                 "`earth"},
+              {STD_SUB_alpha,                 "`alpha"},
+              {STD_SUB_delta,                 "`delta"},
+              {STD_SUB_mu,                    "`mu"},
+              {STD_SUB_SUN,                   "`sun"},
+              {STD_PRINTER,                   "Print"},
+              {STD_UK,                        "UK"},
+              {STD_US,                        "US"},
+              {STD_GAUSS_BLACK_L,             "GAUSS_BL_L "},
+              {STD_GAUSS_WHITE_R,             "GAUSS_WH_R "},
+              {STD_GAUSS_WHITE_L,             "GAUSS_WH_L "},
+              {STD_GAUSS_BLACK_R,             "GAUSS_BL_R "},
+              {STD_SUB_10,                    "10^"},
+};
+
+
+  bool_t _getText(uint8_t a1, uint8_t a2, char *str) {
+    //printf("_getText %u %u : ",(uint8_t)a1,(uint8_t)a2);
+    str[0] = 0;
+    uint_fast16_t n = nbrOfElements(indexOfStrings2);
+    for(uint_fast16_t i=0; i<n; i++) {
+      if((uint8_t)a1 == (uint8_t)(indexOfStrings2[i].item_in[0]) && (uint8_t)a2 == (uint8_t)(indexOfStrings2[i].item_in[1])) {
+        //printf("(%u):%u %u %s\n", i,(uint8_t)(indexOfStrings2[i].item_in[0]), (uint8_t)(indexOfStrings2[i].item_in[1]),indexOfStrings2[i].item_out);
+        strcpy(str, indexOfStrings2[i].item_out);
+        break;
+      }
+    }
+    return str[0] != 0;
+  }
+
+
+
 void stringToASCII(const char *str, char *ascii) {
   int16_t len;
+  uint8_t a1, a2;
+  char aa[32];
 
   len = stringGlyphLength(str);
 
@@ -435,8 +548,93 @@ void stringToASCII(const char *str, char *ascii) {
 
   for(int16_t i=0; i<len; i++) {  // WP43 supports only unicode code points from 0x0000 to 0x7FFF
     if(*str & 0x80) { 
-      *ascii = 0x5F;    // underscore
-      str += 2;
+      a1=(uint8_t)*str;
+      str++;
+      a2=(uint8_t)*str;
+      str++;
+
+      //replacement table
+      if(_getText(a1, a2, aa)) {        
+        int16_t j = 0;
+        while (aa[j] != 0) {
+          *ascii = aa[j++];
+          ascii++;
+        }
+        ascii--;
+      } else
+      //arrows
+      if(a1==(uint8_t)(STD_RIGHT_DOUBLE_ARROW[0]) && a2==(uint8_t)(STD_RIGHT_DOUBLE_ARROW[1])) {
+        *ascii = '>'; ascii++;
+        *ascii = '>'; //to change to >>        
+      } else
+      if((a1==(uint8_t)(STD_RIGHT_DASHARROW[0]) && a2==(uint8_t)(STD_RIGHT_DASHARROW[1])) ||
+         (a1==(uint8_t)(STD_RIGHT_ARROW[0]) && a2==(uint8_t)(STD_RIGHT_ARROW[1])) ||
+         (a1==(uint8_t)(STD_RIGHT_SHORT_ARROW[0]) && a2==(uint8_t)(STD_RIGHT_SHORT_ARROW[1]))
+        ) {
+        *ascii = '-'; ascii++;
+        *ascii = '>'; //to change to ->
+      } else
+      if((a1==(uint8_t)(STD_LEFT_DASHARROW[0]) && a2==(uint8_t)(STD_LEFT_DASHARROW[1])) ||
+         (a1==(uint8_t)(STD_LEFT_ARROW[0]) && a2==(uint8_t)(STD_LEFT_ARROW[1]))
+        ) {
+        *ascii = '<'; ascii++;
+        *ascii = '-'; //to change to ->
+      } else
+      if((a1==(uint8_t)(STD_UP_DASHARROW[0]) && a2==(uint8_t)(STD_UP_DASHARROW[1])) ||
+         (a1==(uint8_t)(STD_UP_ARROW[0]) && a2==(uint8_t)(STD_UP_ARROW[1])) ||
+         (a1==(uint8_t)(STD_HOLLOW_UP_ARROW[0]) && a2==(uint8_t)(STD_HOLLOW_UP_ARROW[1])) ) {
+        *ascii = '^'; 
+      } else
+      if((a1==(uint8_t)(STD_DOWN_DASHARROW[0]) && a2==(uint8_t)(STD_DOWN_DASHARROW[1])) ||
+         (a1==(uint8_t)(STD_DOWN_ARROW[0]) && a2==(uint8_t)(STD_DOWN_ARROW[1])) ||
+         (a1==(uint8_t)(STD_HOLLOW_DOWN_ARROW[0]) && a2==(uint8_t)(STD_HOLLOW_DOWN_ARROW[1])) ) {
+        *ascii = 'v';
+      } else
+     if(a1==(uint8_t)(STD_LEFT_RIGHT_ARROWS[0]) && a2==(uint8_t)(STD_LEFT_RIGHT_ARROWS[1])) {
+        *ascii = '>'; //to change to ><
+        ascii++;
+        *ascii = '<'; //to change to ><
+      } else
+      //diverse
+      if(a1==(uint8_t)(STD_op_i              [0]) && a2==(uint8_t)(STD_op_i              [1])) *ascii = 'i'; else
+      if(a1==(uint8_t)(STD_op_j              [0]) && a2==(uint8_t)(STD_op_j              [1])) *ascii = 'j'; else
+      if(a1==(uint8_t)(STD_BINARY_ONE        [0]) && a2==(uint8_t)(STD_BINARY_ONE        [1])) *ascii = '1'; else
+      if(a1==(uint8_t)(STD_BINARY_ZERO       [0]) && a2==(uint8_t)(STD_BINARY_ZERO       [1])) *ascii = '0'; else
+      //seps
+      if(a1==(uint8_t)(STD_RIGHT_TACK        [0]) && a2==(uint8_t)(STD_RIGHT_TACK        [1])) *ascii = '\''; else
+      if(a1==(uint8_t)(STD_WDOT              [0]) && a2==(uint8_t)(STD_WDOT              [1])) *ascii = '.'; else
+      if(a1==(uint8_t)(STD_DOT               [0]) && a2==(uint8_t)(STD_DOT               [1])) *ascii = '.'; else
+      if(a1==(uint8_t)(STD_WPERIOD           [0]) && a2==(uint8_t)(STD_WPERIOD           [1])) *ascii = '.'; else
+      if(a1==(uint8_t)(STD_WCOMMA            [0]) && a2==(uint8_t)(STD_WCOMMA            [1])) *ascii = ','; else
+      if(a1==(uint8_t)(STD_NQUOTE            [0]) && a2==(uint8_t)(STD_NQUOTE            [1])) *ascii = '\''; else
+      if(a1==(uint8_t)(STD_INV_BRIDGE        [0]) && a2==(uint8_t)(STD_INV_BRIDGE        [1])) *ascii = ','; else
+      if(a1==(uint8_t)(STD_SPACE_EM          [0]) && a2==(uint8_t)(STD_SPACE_EM          [1])) *ascii = ' '; else
+      if(a1==(uint8_t)(STD_SPACE_3_PER_EM    [0]) && a2==(uint8_t)(STD_SPACE_3_PER_EM    [1])) *ascii = ' '; else
+      if(a1==(uint8_t)(STD_SPACE_4_PER_EM    [0]) && a2==(uint8_t)(STD_SPACE_4_PER_EM    [1])) *ascii = ' '; else
+      if(a1==(uint8_t)(STD_SPACE_6_PER_EM    [0]) && a2==(uint8_t)(STD_SPACE_6_PER_EM    [1])) *ascii = ' '; else
+      if(a1==(uint8_t)(STD_SPACE_FIGURE      [0]) && a2==(uint8_t)(STD_SPACE_FIGURE      [1])) *ascii = ' '; else
+      if(a1==(uint8_t)(STD_SPACE_PUNCTUATION [0]) && a2==(uint8_t)(STD_SPACE_PUNCTUATION [1])) *ascii = ' '; else
+      if(a1==(uint8_t)(STD_SPACE_HAIR        [0]) && a2==(uint8_t)(STD_SPACE_HAIR        [1])) *ascii = ' '; else
+      //RANGE SUP/SUB/BASE
+      if((a1==(uint8_t)(STD_SUP_0            [0]) && (a2>=(uint8_t)(STD_SUP_0            [1]) && a2<=(uint8_t)(STD_SUP_9  [1]))) ) {*ascii = ('0'+a2)-(uint8_t)(STD_SUP_0 [1]);} else
+      if((a1==(uint8_t)(STD_SUP_a            [0]) && (a2>=(uint8_t)(STD_SUP_a            [1]) && a2<=(uint8_t)(STD_SUP_z  [1]))) ) {*ascii = ('a'+a2)-(uint8_t)(STD_SUP_a [1]);} else
+      if((a1==(uint8_t)(STD_SUP_A            [0]) && (a2>=(uint8_t)(STD_SUP_A            [1]) && a2<=(uint8_t)(STD_SUP_Z  [1]))) ) {*ascii = ('A'+a2)-(uint8_t)(STD_SUP_A [1]);} else
+      if((a1==(uint8_t)(STD_SUB_0            [0]) && (a2>=(uint8_t)(STD_SUB_0            [1]) && a2<=(uint8_t)(STD_SUB_9  [1]))) ) {*ascii = ('0'+a2)-(uint8_t)(STD_SUB_0 [1]);} else
+      if((a1==(uint8_t)(STD_SUB_a            [0]) && (a2>=(uint8_t)(STD_SUB_a            [1]) && a2<=(uint8_t)(STD_SUB_z  [1]))) ) {*ascii = ('a'+a2)-(uint8_t)(STD_SUB_a [1]);} else
+      if((a1==(uint8_t)(STD_SUB_A            [0]) && (a2>=(uint8_t)(STD_SUB_A            [1]) && a2<=(uint8_t)(STD_SUB_Z  [1]))) ) {*ascii = ('A'+a2)-(uint8_t)(STD_SUB_A [1]);} else
+      if((a1==(uint8_t)(STD_BASE_1           [0]) && (a2>=(uint8_t)(STD_BASE_1           [1]) && a2<=(uint8_t)(STD_BASE_9 [1]))) ) {*ascii = '#';  ascii++; *ascii = ('1'+a2)-(uint8_t)(STD_BASE_1[1]);} else
+      if((a1==(uint8_t)(STD_BASE_10          [0]) && (a2>=(uint8_t)(STD_BASE_10          [1]) && a2<=(uint8_t)(STD_BASE_16[1]))) ) {*ascii = '#';  ascii++; *ascii =  '1'; ascii++; *ascii = ('0'+a2)-(uint8_t)(STD_BASE_10[1]);} else
+      //RANGE INTERNATIONAL AND EXTENDED ASCII
+      if(a1>=0x81 && a1<=0x83) *ascii = '_'; else //All international characters use 0x00 which is not otherwise used in C47
+      //RANGE QUOTES
+      if(a1==(uint8_t)(STD_LEFT_SINGLE_QUOTE[0]) && (a2>=(uint8_t)(STD_LEFT_SINGLE_QUOTE[1]) && a2<=(uint8_t)(STD_SINGLE_HIGH_QUOTE[1])) ) *ascii = '\''; else
+      if(a1==(uint8_t)(STD_LEFT_DOUBLE_QUOTE[0]) && (a2>=(uint8_t)(STD_LEFT_DOUBLE_QUOTE[1]) && a2<=(uint8_t)(STD_DOUBLE_HIGH_QUOTE[1])) ) *ascii = '"'; else
+      {
+        #ifdef PC_BUILD
+          printf("Not decoded, replace with _: --a1=%u--a2=%u\n",a1,a2);
+        #endif// PC_BUILD
+        *ascii = 0x5F;    // underscore
+      }
     }
     else {
       *ascii = *str;

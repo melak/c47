@@ -24,6 +24,7 @@
   #include <stdint.h>
 
   void decodeOneStep          (uint8_t *step);
+  void decodeOneStepXEQM      (uint8_t *step);
   #if !defined(DMCP_BUILD)
     void listPrograms         (void);
     void listLabelsAndPrograms(void);
