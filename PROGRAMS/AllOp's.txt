@@ -1,5 +1,5 @@
 C47 Program file export, version 1
-0000: { Prgm #35: 7810 bytes / 2194 steps }
+0000: { Prgm #35: 7808 bytes / 2193 steps }
 0001:  LBL 'AllOp's'
 0002:  LBL 00
 0003:  LBL 99
@@ -2144,53 +2144,52 @@ C47 Program file export, version 1
 2142:  PrintMODE ->K
 2143:  PrintMODE ->.00
 2144:  PrintMODE ->.98
-2145:  PrintPROG
-2146:  Printr 00
-2147:  Printr 99
-2148:  Printr X
-2149:  Printr K
-2150:  Printr .00
-2151:  Printr .98
-2152:  Printr 'Var'
-2153:  Printr ->00
-2154:  Printr ->99
-2155:  Printr ->X
-2156:  Printr ->K
-2157:  Printr ->.00
-2158:  Printr ->.98
-2159:  Printr ->'Var'
-2160:  PrintREGS
-2161:  PRN
-2162:  PrintTAB 000
-2163:  PrintTAB 127
-2164:  PrintTAB ->00
-2165:  PrintTAB ->99
-2166:  PrintTAB ->X
-2167:  PrintTAB ->K
-2168:  PrintTAB ->.00
-2169:  PrintTAB ->.98
-2170:  PrintUSER
-2171:  PrintWIDTH
-2172:  PrintSigma
-2173:  Print#
-2174:  K(m)
-2175:  E(m)
-2176:  Pi(n,m)
-2177:  SHOW
-2178:  Vangle
-2179:  x_meanH
-2180:  x_meanRMS
-2181:  ACOS
-2182:  ASIN
-2183:  ATAN
-2184:  DET
-2185:  INVRT
-2186:  TRANS
-2187:  HIDE 99
-2188:  E(phi,m)
-2189:  F(phi,m)
-2190:  Zeta(phi,m)
-2191:  HIDE?
-2192:  SQRT
-2193:  ATAN2
-2194:  END
+2145:  Printr 00
+2146:  Printr 99
+2147:  Printr X
+2148:  Printr K
+2149:  Printr .00
+2150:  Printr .98
+2151:  Printr 'Var'
+2152:  Printr ->00
+2153:  Printr ->99
+2154:  Printr ->X
+2155:  Printr ->K
+2156:  Printr ->.00
+2157:  Printr ->.98
+2158:  Printr ->'Var'
+2159:  PrintREGS
+2160:  PRN
+2161:  PrintTAB 000
+2162:  PrintTAB 127
+2163:  PrintTAB ->00
+2164:  PrintTAB ->99
+2165:  PrintTAB ->X
+2166:  PrintTAB ->K
+2167:  PrintTAB ->.00
+2168:  PrintTAB ->.98
+2169:  PrintUSER
+2170:  PrintWIDTH
+2171:  PrintSigma
+2172:  Print#
+2173:  K(m)
+2174:  E(m)
+2175:  Pi(n,m)
+2176:  SHOW
+2177:  Vangle
+2178:  x_meanH
+2179:  x_meanRMS
+2180:  ACOS
+2181:  ASIN
+2182:  ATAN
+2183:  DET
+2184:  INVRT
+2185:  TRANS
+2186:  HIDE 99
+2187:  E(phi,m)
+2188:  F(phi,m)
+2189:  Zeta(phi,m)
+2190:  HIDE?
+2191:  SQRT
+2192:  ATAN2
+2193:  END

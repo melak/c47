@@ -96,6 +96,10 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   {ITM_DENANY,           DM_ANY,                 CB_JC},  //  --fnDenMode
   {ITM_DENFIX,           DM_FIX,                 CB_JC},  //  --fnDenMode
 
+  {ITM_PRTACT,           PRTACT,                 CB_JC},  // SFL_PRTACT
+  {ITM_PRTACT0,          PRTACT0,                RB_PRN},  // SFL_PRTACT
+  {ITM_PRTACT1,          PRTACT1,                RB_PRN},  // SFL_PRTACT
+
   {ITM_T_LINF,           JC_LINEAR_FITTING,      CB_JC},  //fnCurveFitting
   {ITM_T_EXPF,           JC_EXPONENTIAL_FITTING, CB_JC},  //fnCurveFitting
   {ITM_T_LOGF,           JC_LOGARITHMIC_FITTING, CB_JC},  //fnCurveFitting
@@ -289,6 +293,10 @@ int8_t fnCbIsSet(int16_t item) {
         case RB_RX:  rb_param = gapItemRadix;
                      break;
 
+        case RB_PRN: if(getSystemFlag(FLAG_PRTACT)) rb_param = PRTACT1;
+                     else                           rb_param = PRTACT0;
+                     break;
+
         case CB_JC:  is_cb = true;
           switch(indexOfRadioCbEepromItems[i].param) {
             case JC_LINEAR_FITTING:      cb_param = (lrSelection & CF_LINEAR_FITTING)      == CF_LINEAR_FITTING;      break;
@@ -309,6 +317,7 @@ int8_t fnCbIsSet(int16_t item) {
             case PR_HPRP:                cb_param = getSystemFlag(FLAG_HPRP);                                         break;
             case DM_ANY:                 cb_param = getSystemFlag(FLAG_DENANY);                                       break;
             case DM_FIX:                 cb_param = getSystemFlag(FLAG_DENFIX);                                       break;
+            case PRTACT:                 cb_param = getSystemFlag(FLAG_PRTACT);                                       break;
             case JC_ERPN:                cb_param = eRPN;                                                             break;
             case JC_BASE_SCREEN:         cb_param = jm_BASE_SCREEN;                                                   break;
             case JC_G_DOUBLETAP:         cb_param = jm_G_DOUBLETAP;                                                   break;

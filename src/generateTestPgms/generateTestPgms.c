@@ -14922,9 +14922,6 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = LAST_LOCAL_REGISTER;
 
-    *(currentStep++) = (ITM_PRINTERPROG >> 8) | 0x80;
-    *(currentStep++) =  ITM_PRINTERPROG       & 0xff;
-
     *(currentStep++) = (ITM_PRINTERR >> 8) | 0x80;
     *(currentStep++) =  ITM_PRINTERR       & 0xff;
     *(currentStep++) = 0;
