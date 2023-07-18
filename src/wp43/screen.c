@@ -1740,7 +1740,9 @@ void execTimerApp(uint16_t timerType) {
   }
 
 
-  void showFunctionName(int16_t item, int16_t delayInMs, const char *arg) {
+  void showFunctionName(int16_t itm, int16_t delayInMs, const char *arg) {
+    int16_t item = (int16_t)itm;
+    //printf("---Function par:%4u %4u-- converted %4u--arg:|%s|-=-", itm, (int16_t)itm, item, arg );
     uint32_t fcol, frow, gcol, grow;
     char functionName[16];
     char padding[20];                                          //JM
@@ -1754,9 +1756,15 @@ void execTimerApp(uint16_t timerType) {
 
     if(item == ITM_XEQ) {
       stringAppend(functionName,arg);
+      if(functionName[0]==0) {
+        stringAppend(functionName,indexOfItems[abs(item)].itemCatalogName);
+      }
     }
     else if(item == ITM_RCL) {
       stringAppend(functionName,arg);
+      if(functionName[0]==0) {
+        stringAppend(functionName,indexOfItems[abs(item)].itemCatalogName);
+      }
     }
     else if(item >= ITM_X_P1 && item <= ITM_X_g6) {
       stringAppend(functionName, indexOfItemsXEQM + 8*(item-fnXEQMENUpos));
@@ -1770,6 +1778,7 @@ void execTimerApp(uint16_t timerType) {
     else {
       stringAppend(functionName,dynmenuGetLabel(dynamicMenuItem));
     }
+    //printf("---|%s|---\n", functionName);
 
     showFunctionNameItem = item;
     if(running_program_jm) {
@@ -1787,7 +1796,7 @@ void execTimerApp(uint16_t timerType) {
     getGlyphBounds(STD_SUP_g, 0, &numericFont, &gcol, &grow);
     lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, (fcol > gcol ? fcol : gcol), (frow > grow ? frow : grow), LCD_SET_VALUE);
 
-    showString(padding, &standardFont, /*1*/ 16, Y_POSITION_OF_REGISTER_T_LINE /*+ 6*/, vmNormal, true, true);      //JM
+    showString(padding, &standardFont, 18, Y_POSITION_OF_REGISTER_T_LINE + 6, vmNormal, true, true);      //JM
   }
 
 

@@ -352,8 +352,9 @@ void resetKeytimers(void) {
 
     if(calcMode == CM_NORMAL) {                                         //longpress special keys
       switch(*result) {
+
         case ITM_XEQ:
-          if(tam.mode == 0 && ((char*)funcParam)[0] == 0) { //If XEQ has a parameter, then do not inject it into the long press cycle
+          if(tam.mode == 0 && (getSystemFlag(FLAG_USER) ? kbd_usr[key_no].primary == kbd_std[key_no].primary : true)) { //If XEQ (always primary) is not the standard position, then do not inject it into the long press cycle
             longpressDelayedkey2 = longpressDelayedkey1;
             longpressDelayedkey1 = -MNU_XXEQ;    //XEQ longpress to XEQMENU
           }
