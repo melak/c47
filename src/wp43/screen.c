@@ -3910,6 +3910,31 @@ void execTimerApp(uint16_t timerType) {
   }
 
 
+  static void _selectiveClearScreen(void) {
+    if(!(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR)) {
+      #if defined(PC_BUILD)
+        printf("   >>> lcd_fill_rect SCRUPD_MANUAL_STATUSBAR\n");
+      #endif // PC_BUILD
+      lcd_fill_rect(0, 0, SCREEN_WIDTH, Y_POSITION_OF_REGISTER_T_LINE, LCD_SET_VALUE);
+    }
+    if(!(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME))) {
+      #if defined(PC_BUILD)
+        printf("   >>> lcd_fill_rect SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME\n");
+      #endif // PC_BUILD
+      lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, SCREEN_WIDTH, 240 - Y_POSITION_OF_REGISTER_T_LINE - SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
+    }
+    if((calcMode != CM_NIM) && !(screenUpdatingMode & (SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME))) {
+      #if defined(PC_BUILD)
+        printf("   >>> lcd_fill_rect SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME\n");
+      #endif // PC_BUILD
+      lcd_fill_rect(0, 240 - SOFTMENU_HEIGHT * 3, SCREEN_WIDTH - 240, SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
+      if(calcMode != CM_GRAPH) {
+        lcd_fill_rect(SCREEN_WIDTH - 240, 240 - SOFTMENU_HEIGHT * 3, 240, SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
+      }
+    }
+  }
+
+
   int16_t refreshScreenCounter = 0;        //JM
   void refreshScreen(void) {
     if(running_program_jm) { //JM TEST PROGRAM!
@@ -3918,7 +3943,7 @@ void execTimerApp(uint16_t timerType) {
 
     #if defined(PC_BUILD)
       jm_show_calc_state("refreshScreen");
-      printf(">>> refreshScreenCounter=%d calcMode=%d last_CM=%d doRefreshSoftMenu=%d screenUpdatingMode=%d\n", refreshScreenCounter++, calcMode, last_CM, doRefreshSoftMenu, screenUpdatingMode);    //JMYY
+      printf(">>> refreshScreenCounter=%d calcMode=%d last_CM=%d screenUpdatingMode=%d\n", refreshScreenCounter++, calcMode, last_CM, screenUpdatingMode);    //JMYY
     #endif // PC_BUILD
     //screenUpdatingMode = 0; //0 is ALL REFRESHES; ~0 is NO REFRESHES
 
@@ -3966,9 +3991,6 @@ void execTimerApp(uint16_t timerType) {
       case CM_ERROR_MESSAGE:
       case CM_CONFIRMATION:
       case CM_TIMER:
-        if(doRefreshSoftMenu) {
-          screenUpdatingMode = SCRUPD_MANUAL_MENU ;
-        }
         if(last_CM != calcMode || calcMode == CM_CONFIRMATION) {
           screenUpdatingMode = SCRUPD_AUTO;
         }
@@ -3980,27 +4002,13 @@ void execTimerApp(uint16_t timerType) {
         }
 
         if(screenUpdatingMode == SCRUPD_AUTO) {
+          #if defined(PC_BUILD)
+            printf("   >>> lcd_fill_rect clear all\n");
+          #endif // PC_BUILD
           clearScreen();
         }
         else {
-          if(!(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR)) {
-            #if defined(PC_BUILD)
-              printf("   >>> lcd_fill_rect SCRUPD_MANUAL_STATUSBAR\n");
-            #endif // PC_BUILD
-            lcd_fill_rect(0, 0, SCREEN_WIDTH, Y_POSITION_OF_REGISTER_T_LINE, LCD_SET_VALUE);
-          }
-          if(!(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME))) {
-            #if defined(PC_BUILD)
-              printf("   >>> lcd_fill_rect SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME\n");
-            #endif // PC_BUILD
-            lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, SCREEN_WIDTH, 240 - Y_POSITION_OF_REGISTER_T_LINE - SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
-          }
-          if((calcMode != CM_NIM) && !(screenUpdatingMode & (SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME))) {
-            #if defined(PC_BUILD)
-              printf("   >>> lcd_fill_rect SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME\n");
-            #endif // PC_BUILD
-            lcd_fill_rect(0, 240 - SOFTMENU_HEIGHT * 3, SCREEN_WIDTH, SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
-          }
+          _selectiveClearScreen();
         }
 
         // The ordering of the 4 lines below is important for SHOW (temporaryInformation == TI_SHOW_REGISTER)
@@ -4074,9 +4082,8 @@ void execTimerApp(uint16_t timerType) {
           }
         }
 
-        if((last_CM != calcMode) || (doRefreshSoftMenu)) {
+        if(last_CM != calcMode) {
           last_CM = calcMode;
-          doRefreshSoftMenu = false;
           displayShiftAndTamBuffer();
 
           if(temporaryInformation != TI_SHOW_REGISTER_BIG && temporaryInformation != TI_SHOW_REGISTER_SMALL) {       //JM
@@ -4110,9 +4117,8 @@ void execTimerApp(uint16_t timerType) {
         break;
 
       case CM_LISTXY:                     //JM
-        if((last_CM != calcMode) || (doRefreshSoftMenu)) {
+        if(last_CM != calcMode) {
           last_CM = calcMode;
-          doRefreshSoftMenu = false;
           displayShiftAndTamBuffer();
           refreshStatusBar();
           fnStatList();
@@ -4122,15 +4128,14 @@ void execTimerApp(uint16_t timerType) {
         break;
 
       case CM_GRAPH:
-        if((last_CM != calcMode) || (doRefreshSoftMenu)) {
+        if(last_CM != calcMode) {
           if(last_CM == 252) {
             last_CM--;
           }
           else {
             last_CM = 252; //calcMode;
           }
-          doRefreshSoftMenu = false;
-          //clearScreen();
+          _selectiveClearScreen();
           displayShiftAndTamBuffer();
           showSoftmenuCurrentPart();
           hourGlassIconEnabled = true;
@@ -4154,15 +4159,13 @@ void execTimerApp(uint16_t timerType) {
         break;
 
       case CM_PLOT_STAT:
-        if((last_CM != calcMode) || (doRefreshSoftMenu)) {
+        if(last_CM != calcMode) {
           if(last_CM == 252) {
             last_CM--;
           }
           else {
             last_CM = 252; //calcMode;
           }
-          doRefreshSoftMenu = false;
-          //clearScreen();
           displayShiftAndTamBuffer();
           showSoftmenuCurrentPart();
           hourGlassIconEnabled = true;

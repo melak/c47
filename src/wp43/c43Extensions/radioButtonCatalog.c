@@ -361,10 +361,8 @@ int8_t fnCbIsSet(int16_t item) {
 }
 
 
-void fnRefreshState(void) {
-  #if !defined(TESTSUITE_BUILD)
-    doRefreshSoftMenu = true;
-  #endif //!TESTSUITE_BUILD
+void fnRefreshState(void) {                      // 2023-07-18 This seems antiquated. If it has no effect, all calls to fnRefreshState can be removed. Leaving commented for a while.
+  //screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
 }
 
 

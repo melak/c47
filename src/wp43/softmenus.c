@@ -1698,7 +1698,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
       char tmp[200]; sprintf(tmp,"^^^^showSoftmenuCurrentPart: Showing Softmenu id=%d\n",m); jm_show_comment(tmp);
     #endif // PC_BUILD
     if(!(m==0 && !jm_BASE_SCREEN) && calcMode != CM_FLAG_BROWSER && calcMode != CM_ASN_BROWSER && calcMode != CM_FONT_BROWSER && calcMode != CM_REGISTER_BROWSER && calcMode != CM_BUG_ON_SCREEN) {           //JM: Added exclusions, as this procedure is not only called from refreshScreen, but from various places due to underline
-    clearScreen_old(false, false, true); //JM, added to ensure the f/g underlines are deleted
+//    clearScreen_old(false, false, true); //JM, added to ensure the f/g underlines are deleted
 
     if(tam.mode == TM_KEY && !tam.keyInputFinished) {
       for(y=0; y<=2; y++) {
@@ -2079,8 +2079,6 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
 
     softmenuStack[0].softmenuId = softmenuId;
     softmenuStack[0].firstItem = lastCatalogPosition[catalog];
-
-      doRefreshSoftMenu = true;     //dr
   }
 
 
@@ -2091,8 +2089,6 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
 
     xcopy(softmenuStack, softmenuStack + 1, (SOFTMENU_STACK_SIZE - 1) * sizeof(softmenuStack_t)); // shifting the entire stack
     memset(softmenuStack + SOFTMENU_STACK_SIZE - 1, 0, sizeof(softmenuStack_t)); // Put MyMenu in the last stack element
-
-    doRefreshSoftMenu = true;     //dr
 
     if(softmenuStack[0].softmenuId == 0 && calcMode == CM_AIM) { // MyMenu displayed and in AIM
       softmenuStack[0].softmenuId = 1; // MyAlpha
@@ -2342,7 +2338,7 @@ void fnExitAllMenus(uint16_t unusedButMandatoryParameter) {
 
 void fnMenuDump(uint16_t menu, uint16_t item) {                              //JMvv procedure to dump all menus. First page only. To mod todump all pages
 #if defined(PC_BUILD)
-  doRefreshSoftMenu = true;
+  screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
   showSoftmenu(softmenu[menu].menuItem);
   softmenuStack[0].firstItem += item;
   showSoftmenuCurrentPart();

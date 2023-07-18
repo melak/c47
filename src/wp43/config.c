@@ -1432,7 +1432,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     #if !defined(TESTSUITE_BUILD)
       showSoftmenuCurrentPart();
     #endif // !TESTSUITE_BUILD
-    doRefreshSoftMenu = true;     //jm dr
+    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
     last_CM = 253;
     refreshScreen();
 

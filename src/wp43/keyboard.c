@@ -2601,7 +2601,6 @@ RELEASE_END:
 
 
 void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
-  doRefreshSoftMenu = true;     //dr
   #if !defined(TESTSUITE_BUILD)
     switch(calcMode) {
       case CM_NORMAL: {
@@ -2813,8 +2812,6 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
     if(lastErrorCode == 0 && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_MVAR) {
       currentSolverStatus &= ~SOLVER_STATUS_INTERACTIVE;
     }
-
-    doRefreshSoftMenu = true;     //dr
 
   #if defined(PC_BUILD)
     jm_show_calc_state("fnKeyExit");
@@ -3074,6 +3071,8 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
       case CM_LISTXY:                      //JM vv
         calcMode = CM_GRAPH;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+        refreshScreen();
         softmenuStack[0].firstItem = 0;
         break;                              //JM ^^
 
@@ -3152,7 +3151,6 @@ undo_disabled:
 
 
 void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter' complex_Type=KEY_COMPLEX
-  doRefreshSoftMenu = true;     //dr
   #if !defined(TESTSUITE_BUILD)
     uint32_t dataTypeX, dataTypeY;
     bool_t polarOk, rectOk;
@@ -3545,7 +3543,6 @@ static bool_t activatescroll(void) { //jm
 #define RBR_INCDEC1 10
 
 void fnKeyUp(uint16_t unusedButMandatoryParameter) {
-  doRefreshSoftMenu = true;     //dr
   #if !defined(TESTSUITE_BUILD)
     int16_t menuId = softmenuStack[0].softmenuId; //JM
 
@@ -3593,7 +3590,6 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
       case CM_EIM:
       case CM_PLOT_STAT:
       case CM_GRAPH: {
-        doRefreshSoftMenu = true;     //jm
         resetAlphaSelectionBuffer();
 
         //JM Arrow up and down if no menu other than AHOME of MyA       //JMvv
@@ -3757,7 +3753,6 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
 
 
 void fnKeyDown(uint16_t unusedButMandatoryParameter) {
-  doRefreshSoftMenu = true;     //dr
   #if !defined(TESTSUITE_BUILD)
     int16_t menuId = softmenuStack[0].softmenuId; //JM
 
@@ -3805,7 +3800,6 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
       case CM_EIM:
       case CM_PLOT_STAT:
       case CM_GRAPH: {
-        doRefreshSoftMenu = true;     //jm
         resetAlphaSelectionBuffer();
 
         //JM Arrow up and down if AHOME of MyA       //JMvv

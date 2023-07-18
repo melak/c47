@@ -33,7 +33,6 @@
                                                   //JMSHOIDISP  displayStackSHOIDISP=3: 1 lines of X-repeats
                                                   //JMSHOIDISP  displayStackSHOIDISP=4: 0 lines of X-repeats
 
-  extern bool_t   doRefreshSoftMenu;                                                                              //dr
   void     FN_handler();                                                                                          //JM LONGPRESS
   void     Shft_handler();                                                                                        //JM LONGPRESS f/g
   void     LongpressKey_handler();                                                                                //JM LONGPRESS CLX

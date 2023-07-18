@@ -348,6 +348,7 @@ void graph_eqn(uint16_t mode) {
       return;
     }
     calcMode = CM_GRAPH;
+    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
     fnClearStack(0);
 
     convertDoubleToReal34RegisterPush(x_max, REGISTER_X);
@@ -484,6 +485,7 @@ void graph_eqn(uint16_t mode) {
 void graph_stat(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
     calcMode = CM_GRAPH;
+    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
 
     lastPlotMode = PLOT_NOTHING;
     strcpy(plotStatMx,"STATS");

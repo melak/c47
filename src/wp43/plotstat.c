@@ -1168,7 +1168,7 @@ void graphPlotstat(uint16_t selection){
         minN_y = 0;
         minN_x = SCREEN_WIDTH-SCREEN_HEIGHT_GRAPH;
       }
-      if(xN<SCREEN_WIDTH_GRAPH && xN>minN_x && yN<SCREEN_HEIGHT_GRAPH && yN>minN_y) {
+      if(xN<SCREEN_WIDTH_GRAPH && xN>=minN_x && yN<SCREEN_HEIGHT_GRAPH && yN>=minN_y) {
         yn = yN;
         xn = xN;
 
@@ -1203,14 +1203,14 @@ void graphPlotstat(uint16_t selection){
             if(xN >= SCREEN_WIDTH_GRAPH) {
               printf("x>>%u ", SCREEN_WIDTH_GRAPH);
             }
-            else if(xN <= minN_x) {
+            else if(xN < minN_x) {
               printf("x<<%u ", minN_x);
             }
 
             if(yN >= SCREEN_HEIGHT_GRAPH) {
               printf("y>>%u ", SCREEN_HEIGHT_GRAPH);
             }
-            else if(yN <= 1+minN_y) {
+            else if(yN < 1+minN_y) {
               printf("y<<%u ", 1+minN_y);
             }
           printf("\n");
@@ -1765,6 +1765,7 @@ void fnPlotStat(uint16_t plotMode){
       else {
         if(plotMode == PLOT_GRAPH) {
           calcMode = CM_GRAPH;
+          screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
           plotSelection = 0;
           PLOT_AXIS     = true;
           PLOT_LINE     = true;

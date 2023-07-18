@@ -112,7 +112,7 @@ void showAlphaModeonGui(void) {
       calcModeAimGui();
     #endif // PC_BUILD
   }                                                         //^^
-  doRefreshSoftMenu = true;             //jm
+  screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;             //jm
 }
 
 
@@ -198,18 +198,16 @@ void resetKeytimers(void) {
   * \return void
   ***********************************************/
   void show_f_jm(void) {
-    //showSoftmenuCurrentPart();                                                    //JM - Redraw boxes etc after shift is shown
-    //JMTOCHECK2        if(softmenuStackPointer >= 0) {                             //JM - Display dot in the f - line
     if(!FN_timeouts_in_progress && calcMode != CM_ASN_BROWSER) {
       if(!ULFL) {
         underline(1);
         ULFL = !ULFL;
-        doRefreshSoftMenu = true;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
       }
       if(ULGL) {
         underline(2);
         ULGL = !ULGL;
-        doRefreshSoftMenu = true;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
       }
     }
     //}                                                                             //JM - Display dot in the f - line
@@ -217,18 +215,16 @@ void resetKeytimers(void) {
 
 
   void show_g_jm(void) {
-    //showSoftmenuCurrentPart();                                                    //JM - Redraw boxes etc after shift is shown
-    //JMTOCHECK2        if(softmenuStackPointer >= 0) {                             //JM - Display dot in the g - line
     if(!FN_timeouts_in_progress && calcMode != CM_ASN_BROWSER) {
       if(ULFL) {
         underline(1);
         ULFL = !ULFL;
-        doRefreshSoftMenu = true;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
       }
       if(!ULGL) {
         underline(2);
         ULGL = !ULGL;
-        doRefreshSoftMenu = true;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
       }
     }
     //}                                                                             //JM - Display dot in the g - line
@@ -236,17 +232,16 @@ void resetKeytimers(void) {
 
 
   void clear_fg_jm(void) {
-    //showSoftmenuCurrentPart();            //JM TO REMOVE STILL !!                 //JM - Redraw boxes etc after shift is shown
     if(!FN_timeouts_in_progress) {        //Cancel lines
       if(ULFL) {
         underline(1);
         ULFL = !ULFL;
-        doRefreshSoftMenu = true;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
       }
       if(ULGL) {
         underline(2);
         ULGL = !ULGL;
-        doRefreshSoftMenu = true;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
       }
     }
   }
