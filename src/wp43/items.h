@@ -2001,7 +2001,7 @@
 #define ITM_MULTDOT                 1945
 #define ITM_POLAR                   1946
 #define ITM_RESERVE2                1947
-#define MNU_1948                    1948
+#define ITM_PRTACT                  1948
 #define ITM_RECT                    1949
 #define ITM_SCIOVR                  1950
 #define ITM_ENGOVR                  1951
@@ -2104,8 +2104,8 @@
 #define ITM_SPCRES1                 2048
 #define ITM_CPXRES0                 2049
 #define ITM_SPCRES0                 2050
-#define ITM_2051                    2051
-#define ITM_2052                    2052
+#define ITM_PRTACT1                 2051
+#define ITM_PRTACT0                 2052
 #define ITM_2053                    2053
 #define ITM_2054                    2054
 #define ITM_2055                    2055

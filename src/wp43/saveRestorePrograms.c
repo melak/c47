@@ -105,6 +105,8 @@ void fnPExport(uint16_t unusedButMandatoryParameter) {
     uint16_t line, firstLine;
     uint8_t *step, *nextStep;
     uint16_t numberOfSteps = getNumberOfSteps();
+    char asciiString[448];           //cannot use errorMessage buffer in disk write operations
+                                     //solution is to use a local variable of sufficient length to contain a step string.
 
     firstDisplayedLocalStepNumber = 0;
     defineFirstDisplayedStep();
@@ -136,9 +138,9 @@ void fnPExport(uint16_t unusedButMandatoryParameter) {
 
       decodeOneStepXEQM(step);
       stringAppend(tmpString + stringByteLength(tmpString), "\n");
-      stringToASCII(tmpString, errorMessage);
+      stringToASCII(tmpString, asciiString);
       //printf("%s\n",errorMessage);
-      ioFileWrite(errorMessage, strlen(errorMessage));
+      ioFileWrite(asciiString, strlen(asciiString));
 
       if(isAtEndOfProgram(step)) {
         programListEnd = true;
@@ -167,10 +169,6 @@ void fnExportProgram(uint16_t label) {
   #if !defined(TESTSUITE_BUILD)
     uint32_t programVersion = PROGRAM_VERSION;
     ioFilePath_t path;
-    //char tmpString[3000];           //The concurrent use of the global tmpString
-    //                                //as target does not work while the source is at
-    //                                //tmpRegisterString = tmpString + START_REGISTER_VALUE;
-    //                                //Temporary solution is to use a local variable of sufficient length for the target.
     int ret;
 
     // Find program boundaries

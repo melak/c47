@@ -71,7 +71,7 @@ char*    figlabel              (const char* label, const char* showText, int16_t
 #define RB_IP   'I' // SEPS
 #define RB_FP   'J' // SEPS
 #define RB_RX   'K' // SEPS
-
+#define RB_PRN  'L' // PRON PROFF
 
 typedef struct {
   uint16_t itemNr;            ///<
