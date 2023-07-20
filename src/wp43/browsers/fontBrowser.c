@@ -33,8 +33,7 @@
 
 
 #if !defined(TESTSUITE_BUILD)
-
-TO_QSPI static const char bugScreenShowFonts[] = "In function showFonts: This should never happen!";
+  //TO_QSPI static const char bugScreenShowFonts[] = "In function showFonts: This should never happen!";
 
   /********************************************//**
    * \brief The font browser application initialisation
@@ -209,7 +208,7 @@ TO_QSPI static const char bugScreenShowFonts[] = "In function showFonts: This sh
     }
 
     else {
-      displayBugScreen(bugScreenShowFonts);
+      //displayBugScreen(bugScreenShowFonts);
     }
   #endif // !SAVE_SPACE_DM42_8
   }
