@@ -2225,6 +2225,7 @@ RELEASE_END:
               }
               else {
                 keyActionProcessed = true;
+                if(item == ITM_toINT || item == ITM_HASH_JM) resetShiftState();
                 addItemToNimBuffer(item);
                 if( ((ITM_0 <= item && item <= ITM_9) || ((ITM_A <= item && item <= ITM_F) && (lastIntegerBase >= 2) && topHex) ) || item == ITM_CHS || item == ITM_EXPONENT || item == ITM_PERIOD) {   //JMvv Direct keypresses; //JMNIM Added direct A-F for hex entry
                   refreshRegisterLine(REGISTER_X);

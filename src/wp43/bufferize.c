@@ -1573,7 +1573,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         break;
       }
 
-      case ITM_ENTER:                                //JM BASE SETTING HEX
+      case ITM_ENTER:                                  //JM DEFAULT BASE SETTING 10
       case ITM_LOG10: { // D for decimal base          //JM
         if(nimNumberPart == NP_INT_BASE && aimBuffer[strlen(aimBuffer) - 1] == '#') {
           strcat(aimBuffer, "10");
@@ -1585,6 +1585,15 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       case ITM_RCL: { // H for hexadecimal base
         if(nimNumberPart == NP_INT_BASE && aimBuffer[strlen(aimBuffer) - 1] == '#') {
           strcat(aimBuffer, "16");
+          goto addItemToNimBuffer_exit;
+        }
+        break;
+      }
+
+      case ITM_Rdown: { // I for longinteger
+        if(nimNumberPart == NP_INT_BASE && aimBuffer[strlen(aimBuffer) - 1] == '#') {
+          aimBuffer[strlen(aimBuffer)-1]=0;
+          nimNumberPart = NP_INT_10;
           goto addItemToNimBuffer_exit;
         }
         break;
