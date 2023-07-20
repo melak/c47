@@ -59,8 +59,8 @@
 #endif
 
 #include "wp43.h"
-#define BACKUP_VERSION                     782  // remove FM program support
-#define OLDEST_COMPATIBLE_BACKUP_VERSION   779  // save running app
+#define BACKUP_VERSION                     783  // remove FM program support
+#define OLDEST_COMPATIBLE_BACKUP_VERSION   783  // save running app
 #define configFileVersion                  10000005 // arbitrary starting point version 10 000 001. Allowable values are 10000000 to 20000000
 #define VersionAllowed                     10000005 // This code will not autoload versions earlier than this
 
@@ -207,9 +207,11 @@ static uint32_t restore(void *buffer, uint32_t size) {
     save(&rbrMode,                            sizeof(rbrMode));
     save(&showContent,                        sizeof(showContent));
     save(&numScreensNumericFont,              sizeof(numScreensNumericFont));
+    save(&numScreensStandardFont,             sizeof(numScreensStandardFont));
+    save(&numScreensTinyFont,                 sizeof(numScreensTinyFont));
     save(&numLinesNumericFont,                sizeof(numLinesNumericFont));
     save(&numLinesStandardFont,               sizeof(numLinesStandardFont));
-    save(&numScreensStandardFont,             sizeof(numScreensStandardFont));
+    save(&numLinesTinyFont,                   sizeof(numLinesTinyFont));
     save(&previousCalcMode,                   sizeof(previousCalcMode));
     save(&lastErrorCode,                      sizeof(lastErrorCode));
     save(&nimNumberPart,                      sizeof(nimNumberPart));
@@ -536,9 +538,11 @@ static uint32_t restore(void *buffer, uint32_t size) {
       restore(&rbrMode,                            sizeof(rbrMode));
       restore(&showContent,                        sizeof(showContent));
       restore(&numScreensNumericFont,              sizeof(numScreensNumericFont));
+      restore(&numScreensStandardFont,             sizeof(numScreensStandardFont));
+      restore(&numScreensTinyFont,                 sizeof(numScreensTinyFont));
       restore(&numLinesNumericFont,                sizeof(numLinesNumericFont));
       restore(&numLinesStandardFont,               sizeof(numLinesStandardFont));
-      restore(&numScreensStandardFont,             sizeof(numScreensStandardFont));
+      restore(&numLinesTinyFont,                   sizeof(numLinesTinyFont));
       restore(&previousCalcMode,                   sizeof(previousCalcMode));
       restore(&lastErrorCode,                      sizeof(lastErrorCode));
       restore(&nimNumberPart,                      sizeof(nimNumberPart));
