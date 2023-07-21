@@ -842,6 +842,11 @@ void SetSetting(uint16_t jmConfig) {
       break;
     }
 
+    case PRTACT: {
+      fnFlipFlag(FLAG_PRTACT);
+      break;
+    }
+
     case JC_BLZ: {    //bit LeadingZeros
       fnFlipFlag(FLAG_LEAD0);
       break;
@@ -874,6 +879,16 @@ void SetSetting(uint16_t jmConfig) {
 
     case ITM_SPCRES0: {    //bit SpecialResult
       fnClearFlag(FLAG_SPCRES);
+      break;
+    }
+
+    case ITM_PRTACT1: {
+      fnSetFlag(FLAG_PRTACT);
+      break;
+    }
+
+    case ITM_PRTACT0: {
+      fnClearFlag(FLAG_PRTACT);
       break;
     }
 

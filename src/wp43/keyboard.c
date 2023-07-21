@@ -1570,7 +1570,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         #if defined(PC_BUILD_TELLTALE)
           sprintf(tmp,"keyboard.c: btnPressed 2--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
         #endif //PC_BUILD_TELLTALE
-
+        //printf("----- %i ----- |%s|\n",item,funcParam);
         if(!keyActionProcessed) {
 
           showFunctionName(item, 1000, funcParam);// "SF:B"); // 1000ms = 1s
@@ -2225,6 +2225,7 @@ RELEASE_END:
               }
               else {
                 keyActionProcessed = true;
+                if(item == ITM_toINT || item == ITM_HASH_JM) resetShiftState();
                 addItemToNimBuffer(item);
                 if( ((ITM_0 <= item && item <= ITM_9) || ((ITM_A <= item && item <= ITM_F) && (lastIntegerBase >= 2) && topHex) ) || item == ITM_CHS || item == ITM_EXPONENT || item == ITM_PERIOD) {   //JMvv Direct keypresses; //JMNIM Added direct A-F for hex entry
                   refreshRegisterLine(REGISTER_X);
