@@ -1274,7 +1274,7 @@ void fnT_ARROW(uint16_t command) {
           fnT_ARROW(ITM_T_RIGHT_ARROW);
           while(ixx < 75 && (current_cursor_x >= current_cursor_x_old+5 || current_cursor_y == current_cursor_y_old)) {
             fnT_ARROW(ITM_T_LEFT_ARROW);
-            showStringEdC43(lines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, -100, vmNormal, true, true, true);  //display up to the cursor
+            showStringEdC43(multiEdLines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, -100, vmNormal, true, true, true);  //display up to the cursor
             ixx++;
           }
           break;
@@ -1286,7 +1286,7 @@ void fnT_ARROW(uint16_t command) {
           fnT_ARROW(ITM_T_LEFT_ARROW);
           while(ixx < 75 && (current_cursor_x+5 <= current_cursor_x_old || current_cursor_y == current_cursor_y_old)) {
             fnT_ARROW(ITM_T_RIGHT_ARROW);
-            showStringEdC43(lines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, -100, vmNormal, true, true, true);  //display up to the cursor
+            showStringEdC43(multiEdLines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, -100, vmNormal, true, true, true);  //display up to the cursor
             ixx++;
 
             //printf("###^^^ %d %d %d %d %d\n",ixx,current_cursor_x, current_cursor_x_old, current_cursor_y, current_cursor_y_old);
@@ -1332,12 +1332,12 @@ void fnCla(uint16_t unusedButMandatoryParameter) {
     yCursor = Y_POSITION_OF_AIM_LINE + 6;
     cursorFont = &standardFont;
     cursorEnabled = true;
-    last_CM=252;
+    screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
     #if !defined(TESTSUITE_BUILD)
       clearRegisterLine(AIM_REGISTER_LINE, true, true);
       refreshRegisterLine(AIM_REGISTER_LINE);        //JM Execute here, to make sure that the 5/2 line check is done
     #endif // !TESTSUITE_BUILD
-    last_CM=253;
+    screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
   }
   else if(calcMode == CM_EIM) {
     while(xCursor > 0) {
@@ -1352,10 +1352,11 @@ void fnCln(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
     nimNumberPart = NP_EMPTY;
     calcModeNim(0);
-    last_CM=252;
+    screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
     refreshRegisterLine(REGISTER_X);        //JM Execute here, to make sure that the 5/2 line check is done
-    last_CM=253;
+    screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
     addItemToNimBuffer(ITM_0);
+    screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
   #endif // !TESTSUITE_BUILD
 }
 

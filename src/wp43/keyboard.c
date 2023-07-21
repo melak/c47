@@ -572,6 +572,10 @@ bool_t lowercaseselected;
     }
 
     if(keyActionProcessed) {
+//screenUpdatingMode |= SCRUPD_SKIP_STACK_ONE_TIME | SCRUPD_SKIP_MENU_ONE_TIME;
+      #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+        printf("refreshScreen(): calcMode=%u End of rocessAimInput\n", calcMode);
+      #endif //PC_BUILD
       refreshScreen();
     }
 
@@ -889,7 +893,7 @@ int16_t lastItem = 0;
     int16_t item = ITM_NOP;
 
       #if defined(VERBOSEKEYS)
-        printf("keyboard.c: executeFunction %i (beginning of executeFunction): %i, %s tam.mode=%i\n", item, softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName, tam.mode);
+        printf("keyboard.c: executeFunction calcmode=%u %i (beginning of executeFunction): %i, %s tam.mode=%i\n", calcMode, item, softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName, tam.mode);
       #endif //VERBOSEKEYS
 
 
@@ -1133,11 +1137,11 @@ printf(">>>> R000E                                %d |%s| shiftF=%d, shiftG=%d t
               }
               else {
                 #if defined(VERBOSEKEYS)
-                  printf("keyboard.c: executeFunction %i (before runfunction): %i, %s tam.mode=%i\n", item, softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName, tam.mode);
+                  printf("keyboard.c: executeFunction calcmode=%U %i (before runfunction): %i, %s tam.mode=%i\n", calcMode, item, softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName, tam.mode);
                 #endif //VERBOSEKEYS
                 runFunction(item);
                 #if defined(VERBOSEKEYS)
-                  printf("keyboard.c: executeFunction %i (after runfunction): %i, %s tam.mode=%i\n", item, softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName, tam.mode);
+                  printf("keyboard.c: executeFunction calcmode=%u %i (after runfunction): %i, %s tam.mode=%i\n", calcMode, item, softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName, tam.mode);
                 #endif //VERBOSEKEYS
               }
             }
@@ -1152,15 +1156,18 @@ printf(">>>> R000F                                %d |%s| shiftF=%d, shiftG=%d t
         }
       }
     }
-  #if defined(PC_BUILD)
-    printf(">>>  refreshScreen3 from keyboard.c executeFunction\n");
+  #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+    printf(">>>  refreshScreen3 from keyboard.c executeFunction calcMode=%u\n",calcMode);
   #endif
     refreshScreen();
 //TODO 2023-04-15 check here. It needs to be changed not to always refresh the screen.
+  #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+    printf(">>>  refreshScreen4 from keyboard.c executeFunction calcMode=%u\n",calcMode);
+  #endif
 
     screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
     #if defined(VERBOSEKEYS)
-      printf("keyboard.c: executeFunction (end): %i, %s\n", softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName);
+      printf("keyboard.c: executeFunction (end): calcmode=%u %i, %s\n", calcMode, softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName);
     #endif //VERBOSEKEYS
   }
 
@@ -2817,19 +2824,19 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
     jm_show_calc_state("fnKeyExit");
   #endif
 
-    switch(calcMode) {
+    switch(calcMode) {                           //if in Catalog
         case CM_REGISTER_BROWSER:
         case CM_FLAG_BROWSER:
         case CM_ASN_BROWSER:
         case CM_FONT_BROWSER:
         case CM_CONFIRMATION:
         case CM_ERROR_MESSAGE:
-      case CM_BUG_ON_SCREEN: {
+        case CM_BUG_ON_SCREEN: {
             // Browser or message should be closed first
             break;
-      }
+            }
 
-      default: {
+        default: {
             if(catalog) {
                 if(lastErrorCode != 0) {
                     lastErrorCode = 0;
@@ -2848,10 +2855,10 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
                 }
                 return;
             }
-    }
+      }
     }
 
-    if(tam.mode) {
+    if(tam.mode) {                               //if in TAM mode
       if(numberOfTamMenusToPop > 1) {
         popSoftmenu();
         numberOfTamMenusToPop--;
@@ -2868,7 +2875,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       return;
     }
 
-    switch(calcMode) {
+    switch(calcMode) {                           
       case CM_REGISTER_BROWSER:
       case CM_FLAG_BROWSER:
       case CM_ASN_BROWSER:
@@ -2880,7 +2887,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         break;
       }
 
-      case CM_NORMAL: {
+      case CM_NORMAL: {                                                     //If in Custom Menu
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -ITM_MENU) {
           dynamicMenuItem = 20;
           fnProgrammableMenu(NOPARAM);
@@ -2892,7 +2899,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       }
     }
 
-    switch(calcMode) {
+    switch(calcMode) {                           //Inside another menu like MyMenu or My Alpha or PEM
       case CM_NORMAL: {
         if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_SMALL || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_VIEW) {
           temporaryInformation = TI_NO_INFO;
@@ -3050,6 +3057,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       case CM_FONT_BROWSER: {
         rbr1stDigit = true;
         calcMode = previousCalcMode;
+//        screenUpdatingMode = SCRUPD_AUTO;
         break;
       }
 
@@ -3104,6 +3112,8 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         fnUndo(NOPARAM);
         fnClDrawMx();
         restoreStats();
+        screenUpdatingMode = SCRUPD_AUTO;
+        refreshScreen();
         break;
       }
 
@@ -3137,8 +3147,8 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         displayBugScreen(errorMessage);
     }
 
-    last_CM = 253; //Force redraw   //JMvvv Show effect of Exit immediately
-    refreshScreen();                //JM^^^
+    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU; //SCRUPD_AUTO;//JMvvv Show effect of Exit immediately
+    refreshScreen();                  //JM^^^
     }
     return;
 
@@ -3665,6 +3675,8 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         if(currentAsnScr == 0 || currentAsnScr >= 4) {
           currentAsnScr = 3;
         }
+
+//somehow calcmode=0 wanneer dit daar aankom!        screenUpdatingMode = ~SCRUPD_AUTO;
         break;
       }
 

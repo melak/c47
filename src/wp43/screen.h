@@ -40,6 +40,10 @@
   void     underline(int16_t y);                                                                                  //JM SHIFT LINE
   void     clear_ul(void);                                                                                        //JMUL
   void     clearScreen_old(bool_t clearStatusBar, bool_t clearRegisterLines, bool_t clearSoftkeys);               //JMOLD
+  #define  clrStatusBar true
+  #define  clrRegisterLines true
+  #define  clrSoftkeys true
+
   void     fnScreenDump                       (uint16_t unusedButMandatoryParameter);
   void     fnSNAP                             (uint16_t unusedButMandatoryParameter);
 
@@ -120,7 +124,7 @@ void       fnAGraph                           (uint16_t regist);
 //  uint8_t  maxiC;               //TO REMOVE from .h                                                                                            //JM global flags for character control:  enlarged letters
   extern uint8_t  compressString;                                                                               //JM global flags for character control: compressString
   extern uint8_t  raiseString;                                                                               //JM global flags for character control: raiseString
-  extern uint8_t  lines;
+  extern uint8_t  multiEdLines;
   extern uint16_t current_cursor_x;
   extern uint16_t current_cursor_y;
 

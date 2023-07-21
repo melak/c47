@@ -64,6 +64,13 @@
 
 //#define DEBUGCLEARS
 
+uint8_t multiEdLines = 0;            // lines   0
+uint8_t yMultiLineEdOffset = 0;      // pixels
+uint8_t xMultiLineEdOffset = 0;      // pixels 40
+uint16_t current_cursor_x = 0;
+uint16_t current_cursor_y = 0;
+
+
 #if !defined(TESTSUITE_BUILD)
   #define spc STD_SPACE
   #define spc1 STD_SPACE STD_SPACE_3_PER_EM
@@ -943,12 +950,16 @@ void execTimerApp(uint16_t timerType) {
       //}
 
       if(x == 0 && y == 0 && dx == SCREEN_WIDTH && dy == SCREEN_HEIGHT) {  //JMTOCHECK is this needed?
-        printf("   >>> screen.c: clearScreen: clearScreenCounter=%d\n",clearScreenCounter++);    //JMYY ClearScreen Test  #endif
+        #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+          printf("   >>> screen.c: clearScreen: calcmode=%u clearScreenCounter=%d\n",calcMode, clearScreenCounter++);    //JMYY ClearScreen Test  #endif
+        #endif
         clear_ul(); //JMUL
       }
 
       if(endX > SCREEN_WIDTH || endY > SCREEN_HEIGHT) {
-        printf("In function lcd_fill_rect: x=%u, y=%u, dx=%u, dy=%u, val=%d outside the screen!\n", x, y, dx, dy, val);
+        #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+          printf("In function lcd_fill_rect: x=%u, y=%u, dx=%u, dy=%u, val=%d outside the screen!\n", x, y, dx, dy, val);
+        #endif
         return;
       }
 
@@ -1362,10 +1373,10 @@ void execTimerApp(uint16_t timerType) {
 
   void showDispSmall(uint16_t offset, uint8_t _h1) {
     #define line_h0 21
-    const uint32_t line_h_offset = Y_POSITION_OF_REGISTER_T_LINE;
+    const uint32_t line_hMultiLineEdOffset = Y_POSITION_OF_REGISTER_T_LINE;
     if(tmpString[offset]) {
       uint32_t w = stringWidth(tmpString + offset, &standardFont, true, true);
-      showString(tmpString + offset, &standardFont, SCREEN_WIDTH - w, line_h_offset + line_h0 * _h1, vmNormal, true, true);
+      showString(tmpString + offset, &standardFont, SCREEN_WIDTH - w, line_hMultiLineEdOffset + line_h0 * _h1, vmNormal, true, true);
       #if defined(VERBOSE_SCREEN) && defined(PC_BUILD)
         printf("^^^^NEW SHOW: %s\n", tmpString + offset);
       #endif // VERBOSE_SCREEN && PC_BUILD
@@ -1382,41 +1393,41 @@ void execTimerApp(uint16_t timerType) {
 
   void showDisp(uint16_t offset, uint8_t _h1) {
     #define line_h1 37
-    const uint32_t line_h_offset = Y_POSITION_OF_REGISTER_T_LINE - 3;
+    const uint32_t line_hMultiLineEdOffset = Y_POSITION_OF_REGISTER_T_LINE - 3;
 
     uint32_t w = stringWidthWithLimitC43(tmpString + offset, stdnumEnlarge, nocompress, SCREEN_WIDTH, true, true);
     if(w < SCREEN_WIDTH) {
-      showStringC43(tmpString + offset, stdnumEnlarge, nocompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
+      showStringC43(tmpString + offset, stdnumEnlarge, nocompress,  SCREEN_WIDTH - w, line_hMultiLineEdOffset + line_h1 * _h1, vmNormal, true, true);
       goto gotoReturn;
     }
 
     w = stringWidthWithLimitC43(tmpString + offset, stdEnlarge, nocompress, SCREEN_WIDTH, true, true);
     if(w < SCREEN_WIDTH) {
-      showStringC43(tmpString + offset, stdEnlarge, nocompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
+      showStringC43(tmpString + offset, stdEnlarge, nocompress,  SCREEN_WIDTH - w, line_hMultiLineEdOffset + line_h1 * _h1, vmNormal, true, true);
       goto gotoReturn;
     }
 
     w = stringWidthWithLimitC43(tmpString + offset, stdNoEnlarge, nocompress, SCREEN_WIDTH, true, true);
     if(w < SCREEN_WIDTH) {
-      showStringC43(tmpString + offset, stdNoEnlarge, nocompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
+      showStringC43(tmpString + offset, stdNoEnlarge, nocompress,  SCREEN_WIDTH - w, line_hMultiLineEdOffset + line_h1 * _h1, vmNormal, true, true);
       goto gotoReturn;
     }
 
     w = stringWidthWithLimitC43(tmpString + offset, numSmall, nocompress, SCREEN_WIDTH, true, true);
     if(w < SCREEN_WIDTH) {
-      showStringC43(tmpString + offset, numSmall, nocompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
+      showStringC43(tmpString + offset, numSmall, nocompress,  SCREEN_WIDTH - w, line_hMultiLineEdOffset + line_h1 * _h1, vmNormal, true, true);
       goto gotoReturn;
     }
 
     w = stringWidthWithLimitC43(tmpString + offset, numSmall, DO_compress, SCREEN_WIDTH, true, true);
     if(w < SCREEN_WIDTH) {
-      showStringC43(tmpString + offset, numSmall, DO_compress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
+      showStringC43(tmpString + offset, numSmall, DO_compress,  SCREEN_WIDTH - w, line_hMultiLineEdOffset + line_h1 * _h1, vmNormal, true, true);
       goto gotoReturn;
     }
 
     w = stringWidth(tmpString + offset + 2, &standardFont, true, true);
     if(w < SCREEN_WIDTH) {
-      showString(tmpString + offset + 2, &standardFont,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
+      showString(tmpString + offset + 2, &standardFont,  SCREEN_WIDTH - w, line_hMultiLineEdOffset + line_h1 * _h1, vmNormal, true, true);
       goto gotoReturn;
     }
 
@@ -1427,7 +1438,7 @@ void execTimerApp(uint16_t timerType) {
       if(temporaryInformation == TI_SHOW_REGISTER_BIG && tmpString[1200] != 0) {
       }
       else if(tmpString[1500] != 0) {
-        lcd_fill_rect(0, line_h_offset + line_h1 * 2 - 3,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);
+        lcd_fill_rect(0, line_hMultiLineEdOffset + line_h1 * 2 - 3,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);
       }
       else {
         lcd_fill_rect(0,240-3*SOFTMENU_HEIGHT,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);
@@ -1435,11 +1446,6 @@ void execTimerApp(uint16_t timerType) {
     }
   }
 
-  uint8_t lines;      //lines   0
-  uint8_t y_offset;
-  uint8_t x_offset;      //pixels 40
-  uint16_t current_cursor_x = 0;
-  uint16_t current_cursor_y = 0;
 
   #if defined(TEXT_MULTILINE_EDIT)
     uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, const char *string, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, bool_t noshow1) {
@@ -1448,7 +1454,6 @@ void execTimerApp(uint16_t timerType) {
       bool_t   slc, sec;
       uint32_t  numPixels, orglastlines, tmpxy;
       const    glyph_t *glyph;
-      uint8_t  editlines;
       uint8_t  yincr;
       const    font_t *font;
 
@@ -1463,51 +1468,41 @@ void execTimerApp(uint16_t timerType) {
 
       lg = stringByteLength(string + offset);
 
-      //Removed the "new" fixed 3-line text input in favour of 1 line, which jumps to 3.
-      /*
-      if(combinationFonts !=0) {
-        editlines     = 3 ;       //JM ENLARGE 5    number of editing lines                                        //JMCURSOR vv
-        yincr         = 35;       //JM ENLARGE 21   distasnce between editing wrapped lines
-        x_offset      = 0;    //pixels 40
-        lines = 1;
-        y_offset = 1;
-      }
-      */
-
       //see original size jumping code: c7de947 108_02 2022-08-31
-      editlines     = 3 ;       //JM ENLARGE 5    number of editing lines                                        //JMCURSOR vv
       yincr         = 35;       //JM ENLARGE 21   distasnce between editing wrapped lines
-      x_offset      = 0;    //pixels 40
+      xMultiLineEdOffset      = 0;    //pixels 40
       if(stringWidth(string + offset, &numericFont, showLeadingCols, showEndingCols) > SCREEN_WIDTH - 50 ) {  //jump from large letters to small letters
-        lines = editlines;
-        y_offset = 1;
+        multiEdLines = 3;
+        yMultiLineEdOffset = 1;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;//screenUpdatingMode = SCRUPD_AUTO;
+        //printf("XXXXX\n");
       }
       else {
-        lines = 2;              //jump back to small letters
-        y_offset = 3;
-        last_CM = 253; //Force redraw
+        multiEdLines = 2;              //jump back to small letters
+        yMultiLineEdOffset = 3;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;//screenUpdatingMode = SCRUPD_AUTO;
+        //printf("YYYYY\n");
       }
 
       if(checkHP) {
-        lines = 1;
-        y_offset = 1;
-        last_CM = 253; //Force redraw
-        editlines = 1;
+        multiEdLines = 1;
+        yMultiLineEdOffset = 1;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;//screenUpdatingMode = SCRUPD_AUTO;
         yincr = 1;
       }
 
-      if(lines == editlines || lg == 0) {
-        last_CM = 253; //Force redraw if
-      }
+//      if(lg == 0) {
+  //      screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
+    //  }
 
       orglastlines = lastline;
 
-      if(lastline > y_offset) {
+      if(lastline > yMultiLineEdOffset) {
         if(!noshow1) {
-          clearScreen_old(false, true,false);
+//          clearScreen_old(false, true,false);
         }
-        x = x_offset;
-        y = (yincr-1) + y_offset * (yincr-1);
+        x = xMultiLineEdOffset;
+        y = (yincr-1) + yMultiLineEdOffset * (yincr-1);
       }
 
       //****************************************
@@ -1581,7 +1576,7 @@ void execTimerApp(uint16_t timerType) {
         //printf("±±± lastline=%d string[ch]=%d x=%d numPixels=%d\n", lastline, string[ch], x, numPixels);
 
         if(x + numPixels > SCREEN_WIDTH-1 && lastline == orglastlines) {
-          x = x_offset;
+          x = xMultiLineEdOffset;
           y += yincr;
           lastline--;
         }
@@ -1614,7 +1609,7 @@ void execTimerApp(uint16_t timerType) {
 
   void findOffset(void) {             //C43 JM
     int32_t strWidth = (int32_t)stringWidthC43(aimBuffer, combinationFonts, nocompress, true, true);
-    strWidth -= SCREEN_WIDTH * lines - 45;
+    strWidth -= SCREEN_WIDTH * multiEdLines - 45;
     if(strWidth < 0) {
       strWidth = 0;
     }
@@ -1627,7 +1622,7 @@ void execTimerApp(uint16_t timerType) {
   void incOffset(void) {             //C43 JM
     if( (int32_t)stringWidthC43(aimBuffer + displayAIMbufferoffset, combinationFonts ,nocompress, true, true) -
         (int32_t)stringWidthC43(aimBuffer + T_cursorPos, combinationFonts ,nocompress, true, true)
-        > SCREEN_WIDTH * lines - 45
+        > SCREEN_WIDTH * multiEdLines - 45
         ) {
       displayAIMbufferoffset = stringNextGlyph(aimBuffer, displayAIMbufferoffset);
     }
@@ -2536,7 +2531,7 @@ void execTimerApp(uint16_t timerType) {
             int16_t tmplen = stringByteLength(aimBuffer);
             if(T_cursorPos > tmplen) {T_cursorPos = tmplen;}     //Do range checking in case the cursor starts off outside of range
             if(T_cursorPos < 0)      {T_cursorPos = tmplen;}     //Do range checking in case the cursor starts off outside of range
-            showStringEdC43(lines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, Y_POSITION_OF_NIM_LINE - 3 - checkHPoffset, vmNormal, true, true, false);  //display up to the cursor
+            showStringEdC43(multiEdLines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, Y_POSITION_OF_NIM_LINE - 3 - checkHPoffset, vmNormal, true, true, false);  //display up to the cursor
 
             if(T_cursorPos == tmplen) {
               cursorEnabled = true;
@@ -3911,46 +3906,71 @@ void execTimerApp(uint16_t timerType) {
 
 
   static void _selectiveClearScreen(void) {
-    if(!(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR)) {
-      #if defined(PC_BUILD)
-        printf("   >>> lcd_fill_rect SCRUPD_MANUAL_STATUSBAR\n");
-      #endif // PC_BUILD
-      lcd_fill_rect(0, 0, SCREEN_WIDTH, Y_POSITION_OF_REGISTER_T_LINE, LCD_SET_VALUE);
+    if(screenUpdatingMode == SCRUPD_AUTO) {
+      #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+        printf("   >>> lcd_fill_rect clear all\n");
+      #endif // PC_BUILD && MONITOR_CLRSCR
+      clearScreen();
     }
-    if(!(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME))) {
-      #if defined(PC_BUILD)
-        printf("   >>> lcd_fill_rect SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME\n");
-      #endif // PC_BUILD
-      lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, SCREEN_WIDTH, 240 - Y_POSITION_OF_REGISTER_T_LINE - SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
-      //C47 had 0,-4,0,+4 to clear from y=20, not y=24.
-    }
-    if((calcMode != CM_NIM) && !(screenUpdatingMode & (SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME))) {
-      #if defined(PC_BUILD)
-        printf("   >>> lcd_fill_rect SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME\n");
-      #endif // PC_BUILD
-      lcd_fill_rect(0, 240 - SOFTMENU_HEIGHT * 3, SCREEN_WIDTH - 240, SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
-      clear_ul(); //JMUL
-      lcd_fill_rect(0, 240 - SOFTMENU_HEIGHT * 3, 20, 5, LCD_SET_VALUE);
-      if(calcMode != CM_GRAPH) {
-        lcd_fill_rect(SCREEN_WIDTH - 240, 240 - SOFTMENU_HEIGHT * 3, 240, SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
+    else {
+      if(!(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR)) {
+        #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+          printf("   >>> lcd_fill_rect SCRUPD_MANUAL_STATUSBAR\n");
+        #endif // PC_BUILD &&MONITOR_CLRSCR
+        lcd_fill_rect(0, 0, SCREEN_WIDTH, Y_POSITION_OF_REGISTER_T_LINE, LCD_SET_VALUE);
+      }
+      if(!(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME))) {
+        #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+          printf("   >>> lcd_fill_rect SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME\n");
+        #endif // PC_BUILD && MONITOR_CLRSCR
+        lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE-4, SCREEN_WIDTH, 240 - Y_POSITION_OF_REGISTER_T_LINE - SOFTMENU_HEIGHT * 3+4, LCD_SET_VALUE);
+        //C47 had 0,-4,0,+4 to clear from y=20, not y=24.
+      }
+      if((calcMode != CM_NIM) && !(screenUpdatingMode & (SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME))) {
+        #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+          printf("   >>> lcd_fill_rect SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME\n");
+        #endif // PC_BUILD && MONITOR_CLRSCR
+        lcd_fill_rect(0, 240 - SOFTMENU_HEIGHT * 3, SCREEN_WIDTH - 240, SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
+        clear_ul(); //JMUL
+        lcd_fill_rect(0, 240 - SOFTMENU_HEIGHT * 3, 20, 5, LCD_SET_VALUE);
+        if(calcMode != CM_GRAPH) {
+          lcd_fill_rect(SCREEN_WIDTH - 240, 240 - SOFTMENU_HEIGHT * 3, 240, SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
+        }
       }
     }
   }
+
+
+//#if !defined(TESTSUITE_BUILD)
+//  void clearScreen_old(bool_t clearStatusBar, bool_t clearRegisterLines, bool_t clearSoftkeys) {      //JMOLD
+//    if(clearStatusBar) {
+//      lcd_fill_rect(0, 0, SCREEN_WIDTH, 20, 0);
+//    }
+//    if(clearRegisterLines) {
+//      lcd_fill_rect(0, 20, SCREEN_WIDTH, 151, 0);
+//    }
+//    if(clearSoftkeys) {
+//      clear_ul(); //JMUL
+//      lcd_fill_rect(0, 171, SCREEN_WIDTH, 69, 0);
+//      lcd_fill_rect(0, 171-5, 20, 5, 0);
+//    }
+//  }                                                       //JM ^^
+//#endif // !TESTSUITE_BUILD
 
 
   #if !defined(TESTSUITE_BUILD)
     void clearScreen_old(bool_t clearStatusBar, bool_t clearRegisterLines, bool_t clearSoftkeys) {
       uint8_t origScreenUpdatingMode = screenUpdatingMode;
       if(clearStatusBar) {
-        screenUpdatingMode = SCRUPD_MANUAL_STATUSBAR;
+        screenUpdatingMode = ~SCRUPD_MANUAL_STATUSBAR;
         _selectiveClearScreen();
       }
       if(clearRegisterLines) {
-        screenUpdatingMode = SCRUPD_MANUAL_STACK;
+        screenUpdatingMode = ~SCRUPD_MANUAL_STACK;
         _selectiveClearScreen();
       }
       if(clearSoftkeys) {
-        screenUpdatingMode = SCRUPD_MANUAL_MENU;
+        screenUpdatingMode = ~SCRUPD_MANUAL_MENU;
         _selectiveClearScreen();
       }
       screenUpdatingMode = origScreenUpdatingMode;
@@ -3969,52 +3989,54 @@ void execTimerApp(uint16_t timerType) {
 
 
   static void _refreshNormalScreen(void) {
-        if(last_CM != calcMode || calcMode == CM_CONFIRMATION) {
-          screenUpdatingMode = SCRUPD_AUTO;
-        }
-        else if(calcMode == CM_MIM) {
+        if(calcMode == CM_MIM) {
           screenUpdatingMode = (aimBuffer[0] == 0) ? SCRUPD_AUTO : (SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);
         }
         else if(calcMode == CM_TIMER) {
           screenUpdatingMode = SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS;
         }
-
-        if(screenUpdatingMode == SCRUPD_AUTO) {
-          #if defined(PC_BUILD)
-            printf("   >>> lcd_fill_rect clear all\n");
-          #endif // PC_BUILD
-          clearScreen();
-        }
-        else {
-          _selectiveClearScreen();
+        if(calcMode == previousCalcMode) {
+          screenUpdatingMode = SCRUPD_AUTO;
         }
 
+        _selectiveClearScreen();
+        //printf("##> AAAA screenUpdatingMode  MANUAL STACK=%u SKIP MENU ONCE=%u \n",screenUpdatingMode & SCRUPD_MANUAL_STACK, screenUpdatingMode & SCRUPD_SKIP_STACK_ONE_TIME);
         // The ordering of the 4 lines below is important for SHOW (temporaryInformation == TI_SHOW_REGISTER)
-        if(last_CM != calcMode || !(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME))) {
-          if(calcMode != CM_TIMER && temporaryInformation != TI_VIEW) {
-            refreshRegisterLine(REGISTER_T);
+        if(!(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME))) {
+          if(calcMode != CM_AIM) {
+            if(calcMode != CM_TIMER && temporaryInformation != TI_VIEW) {
+              refreshRegisterLine(REGISTER_T);
+            }
+            //printf("##> BBBB 4lines Normal Mode\n");
+            refreshRegisterLine(REGISTER_Z);
+            refreshRegisterLine(REGISTER_Y);
+            refreshRegisterLine(REGISTER_X);
+            if(temporaryInformation == TI_VIEW) {
+              clearRegisterLine(REGISTER_T, true, true);
+              refreshRegisterLine(REGISTER_T);
+            }
+          } else {
+            //printf("##> CCCC 4lines ALPHA Mode\n");
+            if(yMultiLineEdOffset == 3) {
+              refreshRegisterLine(REGISTER_T);
+              refreshRegisterLine(REGISTER_Z);
+              refreshRegisterLine(REGISTER_Y);              
+            }
+            refreshRegisterLine(REGISTER_X);
           }
-          refreshRegisterLine(REGISTER_Z);
-          refreshRegisterLine(REGISTER_Y);
-          refreshRegisterLine(REGISTER_X);
-          if(temporaryInformation == TI_VIEW) {
-            clearRegisterLine(REGISTER_T, true, true);
-            refreshRegisterLine(REGISTER_T);
-          }
+
         }
         else if(calcMode == CM_NIM) {
+          //printf("##> DDDD NIM line\n");
           refreshRegisterLine(NIM_REGISTER_LINE);
         }
+        //printf("##><\n");
 
-        //if(last_CM != calcMode) {
-        //  clearScreen_old(true, false, false);
-        //}
 
         if(calcMode == CM_ASN_BROWSER) {
-          last_CM = calcMode;
           fnAsnViewer(NOPARAM);
           calcModeNormal();
-          calcMode = last_CM;
+          calcMode = CM_ASN_BROWSER;
         }
 
         if(calcMode == CM_MIM) {
@@ -4060,31 +4082,30 @@ void execTimerApp(uint16_t timerType) {
           }
         }
 
-        if(last_CM != calcMode) {
-          last_CM = calcMode;
+//        if(last_CM != calcMode) {
+//          last_CM = calcMode;
+//          displayShiftAndTamBuffer();
+//
+//          if(temporaryInformation != TI_SHOW_REGISTER_BIG && temporaryInformation != TI_SHOW_REGISTER_SMALL) {       //JM
+//            showSoftmenuCurrentPart();
+//          }
+//        }
+
+        if(!(screenUpdatingMode & SCRUPD_MANUAL_SHIFT_STATUS)) {
+          if(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME)) {
+            clearShiftState();
+          }
           displayShiftAndTamBuffer();
-
-          if(temporaryInformation != TI_SHOW_REGISTER_BIG && temporaryInformation != TI_SHOW_REGISTER_SMALL) {       //JM
-            showSoftmenuCurrentPart();
-          }
         }
-        else {
-          if(!(screenUpdatingMode & SCRUPD_MANUAL_SHIFT_STATUS)) {
-            if(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME)) {
-              clearShiftState();
-            }
-            displayShiftAndTamBuffer();
-          }
 
-          if(!(screenUpdatingMode & (SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME))) {
-            showSoftmenuCurrentPart();
-          }
+        if(!(screenUpdatingMode & (SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME))) {
+          showSoftmenuCurrentPart();
         }
 
         if(programRunStop == PGM_STOPPED || programRunStop == PGM_WAITING) {
           hourGlassIconEnabled = false;
         }
-        if(last_CM == calcMode || !(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR)) {
+        if(!(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR)) {
           refreshStatusBar();
         }
         #if(REAL34_WIDTH_TEST == 1)
@@ -4101,33 +4122,30 @@ void execTimerApp(uint16_t timerType) {
       return;
     }
 
-    #if defined(PC_BUILD)
+    #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
       jm_show_calc_state("refreshScreen");
-      printf(">>> refreshScreenCounter=%d calcMode=%d last_CM=%d screenUpdatingMode=%d\n", refreshScreenCounter++, calcMode, last_CM, screenUpdatingMode);    //JMYY
+      printf(">>> refreshScreenCounter=%d calcMode=%d screenUpdatingMode=%d\n", refreshScreenCounter++, calcMode, screenUpdatingMode);    //JMYY
     #endif // PC_BUILD
     //screenUpdatingMode = 0; //0 is ALL REFRESHES; ~0 is NO REFRESHES
 
-    if(calcMode!=CM_AIM && calcMode!=CM_NIM && calcMode!=CM_PLOT_STAT && calcMode!=CM_GRAPH && calcMode!=CM_LISTXY) {
-      last_CM = 254;  //JM Force NON-CM_AIM and NON-CM_NIM to refresh to be compatible to 43S
-    }
+//    if(calcMode!=CM_AIM && calcMode!=CM_NIM && calcMode!=CM_PLOT_STAT && calcMode!=CM_GRAPH && calcMode!=CM_LISTXY) {
+//      last_CM = 254;  //JM Force NON-CM_AIM and NON-CM_NIM to refresh to be compatible to 43S
+//    }
 
     switch(calcMode) {
       case CM_FLAG_BROWSER:
-        last_CM = calcMode;
         clearScreen();
         flagBrowser(NOPARAM);
         refreshStatusBar();
         break;
 
       case CM_FONT_BROWSER:
-        last_CM = calcMode;
         clearScreen();
         fontBrowser(NOPARAM);
         refreshStatusBar();
         break;
 
       case CM_REGISTER_BROWSER:
-        last_CM = calcMode;
         clearScreen();
         registerBrowser(NOPARAM);
         refreshStatusBar();
@@ -4161,8 +4179,7 @@ void execTimerApp(uint16_t timerType) {
         break;
 
       case CM_LISTXY:                     //JM
-        if(last_CM != calcMode) {
-          last_CM = calcMode;
+        if(screenUpdatingMode == SCRUPD_AUTO) {
           displayShiftAndTamBuffer();
           refreshStatusBar();
           fnStatList();
@@ -4172,13 +4189,7 @@ void execTimerApp(uint16_t timerType) {
         break;
 
       case CM_GRAPH:
-        if(last_CM != calcMode) {
-          if(last_CM == 252) {
-            last_CM--;
-          }
-          else {
-            last_CM = 252; //calcMode;
-          }
+        if(screenUpdatingMode == SCRUPD_AUTO) {
           _selectiveClearScreen();
           displayShiftAndTamBuffer();
           showSoftmenuCurrentPart();
@@ -4195,7 +4206,6 @@ void execTimerApp(uint16_t timerType) {
               refreshScreen();
             }
           }
-
           hourGlassIconEnabled = false;
           showHideHourGlass();
           refreshStatusBar();
@@ -4203,13 +4213,7 @@ void execTimerApp(uint16_t timerType) {
         break;
 
       case CM_PLOT_STAT:
-        if(last_CM != calcMode) {
-          if(last_CM == 252) {
-            last_CM--;
-          }
-          else {
-            last_CM = 252; //calcMode;
-          }
+        if(screenUpdatingMode == SCRUPD_AUTO) {
           displayShiftAndTamBuffer();
           showSoftmenuCurrentPart();
           hourGlassIconEnabled = true;

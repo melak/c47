@@ -153,6 +153,7 @@ void configCommon(uint16_t idx) {
     kbd_usr[8].gShifted = ITM_Rup;          //Replace x-rt-y with Rup
     fnSetFlag(FLAG_USER);                    //Set USER mode
     fnRefreshState();
+    screenUpdatingMode = SCRUPD_AUTO;
     refreshScreen();
   }
 
@@ -167,6 +168,8 @@ void configCommon(uint16_t idx) {
     SetSetting(ITM_CPXRES1);                 //Set CPXRES
     SetSetting(ITM_SPCRES1);                 //Set SPCRES
     setSystemFlag(FLAG_CPXj);
+    screenUpdatingMode = SCRUPD_AUTO;
+    refreshScreen();
   }
 
 
@@ -206,6 +209,7 @@ void configCommon(uint16_t idx) {
     fnDrop(0);
     fnDrop(0);
     runFunction(ITM_SQUARE);
+    screenUpdatingMode = SCRUPD_AUTO;
     refreshScreen();
   }
 #endif // !TESTSUITE_BUILD
@@ -1432,8 +1436,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     #if !defined(TESTSUITE_BUILD)
       showSoftmenuCurrentPart();
     #endif // !TESTSUITE_BUILD
-    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
-    last_CM = 253;
+    screenUpdatingMode = SCRUPD_AUTO;
     refreshScreen();
 
     fnClearFlag(FLAG_USER);
