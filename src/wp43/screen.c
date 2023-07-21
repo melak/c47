@@ -2027,6 +2027,16 @@ void execTimerApp(uint16_t timerType) {
 
     char prefix[200], lastBase[12];
 
+    #ifdef DMCP_BUILD
+      keyBuffer_pop();                                            // This causes key updates while the longer time processing register updates happen
+      if( !(regist == REGISTER_X || regist == REGISTER_Y) && 
+          !getSystemFlag(FLAG_USB) && LongPressM == RB_M1234 &&   // This section added to automatically, when in M1234 & when on battery and low processor, change to skip long processing register printing
+          !emptyKeyBuffer()) {  
+        return;
+      }
+      //if(!key_empty()) return;
+    #endif //DMCP
+
     baseModeActive = displayStackSHOIDISP != 0 && (lastIntegerBase != 0 || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_BASE);
     if(baseModeActive && getRegisterDataType(REGISTER_X) == dtShortInteger) { //JMSHOI
       if(displayStack != 4-displayStackSHOIDISP) {                            //JMSHOI

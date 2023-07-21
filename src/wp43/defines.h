@@ -24,9 +24,9 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
-#define VERSION1 "0.108.11-01"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
+#define VERSION1 "0.108.11-03"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
-//2023-07-16-0.108.11-01
+//2023-07-21-0.108.11-03 Test speed up methods
 
   #undef SAVE_SPACE_DM42
   #undef SAVE_SPACE_DM42_0
@@ -150,7 +150,7 @@
 #define BUFFER_KEY_COUNT          //dr BUFFER_SIZE has to be at least 8 to become accurate results
 #undef BUFFER_KEY_COUNT
 
-#define BUFFER_SIZE 2             //dr muss 2^n betragen (8, 16, 32, 64 ...)
+#define BUFFER_SIZE 8             //dr muss 2^n betragen (8, 16, 32, 64 ...)
 //* Longpress repeat
 #define FUNCTION_NOPTIME   800   //JM SCREEN NOP TIMEOUT FOR FIRST 15 FUNCTIONS
 
