@@ -1085,6 +1085,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnSetHP35                  (uint16_t unusedButMandatoryParameter) {}
   void fnSetC47                   (uint16_t unusedButMandatoryParameter) {}
   void fnDiskInfo                 (uint16_t unusedButMandatoryParameter) {}
+  void fnLint                     (uint16_t unusedButMandatoryParameter) {}
 
 
 
@@ -1226,7 +1227,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /*  117 */  { fnAngularModeJM,              amGrad,                      STD_RIGHT_DOUBLE_ARROW "GRAD",                 STD_RIGHT_DOUBLE_ARROW "GRAD",                 (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /*  118 */  { fnAngularModeJM,              amMultPi,                    STD_RIGHT_DOUBLE_ARROW "MUL" STD_pi,           STD_RIGHT_DOUBLE_ARROW "MUL" STD_pi,           (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /*  119 */  { fnAngularModeJM,              amRadian,                    STD_RIGHT_DOUBLE_ARROW "RAD",                  STD_RIGHT_DOUBLE_ARROW "RAD",                  (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
-/*  120 */  { itemToBeCoded,                NOPARAM,                     "0120",                                        "0120",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/*  120 */  { fnLint,                       NOPARAM,                     "LINT",                                        "LINT",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /*  121 */  { fnSetRoundingMode,            TM_VALUE,                    "RMODE",                                       "RMODE",                                       (0 << TAM_MAX_BITS) |     6, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NUMBER_8     },
 /*  122 */  { fnRmd,                        NOPARAM,                     "RMD",                                         "RMD",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_ENABLED  | PTP_NONE         },
 /*  123 */  { fnLogicalNot,                 NOPARAM,                     "NOT",                                         "NOT",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
