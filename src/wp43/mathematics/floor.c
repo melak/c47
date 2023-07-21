@@ -76,6 +76,7 @@ void fnFloor(uint16_t unusedButMandatoryParameter) {
 
 
 void floorLonI(void) {
+  convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
 }
 
 
@@ -103,5 +104,6 @@ void floorReal(void) {
     return;
   }
 
-  convertReal34ToLongIntegerRegister(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_X, DEC_ROUND_FLOOR);
+  real34ToIntegralValue(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_REAL34_DATA(REGISTER_X), DEC_ROUND_FLOOR);
+  setRegisterAngularMode(REGISTER_X, amNone);  
 }

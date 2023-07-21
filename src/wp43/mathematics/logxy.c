@@ -29,7 +29,7 @@
 #include "longIntegerType.h"
 #include "mathematics/comparisonReals.h"
 #include "mathematics/division.h"
-#include "mathematics/integerPart.h"
+#include "mathematics/integerPartLonginteger.h"
 #include "mathematics/ln.h"
 #include "mathematics/matrix.h"
 #include "mathematics/power.h"
@@ -182,7 +182,7 @@ void logxyLonILonI(void) {
     longIntegerPower(xx, rr, yy);
     fflush(stdout);
     if(longIntegerCompare(antilog, yy) == 0) {
-      ipReal();
+      lintReal();
     }
     longIntegerFree(rr);
   }

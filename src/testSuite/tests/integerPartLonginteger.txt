@@ -1,40 +1,40 @@
 ;*************************************************************
 ;*************************************************************
 ;**                                                         **
-;**                      integer part                       **
+;**                      integer part Longinteger (LINT)    **
 ;**                                                         **
 ;*************************************************************
 ;*************************************************************
 In: FL_SPCRES=0 FL_CPXRES=0 SD=0 RM=0 IM=2compl SS=4 WS=64
-Func: fnIp
+Func: fnLint
 
 
 
 ;=======================================
-; ip(Long Integer) --> Long Integer
+; lint(Long Integer) --> Long Integer
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"5"
-Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"5" RX=Real:"5"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"5" RX=LonI:"5"
 
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"-5"
-Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"-5" RX=Real:"-5"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"-5" RX=LonI:"-5"
 
 
 
 ;=======================================
-; ip(Time)
-;=======================================
-
-
-
-;=======================================
-; ip(Date)
+; lint(Time)
 ;=======================================
 
 
 
 ;=======================================
-; ip(String) --> Error24
+; lint(Date)
+;=======================================
+
+
+
+;=======================================
+; lint(String) --> Error24
 ;=======================================
 In:  FL_ASLIFT=0 RX=Stri:"String test"
 Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
@@ -42,65 +42,63 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; ip(Real Matrix)
-;=======================================
-In:  AM=RAD FL_ASLIFT=0 FL_CPXRES=0 RX=ReMa:"M2,3[1.1,-2.3,3.5,-5.7,7.8,-8.9]"
-Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ReMa:"M2,3[1.1,-2.3,3.5,-5.7,7.8,-8.9]" RX=ReMa:"M2,3[1,-2,3,-5,7,-8]"
-
-
-
-;=======================================
-; ip(Complex Matrix)
+; lint(Real Matrix)
 ;=======================================
 
 
 
 ;=======================================
-; ip(Short Integer) --> Short Integer
+; lint(Complex Matrix)
+;=======================================
+
+
+
+;=======================================
+; lint(Short Integer) --> Short Integer
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"5#7"
-Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=Real:"5"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=LonI:"5"
 
 
 
 ;=======================================
-; ip(Real) --> Long Integer
+; lint(Real) --> Long Integer
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0.0001"
-Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.0001" Rx=Real:"0"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.0001" RX=LonI:"0"
 
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"-0.0001"
-Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-0.0001" Rx=Real:"0"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-0.0001" RX=LonI:"0"
 
 In:  AM=GRAD FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"50.1"
-Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"50.1" Rx=Real:"50"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"50.1" RX=LonI:"50"
 
 In:  AM=GRAD FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"-50.1"
-Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-50.1" Rx=Real:"-50"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-50.1" RX=LonI:"-50"
 
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"89.99999"
-Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"89.99999" Rx=Real:"89"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"89.99999" RX=LonI:"89"
 
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"-89.99999"
-Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-89.99999" Rx=Real:"-89"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-89.99999" RX=LonI:"-89"
 
 In:  AM=GRAD FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"50546854216541525654542254525645458.154854"
-Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"50546854216541525654542254525645458.154854" Rx=Real:"50546854216541525654542254525645460"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"50546854216541525654542254525645458.154854" RX=LonI:"50546854216541525654542254525645460"
 
 In:  AM=GRAD FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"-50546854216541525654542254525645458.154854"
-Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-50546854216541525654542254525645458.154854" Rx=Real:"-50546854216541525654542254525645460"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-50546854216541525654542254525645458.154854" RX=LonI:"-50546854216541525654542254525645460"
 
 In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"5.32564":DMS
-Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"5.32564":DMS Rx=Real:"5"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"5.32564":DMS RX=LonI:"5"
 
 In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"-5.32564":GRAD
-Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-5.32564":GRAD Rx=Real:"-5"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-5.32564":GRAD RX=LonI:"-5"
 
 In:  AM=GRAD FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"50546854216541525654542254525645458.154854":MULTPI
-Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"50546854216541525654542254525645458.154854":MULTPI Rx=Real:"50546854216541525654542254525645460"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"50546854216541525654542254525645458.154854":MULTPI RX=LonI:"50546854216541525654542254525645460"
 
 In:  AM=GRAD FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"-50546854216541525654542254525645458.154854":GRAD
-Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-50546854216541525654542254525645458.154854":GRAD Rx=Real:"-50546854216541525654542254525645460"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-50546854216541525654542254525645458.154854":GRAD RX=LonI:"-50546854216541525654542254525645460"
 
 ; NaN
 ;In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"NaN":RAD
@@ -113,7 +111,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-50546854216541525654542254525645458.
 
 
 ;=======================================
-; ip(Complex) --> Complex
+; lint(Complex) --> Complex
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"6.2 i -7.6"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"6.2 i -7.6"
