@@ -1275,7 +1275,7 @@ void fnXEQMLOAD (uint16_t XEQM_no) {                                  //DISK to 
 
 
 void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
-  if(aimBuffer[0] != 0) {          //JM if something already in the AIMB|UFFER when X-EDIT is called, store this in the stack first
+  if(calcMode == CM_AIM && aimBuffer[0] != 0) {          //JM if something already in the AIMB|UFFER when X-EDIT is called, store this in the stack first
     setSystemFlag(FLAG_ASLIFT);
     liftStack();
     copySourceRegisterToDestRegister(REGISTER_Y, REGISTER_X);

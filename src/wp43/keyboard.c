@@ -3057,7 +3057,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       case CM_FONT_BROWSER: {
         rbr1stDigit = true;
         calcMode = previousCalcMode;
-//        screenUpdatingMode = SCRUPD_AUTO;
+        screenUpdatingMode = SCRUPD_AUTO;
         break;
       }
 

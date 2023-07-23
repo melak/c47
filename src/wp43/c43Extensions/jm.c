@@ -83,7 +83,7 @@
   void jm_show_calc_state(char comment[]) {
     #if defined(PC_BUILD_TELLTALE)
       printf("\n%s--------------------------------------------------------------------------------\n",comment);
-      printf(".  calcMode: %s   last_CM=%s  AlphaCase=%s  lastErrorCode=%d fnAsnDisplayUSER=%d\n",getCalcModeName(calcMode), getCalcModeName(last_CM), getAlphaCaseName(alphaCase), lastErrorCode, fnAsnDisplayUSER);
+      printf(".  calcMode: %s   last_calcmode=%s  AlphaCase=%s  lastErrorCode=%d fnAsnDisplayUSER=%d\n",getCalcModeName(calcMode), getCalcModeName(previousCalcMode), getAlphaCaseName(alphaCase), lastErrorCode, fnAsnDisplayUSER);
       printf(".  softmenuStack[0].softmenuId=%d       MY_ALPHA_MENU=%d    softmenu[softmenuStack[0].softmenuId].menuItem=%d -MNU_ALPHA=%d\n",softmenuStack[0].softmenuId,MY_ALPHA_MENU,softmenu[softmenuStack[0].softmenuId].menuItem, -MNU_ALPHA);
 
       printf(".  ");

@@ -3999,14 +3999,19 @@ void execTimerApp(uint16_t timerType) {
 
 
   static void _refreshNormalScreen(void) {
+        #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+          printf(">>> _refreshNormalScreen calcMode=%d previousCalcMode=%d screenUpdatingMode=%d\n", calcMode, previousCalcMode, screenUpdatingMode);    //JMYY
+        #endif // PC_BUILD &&MONITOR_CLRSCR
+
         if(calcMode == CM_MIM) {
           screenUpdatingMode = (aimBuffer[0] == 0) ? SCRUPD_AUTO : (SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);
         }
         else if(calcMode == CM_TIMER) {
           screenUpdatingMode = SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS;
         }
-        if(calcMode == previousCalcMode) {
-          screenUpdatingMode = SCRUPD_AUTO;
+        else if(calcMode == CM_EIM) {
+          screenUpdatingMode &= ~(SCRUPD_MANUAL_MENU);
+          screenUpdatingMode |= SCRUPD_MANUAL_STACK;
         }
 
         _selectiveClearScreen();

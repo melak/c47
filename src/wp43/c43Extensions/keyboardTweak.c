@@ -35,6 +35,7 @@
 #include "stack.h"
 #include "statusBar.h"
 #include "softmenus.h"
+#include "solver/equation.h"
 #include "timer.h"
 
 #include "wp43.h"
@@ -1340,9 +1341,7 @@ void fnCla(uint16_t unusedButMandatoryParameter) {
     screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
   }
   else if(calcMode == CM_EIM) {
-    while(xCursor > 0) {
-      fnKeyBackspace(0);
-    }
+    fnEqCla();
     refreshRegisterLine(NIM_REGISTER_LINE);
   }
 }
