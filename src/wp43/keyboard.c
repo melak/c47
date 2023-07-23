@@ -1883,6 +1883,7 @@ RELEASE_END:
         defineCurrentProgramFromCurrentStep();
       }
     }
+  screenUpdatingMode = SCRUPD_AUTO;
   }
 
 #if !defined(TESTSUITE_BUILD)
