@@ -74,7 +74,7 @@ uint16_t current_cursor_y = 0;
 #if !defined(TESTSUITE_BUILD)
   #define spc STD_SPACE
   #define spc1 STD_SPACE STD_SPACE_3_PER_EM
-  TO_QSPI static const char *whoStr1 = "C47 Development since 2019" spc "by" spc1
+  TO_QSPI static const char *whoStr1 = "C47 Development from 2019 to" spc __DATE__ spc "by" spc1
                                        "\n"
                                        "Ben" spc "GB," spc1
                                        "D" spc "A" spc "CA," spc1
@@ -3942,7 +3942,7 @@ void execTimerApp(uint16_t timerType) {
         #endif // PC_BUILD && MONITOR_CLRSCR
         lcd_fill_rect(0, 240 - SOFTMENU_HEIGHT * 3, SCREEN_WIDTH - 240, SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
         clear_ul(); //JMUL
-        lcd_fill_rect(0, 240 - SOFTMENU_HEIGHT * 3, 20, 5, LCD_SET_VALUE);
+        lcd_fill_rect(0, 240 - SOFTMENU_HEIGHT * 3 - 3, 20, 6, LCD_SET_VALUE);
         if(calcMode != CM_GRAPH) {
           lcd_fill_rect(SCREEN_WIDTH - 240, 240 - SOFTMENU_HEIGHT * 3, 240, SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
         }
@@ -4003,7 +4003,10 @@ void execTimerApp(uint16_t timerType) {
           printf(">>> _refreshNormalScreen calcMode=%d previousCalcMode=%d screenUpdatingMode=%d\n", calcMode, previousCalcMode, screenUpdatingMode);    //JMYY
         #endif // PC_BUILD &&MONITOR_CLRSCR
 
-        if(calcMode == CM_MIM) {
+        if(calcMode == CM_CONFIRMATION) {
+          screenUpdatingMode = SCRUPD_AUTO;
+        }
+        else if(calcMode == CM_MIM) {
           screenUpdatingMode = (aimBuffer[0] == 0) ? SCRUPD_AUTO : (SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);
         }
         else if(calcMode == CM_TIMER) {

@@ -2139,14 +2139,14 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
       }
     #endif // !INLINE_TEST
 
+    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+
     enterAsmModeIfMenuIsACatalog(id);
 
     if(id == 0) {
       displayBugScreen(bugScreenIdMustNotBe0);
       return;
     }
-
-    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
 
     if(id == -MNU_ALPHAINTL && alphaCase == AC_LOWER) { // alphaINTL
       id = -MNU_ALPHAintl;
@@ -2157,6 +2157,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
     else if(id == -MNU_Solver || id == -MNU_Sf || id == -MNU_1STDERIV || id == -MNU_2NDDERIV) {
       int32_t numberOfVars = -1;
       currentSolverStatus = SOLVER_STATUS_USES_FORMULA | SOLVER_STATUS_INTERACTIVE;
+      currentMvarLabel = INVALID_VARIABLE;
       switch(-id) {
         case MNU_Solver: {
           currentSolverStatus |= SOLVER_STATUS_EQUATION_SOLVER;

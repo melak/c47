@@ -1370,6 +1370,7 @@ bool_t allowShiftsToClearError = false;
 //    }
 
     if(result != ITM_SNAP) {
+      screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       resetShiftState();
     }
 
@@ -1508,6 +1509,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
     void btnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
       nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
 
+      int16_t item;
       int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
       if(checkNumber((uint8_t)keyCode)) {
         return;
@@ -1541,7 +1543,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       bool_t gg = lastshiftG;
       lastshiftF = shiftF;
       lastshiftG = shiftG;
-      int16_t item = determineItem((char *)data);
+      item = determineItem((char *)data);
       if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
         if((item == ITM_RS || item == ITM_EXIT1) && !getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
           programRunStop = PGM_WAITING;
@@ -1579,7 +1581,6 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         #endif //PC_BUILD_TELLTALE
 
         if(!keyActionProcessed) {
-
           showFunctionName(item, 1000, funcParam);// "SF:B"); // 1000ms = 1s
         }
       }
@@ -1662,14 +1663,12 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
   #if defined(DMCP_BUILD)
     void btnPressed(void *data) {
       nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
+      
       int16_t item;
       int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
       if(checkNumber((uint8_t)keyCode)) {
         return;
       }
-
-      bool_t f = shiftF;
-      bool_t g = shiftG;
 
       asnKey[0] = ((uint8_t *)data)[0];
       asnKey[1] = ((uint8_t *)data)[1];
@@ -1687,6 +1686,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 //        item = previousItem;
 //      }
 //      else {
+
+        bool_t f = shiftF;
+        bool_t g = shiftG;
         lastshiftF = shiftF;
         lastshiftG = shiftG;
         item = determineItem((char *)data);
@@ -1710,7 +1712,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
       showFunctionNameItem = 0;
       if(item != ITM_NOP && item != ITM_NULL) {
+
         processKeyAction(item);
+        
         if(!keyActionProcessed) {
           showFunctionName(item, 1000, funcParam); //"SF:C"); // 1000ms = 1s
         }
@@ -1949,9 +1953,10 @@ RELEASE_END:
         if(!keyActionProcessed) {    //JMvv
           addItemToBuffer(ITM_UP_ARROW);    //Let the arrows produce arrow up and arrow down in ALPHA mode
         }                            //JM^^
-        if(currentSoftmenuScrolls() || calcMode != CM_NORMAL) {
+        if(currentSoftmenuScrolls() || calcMode != CM_NORMAL || temporaryInformation != TI_NO_INFO) {
           refreshScreen();
         }
+        temporaryInformation = TI_NO_INFO;
         keyActionProcessed = true;
         #if(REAL34_WIDTH_TEST == 1)
           if(++largeur > SCREEN_WIDTH) {
@@ -1969,9 +1974,10 @@ RELEASE_END:
         if(!keyActionProcessed){     //JM
            addItemToBuffer(ITM_DOWN_ARROW);    //Let the arrows produce arrow up and arrow down in ALPHA mode
         }                            //JM^^
-        if(currentSoftmenuScrolls() || calcMode != CM_NORMAL) {
+        if(currentSoftmenuScrolls() || calcMode != CM_NORMAL  || temporaryInformation != TI_NO_INFO) {
           refreshScreen();
         }
+        temporaryInformation = TI_NO_INFO;
         keyActionProcessed = true;
         #if(REAL34_WIDTH_TEST == 1)
           if(--largeur < 20) {
@@ -2657,10 +2663,10 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
           undo();
         }
         else {
-          int16_t len = stringByteLength(aimBuffer) + 1;
+          int16_t lenInBytes = stringByteLength(aimBuffer) + 1;
 
-          reallocateRegister(REGISTER_X, dtString, TO_BLOCKS(len), amNone);
-          xcopy(REGISTER_STRING_DATA(REGISTER_X), aimBuffer, len);
+          reallocateRegister(REGISTER_X, dtString, TO_BLOCKS(lenInBytes), amNone);
+          xcopy(REGISTER_STRING_DATA(REGISTER_X), aimBuffer, lenInBytes);
 
           if(!eRPN) {                                  //PHM eRPN 2021-07
             setSystemFlag(FLAG_ASLIFT);
@@ -2838,7 +2844,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
             }
 
         default: {
-            if(catalog) {
+            if(catalog && (catalog != CATALOG_MVAR || !tam.mode)) {
                 if(lastErrorCode != 0) {
                     lastErrorCode = 0;
                 }
@@ -2904,9 +2910,18 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       case CM_NORMAL: {
         if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_SMALL || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_VIEW) {
           temporaryInformation = TI_NO_INFO;
+          screenUpdatingMode = SCRUPD_AUTO;
         }
-        else if(lastErrorCode != 0) {
+        else
+        if(temporaryInformation == TI_VERSION || temporaryInformation == TI_WHO || temporaryInformation == TI_BACKUP_RESTORED) {
+          temporaryInformation = TI_NO_INFO;
           lastErrorCode = 0;
+          screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
+        }
+        else
+        if(lastErrorCode != 0) {
+          lastErrorCode = 0;
+          screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
         }
         else {
           if(softmenuStack[0].softmenuId <= 1) { // MyMenu or MyAlpha is displayed
@@ -3146,15 +3161,21 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       default: {
         sprintf(errorMessage, commonBugScreenMessages[bugMsgCalcModeWhileProcKey], "fnKeyExit", calcMode, "EXIT");
         displayBugScreen(errorMessage);
+      }
     }
 
-    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU; //SCRUPD_AUTO;//JMvvv Show effect of Exit immediately
-    refreshScreen();                  //JM^^^
+    if(temporaryInformation != TI_NO_INFO) {
+      screenUpdatingMode = SCRUPD_AUTO;
+    } else {
+      screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
     }
+    refreshScreen();
     return;
 
 undo_disabled:
     temporaryInformation = TI_UNDO_DISABLED;
+    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+//    refreshScreen();
     return;
   #endif // !TESTSUITE_BUILD
 }
@@ -3269,12 +3290,6 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
     uint8_t *nextStep;
 #endif //SAVE_SPACE_DM42_10
 
-    if(temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) {
-      temporaryInformation = TI_NO_INFO;
-      keyActionProcessed = true;
-      return;
-    }
-
     if(tam.mode) {
       tamProcessInput(ITM_BACKSPACE);
       return;
@@ -3282,11 +3297,27 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 
     switch(calcMode) {
       case CM_NORMAL: {
+        if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_SMALL || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_VIEW) {
+          temporaryInformation = TI_NO_INFO;
+          keyActionProcessed = true;
+          screenUpdatingMode = SCRUPD_AUTO;
+          return;
+        }
+        else
+        if(temporaryInformation == TI_VERSION || temporaryInformation == TI_WHO || temporaryInformation == TI_BACKUP_RESTORED) {
+          temporaryInformation = TI_NO_INFO;
+          keyActionProcessed = true;
+          lastErrorCode = 0;
+          screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
+          return;
+        }
+        else
         if(lastErrorCode != 0) {
           lastErrorCode = 0;
+          screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
+          return;
         }
         else {
-//          runFunction(ITM_CLX);          //JM old
           showFunctionName(ITM_CLX, 1000, ""); //JM 1000ms = 1s
         }
         break;
@@ -3431,6 +3462,10 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
         }
         if(getSystemFlag(FLAG_ALPHA)) {
           pemAlpha(ITM_BACKSPACE);
+          if(aimBuffer[0] == 0 && getSystemFlag(FLAG_ALPHA)) {
+            // close if no characters left
+            pemAlpha(ITM_BACKSPACE);
+          }
           if(aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA)) {
             if(currentLocalStepNumber > 1) {
               --currentLocalStepNumber;
