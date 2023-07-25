@@ -172,7 +172,7 @@ void resetShiftState(void) {
     shiftG = false;
     screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
     showShiftState();
-    refreshScreen();
+    refreshScreen(100);
   }                                                                             //^^
   refreshModeGui();                                                             //JM refreshModeGui
 }

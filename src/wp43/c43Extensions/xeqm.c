@@ -1124,14 +1124,14 @@ void fnXEQMENU(uint16_t XEQM_no) {
     print_linestr("Loading XEQM program file:", true);
 
     screenUpdatingMode = SCRUPD_AUTO | SCRUPD_ONE_TIME_FLAGS;
-    refreshScreen();
+    refreshScreen(61);
     clearScreen_old(!clrStatusBar, clrRegisterLines, clrSoftkeys);
 
     char line[XEQ_STR_LENGTH_LONG];
     XEQMENU_Selection( XEQM_no, line, EXEC, !SCAN);
 
     screenUpdatingMode = SCRUPD_AUTO;
-    refreshScreen();
+    refreshScreen(62);
 
 
     //calcMode = CM_BUG_ON_SCREEN;
@@ -1363,7 +1363,7 @@ void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
     }
   }
   screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
-  refreshScreen();
+  refreshScreen(63);
 }
 
 

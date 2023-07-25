@@ -175,7 +175,7 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
     }
 
     calcModeNormal();
-    refreshScreen();
+    refreshScreen(41);
     fnKeyExit(0);           //Call fnkeyExit to ensure the correct home screen is brought up, if HOME is selected.
     popSoftmenu();
   #endif // !TESTSUITE_BUILD
@@ -1826,7 +1826,7 @@ void fnRESET_MyM(void) {
       assignToMyMenu_(12 + fn - 1);
     }
     jm_BASE_SCREEN = true;                                           //JM Menu system default (removed from reset_jm_defaults)
-    refreshScreen();
+    refreshScreen(42);
   #endif // !TESTSUITE_BUILD
 }
 
@@ -1844,7 +1844,7 @@ void fnRESET_Mya(void){
     }
     itemToBeAssigned = -MNU_ALPHA;
     assignToMyAlpha_(5);
-    refreshScreen();
+    refreshScreen(43);
   #endif // !TESTSUITE_BUILD
 }
 

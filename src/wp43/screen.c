@@ -1665,7 +1665,7 @@ void execTimerApp(uint16_t timerType) {
     if((mode != timed) || (((new_time - old_time) & 0xFE00) != 0 )) { //0x0200 || 0.512 second refresh interval
       old_time = new_time;
 
-      refreshScreen();   //to update stack
+      refreshScreen(80);   //to update stack
       //lcd_refresh();
       fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, JM_TO_KB_ACTV); //PROGRAM_KB_ACTV
       sprintf(tmps, "%s %6d      ",txt,loop);
@@ -1958,6 +1958,7 @@ void execTimerApp(uint16_t timerType) {
     if(calcMode == CM_MIM && matrixIndex == REGISTER_X) {
       cachedDisplayStack += 1;
     }
+  if (temporaryInformation == TI_VIEW) temporaryInformation = TI_SHOW_REGISTER_SMALL;
   }
 
 
@@ -2470,7 +2471,7 @@ void execTimerApp(uint16_t timerType) {
             if(distModeActive) {
               lcd_fill_rect(0, ii - 2, SCREEN_WIDTH, 1, 0xFF);
               if(displayStack != origDisplayStack) {
-                refreshScreen();                                //recurse into refreshScreen
+                refreshScreen(81);                                //recurse into refreshScreen
               }
             }
           }
@@ -3225,10 +3226,6 @@ void execTimerApp(uint16_t timerType) {
             }
           }
 
-          else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
-            viewRegName(prefix, &prefixWidth);
-          }
-
           else if(temporaryInformation == TI_STR && regist == REGISTER_X) {
                 strcpy(prefix," ");
                 strcat(prefix, errorMessage);
@@ -3373,10 +3370,6 @@ void execTimerApp(uint16_t timerType) {
             }
           }
 
-          else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
-              viewRegName(prefix, &prefixWidth);
-          }
-
           else if(temporaryInformation == TI_ABC) {                             //JM EE \/
             if(regist == REGISTER_X) {
               strcpy(prefix, "c" STD_SPACE_FIGURE ":");
@@ -3446,9 +3439,6 @@ void execTimerApp(uint16_t timerType) {
         }
 
         else if(getRegisterDataType(regist) == dtString) {
-          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
-            viewRegName(prefix, &prefixWidth);
-          }
           if(prefixWidth > 0) {
             showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
           }
@@ -3538,24 +3528,7 @@ void execTimerApp(uint16_t timerType) {
           }
         }
 
-
-        //original
-        //else if(getRegisterDataType(regist) == dtShortInteger) {
-        //  if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
-        //    viewRegName(prefix, &prefixWidth);
-        //  }
-        //  shortIntegerToDisplayString(regist, tmpString, true);
-        //  if(prefixWidth > 0) {
-        //    showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
-        //  }
-        //  w = stringWidth(tmpString, fontForShortInteger, false, true);
-        //  showString(tmpString, fontForShortInteger, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? min(prefixWidth, SCREEN_WIDTH - w) : SCREEN_WIDTH - w, baseY + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
-        //}
-
         else if(getRegisterDataType(regist) == dtShortInteger) {
-          //if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
-          //  viewRegName(prefix, &prefixWidth);
-          //}
           shortIntegerToDisplayString(regist, tmpString, true);
           showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0) - (fontForShortInteger == &numericFont && temporaryInformation == TI_NO_INFO && checkHP ? 50:0), vmNormal, false, true);
 
@@ -3631,11 +3604,8 @@ void execTimerApp(uint16_t timerType) {
             if(regist == REGISTER_X) {
               showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE + TEMPORARY_INFO_OFFSET - REGISTER_LINE_HEIGHT*(regist - REGISTER_X), vmNormal, true, true);
             }
-          }                                                               //JMms ^^
+          }     //                                                          //JMms ^^
 
-          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
-            viewRegName(prefix, &prefixWidth);
-          }
           longIntegerRegisterToDisplayString(regist, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - prefixWidth, 50, true);          //JMms added prefix   //JM added last parameter: Allow LARGELI
 
           if(temporaryInformation == TI_DAY_OF_WEEK) {
@@ -3699,9 +3669,6 @@ void execTimerApp(uint16_t timerType) {
         }
 
         else if(getRegisterDataType(regist) == dtTime) {
-          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
-            viewRegName(prefix, &prefixWidth);
-          }
           timeToDisplayString(regist, tmpString, false);
           w = stringWidth(tmpString, &numericFont, false, true);
           if(prefixWidth > 0) {
@@ -3717,9 +3684,6 @@ void execTimerApp(uint16_t timerType) {
               showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
             }
           }
-          else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
-            viewRegName(prefix, &prefixWidth);
-          }
 
           dateToDisplayString(regist, tmpString);
           w = stringWidth(tmpString, &numericFont, false, true);
@@ -3730,9 +3694,6 @@ void execTimerApp(uint16_t timerType) {
         }
 
         else if(getRegisterDataType(regist) == dtConfig) {
-          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
-            viewRegName(prefix, &prefixWidth);
-          }
           xcopy(tmpString, "Configuration data", 19);
           w = stringWidth(tmpString, &numericFont, false, true);
           lineWidth = w;
@@ -3747,9 +3708,6 @@ void execTimerApp(uint16_t timerType) {
             real34Matrix_t matrix;
             prefixWidth = 0; prefix[0] = 0;
             linkToRealMatrixRegister(regist, &matrix);
-            if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
-              viewRegName(prefix, &prefixWidth);
-            }
             showRealMatrix(&matrix, prefixWidth);
             if(lastErrorCode != 0) {
               refreshRegisterLine(errorMessageRegisterLine);
@@ -3777,9 +3735,6 @@ void execTimerApp(uint16_t timerType) {
           if((origRegist == REGISTER_X && calcMode != CM_MIM) || (temporaryInformation == TI_VIEW && origRegist == REGISTER_T)) {
             complex34Matrix_t matrix;
             linkToComplexMatrixRegister(regist, &matrix);
-            if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
-              viewRegName(prefix, &prefixWidth);
-            }
             showComplexMatrix(&matrix, prefixWidth);
             if(lastErrorCode != 0) {
               refreshRegisterLine(errorMessageRegisterLine);
@@ -4003,6 +3958,10 @@ void execTimerApp(uint16_t timerType) {
           printf(">>> _refreshNormalScreen calcMode=%d previousCalcMode=%d screenUpdatingMode=%d\n", calcMode, previousCalcMode, screenUpdatingMode);    //JMYY
         #endif // PC_BUILD &&MONITOR_CLRSCR
 
+        if(calcMode == CM_NORMAL && temporaryInformation == TI_SHOWNOTHING) {
+          return;
+        }
+
         if(calcMode == CM_CONFIRMATION) {
           screenUpdatingMode = SCRUPD_AUTO;
         }
@@ -4016,6 +3975,15 @@ void execTimerApp(uint16_t timerType) {
           screenUpdatingMode &= ~(SCRUPD_MANUAL_MENU);
           screenUpdatingMode |= SCRUPD_MANUAL_STACK;
         }
+
+//Experimental
+else if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL || temporaryInformation == TI_SHOWNOTHING) {
+  screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK);
+}
+//TEMPORARY - MUST BE REMOVED. INCORRECT
+  //      if(calcMode == previousCalcMode) {
+  //        screenUpdatingMode = SCRUPD_AUTO;
+  //      }
 
         _selectiveClearScreen();
         //printf("##> AAAA screenUpdatingMode  MANUAL STACK=%u SKIP MENU ONCE=%u \n",screenUpdatingMode & SCRUPD_MANUAL_STACK, screenUpdatingMode & SCRUPD_SKIP_STACK_ONE_TIME);
@@ -4135,20 +4103,21 @@ void execTimerApp(uint16_t timerType) {
 
 
   int16_t refreshScreenCounter = 0;        //JM
-  void refreshScreen(void) {
+  void refreshScreen(uint8_t source) {
     if(running_program_jm) { //JM TEST PROGRAM!
       return;
     }
 
     #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
       jm_show_calc_state("refreshScreen");
-      printf(">>> refreshScreenCounter=%d calcMode=%d screenUpdatingMode=%d\n", refreshScreenCounter++, calcMode, screenUpdatingMode);    //JMYY
+      printf(">>> source=%u refreshScreenCounter=%d calcMode=%d screenUpdatingMode=%d temporaryInformation=%u\n", source, refreshScreenCounter++, calcMode, screenUpdatingMode, temporaryInformation);    //JMYY
     #endif // PC_BUILD
     //screenUpdatingMode = 0; //0 is ALL REFRESHES; ~0 is NO REFRESHES
 
 //    if(calcMode!=CM_AIM && calcMode!=CM_NIM && calcMode!=CM_PLOT_STAT && calcMode!=CM_GRAPH && calcMode!=CM_LISTXY) {
 //      last_CM = 254;  //JM Force NON-CM_AIM and NON-CM_NIM to refresh to be compatible to 43S
 //    }
+
 
     switch(calcMode) {
       case CM_FLAG_BROWSER:
@@ -4221,7 +4190,7 @@ void execTimerApp(uint16_t timerType) {
             if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_GRAPH) {
               popSoftmenu();
               calcMode = CM_NORMAL;
-              refreshScreen();
+              refreshScreen(82);
             }
           }
           hourGlassIconEnabled = false;
@@ -4241,7 +4210,7 @@ void execTimerApp(uint16_t timerType) {
             if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_GRAPH) {
               popSoftmenu();
               calcMode = CM_NORMAL;
-              refreshScreen();
+              refreshScreen(83);
             }
           }
           graphDrawLRline(plotSelection);
@@ -4249,7 +4218,7 @@ void execTimerApp(uint16_t timerType) {
             if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HPLOT || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HPLOT || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_STAT) {
               popSoftmenu();
               calcMode = CM_NORMAL;
-              refreshScreen();
+              refreshScreen(84);
             }
           }
           hourGlassIconEnabled = false;

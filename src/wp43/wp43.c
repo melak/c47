@@ -206,7 +206,7 @@ int16_t                longpressDelayedkey2;         //JM
 int16_t                longpressDelayedkey3;         //JM
 int16_t                T_cursorPos;                  //JMCURSOR
 int16_t                displayAIMbufferoffset;       //JMCURSOR
-int16_t                SHOWregis;                    //JMSHOW
+uint16_t               showRegis;                    //JMSHOW
 int16_t                ListXYposition;               //JMSHOW
 int16_t                mm_MNU_HOME;                  //JM
 int16_t                mm_MNU_ALPHA;                 //JM
@@ -458,7 +458,7 @@ bool_t temporaryFlagRect;
   lcd_clear_buf();
 #endif // NOKEYMAP                                           //^^
     doFnReset(CONFIRMED, loadAutoSav);
-    refreshScreen();
+    refreshScreen(71);
 
   #if defined(JMSHOWCODES)                                        //JM test
     telltale_lastkey = 0;                                   //JM test
@@ -727,7 +727,7 @@ bool_t temporaryFlagRect;
             screenUpdatingMode = SCRUPD_AUTO;
             runFunction(ITM_RS);
           }
-          refreshScreen();
+          refreshScreen(72);
         }
       }
 
@@ -911,7 +911,7 @@ bool_t temporaryFlagRect;
           btnReleased(charKey);
           if(calcMode == CM_PEM && shiftF && ((charKey[0] == '1' && charKey[1] == '7') || (charKey[0] == '2' && charKey[1] == '2'))) {    //JM C43
             shiftF = false;
-            refreshScreen();
+            refreshScreen(73);
           }
         }
 //      keyAutoRepeat = 0;
@@ -929,7 +929,7 @@ bool_t temporaryFlagRect;
         keyClick(2);
           if(calcMode == CM_PEM && shiftF && ((charKey[0] == '1' && charKey[1] == '7') || (charKey[0] == '2' && charKey[1] == '2'))) {   //JM C43
             shiftF = false;
-            refreshScreen();
+            refreshScreen(74);
           }
         //lcd_refresh_dma();
       }

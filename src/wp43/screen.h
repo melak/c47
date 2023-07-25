@@ -173,7 +173,7 @@ void       fnAGraph                           (uint16_t regist);
   void     force_refresh(uint8_t mode);                                                          //JM SCREEN
   void     printHalfSecUpdate_Integer(uint8_t mode, char * txt, int loop);
 
-  void     refreshScreen                      (void);
+  void     refreshScreen                      (uint8_t source);
   //void     invertPixel                        (uint32_t x, uint32_t y);
   //int      getPixel                           (uint32_t x, uint32_t y);
   /**

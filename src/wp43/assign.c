@@ -547,7 +547,7 @@ void assignToMyMenu(uint16_t position) {
     _assignItem(&userMenuItems[position]);
   }
   cachedDynamicMenu = 0;
-  refreshScreen();
+  refreshScreen(20);
 }
 
 
@@ -556,7 +556,7 @@ void assignToMyAlpha(uint16_t position) {
     _assignItem(&userAlphaItems[position]);
   }
   cachedDynamicMenu = 0;
-  refreshScreen();
+  refreshScreen(21);
 }
 
 
@@ -565,7 +565,7 @@ void assignToUserMenu(uint16_t position) {
     _assignItem(&userMenus[currentUserMenu].menuItem[position]);
   }
   cachedDynamicMenu = 0;
-  refreshScreen();
+  refreshScreen(22);
 }
 
 
@@ -948,7 +948,7 @@ void assignGetName2(void) {
 
   calcMode = previousCalcMode;
   shiftF = shiftG = false;
-  refreshScreen();
+  refreshScreen(23);
 
   if(!result) {
     displayCalcErrorMessage(ERROR_CANNOT_ASSIGN_HERE, ERR_REGISTER_LINE, NIM_REGISTER_LINE);

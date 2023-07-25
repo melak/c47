@@ -119,7 +119,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
 
     if(calcMode == CM_CONFIRMATION) {
       calcMode = previousCalcMode;
-      refreshScreen();
+      refreshScreen(90);
     }
 
     printf("Begin of calc's backup\n");
@@ -374,7 +374,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
     save(&fnXEQMENUpos,                       sizeof(fnXEQMENUpos));
     save(&indexOfItemsXEQM,                   sizeof(indexOfItemsXEQM));
     save(&T_cursorPos,                        sizeof(T_cursorPos));               //JM ^^
-    save(&SHOWregis,                          sizeof(SHOWregis));                 //JM ^^
+    save(&showRegis,                          sizeof(showRegis));                 //JM ^^
     save(&mm_MNU_HOME,                        sizeof(mm_MNU_HOME));               //JM ^^
     save(&mm_MNU_ALPHA,                       sizeof(mm_MNU_ALPHA));              //JM ^^
     save(&displayStackSHOIDISP,               sizeof(displayStackSHOIDISP));      //JM ^^
@@ -423,7 +423,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
       }
       else {
         printf("Cannot restore calc's memory from file backup.bin! Performing RESET\n");
-        refreshScreen();
+        refreshScreen(91);
         return;
       }
     }
@@ -435,7 +435,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
     restore(&ramSize,                            sizeof(ramSize));
     if(backupVersion > BACKUP_VERSION || backupVersion < OLDEST_COMPATIBLE_BACKUP_VERSION || ramSize != RAM_SIZE) {
       ioFileClose();
-      refreshScreen();
+      refreshScreen(92);
 
       printf("Cannot restore calc's memory from file backup.bin! File backup.bin is from incompatible backup version.\n");
       printf("               Backup file      Program\n");
@@ -701,7 +701,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
       restore(&fnXEQMENUpos,                       sizeof(fnXEQMENUpos));
       restore(&indexOfItemsXEQM,                   sizeof(indexOfItemsXEQM));
       restore(&T_cursorPos,                        sizeof(T_cursorPos));              //JM ^^
-      restore(&SHOWregis,                          sizeof(SHOWregis));                //JM ^^
+      restore(&showRegis,                          sizeof(showRegis));                //JM ^^
       restore(&mm_MNU_HOME,                        sizeof(mm_MNU_HOME));              //JM ^^
       restore(&mm_MNU_ALPHA,                       sizeof(mm_MNU_ALPHA));             //JM ^^
       restore(&displayStackSHOIDISP,               sizeof(displayStackSHOIDISP));     //JM ^^
@@ -824,7 +824,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
         }
 
       updateMatrixHeightCache();
-      refreshScreen();
+      refreshScreen(93);
     }
   }
 #endif // PC_BUILD
@@ -2651,14 +2651,14 @@ void fnLoad(uint16_t loadMode) {
   }
   fnClearFlag(FLAG_USER);
   screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
-  refreshScreen();
+  refreshScreen(94);
 }
 
 void fnLoadAuto(void) {
   doLoad(LM_ALL, 0, 0, 0, autoLoad);
   fnClearFlag(FLAG_USER);
   screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
-  refreshScreen();
+  refreshScreen(95);
 }
 
 #undef BACKUP

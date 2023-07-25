@@ -378,7 +378,7 @@ void fnAddTimerApp(uint16_t unusedButMandatoryParameter) {
   realToReal34(&tmp, REGISTER_REAL34_DATA(REGISTER_X));
   fnSigma(1);
 
-  refreshScreen();
+  refreshScreen(30);
   #endif // !TESTSUITE_BUILD
 }
 
@@ -583,7 +583,7 @@ void fnPlusTimerApp(void) {
     fnTimerStart(TO_TIMER_APP, TO_TIMER_APP, TIMER_APP_PERIOD);
   }
 
-  refreshScreen();
+  refreshScreen(31);
   #endif // !TESTSUITE_BUILD
 }
 

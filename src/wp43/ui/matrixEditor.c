@@ -852,6 +852,8 @@ void mimRestore(void) {
   }
 }
 
+#define NUMERIC_FONT_HEIGHT_ (NUMERIC_FONT_HEIGHT - 4)        // reduce font spacing to easily bind the matrix lines without any complicated pixel manipulation 
+#define STANDARD_FONT_HEIGHT_ (STANDARD_FONT_HEIGHT - 2)      // reduce font spacing to easily bind the matrix lines without any complicated pixel manipulation
 
 void showRealMatrix(const real34Matrix_t *matrix, int16_t prefixWidth) {
   int rows = matrix->header.matrixRows;
@@ -860,7 +862,7 @@ void showRealMatrix(const real34Matrix_t *matrix, int16_t prefixWidth) {
   int16_t X_POS = 0;
   int16_t totalWidth = 0, width = 0;
   const font_t *font;
-  int16_t fontHeight = NUMERIC_FONT_HEIGHT;
+  int16_t fontHeight = NUMERIC_FONT_HEIGHT_;
   int16_t maxWidth = MATRIX_LINE_WIDTH - prefixWidth;
   int16_t colWidth[MATRIX_MAX_COLUMNS] = {}, rPadWidth[MATRIX_MAX_ROWS * MATRIX_MAX_COLUMNS] = {};
   const bool_t forEditor = matrix == &openMatrixMIMPointer.realMatrix;
@@ -869,7 +871,7 @@ void showRealMatrix(const real34Matrix_t *matrix, int16_t prefixWidth) {
   const uint16_t tmpDisplayFormat = displayFormat;
   const uint8_t tmpDisplayFormatDigits = displayFormatDigits;
 
-  Y_POS = Y_POSITION_OF_REGISTER_X_LINE - NUMERIC_FONT_HEIGHT;
+  Y_POS = Y_POSITION_OF_REGISTER_X_LINE - NUMERIC_FONT_HEIGHT_;
 
   bool_t colVector = false;
   if(cols == 1 && rows > 1) {
@@ -893,8 +895,8 @@ void showRealMatrix(const real34Matrix_t *matrix, int16_t prefixWidth) {
   if(rows >= (forEditor ? 4 : 5)){
 smallFont:
     font = &standardFont;
-    fontHeight = STANDARD_FONT_HEIGHT;
-    Y_POS = Y_POSITION_OF_REGISTER_X_LINE - STANDARD_FONT_HEIGHT + 2;
+    fontHeight = STANDARD_FONT_HEIGHT_;
+    Y_POS = Y_POSITION_OF_REGISTER_X_LINE - STANDARD_FONT_HEIGHT_ + 2;
     //maxWidth = MATRIX_LINE_WIDTH_SMALL * 4 - 20;
   }
 
@@ -909,7 +911,7 @@ smallFont:
       Y_POS = Y_POSITION_OF_REGISTER_T_LINE - REGISTER_LINE_HEIGHT + 1 + maxRows * fontHeight;
     }
     if(prefixWidth > 0 && font == &standardFont) {
-      Y_POS += (maxRows == 1 ? STANDARD_FONT_HEIGHT : REGISTER_LINE_HEIGHT - STANDARD_FONT_HEIGHT);
+      Y_POS += (maxRows == 1 ? STANDARD_FONT_HEIGHT_ : REGISTER_LINE_HEIGHT - STANDARD_FONT_HEIGHT_);
     }
 
     int16_t baseWidth = (leftEllipsis ? stringWidth(STD_ELLIPSIS " ", font, true, true) : 0) + (rightEllipsis ? stringWidth(" " STD_ELLIPSIS, font, true, true) : 0);
@@ -1139,7 +1141,7 @@ void showComplexMatrix(const complex34Matrix_t *matrix, int16_t prefixWidth) {
   int16_t X_POS = 0;
   int16_t totalWidth = 0, width = 0;
   const font_t *font;
-  int16_t fontHeight = NUMERIC_FONT_HEIGHT;
+  int16_t fontHeight = NUMERIC_FONT_HEIGHT_;
   int16_t maxWidth = MATRIX_LINE_WIDTH - prefixWidth;
   int16_t colWidth[MATRIX_MAX_COLUMNS] = {}, colWidth_r[MATRIX_MAX_COLUMNS] = {}, colWidth_i[MATRIX_MAX_COLUMNS] = {};
   int16_t rPadWidth_r[MATRIX_MAX_ROWS * MATRIX_MAX_COLUMNS] = {}, rPadWidth_i[MATRIX_MAX_ROWS * MATRIX_MAX_COLUMNS] = {};
@@ -1151,7 +1153,7 @@ void showComplexMatrix(const complex34Matrix_t *matrix, int16_t prefixWidth) {
   const uint8_t tmpDisplayFormatDigits = displayFormatDigits;
   const bool_t tmpMultX = getSystemFlag(FLAG_MULTx);
 
-  Y_POS = Y_POSITION_OF_REGISTER_X_LINE - NUMERIC_FONT_HEIGHT;
+  Y_POS = Y_POSITION_OF_REGISTER_X_LINE - NUMERIC_FONT_HEIGHT_;
 
   bool_t colVector = false;
   if(cols == 1 && rows > 1) {
@@ -1175,8 +1177,8 @@ void showComplexMatrix(const complex34Matrix_t *matrix, int16_t prefixWidth) {
   if(rows >= (forEditor ? 4 : 5)) {
 smallFont:
     font = &standardFont;
-    fontHeight = STANDARD_FONT_HEIGHT;
-    Y_POS = Y_POSITION_OF_REGISTER_X_LINE - STANDARD_FONT_HEIGHT + 2;
+    fontHeight = STANDARD_FONT_HEIGHT_;
+    Y_POS = Y_POSITION_OF_REGISTER_X_LINE - STANDARD_FONT_HEIGHT_ + 2;
     //maxWidth = MATRIX_LINE_WIDTH_SMALL * 4 - 20;
   }
 
@@ -1191,7 +1193,7 @@ smallFont:
       Y_POS = Y_POSITION_OF_REGISTER_T_LINE - REGISTER_LINE_HEIGHT + 1 + maxRows * fontHeight;
     }
     if(prefixWidth > 0 && font == &standardFont) {
-      Y_POS += (maxRows == 1 ? STANDARD_FONT_HEIGHT : REGISTER_LINE_HEIGHT - STANDARD_FONT_HEIGHT);
+      Y_POS += (maxRows == 1 ? STANDARD_FONT_HEIGHT_ : REGISTER_LINE_HEIGHT - STANDARD_FONT_HEIGHT_);
     }
 
     int16_t baseWidth = (leftEllipsis ? stringWidth(STD_ELLIPSIS " ", font, true, true) : 0) + (rightEllipsis ? stringWidth(STD_ELLIPSIS, font, true, true) : 0);

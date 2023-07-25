@@ -46,7 +46,7 @@ void fnInput(uint16_t regist) {
     programRunStop = PGM_WAITING;
     currentInputVariable = regist;
     fnRecall(regist);
-    refreshScreen();
+    refreshScreen(10);
     #if defined(DMCP_BUILD)
       lcd_refresh();
     #else // !DMCP_BUILD
@@ -74,7 +74,7 @@ void fnPause(uint16_t duration) {
     }
     programRunStop = PGM_PAUSED;
     if(previousProgramRunStop != PGM_RUNNING) {
-      refreshScreen();
+      refreshScreen(11);
     }
     #if defined(DMCP_BUILD)
       lcd_refresh();
@@ -97,7 +97,7 @@ void fnPause(uint16_t duration) {
       refreshLcd(NULL);
       for(uint16_t i = 0; i < duration && (programRunStop == PGM_PAUSED || programRunStop == PGM_KEY_PRESSED_WHILE_PAUSED); ++i) {
         if(previousProgramRunStop != PGM_RUNNING) {
-          refreshScreen();
+          refreshScreen(12);
           refreshLcd(NULL);
         }
         gtk_main_iteration_do(FALSE);
@@ -109,7 +109,7 @@ void fnPause(uint16_t duration) {
     #endif // DMCP_BUILD
     programRunStop = previousProgramRunStop;
     if(programRunStop != PGM_RUNNING) {
-      refreshScreen();
+      refreshScreen(13);
       #if defined(DMCP_BUILD)
         lcd_refresh();
       #else // !DMCP_BUILD

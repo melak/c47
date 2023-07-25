@@ -230,7 +230,7 @@ void fnExecute(uint16_t label) {
       #if !defined(TESTSUITE_BUILD)
         if(tam.mode) {
           tamLeaveMode();
-          refreshScreen();
+          refreshScreen(2);
         }
       #endif // TESTSUITE_BUILD
       runProgram(false, INVALID_VARIABLE);
@@ -247,7 +247,7 @@ void fnReturn(uint16_t skip) {
   /* Cancel INPUT */
   if(currentInputVariable != INVALID_VARIABLE) {
     currentInputVariable = INVALID_VARIABLE;
-    refreshScreen();
+    refreshScreen(3);
     #if defined(DMCP_BUILD)
       lcd_refresh();
     #else // !DMCP_BUILD
@@ -849,7 +849,7 @@ void runProgram(bool_t singleStep, uint16_t menuLabel) {
         key = convertKeyCode(key);
         if(key == 36 || key == 33) {  //JM
           programRunStop = PGM_WAITING;
-          refreshScreen();
+          refreshScreen(1);
           lcd_refresh();
           fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, PROGRAM_KB_ACTV);
           wait_for_key_release(0);

@@ -154,7 +154,7 @@ void configCommon(uint16_t idx) {
     fnSetFlag(FLAG_USER);                    //Set USER mode
     fnRefreshState();
     screenUpdatingMode = SCRUPD_AUTO;
-    refreshScreen();
+    refreshScreen(160);
   }
 
 
@@ -169,7 +169,7 @@ void configCommon(uint16_t idx) {
     SetSetting(ITM_SPCRES1);                 //Set SPCRES
     setSystemFlag(FLAG_CPXj);
     screenUpdatingMode = SCRUPD_AUTO;
-    refreshScreen();
+    refreshScreen(161);
   }
 
 
@@ -210,7 +210,7 @@ void configCommon(uint16_t idx) {
     fnDrop(0);
     runFunction(ITM_SQUARE);
     screenUpdatingMode = SCRUPD_AUTO;
-    refreshScreen();
+    refreshScreen(162);
   }
 #endif // !TESTSUITE_BUILD
 
@@ -1292,7 +1292,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
       if(SH_BASE_HOME) showSoftmenu(mm_MNU_HOME); //JM Reset to BASE MENU HOME;
     #endif // !TESTSUITE_BUILD
 
-    SHOWregis = 9999;                                          //JMSHOW
+    showRegis = 9999;                                          //JMSHOW
 
     //JM defaults vv: CONFIG STO/RCL
 
@@ -1349,7 +1349,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     #endif // !TESTSUITE_BUILD
     fnUserJM(USER_KRESET);                                      //JM USER
     temporaryInformation = TI_NO_INFO;
-    refreshScreen();
+    refreshScreen(163);
 
     //kbd_usr[0].primary     = ITM_CC;                         //JM CPX TEMP DEFAULT        //JM note. over-writing the content of setupdefaults
     //kbd_usr[0].gShifted    = KEY_TYPCON_UP;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
@@ -1437,7 +1437,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
       showSoftmenuCurrentPart();
     #endif // !TESTSUITE_BUILD
     screenUpdatingMode = SCRUPD_AUTO;
-    refreshScreen();
+    refreshScreen(164);
 
     fnClearFlag(FLAG_USER);
     fnRefreshState();
