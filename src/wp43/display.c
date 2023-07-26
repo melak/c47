@@ -3369,7 +3369,10 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
 void fnView(uint16_t regist) {
   if(regInRange(regist)) {
     showRegis = regist; //          VIEW uses the same routines as the extended SHOW
-    showSoftmenu(-MNU_SHOW);
+
+    #if !defined(TESTSUITE_BUILD)
+      showSoftmenu(-MNU_SHOW);
+    #endif // !TESTSUITE_BUILD
     numberOfTamMenusToPop--;
     numberOfTamMenusToPop--;
     
