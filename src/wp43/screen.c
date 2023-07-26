@@ -1431,19 +1431,8 @@ void execTimerApp(uint16_t timerType) {
       goto gotoReturn;
     }
 
-    return;
-
     gotoReturn:
-    if(_h1 == 0) {
-      if(temporaryInformation == TI_SHOW_REGISTER_BIG && tmpString[1200] != 0) {
-      }
-      else if(tmpString[1500] != 0) {
-        lcd_fill_rect(0, line_hMultiLineEdOffset + line_h1 * 2 - 3,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);
-      }
-      else {
-        lcd_fill_rect(0,240-3*SOFTMENU_HEIGHT,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);
-      }
-    }
+    return;
   }
 
 
@@ -2051,11 +2040,8 @@ void execTimerApp(uint16_t timerType) {
       }
     #endif // (DEBUG_PANEL == 1)
 
-    if((temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) && regist == REGISTER_X) { //JM frame the SHOW window
+    if((temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL || temporaryInformation == TI_SHOWNOTHING) && regist == REGISTER_X) { //JM top frame of the SHOW window
       lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE-4, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
-      if(temporaryInformation != TI_SHOW_REGISTER_BIG && temporaryInformation != TI_SHOW_REGISTER_SMALL) {   //JM TI_SHOW_REGISTER_BIG is drawn elsewhere (showDisplay)
-        lcd_fill_rect(0, 240-3*SOFTMENU_HEIGHT, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
-      }
     }
 
     if((calcMode != CM_BUG_ON_SCREEN) && (calcMode != CM_PLOT_STAT) && (calcMode != CM_GRAPH) && (calcMode != CM_LISTXY)) {               //JM
@@ -3827,6 +3813,8 @@ void execTimerApp(uint16_t timerType) {
 
 
   void clearTamBuffer(void) {
+    if(temporaryInformation == TI_SHOWNOTHING) return; //to allow a matrix being dispayed without clearing the tam line through it
+
     if(shiftF || shiftG) {
       //lcd_fill_rect(18, Y_POSITION_OF_TAM_LINE, 120, 32, LCD_SET_VALUE);
       lcd_fill_rect(18, Y_POSITION_OF_TAM_LINE, SCREEN_WIDTH - 18, 32, LCD_SET_VALUE); //JM Clear the whole t-register instead of only 120+18 oixels
@@ -3924,18 +3912,27 @@ void execTimerApp(uint16_t timerType) {
 
 
   #if !defined(TESTSUITE_BUILD)
-    void clearScreen_old(bool_t clearStatusBar, bool_t clearRegisterLines, bool_t clearSoftkeys) {
+    void clearScreen_old(bool_t clearStatusBar, bool_t clearRegisterLines, bool_t clearSoftkeys) {  //clrStatusBar, clrRegisterLines, clrSoftkeys
+      #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+        printf("       clearScreen_old clearStatusBar=%u, clearRegisterLines=%u, clearSoftkeys=%u\n",clearStatusBar, clearRegisterLines, clearSoftkeys);
+      #endif // PC_BUILD &&MONITOR_CLRSCR
       uint8_t origScreenUpdatingMode = screenUpdatingMode;
       if(clearStatusBar) {
-        screenUpdatingMode = ~SCRUPD_MANUAL_STATUSBAR;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR;
+        screenUpdatingMode |=  SCRUPD_MANUAL_STACK;
+        screenUpdatingMode |=  SCRUPD_MANUAL_MENU;
         _selectiveClearScreen();
       }
       if(clearRegisterLines) {
-        screenUpdatingMode = ~SCRUPD_MANUAL_STACK;
+        screenUpdatingMode |=  SCRUPD_MANUAL_STATUSBAR;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
+        screenUpdatingMode |=  SCRUPD_MANUAL_MENU;
         _selectiveClearScreen();
       }
       if(clearSoftkeys) {
-        screenUpdatingMode = ~SCRUPD_MANUAL_MENU;
+        screenUpdatingMode |=  SCRUPD_MANUAL_STATUSBAR;
+        screenUpdatingMode |=  SCRUPD_MANUAL_STACK;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
         _selectiveClearScreen();
       }
       screenUpdatingMode = origScreenUpdatingMode;
@@ -3955,10 +3952,10 @@ void execTimerApp(uint16_t timerType) {
 
   static void _refreshNormalScreen(void) {
         #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
-          printf(">>> _refreshNormalScreen calcMode=%d previousCalcMode=%d screenUpdatingMode=%d\n", calcMode, previousCalcMode, screenUpdatingMode);    //JMYY
+          printf(">>> BEGIN _refreshNormalScreen calcMode=%d previousCalcMode=%d screenUpdatingMode=%d\n", calcMode, previousCalcMode, screenUpdatingMode);    //JMYY
         #endif // PC_BUILD &&MONITOR_CLRSCR
 
-        if(calcMode == CM_NORMAL && temporaryInformation == TI_SHOWNOTHING) {
+        if(calcMode == CM_NORMAL && screenUpdatingMode != SCRUPD_AUTO && temporaryInformation == TI_SHOWNOTHING) {
           return;
         }
 
@@ -3975,15 +3972,12 @@ void execTimerApp(uint16_t timerType) {
           screenUpdatingMode &= ~(SCRUPD_MANUAL_MENU);
           screenUpdatingMode |= SCRUPD_MANUAL_STACK;
         }
-
-//Experimental
-else if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL || temporaryInformation == TI_SHOWNOTHING) {
-  screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK);
-}
-//TEMPORARY - MUST BE REMOVED. INCORRECT
-  //      if(calcMode == previousCalcMode) {
-  //        screenUpdatingMode = SCRUPD_AUTO;
-  //      }
+        else if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) {
+          screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU);
+        }
+        else if(temporaryInformation == TI_SHOWNOTHING) {
+          screenUpdatingMode |= (SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_STACK);
+        }
 
         _selectiveClearScreen();
         //printf("##> AAAA screenUpdatingMode  MANUAL STACK=%u SKIP MENU ONCE=%u \n",screenUpdatingMode & SCRUPD_MANUAL_STACK, screenUpdatingMode & SCRUPD_SKIP_STACK_ONE_TIME);
@@ -4099,6 +4093,14 @@ else if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_S
             setBlackPixel(SCREEN_WIDTH - largeur - 1, y);
           }
         #endif // (REAL34_WIDTH_TEST == 1)
+
+
+//2023-07-26 this is new and to be tested for stability
+        screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR | SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU;
+
+        #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+          printf(">>> END of _refreshNormalScreen calcMode=%d previousCalcMode=%d screenUpdatingMode=%d\n", calcMode, previousCalcMode, screenUpdatingMode);    //JMYY
+        #endif // PC_BUILD &&MONITOR_CLRSCR  
   }
 
 
@@ -4110,7 +4112,7 @@ else if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_S
 
     #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
       jm_show_calc_state("refreshScreen");
-      printf(">>> source=%u refreshScreenCounter=%d calcMode=%d screenUpdatingMode=%d temporaryInformation=%u\n", source, refreshScreenCounter++, calcMode, screenUpdatingMode, temporaryInformation);    //JMYY
+      printf(">>> refreshScreen(%u), refreshScreenCounter=%d calcMode=%d screenUpdatingMode=%d temporaryInformation=%u\n", source, refreshScreenCounter++, calcMode, screenUpdatingMode, temporaryInformation);    //JMYY
     #endif // PC_BUILD
     //screenUpdatingMode = 0; //0 is ALL REFRESHES; ~0 is NO REFRESHES
 

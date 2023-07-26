@@ -171,6 +171,8 @@ void resetShiftState(void) {
     shiftF = false;
     shiftG = false;
     screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
+//    screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR | SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU;  
+      //this line can be added to block any other screen updates during shiftstate reset
     showShiftState();
     refreshScreen(100);
   }                                                                             //^^

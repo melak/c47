@@ -1748,11 +1748,19 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
   #if defined(PC_BUILD)
     void btnReleased(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
-        jm_show_calc_state("##### keyboard.c: btnReleased begin");
+
+    #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+      printf(">>> btnReleased showFunctionNameItem=%i screenUpdatingMode=%d temporaryInformation=%u\n", showFunctionNameItem, screenUpdatingMode, temporaryInformation);
+    #endif // PC_BUILD &&MONITOR_CLRSCR
+    jm_show_calc_state("##### keyboard.c: btnReleased begin: showFunctionNameItem");
   #endif // PC_BUILD
+
   #if defined(DMCP_BUILD)
     void btnReleased(void *data) {
   #endif // DMCP_BUILD
+
+      if(temporaryInformation == TI_SHOWNOTHING) return;
+
       int16_t item;
       Shft_timeouts = false;                         //JM SHIFT NEW
       JM_auto_longpress_enabled = 0;                 //JM TIMER CLRCLSTK ON LONGPRESS
@@ -1762,12 +1770,13 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
         return;
       }
-    if(calcMode == CM_ASN_BROWSER && lastItem == ITM_PERIOD) {
-      fnAsnDisplayUSER = true;
-//      refreshScreen(115);
-      goto RELEASE_END;
-      return;
-    }
+  
+      if(calcMode == CM_ASN_BROWSER && lastItem == ITM_PERIOD) {
+        fnAsnDisplayUSER = true;
+  //      refreshScreen(115);
+        goto RELEASE_END;
+        return;
+      }
 
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && tamBuffer[0] == 0) {
         assignToKey((char *)data);
@@ -1833,7 +1842,15 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
             }
           }
           else {
+            #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+              printf(">>> btnReleased runfunction(%i) calcMode=%d previousCalcMode=%d screenUpdatingMode=%d\n", item, calcMode, previousCalcMode, screenUpdatingMode);    //JMYY
+            #endif // PC_BUILD &&MONITOR_CLRSCR
+
             runFunction(item);
+
+            #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+              printf(">>> btnReleased ran(%i) calcMode=%d previousCalcMode=%d screenUpdatingMode=%d\n", item, calcMode, previousCalcMode, screenUpdatingMode);    //JMYY
+            #endif // PC_BUILD &&MONITOR_CLRSCR
           }
         }
       }
@@ -1850,15 +1867,19 @@ RELEASE_END:
           jm_show_calc_state("      ##### keyboard.c: btnReleased end");
         #endif //PC_BUILD
 
-        refreshScreen(117); //JM PROBLEM. THIS MUST BE REMOVED FOR MOST CASES
-
-//TODO 2023-04-15 check here. It needs to be changed not to always refresh the screen.
+        refreshScreen(117);    //TODO 2023-04-15 check here. It needs to be changed not to always refresh the screen.
+                               //2023-06-26 improved by organizing the SCRUDP flags better
       }
 
-      screenUpdatingMode = (uint8_t)~SCRUPD_ONE_TIME_FLAGS; //speedup
+      screenUpdatingMode = (uint8_t)~SCRUPD_ONE_TIME_FLAGS; // no updates, no one time flags //speedup, WP43:  screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS; //sets all todo flags to 0 (active)
       allowShiftsToClearError = false;
 
       fnTimerStop(TO_CL_LONG);    //dr
+
+        #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+          printf(">>> END of btnReleased after (117) calcMode=%d previousCalcMode=%d screenUpdatingMode=%d\n", calcMode, previousCalcMode, screenUpdatingMode);    //JMYY
+        #endif // PC_BUILD &&MONITOR_CLRSCR
+
     }
 
 
@@ -1927,7 +1948,6 @@ RELEASE_END:
     if(item == KEY_COMPLEX && calcMode == CM_MIM) {   //JM Allow COMPLEX to function as CC if in Matrix
       item = ITM_CC;
     }
-
     if((calcMode == CM_GRAPH || calcMode == CM_PLOT_STAT) && item != ITM_BACKSPACE && item != ITM_EXIT1 && item != ITM_UP1 && item != ITM_DOWN1) {
       keyActionProcessed = true;
     } else
@@ -1937,6 +1957,9 @@ RELEASE_END:
     } else
 
     switch(item) {
+      case ITM_VIEW : {
+        keyActionProcessed = false;
+      }
       case ITM_BACKSPACE: {
         if(calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_EIM) {
           temporaryInformation = TI_NO_INFO;
@@ -1946,7 +1969,6 @@ RELEASE_END:
           keyActionProcessed = true;   //JM move this to before fnKeyBackspace to allow fnKeyBackspace to cancel it if needed to allow this function via timing out to NOP, and this is incorporated with the CLRDROP
           fnKeyBackspace(NOPARAM);
         }
-
         break;
       }
 
@@ -2914,6 +2936,9 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL || temporaryInformation == TI_SHOWNOTHING || temporaryInformation == TI_VIEW) {
           temporaryInformation = TI_NO_INFO;
           screenUpdatingMode = SCRUPD_AUTO;
+          if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_SHOW) {
+            popSoftmenu();
+          }
         }
         else
         if(temporaryInformation == TI_VERSION || temporaryInformation == TI_WHO || temporaryInformation == TI_BACKUP_RESTORED) {
@@ -3304,6 +3329,9 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
           temporaryInformation = TI_NO_INFO;
           keyActionProcessed = true;
           screenUpdatingMode = SCRUPD_AUTO;
+          if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_SHOW) {
+            popSoftmenu();
+          }
           return;
         }
         else
@@ -3714,8 +3742,6 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         if(currentAsnScr == 0 || currentAsnScr >= 4) {
           currentAsnScr = 3;
         }
-
-//somehow calcmode=0 wanneer dit daar aankom!        screenUpdatingMode = ~SCRUPD_AUTO;
         break;
       }
 

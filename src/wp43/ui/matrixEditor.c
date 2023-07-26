@@ -1027,6 +1027,7 @@ smallFont:
 }
 
 int16_t getRealMatrixColumnWidths(const real34Matrix_t *matrix, int16_t prefixWidth, const font_t *font, int16_t *colWidth, int16_t *rPadWidth, int16_t *digits, uint16_t maxCols) {
+  char tmpString[200];
   const bool_t colVector = matrix->header.matrixColumns == 1 && matrix->header.matrixRows > 1;
   const int rows = colVector ? 1 : matrix->header.matrixRows;
   const int cols = colVector ? matrix->header.matrixRows : matrix->header.matrixColumns;
@@ -1348,6 +1349,7 @@ smallFont:
 }
 
 int16_t getComplexMatrixColumnWidths(const complex34Matrix_t *matrix, int16_t prefixWidth, const font_t *font, int16_t *colWidth, int16_t *colWidth_r, int16_t *colWidth_i, int16_t *rPadWidth_r, int16_t *rPadWidth_i, int16_t *digits, uint16_t maxCols) {
+  char tmpString[200];
   const bool_t colVector = matrix->header.matrixColumns == 1 && matrix->header.matrixRows > 1;
   const int rows = colVector ? 1 : matrix->header.matrixRows;
   const int cols = colVector ? matrix->header.matrixRows : matrix->header.matrixColumns;

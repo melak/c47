@@ -87,7 +87,7 @@
 
 
 
-#define TEXT_MULTILINE_EDIT         // 5 line buffer
+#define TEXT_MULTILINE_EDIT         // 3 line buffer
 #define MAXLINES 2                  // two lines at small font maximum allowed in entry
 
 
@@ -100,6 +100,9 @@
 #undef VERBOSEKEYS
 #define MONITOR_CLRSCR
 #undef MONITOR_CLRSCR
+#define PC_BUILD_TELLTALE            //JM verbose on PC: jm_show_comment
+#undef  PC_BUILD_TELLTALE
+
 #define PAIMDEBUG
 #undef PAIMDEBUG
 
@@ -107,9 +110,6 @@
 
 #define VERBOSE_COUNTER               //PI and SIGMA functions
 #undef  VERBOSE_COUNTER
-
-#define PC_BUILD_TELLTALE            //JM verbose on PC: jm_show_comment
-#undef  PC_BUILD_TELLTALE
 
 #define PC_BUILD_VERBOSE0
 #undef PC_BUILD_VERBOSE0
@@ -1346,7 +1346,7 @@ typedef enum {
     #define refreshRegisterLine(a)  {}
     #define displayBugScreen(a)     { printf("\n-----------------------------------------------------------------------\n"); printf("%s\n", a); printf("\n-----------------------------------------------------------------------\n");}
     #define showHideHourGlass()     {}
-    #define refreshScreen()         {}
+    #define refreshScreen(a)        {}
     #define refreshLcd(a)           {}
     #define initFontBrowser()       {}
   #endif // TESTSUITE_BUILD && !GENERATE_CATALOGS

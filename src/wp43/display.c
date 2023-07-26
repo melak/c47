@@ -43,6 +43,7 @@
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "screen.h"
+#include "softmenus.h"
 #include "store.h"
 #include "ui/matrixEditor.h"
 #include <string.h>
@@ -2715,46 +2716,46 @@ static void printXAngle(int16_t cc, int16_t d) {
 
   }
 
-#endif //TESTSUITE_BUILD
 
 static void dispM(uint16_t regist, char * prefix) {
-       uint32_t prefixWidth = 0;
-       const int16_t baseY = 20;
-       bool_t prefixPre = false;
-       bool_t prefixPost = false;
-       prefixWidth = stringWidth(prefix, &standardFont, true, true);
-       if(getRegisterDataType(regist) == dtReal34Matrix) {
-          real34Matrix_t matrix;
-          linkToRealMatrixRegister(regist, &matrix);
-          showRealMatrix(&matrix, prefixWidth);
-          //printf("#### tmpString=%s prefix=%s prefixWidth=%u lastErrorCode=%u temporaryInformation=%u\n",tmpString,prefix,prefixWidth,lastErrorCode, temporaryInformation);
-          if(lastErrorCode != 0) {
-            refreshRegisterLine(errorMessageRegisterLine);
-          }
-          if(prefixWidth > 0) {
-            showString(prefix, &standardFont, 1, baseY, vmNormal, prefixPre, prefixPost);
-          }
-          if(temporaryInformation == TI_INACCURATE && regist == REGISTER_X) {
-            showString("This result may be inaccurate", &standardFont, 1, Y_POSITION_OF_ERR_LINE, vmNormal, true, true);
-          }
-        }
-        else if(getRegisterDataType(regist) == dtComplex34Matrix) {
-          complex34Matrix_t matrix;
-          linkToComplexMatrixRegister(regist, &matrix);
-          showComplexMatrix(&matrix, prefixWidth);
-          //printf("#### tmpString=%s prefix=%s prefixWidth=%u lastErrorCode=%u temporaryInformation=%u\n",tmpString,prefix,prefixWidth,lastErrorCode, temporaryInformation);
-          if(lastErrorCode != 0) {
-            refreshRegisterLine(errorMessageRegisterLine);
-          }
-          if(prefixWidth > 0) {
-            showString(prefix, &standardFont, 1, baseY, vmNormal, prefixPre, prefixPost);
-          }
-          if(temporaryInformation == TI_INACCURATE && regist == REGISTER_X) {
-            showString("This result may be inaccurate", &standardFont, 1, Y_POSITION_OF_ERR_LINE, vmNormal, true, true);
-          }
-        }
-        temporaryInformation = TI_SHOWNOTHING;
+  uint32_t prefixWidth = 0;
+  const int16_t baseY = 20;
+  bool_t prefixPre = false;
+  bool_t prefixPost = false;
+  prefixWidth = stringWidth(prefix, &standardFont, true, true);
+  temporaryInformation = TI_SHOWNOTHING;
+  if(getRegisterDataType(regist) == dtReal34Matrix) {
+    real34Matrix_t matrix;
+    linkToRealMatrixRegister(regist, &matrix);
+    showRealMatrix(&matrix, prefixWidth);
+    //printf("#### tmpString=%s prefix=%s prefixWidth=%u lastErrorCode=%u temporaryInformation=%u\n",tmpString,prefix,prefixWidth,lastErrorCode, temporaryInformation);
+    if(lastErrorCode != 0) {
+      refreshRegisterLine(errorMessageRegisterLine);
+    }
+    if(prefixWidth > 0) {
+      showString(prefix, &standardFont, 1, baseY, vmNormal, prefixPre, prefixPost);
+    }
+    if(temporaryInformation == TI_INACCURATE && regist == REGISTER_X) {
+      showString("This result may be inaccurate", &standardFont, 1, Y_POSITION_OF_ERR_LINE, vmNormal, true, true);
+    }
+  }
+  else if(getRegisterDataType(regist) == dtComplex34Matrix) {
+    complex34Matrix_t matrix;
+    linkToComplexMatrixRegister(regist, &matrix);
+    showComplexMatrix(&matrix, prefixWidth);
+    //printf("#### tmpString=%s prefix=%s prefixWidth=%u lastErrorCode=%u temporaryInformation=%u\n",tmpString,prefix,prefixWidth,lastErrorCode, temporaryInformation);
+    if(lastErrorCode != 0) {
+      refreshRegisterLine(errorMessageRegisterLine);
+    }
+    if(prefixWidth > 0) {
+      showString(prefix, &standardFont, 1, baseY, vmNormal, prefixPre, prefixPost);
+    }
+    if(temporaryInformation == TI_INACCURATE && regist == REGISTER_X) {
+      showString("This result may be inaccurate", &standardFont, 1, Y_POSITION_OF_ERR_LINE, vmNormal, true, true);
+    }
+  }
 }
+#endif //TESTSUITE_BUILD
 
 
 
@@ -2772,6 +2773,9 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
 
     switch(fnShow_param) {
       case NOPARAM:
+               showSoftmenu(-MNU_SHOW);
+               showRegis = REGISTER_X;
+               break;
       case 0:  showRegis = REGISTER_X;
                break;
       case 1:  if(showRegis==9999) {showRegis = REGISTER_X;}                       //Activated by KEY_UP
@@ -2823,7 +2827,9 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
       #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
         printf(">>> ---- clearScreen_old from display.c fnShow_SCROLL\n");
       #endif // PC_BUILD && MONITOR_CLRSCR
-      clearScreen_old(false, true, false); //Clear screen content while NEW SHOW
+        //      clearScreen_old(!clrStatusBar, clrRegisterLines, !clrSoftkeys); //Clear screen content while NEW SHOW
+        refreshScreen(153);
+
     #endif // !TESTSUITE_BUILD
     SHOW_reset();
 
@@ -3319,9 +3325,17 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
 
       case dtReal34Matrix:
       case dtComplex34Matrix:
-        temporaryInformation = TI_SHOWNOTHING;
-        dispM(showRegis, tmpString + 2100);
-        if(programRunStop == PGM_RUNNING) {
+//        screenUpdatingMode = SCRUPD_AUTO;                     //first clear the screen and update
+  //      refreshScreen(152);
+        clearScreen_old(!clrStatusBar, clrRegisterLines, clrSoftkeys);
+        dispM(showRegis, tmpString + 2100);                   //then display the matrix
+        lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE-4, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
+        temporaryInformation = TI_SHOWNOTHING;                //then tell the system it is in show nothing mode,
+        screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR;       //then tell the system it needs only to update the status bar
+        screenUpdatingMode |=  SCRUPD_MANUAL_STACK;
+        screenUpdatingMode |=  SCRUPD_MANUAL_MENU;
+
+        if(programRunStop == PGM_RUNNING) {   //this needs to be checked - maybe needed for all show items not only here
           refreshScreen(150);
           fnPause(10);
           temporaryInformation = TI_NO_INFO;
@@ -3354,8 +3368,13 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
 
 void fnView(uint16_t regist) {
   if(regInRange(regist)) {
-    showRegis = regist; //          Hack to make VIEW use the same routines as the extended SHOW
+    showRegis = regist; //          VIEW uses the same routines as the extended SHOW
+    showSoftmenu(-MNU_SHOW);
+    numberOfTamMenusToPop--;
+    numberOfTamMenusToPop--;
+    
     fnShow_SCROLL(255); //
+
     if(programRunStop == PGM_RUNNING) {
       refreshScreen(151);
       fnPause(10);
