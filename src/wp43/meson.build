@@ -106,6 +106,7 @@ wp43_src = files(
   'mathematics/incDec.c',
   'mathematics/int.c',
   'mathematics/integerPart.c',
+  'mathematics/integerPartLonginteger.c',
   'mathematics/invert.c',
   'mathematics/iteration.c',
   'mathematics/ixyz.c',

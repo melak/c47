@@ -76,6 +76,7 @@ void fnCeil(uint16_t unusedButMandatoryParameter) {
 
 
 void ceilLonI(void) {
+  convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
 }
 
 
@@ -103,5 +104,6 @@ void ceilReal(void) {
     return;
   }
 
-  convertReal34ToLongIntegerRegister(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_X, DEC_ROUND_CEILING);
+  real34ToIntegralValue(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_REAL34_DATA(REGISTER_X), DEC_ROUND_CEILING);
+  setRegisterAngularMode(REGISTER_X, amNone);
 }

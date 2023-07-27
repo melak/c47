@@ -20,6 +20,8 @@
 
 #include "mathematics/roundi.h"
 
+#include "constantPointers.h"
+#include "comparisonReals.h"
 #include "debug.h"
 #include "error.h"
 #include "items.h"
@@ -101,6 +103,15 @@ void roundiReal(void) {
       moreInfoOnError("In function roundiReal:", "cannot use ±∞ as an input of ROUNDI", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
+  }
+
+  int16_t exponent = real34GetExponent(REGISTER_REAL34_DATA(REGISTER_X));
+  if(exponent > (int16_t)(0.301029995663 * MAX_LONG_INTEGER_SIZE_IN_BITS)) {
+    displayCalcErrorMessage(!real34CompareLessThan(REGISTER_REAL34_DATA(REGISTER_X), const34_0) ? ERROR_OVERFLOW_PLUS_INF : ERROR_OVERFLOW_MINUS_INF, ERR_REGISTER_LINE, REGISTER_X);
+    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "Converting a real exponent of %" PRId16 " would result in a value exceeding %" PRId16 " bits!", exponent, (uint16_t)MAX_LONG_INTEGER_SIZE_IN_BITS);
+      moreInfoOnError("In function roundiReal:", errorMessage, "", "");
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 
   convertReal34ToLongIntegerRegister(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_X, DEC_ROUND_HALF_UP);
