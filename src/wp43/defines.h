@@ -92,16 +92,18 @@
 
 
 //Testing and debugging
-//#define DM42_KEYCLICK              //Add a 1 ms click after key presses and releases, for scope syncing
-
+  #define DM42_KEYCLICK              //Add a 1 ms click after key presses and releases, for scope syncing
+  #undef DM42_KEYCLICK
+  #define CLICK_REFRESHSCR             //Add a 5 ms click before refresh screen
+  //#undef CLICK_REFRESHSCR
 
 //Verbose options
-#define VERBOSEKEYS
-#undef VERBOSEKEYS
-#define MONITOR_CLRSCR
-#undef MONITOR_CLRSCR
-#define PC_BUILD_TELLTALE            //JM verbose on PC: jm_show_comment
-#undef  PC_BUILD_TELLTALE
+  #define VERBOSEKEYS
+  #undef VERBOSEKEYS
+  #define MONITOR_CLRSCR
+  #undef MONITOR_CLRSCR
+  #define PC_BUILD_TELLTALE            //JM verbose on PC: jm_show_comment
+  #undef  PC_BUILD_TELLTALE
 
 #define PAIMDEBUG
 #undef PAIMDEBUG

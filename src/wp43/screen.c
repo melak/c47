@@ -1176,6 +1176,30 @@ void execTimerApp(uint16_t timerType) {
   }
 
 
+  /* Finds the cols and rows for a string if showing leading and ending columns.
+   *
+   * \param[in]  ch   const char*   String to find the bounds of
+   * \param[in]  font const font_t* Font to use
+   * \param[out] col  uint32_t*     Number of columns for the string
+   * \param[out] row  uint32_t*     Number of rows for the string
+   */
+  void getStringBounds(const char *string, const font_t *font, uint32_t *col, uint32_t *row) {
+    uint16_t ch = 0;
+    uint32_t lcol, lrow;
+    *col = 0;
+    *row = 0;
+
+    while(string[ch] != 0) {
+      getGlyphBounds(string, &ch, font, &lcol, &lrow);
+      *col += lcol;
+      if(lrow > *row) {
+        *row = lrow;
+      }
+    }
+  }
+
+
+
   uint8_t  compressString = 0;                                                              //JM compressString
   uint8_t  raiseString = 0;                                                                 //JM compressString
   static uint32_t _doShowString(const char *string, const font_t *font, uint32_t x, uint32_t y, char **resStr, uint32_t width, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, bool_t LF) {
@@ -1725,7 +1749,6 @@ void execTimerApp(uint16_t timerType) {
 
 
   void showFunctionName(int16_t item, int16_t delayInMs, const char *arg) {
-    uint32_t fcol, frow, gcol, grow;
     char functionName[16];
     char padding[20];                                          //JM
     functionName[0] = 0;
@@ -1766,11 +1789,8 @@ void execTimerApp(uint16_t timerType) {
       clearRegisterLine(REGISTER_T, true, false);
     }
 
-    // Draw over SHIFT f and SHIFT g in case they were present (otherwise they will be obscured by the function name)
-    getGlyphBounds(STD_SUP_f, 0, &numericFont, &fcol, &frow);
-    getGlyphBounds(STD_SUP_g, 0, &numericFont, &gcol, &grow);
-    lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, (fcol > gcol ? fcol : gcol), (frow > grow ? frow : grow), LCD_SET_VALUE);
-
+    // Clear SHIFT f and SHIFT g in case they were present (otherwise they will be obscured by the function name)
+    clearShiftState();
     showString(padding, &standardFont, /*1*/ 16, Y_POSITION_OF_REGISTER_T_LINE /*+ 6*/, vmNormal, true, true);      //JM
   }
 
@@ -3827,7 +3847,21 @@ void execTimerApp(uint16_t timerType) {
 
 
   void clearShiftState(void) {
+    //uint32_t fcol, frow, gcol, grow;
+    //getGlyphBounds(STD_SUP_f, 0, &numericFont, &fcol, &frow);
+    //getGlyphBounds(STD_SUP_g, 0, &numericFont, &gcol, &grow);
+    //lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, (fcol > gcol ? fcol : gcol), (frow > grow ? frow : grow), LCD_SET_VALUE);
+
     lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, 15, NUMERIC_FONT_HEIGHT, LCD_SET_VALUE);
+    //lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE-2, 12, 32, LCD_SET_VALUE);
+  }
+  void showShiftStateF(void) {
+    showGlyph(STD_SUP_f, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // f is pixel 4+8+3 wide
+    //showStringC43(STD_f, numHalf, nocompress, 0, Y_POSITION_OF_REGISTER_T_LINE-2, vmNormal, false, false);    
+  }
+  void showShiftStateG(void) {
+    showGlyph(STD_SUP_g, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // g is pixel 4+10+1 wide
+    //showStringC43(STD_g, numHalf, nocompress, 0, Y_POSITION_OF_REGISTER_T_LINE-2, vmNormal, false, false);    
   }
 
 
@@ -3838,10 +3872,10 @@ void execTimerApp(uint16_t timerType) {
 
     if(calcMode != CM_ASSIGN || itemToBeAssigned == 0 || tam.alpha) {
       if(shiftF) {
-        showGlyph(STD_SUP_f, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // f is pixel 4+8+3 wide
+        showShiftStateF();
       }
       else if(shiftG) {
-        showGlyph(STD_SUP_g, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // g is pixel 4+10+1 wide
+        showShiftStateG();
       }
     }
 
@@ -4109,6 +4143,13 @@ void execTimerApp(uint16_t timerType) {
     if(running_program_jm) { //JM TEST PROGRAM!
       return;
     }
+
+    //Special test function to click every time refresh screen is called
+    #if defined(DMCP_BUILD) && defined(CLICK_REFRESHSCR)
+      start_buzzer_freq(100000);
+      sys_delay(5);
+      stop_buzzer();
+    #endif // DMCP_BUILD && CLICK_REFRESHSCR
 
     #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
       jm_show_calc_state("refreshScreen");

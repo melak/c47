@@ -3372,12 +3372,24 @@ void fnView(uint16_t regist) {
 
     #if !defined(TESTSUITE_BUILD)
       showSoftmenu(-MNU_SHOW);
+      numberOfTamMenusToPop--;
+      numberOfTamMenusToPop--;
     #endif // !TESTSUITE_BUILD
-    numberOfTamMenusToPop--;
-    numberOfTamMenusToPop--;
     
     fnShow_SCROLL(255); //
 
+    if(programRunStop == PGM_RUNNING) {
+      refreshScreen(151);
+      fnPause(10);
+      temporaryInformation = TI_NO_INFO;
+    }
+  }
+}
+
+void fnViewOld(uint16_t regist) {
+  if(regInRange(regist)) {
+    currentViewRegister = regist;
+    temporaryInformation = TI_VIEW;
     if(programRunStop == PGM_RUNNING) {
       refreshScreen(151);
       fnPause(10);

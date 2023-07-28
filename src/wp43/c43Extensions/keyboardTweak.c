@@ -119,30 +119,22 @@ void showAlphaModeonGui(void) {
 
 void showShiftState(void) {
   #if !defined(TESTSUITE_BUILD)
-    //showAlphaModeonGui();
-
     #if defined(PC_BUILD_TELLTALE)
       printf("    >>> showShiftState: calcMode=%d\n", calcMode);
     #endif // PC_BUILD_TELLTALE
 
-    if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER && temporaryInformation != TI_SHOW_REGISTER_BIG && temporaryInformation != TI_SHOW_REGISTER_SMALL && temporaryInformation != TI_SHOW_REGISTER) {
+    if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER && temporaryInformation != TI_SHOW_REGISTER_BIG && temporaryInformation != TI_SHOW_REGISTER_SMALL && temporaryInformation != TI_SHOWNOTHING && temporaryInformation != TI_SHOW_REGISTER) {
       if(shiftF) {                        //SEE screen.c:refreshScreen
-        showGlyph(STD_SUP_f, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true);   // f is pixel 4+8+3 wide
+        showShiftStateF();
         show_f_jm();
         showHideAlphaMode();
       }
       else if(shiftG) {                   //SEE screen.c:refreshScreen
-        showGlyph(STD_SUP_g, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true);   // g is pixel 4+10+1 wide
+        showShiftStateG();
         show_g_jm();
         showHideAlphaMode();
       }
       else {
-        //showGlyph(" ", &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true);         // space clears the f and g
-        //#if defined(DMCP_BUILD)
-        //  start_buzzer_freq(100000); //Click when shifts are cleared for TESTING
-        //  sys_delay(5);
-        //  stop_buzzer();
-        //#endif // DMCP_BUILD
         clearShiftState();
         clear_fg_jm();
         showHideAlphaMode();

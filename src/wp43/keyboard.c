@@ -1288,7 +1288,8 @@ bool_t allowShiftsToClearError = false;
         updateMatrixHeightCache();
       }
       else {
-        temporaryInformation = TI_NO_INFO;
+//reconsider
+        temporaryInformation = TI_NO_INFO;     //reconsider: Temporary commented out. This clears SHOW (and other TI's) when fg is pressed. That means SNAP and shiftEXP are not possible with SHOW
       }
       if(lastErrorCode != 0) allowShiftsToClearError = true;                                                                                         //JM shifts
       lastErrorCode = 0;                                                                                                      //JM shifts
@@ -1364,10 +1365,11 @@ bool_t allowShiftsToClearError = false;
       result = (getSystemFlag(FLAG_MULTx) ? ITM_CROSS : ITM_DOT);
     }
 
-//    if((shiftF || shiftG) && result != ITM_SNAP) {
-//      screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
-//      clearShiftState();
-//    }
+    if((shiftF || shiftG) && result == ITM_SNAP) {
+      screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
+      clearShiftState();
+//      runFunction(result);
+    }
 
     if(result != ITM_SNAP) {
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
@@ -1846,6 +1848,10 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
               printf(">>> btnReleased runfunction(%i) calcMode=%d previousCalcMode=%d screenUpdatingMode=%d\n", item, calcMode, previousCalcMode, screenUpdatingMode);    //JMYY
             #endif // PC_BUILD &&MONITOR_CLRSCR
 
+            if(item == ITM_SNAP) {
+              screenUpdatingMode = SCRUPD_AUTO;
+              refreshScreen(136);
+            }
             runFunction(item);
 
             #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
@@ -1881,8 +1887,6 @@ RELEASE_END:
         #endif // PC_BUILD &&MONITOR_CLRSCR
 
     }
-
-
 
 
 #endif //!TESTSUITE_BUILD
@@ -1939,7 +1943,6 @@ RELEASE_END:
     if(programRunStop == PGM_WAITING) {
       programRunStop = PGM_STOPPED;
     }
-
     #if(REAL34_WIDTH_TEST == 1)
       longInteger_t lgInt;
       longIntegerInit(lgInt);
@@ -1959,6 +1962,7 @@ RELEASE_END:
     switch(item) {
       case ITM_VIEW : {
         keyActionProcessed = false;
+        break;
       }
       case ITM_BACKSPACE: {
         if(calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_EIM) {
@@ -2378,6 +2382,10 @@ RELEASE_END:
                 refreshScreen(121);
               } else
               if(item == ITM_USERMODE) {
+                runFunction(item);
+                keyActionProcessed = true;
+              }
+              if(item == ITM_SNAP) {
                 runFunction(item);
                 keyActionProcessed = true;
               }
