@@ -857,7 +857,7 @@ typedef enum {
 #define TI_SA                                     46
 #define TI_INACCURATE                             47
 #define TI_UNDO_DISABLED                          48
-#define TI_VIEW                                   49
+//#define TI_VIEW                                   49
 #define TI_SOLVER_VARIABLE                        50
 #define TI_SOLVER_FAILED                          51
 #define TI_ACC                                    52

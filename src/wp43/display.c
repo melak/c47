@@ -1,19 +1,5 @@
-
-/* This file is part of 43S.
- *
- * 43S is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * 43S is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
- */
+// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
 
 /********************************************//**
  * \file display.c
@@ -3366,7 +3352,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
 #endif // !SAVE_SPACE_DM42_9
 }
 
-void fnView(uint16_t regist) {
+void fnViewC47_disused(uint16_t regist) {
   if(regInRange(regist)) {
     showRegis = regist; //          VIEW uses the same routines as the extended SHOW
 
@@ -3386,10 +3372,10 @@ void fnView(uint16_t regist) {
   }
 }
 
-void fnViewOld(uint16_t regist) {
+void fnView(uint16_t regist) {
   if(regInRange(regist)) {
     currentViewRegister = regist;
-    temporaryInformation = TI_VIEW;
+    temporaryInformation = TI_VIEW_REGISTER;
     if(programRunStop == PGM_RUNNING) {
       refreshScreen(151);
       fnPause(10);
