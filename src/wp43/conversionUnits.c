@@ -289,6 +289,9 @@ void fnCvtNmiKm(uint16_t multiplyDivide) {
   unitConversion(const_NmiToKm, multiplyDivide);
 }
 
+void fnCvtNmiMi(uint16_t multiplyDivide) {
+  unitConversion(const_NmiToMi, multiplyDivide);  
+}
 
 void fnCvtFtM(uint16_t multiplyDivide) {
   unitConversion(const_FtToM, multiplyDivide);

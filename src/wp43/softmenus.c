@@ -462,14 +462,14 @@ TO_QSPI const int16_t menu_ConvP[]        = {
                                                     ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,
                                                     ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL};
 TO_QSPI const int16_t menu_ConvX[]        = {
-                                                    ITM_MILEtoM,              ITM_MtoMILE,              ITM_YDtoM,                ITM_MtoYD,                ITM_PCtoM,                ITM_MtoPC,
-                                                    ITM_NMItoM,               ITM_MtoNMI,               ITM_FTtoM,                ITM_MtoFT,                ITM_LYtoM,                ITM_MtoLY,
-                                                    ITM_NULL,                 ITM_NULL,                 ITM_INCHtoMM,             ITM_MMtoINCH,             ITM_AUtoM,                ITM_MtoAU,
+                                                    ITM_MItoKM,               ITM_KMtoMI,               ITM_YDtoM,                ITM_MtoYD,                ITM_PCtoM,                ITM_MtoPC,
+                                                    ITM_NMItoKM,              ITM_KMtoNMI,              ITM_FTtoM,                ITM_MtoFT,                ITM_LYtoM,                ITM_MtoLY,
+                                                    ITM_NMItoMI,              ITM_MItoNMI,              ITM_INCHtoMM,             ITM_MMtoINCH,             ITM_AUtoM,                ITM_MtoAU,
                                                     ITM_LItoM,                ITM_MtoLI,                ITM_YINtoM,               ITM_MtoYIN,               ITM_NULL,                 ITM_NULL,
                                                     ITM_NULL,                 ITM_NULL,                 ITM_ZHANGtoM,             ITM_MtoZHANG,             ITM_CUNtoM,               ITM_MtoCUN,
                                                     ITM_NULL,                 ITM_NULL,                 ITM_CHItoM,               ITM_MtoCHI,               ITM_FENtoM,               ITM_MtoFEN,
-                                                    ITM_MItoKM,               ITM_KMtoMI,               ITM_FTUStoM,              ITM_MtoFTUS,              ITM_POINTtoMM,            ITM_MMtoPOINT,
-                                                    ITM_NMItoKM,              ITM_KMtoNMI,              ITM_FATHOMtoM,            ITM_MtoFATHOM,            ITM_NULL,                 ITM_NULL,
+                                                    ITM_MILEtoM,              ITM_MtoMILE,              ITM_FTUStoM,              ITM_MtoFTUS,              ITM_POINTtoMM,            ITM_MMtoPOINT,
+                                                    ITM_NMItoM,               ITM_MtoNMI,               ITM_FATHOMtoM,            ITM_MtoFATHOM,            ITM_NULL,                 ITM_NULL,
                                                     ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL};
 TO_QSPI const int16_t menu_ConvV[]        = {
                                                     ITM_GLUKtoL,              ITM_LtoGLUK,              ITM_GLUStoL,              ITM_LtoGLUS,              ITM_QTtoL,                ITM_LtoQT,

@@ -68,6 +68,7 @@
   void fnCvtMiKm       (uint16_t multiplyDivide);
   void fnCvtLyM       (uint16_t multiplyDivide);
   void fnCvtNmiKm     (uint16_t multiplyDivide);
+  void fnCvtNmiMi     (uint16_t multiplyDivide);
   void fnCvtFtM       (uint16_t multiplyDivide);
   void fnCvtPcM       (uint16_t multiplyDivide);
   void fnCvtInchMm    (uint16_t multiplyDivide);

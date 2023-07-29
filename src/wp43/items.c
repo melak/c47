@@ -634,6 +634,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnCvtCToF                   (uint16_t unusedButMandatoryParameter) {}
   void fnCvtFToC                   (uint16_t unusedButMandatoryParameter) {}
   void fnCvtNmiKm                  (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtNmiMi                  (uint16_t unusedButMandatoryParameter) {}
   void fnCvtPsiPa                  (uint16_t unusedButMandatoryParameter) {}
   void fnCvtShortcwtKg             (uint16_t unusedButMandatoryParameter) {}
   void fnCvtLbfftNm                (uint16_t unusedButMandatoryParameter) {}
@@ -3313,6 +3314,8 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2164 */  { addItemToBuffer,              ITM_ATAN_SIGN,               "ATAN",                                        "ATAN",                                        (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2165 */  { addItemToBuffer,              ITM_op_j_SIGN,               "op_" STD_op_i,                                STD_op_i,                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2166 */  { addItemToBuffer,              ITM_poly_SIGN,               "cubic",                                       "cubic",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2167 */  { fnCvtNmiMi,                   divide,                      "nmi" STD_RIGHT_ARROW "mi.",                   "nmi" STD_RIGHT_ARROW "mi.",                   (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 2168 */  { fnCvtNmiMi,                   multiply,                    "mi." STD_RIGHT_ARROW "nmi",                   "mi." STD_RIGHT_ARROW "nmi",                   (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 
-/* 2167 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
+/* 2169 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
 };

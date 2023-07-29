@@ -2220,8 +2220,10 @@
 #define ITM_ATAN_SIGN               2164
 #define ITM_op_j_SIGN               2165
 #define ITM_poly_SIGN               2166
+#define ITM_NMItoMI                 2167
+#define ITM_MItoNMI                 2168
 
-#define LAST_ITEM                   2167
+#define LAST_ITEM                   2169
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
