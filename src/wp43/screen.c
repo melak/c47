@@ -1814,13 +1814,13 @@ void execTimerApp(uint16_t timerType) {
 
   static void viewRegName(char *prefix, int16_t *prefixWidth) {
     if(currentViewRegister < REGISTER_X) {
-      sprintf(prefix, "R%02" PRIu16 STD_SPACE_4_PER_EM "=" STD_SPACE_4_PER_EM, currentViewRegister);
+      sprintf(prefix, " R%02" PRIu16 STD_SPACE_4_PER_EM "=" STD_SPACE_4_PER_EM, currentViewRegister);
     }
     else if(currentViewRegister < FIRST_LOCAL_REGISTER) {
-      sprintf(prefix, "%c" STD_SPACE_4_PER_EM "=" STD_SPACE_4_PER_EM, "XYZTABCDLIJK"[currentViewRegister - REGISTER_X]);
+      sprintf(prefix, " %c" STD_SPACE_4_PER_EM "=" STD_SPACE_4_PER_EM, "XYZTABCDLIJK"[currentViewRegister - REGISTER_X]);
     }
     else if(currentViewRegister <= LAST_LOCAL_REGISTER) {
-      sprintf(prefix, "R.%02" PRIu16 STD_SPACE_4_PER_EM "=" STD_SPACE_4_PER_EM, (uint16_t)(currentViewRegister - FIRST_LOCAL_REGISTER));
+      sprintf(prefix, " R.%02" PRIu16 STD_SPACE_4_PER_EM "=" STD_SPACE_4_PER_EM, (uint16_t)(currentViewRegister - FIRST_LOCAL_REGISTER));
     }
     else if(currentViewRegister >= FIRST_NAMED_VARIABLE && currentViewRegister <= LAST_NAMED_VARIABLE) {
       memcpy(prefix, allNamedVariables[currentViewRegister - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[currentViewRegister - FIRST_NAMED_VARIABLE].variableName[0]);
@@ -1838,13 +1838,13 @@ void execTimerApp(uint16_t timerType) {
 
   static void inputRegName(char *prefix, int16_t *prefixWidth) {
     if((currentInputVariable & 0x3fff) < REGISTER_X) {
-      sprintf(prefix, "R%02" PRIu16 "?", (uint16_t)(currentInputVariable & 0x3fff));
+      sprintf(prefix, " R%02" PRIu16 "?", (uint16_t)(currentInputVariable & 0x3fff));
     }
     else if((currentInputVariable & 0x3fff) < FIRST_LOCAL_REGISTER) {
-      sprintf(prefix, "%c?", "XYZTABCDLIJK"[(currentInputVariable & 0x3fff) - REGISTER_X]);
+      sprintf(prefix, " %c?", "XYZTABCDLIJK"[(currentInputVariable & 0x3fff) - REGISTER_X]);
     }
     else if((currentInputVariable & 0x3fff) <= LAST_LOCAL_REGISTER) {
-      sprintf(prefix, "R.%02" PRIu16 "?", (uint16_t)((currentInputVariable & 0x3fff) - FIRST_LOCAL_REGISTER));
+      sprintf(prefix, " R.%02" PRIu16 "?", (uint16_t)((currentInputVariable & 0x3fff) - FIRST_LOCAL_REGISTER));
     }
     else if((currentInputVariable & 0x3fff) >= FIRST_NAMED_VARIABLE && (currentInputVariable & 0x3fff) <= LAST_NAMED_VARIABLE) {
       memcpy(prefix, allNamedVariables[(currentInputVariable & 0x3fff) - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[(currentInputVariable & 0x3fff) - FIRST_NAMED_VARIABLE].variableName[0]);
@@ -3314,7 +3314,7 @@ void execTimerApp(uint16_t timerType) {
             }
           }
 
-          if(prefixWidth > 0) {
+          if(prefixWidth > 0 && temporaryInformation != TI_VIEW_REGISTER) {
             if(regist == REGISTER_X) {
               showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
             }
@@ -3333,7 +3333,7 @@ void execTimerApp(uint16_t timerType) {
           lineWidth = w;
           if(prefixWidth > 0) {
             if(temporaryInformation == TI_INTEGRAL) {
-              showString(prefix, &numericFont, 1, baseY - checkHPoffset, vmNormal, prefixPre, prefixPost);
+              showString(prefix, &numericFont, 1, baseY, vmNormal, prefixPre, prefixPost);
             }
             else {
               showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
