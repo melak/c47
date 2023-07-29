@@ -1404,7 +1404,7 @@
 #define MNU_PFN                     1356
 #define MNU_PFN_MORE                1357
 #define MNU_CONVP                   1358
-#define ITM_1359                    1359
+#define MNU_CONVHUM                 1359
 #define MNU_REALS                   1360
 #define MNU_Solver                  1361
 #define MNU_STAT                    1362
@@ -2222,8 +2222,30 @@
 #define ITM_poly_SIGN               2166
 #define ITM_NMItoMI                 2167
 #define ITM_MItoNMI                 2168
+#define ITM_FURtoM                  2169
+#define ITM_MtoFUR                  2170
+#define ITM_FTNtoS                  2171
+#define ITM_StoFTN                  2172
+#define ITM_FPFtoMPS                2173
+#define ITM_MPStoFPF                2174
+#define ITM_BRDStoM                 2175
+#define ITM_MtoBRDS                 2176
+#define ITM_FIRtoKG                 2177
+#define ITM_KGtoFIR                 2178
+#define ITM_FPFtoKPH                2179
+#define ITM_KPHtoFPF                2180
+#define ITM_BRDStoIN                2181
+#define ITM_INtoBRDS                2182
+#define ITM_FIRtoLB                 2183
+#define ITM_LBtoFIR                 2184
+#define ITM_FPFtoMPH                2185
+#define ITM_MPHtoFPF                2186
+#define ITM_FPStoKMH                2187
+#define ITM_KMHtoFPS                2188
+#define ITM_FTPtoMPS                2189
+#define ITM_MPStoFPS                2190
 
-#define LAST_ITEM                   2169
+#define LAST_ITEM                   2191
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
