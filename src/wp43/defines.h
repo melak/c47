@@ -24,9 +24,9 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
-#define VERSION1 "0.108.11-02"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
+#define VERSION1 "0.108.11-06"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
-//2023-07-16-0.108.11-02
+//2023-07-16-0.108.11-01
 
   #undef SAVE_SPACE_DM42
   #undef SAVE_SPACE_DM42_0
@@ -92,12 +92,18 @@
 
 
 //Testing and debugging
-//#define DM42_KEYCLICK              //Add a 1 ms click after key presses and releases, for scope syncing
-
+  #define DM42_KEYCLICK              //Add a 1 ms click after key presses and releases, for scope syncing
+  #undef DM42_KEYCLICK
+  #define CLICK_REFRESHSCR             //Add a 5 ms click before refresh screen
+  //#undef CLICK_REFRESHSCR
 
 //Verbose options
-#define VERBOSEKEYS
-#undef VERBOSEKEYS
+  #define VERBOSEKEYS
+  #undef VERBOSEKEYS
+  #define MONITOR_CLRSCR
+  #undef MONITOR_CLRSCR
+  #define PC_BUILD_TELLTALE            //JM verbose on PC: jm_show_comment
+  #undef  PC_BUILD_TELLTALE
 
 #define PAIMDEBUG
 #undef PAIMDEBUG
@@ -107,9 +113,6 @@
 
 #define VERBOSE_COUNTER               //PI and SIGMA functions
 #undef  VERBOSE_COUNTER
-
-#define PC_BUILD_TELLTALE            //JM verbose on PC: jm_show_comment
-#undef  PC_BUILD_TELLTALE
 
 #define PC_BUILD_VERBOSE0
 #undef PC_BUILD_VERBOSE0
@@ -150,7 +153,7 @@
 #define BUFFER_KEY_COUNT          //dr BUFFER_SIZE has to be at least 8 to become accurate results
 #undef BUFFER_KEY_COUNT
 
-#define BUFFER_SIZE 2             //dr muss 2^n betragen (8, 16, 32, 64 ...)
+#define BUFFER_SIZE 8             //dr muss 2^n betragen (8, 16, 32, 64 ...)
 //* Longpress repeat
 #define FUNCTION_NOPTIME   800   //JM SCREEN NOP TIMEOUT FOR FIRST 15 FUNCTIONS
 
@@ -855,7 +858,7 @@ typedef enum {
 #define TI_SA                                     46
 #define TI_INACCURATE                             47
 #define TI_UNDO_DISABLED                          48
-#define TI_VIEW                                   49
+//#define TI_VIEW                                   49
 #define TI_SOLVER_VARIABLE                        50
 #define TI_SOLVER_FAILED                          51
 #define TI_ACC                                    52
@@ -896,7 +899,7 @@ typedef enum {
 #define TI_SETTINGS_RESTORED                      87    //DL
 #define TI_SUMS_RESTORED                          88    //DL
 #define TI_VARIABLES_RESTORED                     89    //DL
-
+#define TI_SHOWNOTHING                            90
 
 // Register browser mode
 #define RBR_GLOBAL                                 0 // Global registers are browsed
@@ -1346,7 +1349,7 @@ typedef enum {
     #define refreshRegisterLine(a)  {}
     #define displayBugScreen(a)     { printf("\n-----------------------------------------------------------------------\n"); printf("%s\n", a); printf("\n-----------------------------------------------------------------------\n");}
     #define showHideHourGlass()     {}
-    #define refreshScreen()         {}
+    #define refreshScreen(a)        {}
     #define refreshLcd(a)           {}
     #define initFontBrowser()       {}
   #endif // TESTSUITE_BUILD && !GENERATE_CATALOGS

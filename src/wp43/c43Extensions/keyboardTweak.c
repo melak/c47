@@ -35,6 +35,7 @@
 #include "stack.h"
 #include "statusBar.h"
 #include "softmenus.h"
+#include "solver/equation.h"
 #include "timer.h"
 
 #include "wp43.h"
@@ -112,36 +113,28 @@ void showAlphaModeonGui(void) {
       calcModeAimGui();
     #endif // PC_BUILD
   }                                                         //^^
-  doRefreshSoftMenu = true;             //jm
+  screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;             //jm
 }
 
 
 void showShiftState(void) {
   #if !defined(TESTSUITE_BUILD)
-    //showAlphaModeonGui();
-
     #if defined(PC_BUILD_TELLTALE)
       printf("    >>> showShiftState: calcMode=%d\n", calcMode);
     #endif // PC_BUILD_TELLTALE
 
-    if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER && temporaryInformation != TI_SHOW_REGISTER_BIG && temporaryInformation != TI_SHOW_REGISTER_SMALL && temporaryInformation != TI_SHOW_REGISTER) {
+    if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER && temporaryInformation != TI_SHOW_REGISTER_BIG && temporaryInformation != TI_SHOW_REGISTER_SMALL && temporaryInformation != TI_SHOWNOTHING && temporaryInformation != TI_SHOW_REGISTER) {
       if(shiftF) {                        //SEE screen.c:refreshScreen
-        showGlyph(STD_SUP_f, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true);   // f is pixel 4+8+3 wide
+        showShiftStateF();
         show_f_jm();
         showHideAlphaMode();
       }
       else if(shiftG) {                   //SEE screen.c:refreshScreen
-        showGlyph(STD_SUP_g, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true);   // g is pixel 4+10+1 wide
+        showShiftStateG();
         show_g_jm();
         showHideAlphaMode();
       }
       else {
-        //showGlyph(" ", &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true);         // space clears the f and g
-        //#if defined(DMCP_BUILD)
-        //  start_buzzer_freq(100000); //Click when shifts are cleared for TESTING
-        //  sys_delay(5);
-        //  stop_buzzer();
-        //#endif // DMCP_BUILD
         clearShiftState();
         clear_fg_jm();
         showHideAlphaMode();
@@ -170,8 +163,10 @@ void resetShiftState(void) {
     shiftF = false;
     shiftG = false;
     screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
+//    screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR | SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU;  
+      //this line can be added to block any other screen updates during shiftstate reset
     showShiftState();
-    refreshScreen();
+    refreshScreen(100);
   }                                                                             //^^
   refreshModeGui();                                                             //JM refreshModeGui
 }
@@ -198,18 +193,16 @@ void resetKeytimers(void) {
   * \return void
   ***********************************************/
   void show_f_jm(void) {
-    //showSoftmenuCurrentPart();                                                    //JM - Redraw boxes etc after shift is shown
-    //JMTOCHECK2        if(softmenuStackPointer >= 0) {                             //JM - Display dot in the f - line
     if(!FN_timeouts_in_progress && calcMode != CM_ASN_BROWSER) {
       if(!ULFL) {
         underline(1);
         ULFL = !ULFL;
-        doRefreshSoftMenu = true;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
       }
       if(ULGL) {
         underline(2);
         ULGL = !ULGL;
-        doRefreshSoftMenu = true;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
       }
     }
     //}                                                                             //JM - Display dot in the f - line
@@ -217,18 +210,16 @@ void resetKeytimers(void) {
 
 
   void show_g_jm(void) {
-    //showSoftmenuCurrentPart();                                                    //JM - Redraw boxes etc after shift is shown
-    //JMTOCHECK2        if(softmenuStackPointer >= 0) {                             //JM - Display dot in the g - line
     if(!FN_timeouts_in_progress && calcMode != CM_ASN_BROWSER) {
       if(ULFL) {
         underline(1);
         ULFL = !ULFL;
-        doRefreshSoftMenu = true;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
       }
       if(!ULGL) {
         underline(2);
         ULGL = !ULGL;
-        doRefreshSoftMenu = true;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
       }
     }
     //}                                                                             //JM - Display dot in the g - line
@@ -236,17 +227,16 @@ void resetKeytimers(void) {
 
 
   void clear_fg_jm(void) {
-    //showSoftmenuCurrentPart();            //JM TO REMOVE STILL !!                 //JM - Redraw boxes etc after shift is shown
     if(!FN_timeouts_in_progress) {        //Cancel lines
       if(ULFL) {
         underline(1);
         ULFL = !ULFL;
-        doRefreshSoftMenu = true;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
       }
       if(ULGL) {
         underline(2);
         ULGL = !ULGL;
-        doRefreshSoftMenu = true;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
       }
     }
   }
@@ -1280,7 +1270,7 @@ void fnT_ARROW(uint16_t command) {
           fnT_ARROW(ITM_T_RIGHT_ARROW);
           while(ixx < 75 && (current_cursor_x >= current_cursor_x_old+5 || current_cursor_y == current_cursor_y_old)) {
             fnT_ARROW(ITM_T_LEFT_ARROW);
-            showStringEdC43(lines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, -100, vmNormal, true, true, true);  //display up to the cursor
+            showStringEdC43(multiEdLines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, -100, vmNormal, true, true, true);  //display up to the cursor
             ixx++;
           }
           break;
@@ -1292,7 +1282,7 @@ void fnT_ARROW(uint16_t command) {
           fnT_ARROW(ITM_T_LEFT_ARROW);
           while(ixx < 75 && (current_cursor_x+5 <= current_cursor_x_old || current_cursor_y == current_cursor_y_old)) {
             fnT_ARROW(ITM_T_RIGHT_ARROW);
-            showStringEdC43(lines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, -100, vmNormal, true, true, true);  //display up to the cursor
+            showStringEdC43(multiEdLines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, -100, vmNormal, true, true, true);  //display up to the cursor
             ixx++;
 
             //printf("###^^^ %d %d %d %d %d\n",ixx,current_cursor_x, current_cursor_x_old, current_cursor_y, current_cursor_y_old);
@@ -1338,17 +1328,15 @@ void fnCla(uint16_t unusedButMandatoryParameter) {
     yCursor = Y_POSITION_OF_AIM_LINE + 6;
     cursorFont = &standardFont;
     cursorEnabled = true;
-    last_CM=252;
+    screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
     #if !defined(TESTSUITE_BUILD)
       clearRegisterLine(AIM_REGISTER_LINE, true, true);
       refreshRegisterLine(AIM_REGISTER_LINE);        //JM Execute here, to make sure that the 5/2 line check is done
     #endif // !TESTSUITE_BUILD
-    last_CM=253;
+    screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
   }
   else if(calcMode == CM_EIM) {
-    while(xCursor > 0) {
-      fnKeyBackspace(0);
-    }
+    fnEqCla();
     refreshRegisterLine(NIM_REGISTER_LINE);
   }
 }
@@ -1358,10 +1346,11 @@ void fnCln(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
     nimNumberPart = NP_EMPTY;
     calcModeNim(0);
-    last_CM=252;
+    screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
     refreshRegisterLine(REGISTER_X);        //JM Execute here, to make sure that the 5/2 line check is done
-    last_CM=253;
+    screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
     addItemToNimBuffer(ITM_0);
+    screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
   #endif // !TESTSUITE_BUILD
 }
 

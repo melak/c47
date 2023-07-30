@@ -153,7 +153,8 @@ void configCommon(uint16_t idx) {
     kbd_usr[8].gShifted = ITM_Rup;          //Replace x-rt-y with Rup
     fnSetFlag(FLAG_USER);                    //Set USER mode
     fnRefreshState();
-    refreshScreen();
+    screenUpdatingMode = SCRUPD_AUTO;
+    refreshScreen(160);
   }
 
 
@@ -167,6 +168,8 @@ void configCommon(uint16_t idx) {
     SetSetting(ITM_CPXRES1);                 //Set CPXRES
     SetSetting(ITM_SPCRES1);                 //Set SPCRES
     setSystemFlag(FLAG_CPXj);
+    screenUpdatingMode = SCRUPD_AUTO;
+    refreshScreen(161);
   }
 
 
@@ -206,7 +209,8 @@ void configCommon(uint16_t idx) {
     fnDrop(0);
     fnDrop(0);
     runFunction(ITM_SQUARE);
-    refreshScreen();
+    screenUpdatingMode = SCRUPD_AUTO;
+    refreshScreen(162);
   }
 #endif // !TESTSUITE_BUILD
 
@@ -1288,7 +1292,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
       if(SH_BASE_HOME) showSoftmenu(mm_MNU_HOME); //JM Reset to BASE MENU HOME;
     #endif // !TESTSUITE_BUILD
 
-    SHOWregis = 9999;                                          //JMSHOW
+    showRegis = 9999;                                          //JMSHOW
 
     //JM defaults vv: CONFIG STO/RCL
 
@@ -1345,7 +1349,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     #endif // !TESTSUITE_BUILD
     fnUserJM(USER_KRESET);                                      //JM USER
     temporaryInformation = TI_NO_INFO;
-    refreshScreen();
+    refreshScreen(163);
 
     //kbd_usr[0].primary     = ITM_CC;                         //JM CPX TEMP DEFAULT        //JM note. over-writing the content of setupdefaults
     //kbd_usr[0].gShifted    = KEY_TYPCON_UP;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
@@ -1432,9 +1436,8 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     #if !defined(TESTSUITE_BUILD)
       showSoftmenuCurrentPart();
     #endif // !TESTSUITE_BUILD
-    doRefreshSoftMenu = true;     //jm dr
-    last_CM = 253;
-    refreshScreen();
+    screenUpdatingMode = SCRUPD_AUTO;
+    refreshScreen(164);
 
     fnClearFlag(FLAG_USER);
     fnRefreshState();

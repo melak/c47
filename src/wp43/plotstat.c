@@ -1,18 +1,5 @@
-/* This file is part of 43S.
- *
- * 43S is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * 43S is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
- */
+// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
 
 #include "plotstat.h"
 
@@ -1168,7 +1155,7 @@ void graphPlotstat(uint16_t selection){
         minN_y = 0;
         minN_x = SCREEN_WIDTH-SCREEN_HEIGHT_GRAPH;
       }
-      if(xN<SCREEN_WIDTH_GRAPH && xN>minN_x && yN<SCREEN_HEIGHT_GRAPH && yN>minN_y) {
+      if(xN<SCREEN_WIDTH_GRAPH && xN>=minN_x && yN<SCREEN_HEIGHT_GRAPH && yN>=minN_y) {
         yn = yN;
         xn = xN;
 
@@ -1203,14 +1190,14 @@ void graphPlotstat(uint16_t selection){
             if(xN >= SCREEN_WIDTH_GRAPH) {
               printf("x>>%u ", SCREEN_WIDTH_GRAPH);
             }
-            else if(xN <= minN_x) {
+            else if(xN < minN_x) {
               printf("x<<%u ", minN_x);
             }
 
             if(yN >= SCREEN_HEIGHT_GRAPH) {
               printf("y>>%u ", SCREEN_HEIGHT_GRAPH);
             }
-            else if(yN <= 1+minN_y) {
+            else if(yN < 1+minN_y) {
               printf("y<<%u ", 1+minN_y);
             }
           printf("\n");
@@ -1765,6 +1752,7 @@ void fnPlotStat(uint16_t plotMode){
       else {
         if(plotMode == PLOT_GRAPH) {
           calcMode = CM_GRAPH;
+          screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
           plotSelection = 0;
           PLOT_AXIS     = true;
           PLOT_LINE     = true;
@@ -1925,8 +1913,8 @@ void fnPlotRegressionLine(uint16_t plotMode){
 
 
 void fnPlotZoom(uint16_t unusedButMandatoryParameter){
-   PLOT_ZOOM = (PLOT_ZOOM + 1) & 0x03;
-   switch(calcMode) {
+  PLOT_ZOOM = (PLOT_ZOOM + 1) & 0x03;
+  switch(calcMode) {
     case CM_PLOT_STAT: {
       if(PLOT_ZOOM != 0) {
          PLOT_AXIS = true;
@@ -1943,10 +1931,7 @@ void fnPlotZoom(uint16_t unusedButMandatoryParameter){
     default: {
       break;
     }
-   }
-  #if !defined(TESTSUITE_BUILD)
-     void refreshScreen(void);
-  #endif // !TESTSUITE_BUILD
+  }
 }
 
 

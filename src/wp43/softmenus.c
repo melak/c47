@@ -1,18 +1,5 @@
-/* This file is part of 43S.
- *
- * 43S is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * 43S is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
- */
+// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
 
 #include "softmenus.h"
 
@@ -702,6 +689,7 @@ TO_QSPI const int16_t menu_GAP_R[]       = { ITM_GAPPER_R,                  ITM_
                                              ITM_GAPWIDPER_R,               ITM_GAPWIDCOM_R,            ITM_GAPWIDDOT_R,          ITM_GAPAPO_R,          ITM_GAPDBLSPC_R,             ITM_GAPUND_R,
                                              ITM_GRP_R,                     ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_GAPNARSPC_R,             ITM_NULL                         };
 
+TO_QSPI const int16_t menu_SHOW[]        = {  };
 
 
 
@@ -846,8 +834,9 @@ TO_QSPI const softmenu_t softmenu[] = {
 /* 135 */  {.menuItem = -MNU_GAP_L,       .numItems = sizeof(menu_GAP_L         )/sizeof(int16_t), .softkeyItem = menu_GAP_L          },
 /* 136 */  {.menuItem = -MNU_GAP_RX,      .numItems = sizeof(menu_GAP_RX        )/sizeof(int16_t), .softkeyItem = menu_GAP_RX         },
 /* 137 */  {.menuItem = -MNU_GAP_R,       .numItems = sizeof(menu_GAP_R         )/sizeof(int16_t), .softkeyItem = menu_GAP_R          },
-/* 138 */  {.menuItem = -MNU_INL_TST,     .numItems = sizeof(menu_Inl_Tst       )/sizeof(int16_t), .softkeyItem = menu_Inl_Tst        },
-/* 139 */  {.menuItem =  0,               .numItems = 0,                                           .softkeyItem = NULL                }
+/* 138 */  {.menuItem = -MNU_SHOW,        .numItems = sizeof(menu_SHOW          )/sizeof(int16_t), .softkeyItem = menu_SHOW           },
+/* 139 */  {.menuItem = -MNU_INL_TST,     .numItems = sizeof(menu_Inl_Tst       )/sizeof(int16_t), .softkeyItem = menu_Inl_Tst        },
+/* 140 */  {.menuItem =  0,               .numItems = 0,                                           .softkeyItem = NULL                }
 };
 
 
@@ -1698,7 +1687,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
       char tmp[200]; sprintf(tmp,"^^^^showSoftmenuCurrentPart: Showing Softmenu id=%d\n",m); jm_show_comment(tmp);
     #endif // PC_BUILD
     if(!(m==0 && !jm_BASE_SCREEN) && calcMode != CM_FLAG_BROWSER && calcMode != CM_ASN_BROWSER && calcMode != CM_FONT_BROWSER && calcMode != CM_REGISTER_BROWSER && calcMode != CM_BUG_ON_SCREEN) {           //JM: Added exclusions, as this procedure is not only called from refreshScreen, but from various places due to underline
-    clearScreen_old(false, false, true); //JM, added to ensure the f/g underlines are deleted
+//    clearScreen_old(false, false, true); //JM, added to ensure the f/g underlines are deleted
 
     if(tam.mode == TM_KEY && !tam.keyInputFinished) {
       for(y=0; y<=2; y++) {
@@ -2079,8 +2068,6 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
 
     softmenuStack[0].softmenuId = softmenuId;
     softmenuStack[0].firstItem = lastCatalogPosition[catalog];
-
-      doRefreshSoftMenu = true;     //dr
   }
 
 
@@ -2091,8 +2078,6 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
 
     xcopy(softmenuStack, softmenuStack + 1, (SOFTMENU_STACK_SIZE - 1) * sizeof(softmenuStack_t)); // shifting the entire stack
     memset(softmenuStack + SOFTMENU_STACK_SIZE - 1, 0, sizeof(softmenuStack_t)); // Put MyMenu in the last stack element
-
-    doRefreshSoftMenu = true;     //dr
 
     if(softmenuStack[0].softmenuId == 0 && calcMode == CM_AIM) { // MyMenu displayed and in AIM
       softmenuStack[0].softmenuId = 1; // MyAlpha
@@ -2143,14 +2128,14 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
       }
     #endif // !INLINE_TEST
 
+    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+
     enterAsmModeIfMenuIsACatalog(id);
 
     if(id == 0) {
       displayBugScreen(bugScreenIdMustNotBe0);
       return;
     }
-
-    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
 
     if(id == -MNU_ALPHAINTL && alphaCase == AC_LOWER) { // alphaINTL
       id = -MNU_ALPHAintl;
@@ -2161,6 +2146,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
     else if(id == -MNU_Solver || id == -MNU_Sf || id == -MNU_1STDERIV || id == -MNU_2NDDERIV) {
       int32_t numberOfVars = -1;
       currentSolverStatus = SOLVER_STATUS_USES_FORMULA | SOLVER_STATUS_INTERACTIVE;
+      currentMvarLabel = INVALID_VARIABLE;
       switch(-id) {
         case MNU_Solver: {
           currentSolverStatus |= SOLVER_STATUS_EQUATION_SOLVER;
@@ -2342,7 +2328,7 @@ void fnExitAllMenus(uint16_t unusedButMandatoryParameter) {
 
 void fnMenuDump(uint16_t menu, uint16_t item) {                              //JMvv procedure to dump all menus. First page only. To mod todump all pages
 #if defined(PC_BUILD)
-  doRefreshSoftMenu = true;
+  screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
   showSoftmenu(softmenu[menu].menuItem);
   softmenuStack[0].firstItem += item;
   showSoftmenuCurrentPart();

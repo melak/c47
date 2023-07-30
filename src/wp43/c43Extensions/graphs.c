@@ -278,12 +278,13 @@ void fnPlotSQ(uint16_t unusedButMandatoryParameter) {
     previousCalcMode = CM_NORMAL;
   }
   calcMode = CM_GRAPH;
+  screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
   #if !defined(TESTSUITE_BUILD)
     if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_PLOT) {
       showSoftmenu(-MNU_PLOT);                         //JM MENU Prevent resetting the softmenu to the default no 1 page position
     }
   #endif // !TESTSUITE_BUILD
-  doRefreshSoftMenu = true;             //Plot graph is part of refreshScreen
+  screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
 }
 
 
@@ -293,6 +294,7 @@ void fnListXY(uint16_t unusedButMandatoryParameter) {
     calcMode = CM_LISTXY; //Used to view graph/listing
     ListXYposition = 0;
     }
+  screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
   #endif // !TESTSUITE_BUILD
 }
 
@@ -1008,7 +1010,7 @@ void graph_plotmem(void) {
             minN_y = 0;
             minN_x = SCREEN_WIDTH-SCREEN_HEIGHT_GRAPH;
           }
-          if(xN < SCREEN_WIDTH_GRAPH && xN > minN_x && yN < SCREEN_HEIGHT_GRAPH && yN > minN_y) {
+          if(xN < SCREEN_WIDTH_GRAPH && xN >= minN_x && yN < SCREEN_HEIGHT_GRAPH && yN >= minN_y) {
             //yo = yn;                              //old , new, to be able to draw a line between samples
             yn = yN;
             //xo = xn;
@@ -1115,16 +1117,16 @@ void graph_plotmem(void) {
               if(!(xN < SCREEN_WIDTH_GRAPH)) {
                 printf("NOT xN<SCREEN_WIDTH_GRAPH; ");
               }
-              if(!(xN > minN_x)) {
-                printf("NOT xN>minN_x; ");
+              if(!(xN >= minN_x)) {
+                printf("NOT xN>=minN_x; ");
               }
               if(!(yN < SCREEN_HEIGHT_GRAPH)) {
                 printf("NOT yN<SCREEN_HEIGHT_GRAPH");
               }
-              if(!(yN > minN_y)) {
-                printf("NOT yN>minN_y; ");
+              if(!(yN >= minN_y)) {
+                printf("NOT yN>=minN_y; ");
               }
-              printf("Not plotted: xN=%d<SCREEN_WIDTH_GRAPH=%d && xN=%d>minN_x=%d && yN=%d<SCREEN_HEIGHT_GRAPH=%d && yN=%d>minN_y=%d\n", xN, SCREEN_WIDTH_GRAPH, xN, minN_x, yN, SCREEN_HEIGHT_GRAPH, yN, minN_y);
+              printf("Not plotted: xN=%d<SCREEN_WIDTH_GRAPH=%d && xN=%d>=minN_x=%d && yN=%d<SCREEN_HEIGHT_GRAPH=%d && yN=%d>=minN_y=%d\n", xN, SCREEN_WIDTH_GRAPH, xN, minN_x, yN, SCREEN_HEIGHT_GRAPH, yN, minN_y);
             #endif // PC_BUILD
           }
           if(keyWaiting()) {

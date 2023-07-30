@@ -1,18 +1,5 @@
-/* This file is part of 43S.
- *
- * 43S is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * 43S is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
- */
+// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
 
 #include "saveRestoreCalcState.h"
 
@@ -119,7 +106,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
 
     if(calcMode == CM_CONFIRMATION) {
       calcMode = previousCalcMode;
-      refreshScreen();
+      refreshScreen(90);
     }
 
     printf("Begin of calc's backup\n");
@@ -374,7 +361,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
     save(&fnXEQMENUpos,                       sizeof(fnXEQMENUpos));
     save(&indexOfItemsXEQM,                   sizeof(indexOfItemsXEQM));
     save(&T_cursorPos,                        sizeof(T_cursorPos));               //JM ^^
-    save(&SHOWregis,                          sizeof(SHOWregis));                 //JM ^^
+    save(&showRegis,                          sizeof(showRegis));                 //JM ^^
     save(&mm_MNU_HOME,                        sizeof(mm_MNU_HOME));               //JM ^^
     save(&mm_MNU_ALPHA,                       sizeof(mm_MNU_ALPHA));              //JM ^^
     save(&displayStackSHOIDISP,               sizeof(displayStackSHOIDISP));      //JM ^^
@@ -423,7 +410,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
       }
       else {
         printf("Cannot restore calc's memory from file backup.bin! Performing RESET\n");
-        refreshScreen();
+        refreshScreen(91);
         return;
       }
     }
@@ -435,7 +422,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
     restore(&ramSize,                            sizeof(ramSize));
     if(backupVersion > BACKUP_VERSION || backupVersion < OLDEST_COMPATIBLE_BACKUP_VERSION || ramSize != RAM_SIZE) {
       ioFileClose();
-      refreshScreen();
+      refreshScreen(92);
 
       printf("Cannot restore calc's memory from file backup.bin! File backup.bin is from incompatible backup version.\n");
       printf("               Backup file      Program\n");
@@ -701,7 +688,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
       restore(&fnXEQMENUpos,                       sizeof(fnXEQMENUpos));
       restore(&indexOfItemsXEQM,                   sizeof(indexOfItemsXEQM));
       restore(&T_cursorPos,                        sizeof(T_cursorPos));              //JM ^^
-      restore(&SHOWregis,                          sizeof(SHOWregis));                //JM ^^
+      restore(&showRegis,                          sizeof(showRegis));                //JM ^^
       restore(&mm_MNU_HOME,                        sizeof(mm_MNU_HOME));              //JM ^^
       restore(&mm_MNU_ALPHA,                       sizeof(mm_MNU_ALPHA));             //JM ^^
       restore(&displayStackSHOIDISP,               sizeof(displayStackSHOIDISP));     //JM ^^
@@ -824,7 +811,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
         }
 
       updateMatrixHeightCache();
-      refreshScreen();
+      refreshScreen(93);
     }
   }
 #endif // PC_BUILD
@@ -2650,15 +2637,15 @@ void fnLoad(uint16_t loadMode) {
     doLoad(loadMode, 0, 0, 0, manualLoad);
   }
   fnClearFlag(FLAG_USER);
-  doRefreshSoftMenu = true;
-  refreshScreen();
+  screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+  refreshScreen(94);
 }
 
 void fnLoadAuto(void) {
   doLoad(LM_ALL, 0, 0, 0, autoLoad);
   fnClearFlag(FLAG_USER);
-  doRefreshSoftMenu = true;
-  refreshScreen();
+  screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+  refreshScreen(95);
 }
 
 #undef BACKUP

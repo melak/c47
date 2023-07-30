@@ -1404,7 +1404,7 @@
 #define MNU_PFN                     1356
 #define MNU_PFN_MORE                1357
 #define MNU_CONVP                   1358
-#define ITM_1359                    1359
+#define MNU_SHOW                    1359
 #define MNU_REALS                   1360
 #define MNU_Solver                  1361
 #define MNU_STAT                    1362

@@ -1,18 +1,5 @@
-/* This file is part of 43S.
- *
- * 43S is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * 43S is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
- */
+// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
 
 #include "wp43.h"
 
@@ -176,7 +163,6 @@ int16_t                showFunctionNameItem;
 
 uint8_t               displayStackSHOIDISP;          //JM SHOIDISP
 bool_t                numLock;                       //JM
-bool_t                doRefreshSoftMenu;                       //dr
 bool_t                jm_BASE_SCREEN;                          //JM Screen / keyboard operation setup
 bool_t                jm_G_DOUBLETAP;                          //JM Screen / keyboard operation setup
 bool_t                jm_temporary;                             //JMHOME
@@ -207,7 +193,7 @@ int16_t                longpressDelayedkey2;         //JM
 int16_t                longpressDelayedkey3;         //JM
 int16_t                T_cursorPos;                  //JMCURSOR
 int16_t                displayAIMbufferoffset;       //JMCURSOR
-int16_t                SHOWregis;                    //JMSHOW
+uint16_t               showRegis;                    //JMSHOW
 int16_t                ListXYposition;               //JMSHOW
 int16_t                mm_MNU_HOME;                  //JM
 int16_t                mm_MNU_ALPHA;                 //JM
@@ -459,7 +445,7 @@ bool_t temporaryFlagRect;
   lcd_clear_buf();
 #endif // NOKEYMAP                                           //^^
     doFnReset(CONFIRMED, loadAutoSav);
-    refreshScreen();
+    refreshScreen(71);
 
   #if defined(JMSHOWCODES)                                        //JM test
     telltale_lastkey = 0;                                   //JM test
@@ -728,7 +714,7 @@ bool_t temporaryFlagRect;
             screenUpdatingMode = SCRUPD_AUTO;
             runFunction(ITM_RS);
           }
-          refreshScreen();
+          refreshScreen(72);
         }
       }
 
@@ -912,7 +898,7 @@ bool_t temporaryFlagRect;
           btnReleased(charKey);
           if(calcMode == CM_PEM && shiftF && ((charKey[0] == '1' && charKey[1] == '7') || (charKey[0] == '2' && charKey[1] == '2'))) {    //JM C43
             shiftF = false;
-            refreshScreen();
+            refreshScreen(73);
           }
         }
 //      keyAutoRepeat = 0;
@@ -930,7 +916,7 @@ bool_t temporaryFlagRect;
         keyClick(2);
           if(calcMode == CM_PEM && shiftF && ((charKey[0] == '1' && charKey[1] == '7') || (charKey[0] == '2' && charKey[1] == '2'))) {   //JM C43
             shiftF = false;
-            refreshScreen();
+            refreshScreen(74);
           }
         //lcd_refresh_dma();
       }

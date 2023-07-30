@@ -462,27 +462,27 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         if(item == ITM_RIGHT_ARROW) {
           mimEnter(true);
           setJRegisterAsInt(true, getJRegisterAsInt(true) + 1);
-          refreshScreen();
+          refreshScreen(51);
         }
         else if(item == ITM_LEFT_ARROW) {
           mimEnter(true);
           setJRegisterAsInt(true, getJRegisterAsInt(true) - 1);
-          refreshScreen();
+          refreshScreen(52);
         }
         else if(item == ITM_UP_ARROW) {
           mimEnter(true);
           setIRegisterAsInt(true, getIRegisterAsInt(true) - 1);
-          refreshScreen();
+          refreshScreen(53);
         }
         else if(item == ITM_DOWN_ARROW) {
           mimEnter(true);
           setIRegisterAsInt(true, getIRegisterAsInt(true) + 1);
-          refreshScreen();
+          refreshScreen(54);
         }
 
         if((int16_t)item < 0) {
           showSoftmenu(item);
-          refreshScreen();
+          refreshScreen(55);
           return;
         }
 

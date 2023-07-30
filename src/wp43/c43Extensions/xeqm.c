@@ -1125,8 +1125,16 @@ void fnXEQMENU(uint16_t XEQM_no) {
     clearScreen_old(false, true, true);
     print_linestr("Loading XEQM program file:", true);
 
+    screenUpdatingMode = SCRUPD_AUTO | SCRUPD_ONE_TIME_FLAGS;
+    refreshScreen(61);
+    clearScreen_old(!clrStatusBar, clrRegisterLines, clrSoftkeys);
+
     char line[XEQ_STR_LENGTH_LONG];
     XEQMENU_Selection( XEQM_no, line, EXEC, !SCAN);
+
+    screenUpdatingMode = SCRUPD_AUTO;
+    refreshScreen(62);
+
 
     //calcMode = CM_BUG_ON_SCREEN;
     //temporaryInformation = TI_NO_INFO;
@@ -1269,7 +1277,7 @@ void fnXEQMLOAD (uint16_t XEQM_no) {                                  //DISK to 
 
 
 void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
-  if(aimBuffer[0] != 0) {          //JM if something already in the AIMB|UFFER when X-EDIT is called, store this in the stack first
+  if(calcMode == CM_AIM && aimBuffer[0] != 0) {          //JM if something already in the AIMB|UFFER when X-EDIT is called, store this in the stack first
     setSystemFlag(FLAG_ASLIFT);
     liftStack();
     copySourceRegisterToDestRegister(REGISTER_Y, REGISTER_X);
@@ -1297,7 +1305,7 @@ void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
       //refreshRegisterLine(REGISTER_Z);
       //refreshRegisterLine(REGISTER_Y);
       refreshRegisterLine(REGISTER_X);        //JM Execute here, to make sure that the 5/2 line check is done
-      last_CM = 253;
+      screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
     }
   }
   else {
@@ -1320,7 +1328,7 @@ void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
         T_cursorPos = stringByteLength(aimBuffer);
         fnDrop(0);
         refreshRegisterLine(REGISTER_X);        //JM Execute here, to make sure that the 5/2 line check is done
-        last_CM = 253;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
       }
     }
 
@@ -1356,10 +1364,8 @@ void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
       fnXEQMEDIT(0);
     }
   }
-  last_CM = 252;
-  refreshScreen();
-  last_CM = 251;
-  refreshScreen();
+  screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
+  refreshScreen(63);
 }
 
 
