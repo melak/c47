@@ -289,6 +289,9 @@ void fnCvtNmiKm(uint16_t multiplyDivide) {
   unitConversion(const_NmiToKm, multiplyDivide);
 }
 
+void fnCvtNmiMi(uint16_t multiplyDivide) {
+  unitConversion(const_NmiToMi, multiplyDivide);  
+}
 
 void fnCvtFtM(uint16_t multiplyDivide) {
   unitConversion(const_FtToM, multiplyDivide);
@@ -466,6 +469,56 @@ void fnCvtGradRad(uint16_t multiplyDivide) {
   }
   unitConversion(const_GradRad, multiplyDivide);
 }
+
+
+void fnCvtFurtom    (uint16_t multiplyDivide) {
+  unitConversion(const_furToM,   multiplyDivide);
+}
+
+void fnCvtFtntos    (uint16_t multiplyDivide) {
+  unitConversion(const_ftnToS,   multiplyDivide);
+}
+
+void fnCvtFpftomps  (uint16_t multiplyDivide) {
+  unitConversion(const_fpfToMps, multiplyDivide);
+}
+
+void fnCvtBrdstom   (uint16_t multiplyDivide) {
+  unitConversion(const_brdsTom,  multiplyDivide);
+}
+
+void fnCvtFirtokg   (uint16_t multiplyDivide) {
+  unitConversion(const_firToKg,  multiplyDivide);
+}
+
+void fnCvtFpftokph  (uint16_t multiplyDivide) {
+  unitConversion(const_fpfToKph, multiplyDivide);
+}
+
+void fnCvtBrdstoin  (uint16_t multiplyDivide) {
+  unitConversion(const_brdsToIn, multiplyDivide);
+}
+
+void fnCvtFirtolb   (uint16_t multiplyDivide) {
+  unitConversion(const_firToLb,  multiplyDivide);
+}
+
+void fnCvtFpftomph  (uint16_t multiplyDivide) {
+  unitConversion(const_fpfToMph, multiplyDivide);
+}
+
+void fnCvtFpstokph  (uint16_t multiplyDivide) {
+  unitConversion(const_fpsToKph, multiplyDivide);
+}
+
+void fnCvtFpstomps  (uint16_t multiplyDivide) {
+  unitConversion(const_fpsToMps, multiplyDivide);
+}
+
+
+
+
+
 
 
 

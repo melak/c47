@@ -435,7 +435,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
   ctxtReal39.digits =  ((displayFormat == DF_FIX || displayFormat == DF_SF) ? 24 : displayHasNDigits); // This line is for FIX n displaying more than 16 digits. e.g. in FIX 15: 123 456.789 123 456 789 123
   //ctxtReal39.digits =  displayHasNDigits; // This line is for fixed number of displayed digits, e.g. in FIX 15: 123 456.789 123 456 8
-  if(checkHP) ctxtReal39.digits = 10;
+  if(checkHP) ctxtReal39.digits = min(10,displayHasNDigits);
   realPlus(&value, &value, &ctxtReal39);
   ctxtReal39.digits = 39;
   realToReal34(&value, &value34);
@@ -1139,6 +1139,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
 void complex34ToDisplayString(const complex34_t *complex34, char *displayString, const font_t *font, int16_t maxWidth, int16_t displayHasNDigits, bool_t limitExponent, bool_t frontSpace, const uint16_t tagAngle, const bool_t tagPolar) {
   uint8_t savedDisplayFormatDigits = displayFormatDigits;
+  uint8_t saveddisplayFormat       = displayFormat;
 
   if(updateDisplayValueX) {
     displayValueX[0] = 0;
@@ -1146,6 +1147,10 @@ void complex34ToDisplayString(const complex34_t *complex34, char *displayString,
 
   complex34ToDisplayString2(complex34, displayString, displayHasNDigits, limitExponent, frontSpace, tagAngle, tagPolar);
   while(stringWidth(displayString, font, true, true) > maxWidth) {
+
+    //complex34ToDisplayString2(complex34, displayString, displayHasNDigits, limitExponent, frontSpace, tagAngle, tagPolar);
+    //printf("#### Xw=%i displayHasNDigits=%u  displayFormatDigits=%u str:%s\n",stringWidth(displayString, font, true, true),displayHasNDigits,displayFormatDigits,displayString);
+
     if(displayFormat == DF_ALL) {
       if(displayHasNDigits == 2) {
         break;
@@ -1157,6 +1162,7 @@ void complex34ToDisplayString(const complex34_t *complex34, char *displayString,
         break;
       }
       displayFormatDigits--;
+      if(displayFormatDigits == 3) displayFormat = DF_ALL;
     }
 
     if(updateDisplayValueX) {
@@ -1166,6 +1172,7 @@ void complex34ToDisplayString(const complex34_t *complex34, char *displayString,
     complex34ToDisplayString2(complex34, displayString, displayHasNDigits, limitExponent, frontSpace, tagAngle, tagPolar);
   }
   displayFormatDigits = savedDisplayFormatDigits;
+  displayFormat       = saveddisplayFormat;
 }
 
 
@@ -1190,6 +1197,7 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
   }
 
   constantFractionsMode = CF_COMPLEX1;  //JM
+//printf("###>> displayHasNDigits=%u\n",displayHasNDigits);
   real34ToDisplayString2(&real34, displayString, displayHasNDigits, limitExponent, false, frontSpace);
 
   if(updateDisplayValueX) {                //This is used by ROUND only and it does not seem to work.
@@ -1202,6 +1210,7 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
   }
 
   constantFractionsMode = CF_COMPLEX2;  //JM
+//printf("###>>> displayHasNDigits=%u\n",displayHasNDigits);
   real34ToDisplayString2(&imag34, displayString + i, displayHasNDigits, limitExponent, false, false);
 
   if(tagPolar) { // polar mode
