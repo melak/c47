@@ -1865,11 +1865,33 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           displayBugScreen(errorMessage);
         }
       }
-
-      if(RADIX34_MARK_CHAR == ',') {
-        for(index=stringByteLength(nimBufferDisplay) - 1; index>0; index--) {
+      uint16_t _len = stringByteLength(nimBufferDisplay);
+      if(RADIX34_MARK_STRING[0] != '.') {
+        for(index=_len - 1; index>0; index--) {
           if(nimBufferDisplay[index] == '.') {
-            nimBufferDisplay[index] = ',';
+            nimBufferDisplay[index] = RADIX34_MARK_STRING[0];
+            if(RADIX34_MARK_STRING[1] != 1) {
+              uint16_t index2=_len;
+              while(index2 >= index) {
+                nimBufferDisplay[index2+1] = nimBufferDisplay[index2];
+                index2--;
+              }
+              nimBufferDisplay[index+1] = RADIX34_MARK_STRING[1];
+            }
+          }
+        }
+      }
+      for(index=stringByteLength(nimBufferDisplay) - 1; index>0; index--) {
+        if(nimBufferDisplay[index] == (char)0xab) {
+          nimBufferDisplay[index] = SEPARATOR_LEFT[0];
+          if(nimBufferDisplay[index+1] == 1) {
+            nimBufferDisplay[index+1] = SEPARATOR_LEFT[1];
+          }
+        }
+        if(nimBufferDisplay[index] == (char)0xbb) {
+          nimBufferDisplay[index] = SEPARATOR_RIGHT[0];
+          if(nimBufferDisplay[index+1] == 1) {
+            nimBufferDisplay[index+1] = SEPARATOR_RIGHT[1];
           }
         }
       }
@@ -1917,12 +1939,17 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     if((numDigits - nth) % GROUPWIDTH_LEFT == 1 || GROUPWIDTH_LEFT == 1) {
       char tt[4];
       if(SEPARATOR_LEFT[1]!=1) {
-        strcpy(tt,SEPARATOR_LEFT);
+        //strcpy(tt,SEPARATOR_LEFT);
+        tt[0] = 0xab;  //token
+        tt[1] = 1;
+        tt[2] = 0;
         strcpy(displayBuffer, tt);
         return 2;
       }
       else {
-        tt[0] = SEPARATOR_LEFT[0]; tt[1] = 0;
+        //tt[0] = SEPARATOR_LEFT[0]; tt[1] = 0;
+        tt[0] = 0xab;  //token
+        tt[1] = 0;
         strcpy(displayBuffer, tt);
         return 1;
       }
@@ -1946,12 +1973,17 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     if(nth % GROUPWIDTH_RIGHT == GROUPWIDTH_RIGHT - 1) {
       char tt[4];
       if(SEPARATOR_RIGHT[1]!=1) {
-        strcpy(tt,SEPARATOR_RIGHT);
+        //strcpy(tt,SEPARATOR_RIGHT);
+        tt[0] = 0xbb;   //token
+        tt[1] = 1;
+        tt[2] = 0;
         strcpy(displayBuffer, tt);
         return 2;
       }
       else {
-        tt[0] = SEPARATOR_RIGHT[0]; tt[1] = 0;
+        //tt[0] = SEPARATOR_RIGHT[0]; tt[1] = 0;
+        tt[0] = 0xbb;  //token
+        tt[1] = 0;
         strcpy(displayBuffer, tt);
         return 1;
       }
