@@ -222,7 +222,8 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
         case -MNU_CONVA :
         case -MNU_CONVS :
         case -MNU_CONVANG :
-        case -MNU_MISC : {
+        case -MNU_MISC :
+        case -MNU_CONVHUM : {
           errorMessage[0]=0;
           strcat(errorMessage,indexOfItems[func].itemCatalogName);
           temporaryInformation = TI_NO_INFO;
