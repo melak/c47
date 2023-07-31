@@ -722,7 +722,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
       MY_ALPHA_MENU = mm_MNU_ALPHA;
       setFGLSettings(fgLN);
 
-      if(temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL)
+      if(SHOWMODE)                             //clear SHOW to normal mode as it is not reasonable to switch calculator on on SHOW mode
         temporaryInformation = TI_NO_INFO;
 
       scanLabelsAndPrograms();
