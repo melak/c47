@@ -1173,6 +1173,8 @@ void execTimerApp(uint16_t timerType) {
   void getStringBounds(const char *string, const font_t *font, uint32_t *col, uint32_t *row) {
     uint16_t ch = 0;
     uint32_t lcol, lrow;
+    lcol = 0;
+    lrow = 0;
     *col = 0;
     *row = 0;
 
