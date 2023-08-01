@@ -1934,7 +1934,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
                 softmenu[m].menuItem  == -MNU_CONVFP || softmenu[m].menuItem  == -MNU_CONVM    ||
                 softmenu[m].menuItem  == -MNU_CONVX  || softmenu[m].menuItem  == -MNU_CONVV    ||
                 softmenu[m].menuItem  == -MNU_CONVA  || softmenu[m].menuItem  == -MNU_UNITCONV ||
-                softmenu[m].menuItem  == -MNU_MISC) {
+                softmenu[m].menuItem  == -MNU_MISC   || softmenu[m].menuItem  == -MNU_CONVHUM ) {
               showSoftkey2(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
             }
 
