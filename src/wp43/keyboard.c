@@ -1927,7 +1927,7 @@ RELEASE_END:
     if(temporaryInformation == TI_VIEW_REGISTER) {
       temporaryInformation = TI_NO_INFO;
       updateMatrixHeightCache();
-      if(item == ITM_UP1 || item == ITM_DOWN1 || item == ITM_EXIT1) {
+      if(item == ITM_UP1 || item == ITM_DOWN1 || item == ITM_EXIT1 || item == ITM_BACKSPACE) {
         temporaryInformation = TI_VIEW_REGISTER;
       }
     }
@@ -2948,6 +2948,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       case CM_NORMAL: {
         if(temporaryInformation == TI_VIEW_REGISTER) {
           temporaryInformation = TI_NO_INFO;
+          screenUpdatingMode = SCRUPD_AUTO;
         } else
         if(temporaryInformation == TI_SHOW_REGISTER || SHOWMODE) {
           temporaryInformation = TI_NO_INFO;
@@ -3137,12 +3138,13 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         break;
       }
 
-      case CM_LISTXY:                      //JM vv
+      case CM_LISTXY: {                     //JM vv
         calcMode = CM_GRAPH;
         screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
         refreshScreen(125);
         softmenuStack[0].firstItem = 0;
         break;                              //JM ^^
+      }
 
       case CM_GRAPH:
       case CM_PLOT_STAT: {
@@ -3208,11 +3210,12 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       }
     }
 
-    if(temporaryInformation != TI_NO_INFO) {
-      screenUpdatingMode = SCRUPD_AUTO;
-    } else {
-      screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
-    }
+//    if(temporaryInformation != TI_NO_INFO) {
+//      screenUpdatingMode = SCRUPD_AUTO;
+//    } else {
+//      screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+//    }
+    screenUpdatingMode = SCRUPD_AUTO;  //temporary, force screen update following EXIT.
     refreshScreen(127);
     return;
 
@@ -3341,6 +3344,13 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 
     switch(calcMode) {
       case CM_NORMAL: {
+        if(temporaryInformation == TI_VIEW_REGISTER) {
+          temporaryInformation = TI_NO_INFO;
+          keyActionProcessed = true;
+          screenUpdatingMode = SCRUPD_AUTO;
+          return;
+        }
+        else
         if(temporaryInformation == TI_SHOW_REGISTER || SHOWMODE) {
           temporaryInformation = TI_NO_INFO;
           keyActionProcessed = true;
@@ -3675,6 +3685,13 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
       return;
     }
 
+    if(temporaryInformation == TI_VERSION || temporaryInformation == TI_WHO || temporaryInformation == TI_BACKUP_RESTORED) {
+      temporaryInformation = TI_NO_INFO;
+      lastErrorCode = 0;
+      screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
+      return;
+    }
+
     switch(calcMode) {
       case CM_NORMAL:
       case CM_AIM:
@@ -3882,6 +3899,13 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
     if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && softmenu[softmenuStack[0].softmenuId].menuItem == -ITM_MENU) {
       dynamicMenuItem = 19;
       fnProgrammableMenu(NOPARAM);
+      return;
+    }
+
+    if(temporaryInformation == TI_VERSION || temporaryInformation == TI_WHO || temporaryInformation == TI_BACKUP_RESTORED) {
+      temporaryInformation = TI_NO_INFO;
+      lastErrorCode = 0;
+      screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
       return;
     }
 
