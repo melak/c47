@@ -3209,11 +3209,12 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       }
     }
 
-    if(temporaryInformation != TI_NO_INFO) {
-      screenUpdatingMode = SCRUPD_AUTO;
-    } else {
-      screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
-    }
+//    if(temporaryInformation != TI_NO_INFO) {
+//      screenUpdatingMode = SCRUPD_AUTO;
+//    } else {
+//      screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+//    }
+    screenUpdatingMode = SCRUPD_AUTO;  //temporary, force screen update following EXIT.
     refreshScreen(127);
     return;
 

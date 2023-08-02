@@ -77,7 +77,7 @@ uint16_t current_cursor_y = 0;
                                        "RJvM" spc "NL," spc1
                                        "Walter" spc "DE.";
 
-  TO_QSPI static const char *versionStr = VERSION_STRING " [EXIT]";
+  TO_QSPI static const char *versionStr  = "This " VERSION_STRING ", C47 firmware is neither provided nor supported by SwissMicros. [EXIT]";
 
   #if defined(PC_BUILD)
     TO_QSPI static const char *versionStr2 = "C47 Sim " VERSION1 ", compiled " __DATE__;
@@ -1476,20 +1476,18 @@ void execTimerApp(uint16_t timerType) {
       if(stringWidth(string + offset, &numericFont, showLeadingCols, showEndingCols) > SCREEN_WIDTH - 50 ) {  //jump from large letters to small letters
         multiEdLines = 3;
         yMultiLineEdOffset = 1;
-        screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;//screenUpdatingMode = SCRUPD_AUTO;
-        //printf("XXXXX\n");
+        screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
       }
       else {
         multiEdLines = 2;              //jump back to small letters
         yMultiLineEdOffset = 3;
-        screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;//screenUpdatingMode = SCRUPD_AUTO;
-        //printf("YYYYY\n");
+        screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
       }
 
       if(checkHP) {
         multiEdLines = 1;
         yMultiLineEdOffset = 1;
-        screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;//screenUpdatingMode = SCRUPD_AUTO;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
         yincr = 1;
       }
 
@@ -2184,10 +2182,11 @@ void execTimerApp(uint16_t timerType) {
       }
 
       else if(temporaryInformation == TI_VERSION && regist == REGISTER_X) {
-        clearRegisterLine(REGISTER_X, true, true);
+        clearRegisterLine(REGISTER_Z, true, true);
         clearRegisterLine(REGISTER_Y, true, true);
-        showStringEnhanced(versionStr,  &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
-        showStringEnhanced(versionStr2, &standardFont, 1, Y_POSITION_OF_REGISTER_Y_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
+        clearRegisterLine(REGISTER_X, true, true);
+        showStringEnhanced(versionStr2, &standardFont, 1, Y_POSITION_OF_REGISTER_Z_LINE + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
+        showStringEnhanced(versionStr,  &standardFont, 1, Y_POSITION_OF_REGISTER_Y_LINE + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
       }
 
       else if(temporaryInformation == TI_DISP_JULIAN) {
@@ -3982,7 +3981,7 @@ void execTimerApp(uint16_t timerType) {
         #endif // PC_BUILD &&MONITOR_CLRSCR
 
         if(calcMode == CM_NORMAL && screenUpdatingMode != SCRUPD_AUTO && temporaryInformation == TI_SHOWNOTHING) {
-          return;
+          goto RETURN_NORMAL;
         }
 
         if(calcMode == CM_CONFIRMATION) {
@@ -4001,9 +4000,9 @@ void execTimerApp(uint16_t timerType) {
         else if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) {
           screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU);
         }
-        else if(temporaryInformation == TI_SHOWNOTHING) {
-          screenUpdatingMode |= (SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_STACK);
-        }
+        //else if(temporaryInformation == TI_SHOWNOTHING) {
+        //  screenUpdatingMode |= (SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_STACK);
+        //}
 
         _selectiveClearScreen();
         //printf("##> AAAA screenUpdatingMode  MANUAL STACK=%u SKIP MENU ONCE=%u \n",screenUpdatingMode & SCRUPD_MANUAL_STACK, screenUpdatingMode & SCRUPD_SKIP_STACK_ONE_TIME);
@@ -4054,7 +4053,7 @@ void execTimerApp(uint16_t timerType) {
 
         if(currentSolverStatus & SOLVER_STATUS_INTERACTIVE) {
           bool_t mvarMenu = false;
-          for(int i=0; i<SOFTMENU_STACK_SIZE; i++) {
+          for(int i = 0; i < SOFTMENU_STACK_SIZE; i++) {
             if(softmenu[softmenuStack[i].softmenuId].menuItem == -MNU_MVAR) {
               mvarMenu = true;
               break;
@@ -4077,7 +4076,7 @@ void execTimerApp(uint16_t timerType) {
         }
         if(calcMode == CM_EIM) {
           bool_t mvarMenu = false;
-          for(int i=0; i<SOFTMENU_STACK_SIZE; i++) {
+          for(int i = 0; i < SOFTMENU_STACK_SIZE; i++) {
             if(softmenu[softmenuStack[i].softmenuId].menuItem == -MNU_EQ_EDIT) {
               mvarMenu = true;
               break;
@@ -4088,32 +4087,22 @@ void execTimerApp(uint16_t timerType) {
           }
         }
 
-//        if(last_CM != calcMode) {
-//          last_CM = calcMode;
-//          displayShiftAndTamBuffer();
-//
-//          if(temporaryInformation != TI_SHOW_REGISTER_BIG && temporaryInformation != TI_SHOW_REGISTER_SMALL) {       //JM
-//            showSoftmenuCurrentPart();
-//          }
-//        }
-
         if(!(screenUpdatingMode & SCRUPD_MANUAL_SHIFT_STATUS)) {
           if(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME)) {
             clearShiftState();
           }
           displayShiftAndTamBuffer();
         }
-
         if(!(screenUpdatingMode & (SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME))) {
           showSoftmenuCurrentPart();
         }
-
         if(programRunStop == PGM_STOPPED || programRunStop == PGM_WAITING) {
           hourGlassIconEnabled = false;
         }
         if(!(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR)) {
           refreshStatusBar();
         }
+
         #if(REAL34_WIDTH_TEST == 1)
           for(int y=Y_POSITION_OF_REGISTER_Y_LINE; y<Y_POSITION_OF_REGISTER_Y_LINE + 2*REGISTER_LINE_HEIGHT; y++ ) {
             setBlackPixel(SCREEN_WIDTH - largeur - 1, y);
@@ -4122,6 +4111,7 @@ void execTimerApp(uint16_t timerType) {
 
 
 //2023-07-26 this is new and to be tested for stability
+        RETURN_NORMAL:
         screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR | SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU;
 
         #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
@@ -4131,6 +4121,7 @@ void execTimerApp(uint16_t timerType) {
 
 
   int16_t refreshScreenCounter = 0;        //JM
+
   void refreshScreen(uint8_t source) {
     if(running_program_jm) { //JM TEST PROGRAM!
       return;
@@ -4147,11 +4138,6 @@ void execTimerApp(uint16_t timerType) {
       jm_show_calc_state("refreshScreen");
       printf(">>> refreshScreen(%u), refreshScreenCounter=%d calcMode=%d screenUpdatingMode=%d temporaryInformation=%u\n", source, refreshScreenCounter++, calcMode, screenUpdatingMode, temporaryInformation);    //JMYY
     #endif // PC_BUILD
-    //screenUpdatingMode = 0; //0 is ALL REFRESHES; ~0 is NO REFRESHES
-
-//    if(calcMode!=CM_AIM && calcMode!=CM_NIM && calcMode!=CM_PLOT_STAT && calcMode!=CM_GRAPH && calcMode!=CM_LISTXY) {
-//      last_CM = 254;  //JM Force NON-CM_AIM and NON-CM_NIM to refresh to be compatible to 43S
-//    }
 
 
     switch(calcMode) {

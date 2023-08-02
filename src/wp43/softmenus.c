@@ -1201,8 +1201,9 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       default: {
         sprintf(errorMessage, "In function initVariableSoftmenu: unexpected variable softmenu %" PRId16 "!", (int16_t)(-dynamicSoftmenu[menu].menuItem));
                         displayBugScreen(errorMessage);
+      }
     }
-  }
+  screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
   }
 
 
@@ -1677,6 +1678,8 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
   void showSoftmenuCurrentPart(void) {
 
 //JMTOCHECK: Removed exceptions for underline removal.
+    
+    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
 
     maxfLines = 0;
     maxgLines = 0;

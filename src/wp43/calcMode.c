@@ -37,7 +37,7 @@
 #include "wp43.h"
 
 #if !defined(TESTSUITE_BUILD)
-  void fnOff(uint16_t unsuedParamButMandatory) {
+  void fnOff(uint16_t unusedParamButMandatory) {
     shiftF = false;
     shiftG = false;
 
