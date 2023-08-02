@@ -235,6 +235,17 @@
   extern const real_t * const const_HpeToW;
   extern const real_t * const const_YearToS;
   extern const real_t * const const_LbfftToNm;
+  extern const real_t * const const_furToM;
+  extern const real_t * const const_ftnToS;
+  extern const real_t * const const_fpfToMps;
+  extern const real_t * const const_brdsTom;
+  extern const real_t * const const_firToKg;
+  extern const real_t * const const_fpfToKph;
+  extern const real_t * const const_brdsToIn;
+  extern const real_t * const const_firToLb;
+  extern const real_t * const const_fpfToMph;
+  extern const real_t * const const_fpsToKph;
+  extern const real_t * const const_fpsToMps;
   extern const real_t * const const__108;
   extern const real_t * const const__4;
   extern const real_t * const const__1;
