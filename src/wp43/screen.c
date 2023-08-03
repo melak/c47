@@ -3859,7 +3859,7 @@ void execTimerApp(uint16_t timerType) {
   }
   void showShiftStateG(void) {
     //showGlyph(STD_SUP_g, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // g is pixel 4+10+1 wide
-    showStringC43(STD_g, numHalf, nocompress, 0, Y_POSITION_OF_REGISTER_T_LINE-2, vmNormal, false, false);    
+    showStringC43(STD_g, numHalf, nocompress, 0, Y_POSITION_OF_REGISTER_T_LINE-2-4, vmNormal, false, false);    
   }
 
 

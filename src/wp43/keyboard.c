@@ -1209,13 +1209,18 @@ bool_t allowShiftsToClearError = false;
     // Shift f pressed and JM REMOVED shift g not active
     if(key->primary == ITM_SHIFTf && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       if(temporaryInformation == TI_SHOW_REGISTER || SHOWMODE) allowShiftsToClearError = true; //JM
-      if(temporaryInformation == TI_VIEW_REGISTER) {
-        temporaryInformation = TI_NO_INFO;
-        updateMatrixHeightCache();
+      if(temporaryInformation != TI_NO_INFO) {
+        screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
+        if(temporaryInformation == TI_VIEW_REGISTER) {
+          temporaryInformation = TI_NO_INFO;
+          updateMatrixHeightCache();
+        }
+        else {
+          //reconsider
+          temporaryInformation = TI_NO_INFO;     //reconsider: Temporary commented out. This clears SHOW (and other TI's) when fg is pressed. That means SNAP and shiftEXP are not possible with SHOW
+        }
       }
-      else {
-        temporaryInformation = TI_NO_INFO;
-      }
+
       if(lastErrorCode != 0) allowShiftsToClearError = true;                                                                                         //JM shifts
       if(programRunStop == PGM_WAITING) {
         programRunStop = PGM_STOPPED;
@@ -1239,12 +1244,16 @@ bool_t allowShiftsToClearError = false;
     // Shift g pressed and JM REMOVED shift f not active
     else if(key->primary == ITM_SHIFTg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       if(temporaryInformation == TI_SHOW_REGISTER || SHOWMODE) allowShiftsToClearError = true; //JM
-      if(temporaryInformation == TI_VIEW_REGISTER) {
-        temporaryInformation = TI_NO_INFO;
-        updateMatrixHeightCache();
-      }
-      else {
-        temporaryInformation = TI_NO_INFO;
+      if(temporaryInformation != TI_NO_INFO) {
+        screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
+        if(temporaryInformation == TI_VIEW_REGISTER) {
+          temporaryInformation = TI_NO_INFO;
+          updateMatrixHeightCache();
+        }
+        else {
+          //reconsider
+          temporaryInformation = TI_NO_INFO;     //reconsider: Temporary commented out. This clears SHOW (and other TI's) when fg is pressed. That means SNAP and shiftEXP are not possible with SHOW
+        }
       }
       if(lastErrorCode != 0) allowShiftsToClearError = true;                                                                                         //JM shifts
       if(programRunStop == PGM_WAITING) {
@@ -1276,13 +1285,16 @@ bool_t allowShiftsToClearError = false;
         fnTimerStart(TO_FG_TIMR, TO_FG_TIMR, JM_SHIFT_TIMER); //^^
       }
       if(temporaryInformation == TI_SHOW_REGISTER || SHOWMODE) allowShiftsToClearError = true; //JM
-      if(temporaryInformation == TI_VIEW_REGISTER) {
-        temporaryInformation = TI_NO_INFO;
-        updateMatrixHeightCache();
-      }
-      else {
-//reconsider
-        temporaryInformation = TI_NO_INFO;     //reconsider: Temporary commented out. This clears SHOW (and other TI's) when fg is pressed. That means SNAP and shiftEXP are not possible with SHOW
+      if(temporaryInformation != TI_NO_INFO) {
+        screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
+        if(temporaryInformation == TI_VIEW_REGISTER) {
+          temporaryInformation = TI_NO_INFO;
+          updateMatrixHeightCache();
+        }
+        else {
+          //reconsider
+          temporaryInformation = TI_NO_INFO;     //reconsider: Temporary commented out. This clears SHOW (and other TI's) when fg is pressed. That means SNAP and shiftEXP are not possible with SHOW
+        }
       }
 
       if(lastErrorCode != 0) allowShiftsToClearError = true;                                                                                         //JM shifts
@@ -1586,8 +1598,8 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         lastshiftF = ff;
         lastshiftG = gg;
       }
-
-        sprintf(tmp,"^^^^btnPressed End item=%d:\'%s\' showFunctionNameItem=%d\n",item,(char *)data,showFunctionNameItem); jm_show_comment(tmp);
+      refreshScreen(140);
+      sprintf(tmp,"^^^^btnPressed End item=%d:\'%s\' showFunctionNameItem=%d\n",item,(char *)data,showFunctionNameItem); jm_show_comment(tmp);
     }
 
     char key[3] = {0, 0, 0};
@@ -1719,6 +1731,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         shiftF = f;
         shiftG = g;
       }
+    refreshScreen(139);
     }
   #endif // DMCP_BUILD
 
@@ -1795,7 +1808,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
         hideFunctionName();
         if(item < 0) {
+          //printf("AA1 allowShiftsToClearError=%u !checkShifts=%u screenUpdatingMode=%u\n",allowShiftsToClearError, !checkShifts((char *)data), screenUpdatingMode);
           showSoftmenu(item);
+          //printf("AA2 allowShiftsToClearError=%u !checkShifts=%u screenUpdatingMode=%u\n",allowShiftsToClearError, !checkShifts((char *)data), screenUpdatingMode);
         }
         else {
           int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
@@ -1861,6 +1876,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 //  #endif // DMCP_BUILD
 
 RELEASE_END:
+      //printf("BB allowShiftsToClearError=%u !checkShifts=%u screenUpdatingMode=%u\n",allowShiftsToClearError, !checkShifts((char *)data), screenUpdatingMode);
+
+
       if(allowShiftsToClearError || !checkShifts((char *)data)) {
         #if defined(PC_BUILD)
           char tmp[200]; sprintf(tmp,">>> btnReleased (%s):   refreshScreen from keyboard.c  which is the main normal place for it.", (char *)data); jm_show_comment(tmp);
