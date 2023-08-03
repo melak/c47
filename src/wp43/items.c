@@ -115,12 +115,14 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void reallyRunFunction(int16_t func, uint16_t param) {
     lastFunc = func;
     lastParam = param;
-    if(func >= CST_01 && func <= CST_79) {
-      temporaryInformation = TI_LAST_CONST_CATNAME;
+    if(func >= CST_01 && func <= CST_79 && calcMode == CM_NORMAL)  {
+      if(!getSystemFlag(FLAG_SOLVING)) {
+        temporaryInformation = TI_LAST_CONST_CATNAME;
+      }
+      else {
+        temporaryInformation = TI_NO_INFO;
+      }
     }
-    //else {                                                 //Removed code for TI of any last command
-    //  temporaryInformation = TI_LAST_FUNC_CATNAME;
-    //}
 
 
 
