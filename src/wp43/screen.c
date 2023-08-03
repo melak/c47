@@ -77,16 +77,16 @@ uint16_t current_cursor_y = 0;
                                        "RJvM" spc "NL," spc1
                                        "Walter" spc "DE.";
 
-  TO_QSPI static const char *versionStr  = "This " VERSION_STRING ", C47 firmware is neither provided nor supported by SwissMicros. [EXIT]";
+  TO_QSPI static const char *versionStr  = "Gitlab: " VERSION_STRING ". \nC47 firmware is free, open source and is \nneither provided nor supported by \nSwissMicros. Press [EXIT] to continue.";
 
   #if defined(PC_BUILD)
-    TO_QSPI static const char *versionStr2 = "C47 Sim " VERSION1 ", compiled " __DATE__;
+    TO_QSPI static const char *versionStr2 = "  C47 Sim " VERSION1 ", compiled " __DATE__;
   #else // !PC_BUILD
     #if defined(TWO_FILE_PGM)
-      TO_QSPI static const char *versionStr2 = "C47 QSPI " VERSION1 ", compiled " __DATE__;
+      TO_QSPI static const char *versionStr2 = "  C47 QSPI " VERSION1 ", compiled " __DATE__;
     #else // !TWO_FILE_PGM
       #if !defined(TWO_FILE_PGM)
-        TO_QSPI static const char *versionStr2 = "C47 No QSPI " VERSION1 ", compiled " __DATE__;
+        TO_QSPI static const char *versionStr2 = "  C47 No QSPI " VERSION1 ", compiled " __DATE__;
       #endif // !TWO_FILE_PGM
     #endif // TWO_FILE_PGM
   #endif // PC_BUILD
@@ -2182,11 +2182,12 @@ void execTimerApp(uint16_t timerType) {
       }
 
       else if(temporaryInformation == TI_VERSION && regist == REGISTER_X) {
+        clearRegisterLine(REGISTER_T, true, true);
         clearRegisterLine(REGISTER_Z, true, true);
         clearRegisterLine(REGISTER_Y, true, true);
         clearRegisterLine(REGISTER_X, true, true);
-        showStringEnhanced(versionStr2, &standardFont, 1, Y_POSITION_OF_REGISTER_Z_LINE + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
-        showStringEnhanced(versionStr,  &standardFont, 1, Y_POSITION_OF_REGISTER_Y_LINE + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
+        showStringEnhanced(versionStr2, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
+        showStringEnhanced(versionStr,  &standardFont, 1, Y_POSITION_OF_REGISTER_Z_LINE + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
       }
 
       else if(temporaryInformation == TI_DISP_JULIAN) {
