@@ -3314,8 +3314,11 @@ void execTimerApp(uint16_t timerType) {
 
           else if(temporaryInformation == TI_LAST_CONST_CATNAME) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, lastFuncSoftmenuName());
-              strcat(prefix,  " ");
+              prefix[0]=0;
+              if(strcmp(lastFuncSoftmenuName(),lastFuncCatalogName()) ) {
+                strcpy(prefix, lastFuncSoftmenuName());
+                strcat(prefix,  " ");
+              }
               strcat(prefix, lastFuncCatalogName());
               strcat(prefix,  " = ");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
