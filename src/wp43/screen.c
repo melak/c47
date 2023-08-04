@@ -77,7 +77,9 @@ uint16_t current_cursor_y = 0;
                                        "RJvM" spc "NL," spc1
                                        "Walter" spc "DE.";
 
-  TO_QSPI static const char *versionStr  = "Gitlab: " VERSION_STRING ". \nC47 firmware is free, open source and is \nneither provided nor supported by \nSwissMicros. Press [EXIT] to continue.";
+  TO_QSPI static const char *versionStr  = "  Gitlab: " VERSION_STRING ".";
+
+  TO_QSPI static const char *disclaimerStr = "  C47 firmware is free, open source and is \n  neither provided nor supported by \n  SwissMicros. Press a key to continue.";
 
   #if defined(PC_BUILD)
     TO_QSPI static const char *versionStr2 = "  C47 Sim " VERSION1 ", compiled " __DATE__;
@@ -1786,6 +1788,13 @@ void execTimerApp(uint16_t timerType) {
     // Clear SHIFT f and SHIFT g in case they were present (otherwise they will be obscured by the function name)
     clearShiftState();
     showString(padding, &standardFont, /*1*/ 16, Y_POSITION_OF_REGISTER_T_LINE /*+ 6*/, vmNormal, true, true);      //JM
+          printf("BB screenUpdatingMode=%u temporaryInformation=%u\n", screenUpdatingMode, temporaryInformation);
+
+    if(temporaryInformation != TI_NO_INFO) {
+      temporaryInformation = TI_NO_INFO;
+      lastErrorCode = 0;
+      screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
+    }
   }
 
 
@@ -2193,8 +2202,9 @@ void execTimerApp(uint16_t timerType) {
         clearRegisterLine(REGISTER_Z, true, true);
         clearRegisterLine(REGISTER_Y, true, true);
         clearRegisterLine(REGISTER_X, true, true);
-        showStringEnhanced(versionStr2, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
-        showStringEnhanced(versionStr,  &standardFont, 1, Y_POSITION_OF_REGISTER_Z_LINE + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
+        showStringEnhanced(versionStr2,    &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
+        showStringEnhanced(versionStr,     &standardFont, 1, Y_POSITION_OF_REGISTER_Z_LINE + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
+        showStringEnhanced(disclaimerStr,  &standardFont, 1, Y_POSITION_OF_REGISTER_Y_LINE + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
       }
 
       else if(temporaryInformation == TI_DISP_JULIAN) {
@@ -2237,6 +2247,7 @@ void execTimerApp(uint16_t timerType) {
         clearRegisterLine(REGISTER_X, true, true);
         clearRegisterLine(REGISTER_Y, true, true);
         clearRegisterLine(REGISTER_Z, true, true);
+        clearRegisterLine(REGISTER_T, true, true);
         showString("Backup restored", &standardFont, 1, Y_POSITION_OF_REGISTER_Z_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
         showStringEnhanced(versionStr,  &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);
         showStringEnhanced(versionStr2, &standardFont, 1, Y_POSITION_OF_REGISTER_Y_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true, NO_compress, NO_raise, DO_Show, DO_LF);

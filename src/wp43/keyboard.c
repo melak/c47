@@ -603,6 +603,14 @@ bool_t lowercaseselected;
 #if defined(VERBOSEKEYS)
 printf(">>>>Z 0010 btnFnPressed SET FN_key_pressed            ; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
 #endif //VERBOSEKEYS
+
+      if(temporaryInformation == TI_VERSION || temporaryInformation == TI_WHO) {
+        temporaryInformation = TI_NO_INFO;
+        screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
+        refreshScreen(137);
+        return;
+      }
+
       temporaryInformation = TI_NO_INFO;
       FN_key_pressed = *((char *)data) - '0' + 37;  //to render 38-43, as per original keypress
 
@@ -1176,10 +1184,19 @@ bool_t allowShiftsToClearError = false;
     char tmp[200]; sprintf(tmp,"^^^^^^^keyboard.c: determineitem: key_no: %d:",key_no); jm_show_comment(tmp);
   #endif //PC_BUILD
 
+
 //.    if(kbd_usr[36].primaryTam == ITM_EXIT1) //opposite keyboard V43 LT, 43S, V43 RT
       key = getSystemFlag(FLAG_USER) ? (kbd_usr + key_no) : (kbd_std + key_no);
 //.    else
 //.      key = getSystemFlag(FLAG_USER) && ((calcMode == CM_NORMAL) || (calcMode == CM_AIM) || (calcMode == CM_NIM) || (calcMode == CM_EIM) || (calcMode == CM_PLOT_STAT) || (calcMode == CM_GRAPH) || (calcMode == CM_LISTXY)) ? (kbd_usr + key_no) : (kbd_std + key_no);    //JM Added (calcMode == CM_NORMAL) to prevent user substitution in AIM and TAM
+
+    if(temporaryInformation == TI_VERSION || temporaryInformation == TI_WHO) {
+      temporaryInformation = TI_NO_INFO;
+      screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
+      refreshScreen(138);
+      return ITM_NOP;
+    }
+
 
     fnTimerExec(TO_FN_EXEC);                                  //dr execute queued fn
 
@@ -1808,9 +1825,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
         hideFunctionName();
         if(item < 0) {
-          //printf("AA1 allowShiftsToClearError=%u !checkShifts=%u screenUpdatingMode=%u\n",allowShiftsToClearError, !checkShifts((char *)data), screenUpdatingMode);
+          //printf("AA1 allowShiftsToClearError=%u !checkShifts=%u screenUpdatingMode=%u temporaryInformation=%u\n",allowShiftsToClearError, !checkShifts((char *)data), screenUpdatingMode, temporaryInformation);
           showSoftmenu(item);
-          //printf("AA2 allowShiftsToClearError=%u !checkShifts=%u screenUpdatingMode=%u\n",allowShiftsToClearError, !checkShifts((char *)data), screenUpdatingMode);
+          //printf("AA2 allowShiftsToClearError=%u !checkShifts=%u screenUpdatingMode=%u temporaryInformation=%u\n",allowShiftsToClearError, !checkShifts((char *)data), screenUpdatingMode, temporaryInformation);
         }
         else {
           int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
@@ -1949,9 +1966,12 @@ RELEASE_END:
         temporaryInformation = TI_VIEW_REGISTER;
       }
     }
-    else if(item != ITM_UP1 && item != ITM_DOWN1 && item != ITM_EXIT1 && item != ITM_BACKSPACE && !((item == ITM_RCL || (item >= ITM_0 && item <= ITM_9)) && SHOWMODE && allowShowDigits)) {
+    else if(item != ITM_UP1 && item != ITM_DOWN1 && item != ITM_EXIT1 && item != ITM_BACKSPACE && 
+         !((item == ITM_RCL || (item >= ITM_0 && item <= ITM_9)) && SHOWMODE && allowShowDigits)
+         ) {
       temporaryInformation = TI_NO_INFO;
     }
+
     if(programRunStop == PGM_WAITING) {
       programRunStop = PGM_STOPPED;
     }
@@ -2976,12 +2996,6 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
           }
         }
         else
-        if(temporaryInformation == TI_VERSION || temporaryInformation == TI_WHO || temporaryInformation == TI_BACKUP_RESTORED) {
-          temporaryInformation = TI_NO_INFO;
-          lastErrorCode = 0;
-          screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
-        }
-        else
         if(lastErrorCode != 0) {
           lastErrorCode = 0;
           screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
@@ -3379,14 +3393,6 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
           return;
         }
         else
-        if(temporaryInformation == TI_VERSION || temporaryInformation == TI_WHO || temporaryInformation == TI_BACKUP_RESTORED) {
-          temporaryInformation = TI_NO_INFO;
-          keyActionProcessed = true;
-          lastErrorCode = 0;
-          screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
-          return;
-        }
-        else
         if(lastErrorCode != 0) {
           lastErrorCode = 0;
           screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
@@ -3703,13 +3709,6 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
       return;
     }
 
-    if(temporaryInformation == TI_VERSION || temporaryInformation == TI_WHO || temporaryInformation == TI_BACKUP_RESTORED) {
-      temporaryInformation = TI_NO_INFO;
-      lastErrorCode = 0;
-      screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
-      return;
-    }
-
     switch(calcMode) {
       case CM_NORMAL:
       case CM_AIM:
@@ -3917,13 +3916,6 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
     if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && softmenu[softmenuStack[0].softmenuId].menuItem == -ITM_MENU) {
       dynamicMenuItem = 19;
       fnProgrammableMenu(NOPARAM);
-      return;
-    }
-
-    if(temporaryInformation == TI_VERSION || temporaryInformation == TI_WHO || temporaryInformation == TI_BACKUP_RESTORED) {
-      temporaryInformation = TI_NO_INFO;
-      lastErrorCode = 0;
-      screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
       return;
     }
 
