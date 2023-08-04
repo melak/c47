@@ -443,6 +443,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
             light_ASB_icon();
           #endif // !TESTSUITE_BUILD
         }
+        if (calcMode == CM_PEM) hourGlassIconEnabled = false;
       }
 
       else if(tam.mode) {

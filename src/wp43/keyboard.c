@@ -987,12 +987,12 @@ printf(">>>> R000C                                %d |%s| shiftF=%d, shiftG=%d t
             return;
           }
           else if(calcMode == CM_PEM && catalog && catalog != CATALOG_MVAR && (!tam.mode || tam.function != ITM_CLP)) { // TODO: is that correct
+            fnKeyInCatalog = 1;
             if(indexOfItems[item].func == fnGetSystemFlag && (tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) && !tam.indirect) {
               tam.value = (indexOfItems[item].param & 0xff);
               tam.alpha = true;
               addStepInProgram(tamOperation());
               tamLeaveMode();
-              hourGlassIconEnabled = false;
             }
             else if(tam.mode) {
               const char *itmLabel = dynmenuGetLabel(dynamicMenuItem);
@@ -1001,7 +1001,6 @@ printf(">>>> R000C                                %d |%s| shiftF=%d, shiftG=%d t
               tam.alpha = true;
               addStepInProgram(tamOperation());
               tamLeaveMode();
-              hourGlassIconEnabled = false;
             }
             else {
               #if defined(VERBOSEKEYS)
@@ -1009,7 +1008,9 @@ printf(">>>> R000C                                %d |%s| shiftF=%d, shiftG=%d t
               #endif //VERBOSEKEYS
               runFunction(item);
             }
+            hourGlassIconEnabled = false;
             _closeCatalog();
+            fnKeyInCatalog = 0;
             refreshScreen();
             screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
             return;
