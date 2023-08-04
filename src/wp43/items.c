@@ -340,7 +340,8 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
         return;
       }
 
-      if(calcMode == CM_PEM && !tam.mode && !isFunctionItemAMenu(func)) {
+      // if(calcMode == CM_PEM && !tam.mode && !isFunctionItemAMenu(func)) {
+      if(calcMode == CM_PEM && !tam.mode && !isFunctionItemAMenu(func) && (!(catalog && catalog != CATALOG_MVAR && !fnKeyInCatalog) || func == ITM_EXIT1)) {
         addStepInProgram(func);
         return;
       }
