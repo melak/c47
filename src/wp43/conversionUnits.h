@@ -68,6 +68,7 @@
   void fnCvtMiKm       (uint16_t multiplyDivide);
   void fnCvtLyM       (uint16_t multiplyDivide);
   void fnCvtNmiKm     (uint16_t multiplyDivide);
+  void fnCvtNmiMi     (uint16_t multiplyDivide);
   void fnCvtFtM       (uint16_t multiplyDivide);
   void fnCvtPcM       (uint16_t multiplyDivide);
   void fnCvtInchMm    (uint16_t multiplyDivide);
@@ -110,10 +111,25 @@
   void fnCvtRpmDegps  (uint16_t multiplyDivide);
   void fnCvtMphmps    (uint16_t multiplyDivide);
   void fnCvtRpmRadps  (uint16_t multiplyDivide);
+  void fnCvtFpstokph  (uint16_t multiplyDivide);
+  void fnCvtFpstomps  (uint16_t multiplyDivide);
 
   // Angle
   void fnCvtDegRad    (uint16_t multiplyDivide);
   void fnCvtDegGrad   (uint16_t multiplyDivide);
   void fnCvtGradRad   (uint16_t multiplyDivide);
+
+  // FFF
+  void fnCvtFurtom    (uint16_t multiplyDivide);
+  void fnCvtFtntos    (uint16_t multiplyDivide);
+  void fnCvtFpftomps  (uint16_t multiplyDivide);
+  void fnCvtBrdstom   (uint16_t multiplyDivide);
+  void fnCvtFirtokg   (uint16_t multiplyDivide);
+  void fnCvtFpftokph  (uint16_t multiplyDivide);
+  void fnCvtBrdstoin  (uint16_t multiplyDivide);
+  void fnCvtFirtolb   (uint16_t multiplyDivide);
+  void fnCvtFpftomph  (uint16_t multiplyDivide);
+
+
 
 #endif // !CONVERSIONUNITS_H
