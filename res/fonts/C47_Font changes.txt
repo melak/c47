@@ -221,4 +221,8 @@ Added the following:
 2023-06-26 Changed glyph slightly for STD_WDOT in NumericFont
     $22C5
 
-2023-07-20 Added TinyFont
+2023-07-30 Add e glyph to both fonts
+    $2147 e
+
+
+ 

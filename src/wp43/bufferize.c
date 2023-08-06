@@ -294,22 +294,24 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           displayBugScreen(errorMessage);
         }
         else if(calcMode == CM_EIM) {
-          const char *addChar = item == ITM_PAIR_OF_PARENTHESES ? "()" :
-                                item == ITM_VERTICAL_BAR        ? "||" :
-                                item == ITM_ROOT_SIGN           ? STD_SQUARE_ROOT "()" :
-                                item == ITM_ALOG_SYMBOL         ? "e" STD_SUB_E "^()" :
-                                item == ITM_LG_SIGN             ? "LOG()" :     //C47
-                                item == ITM_LN_SIGN             ? "LN()"  :     //C47
-                                item == ITM_SIN_SIGN            ? "SIN()" :     //C47
-                                item == ITM_COS_SIGN            ? "COS()" :     //C47
-                                item == ITM_TAN_SIGN            ? "TAN()" :     //C47
-                                item == ITM_ASIN_SIGN           ? "ASIN()" :    //C47
-                                item == ITM_ACOS_SIGN           ? "ACOS()" :    //C47
-                                item == ITM_ATAN_SIGN           ? "ATAN()" :    //C47
-                                item == ITM_OBELUS              ? STD_SLASH  :  //C47
-                                item == ITM_poly_SIGN           ? "b3" STD_DOT "x^3+b2" STD_DOT "x^2+b1" STD_DOT "x+b0" :
-                                item == ITM_op_j_SIGN           ? COMPLEX_UNIT :
-                                  indexOfItems[item].itemSoftmenuName;
+          const char *addChar = item == ITM_PAIR_OF_PARENTHESES  ? "()" :
+                                item == ITM_VERTICAL_BAR         ? "||" :
+                                item == ITM_ROOT_SIGN            ? STD_SQUARE_ROOT "()" :
+                                item == ITM_ALOG_SYMBOL          ? STD_EulerE "^()" :
+                                item == ITM_LG_SIGN              ? "LOG()" :     //C47
+                                item == ITM_LN_SIGN              ? "LN()"  :     //C47
+                                item == ITM_SIN_SIGN             ? "SIN()" :     //C47
+                                item == ITM_COS_SIGN             ? "COS()" :     //C47
+                                item == ITM_TAN_SIGN             ? "TAN()" :     //C47
+                                item == ITM_ASIN_SIGN            ? "ASIN()" :    //C47
+                                item == ITM_ACOS_SIGN            ? "ACOS()" :    //C47
+                                item == ITM_ATAN_SIGN            ? "ATAN()" :    //C47
+                                item == ITM_OBELUS               ? STD_SLASH  :  //C47
+                                item == ITM_poly_SIGN            ? "b3" STD_DOT "x^3+b2" STD_DOT "x^2+b1" STD_DOT "x+b0" :
+                                item == ITM_op_j_SIGN            ? COMPLEX_UNIT :
+                                item >= CST_01 && item <= CST_77 ? indexOfItems[item].itemCatalogName :
+                                                                   indexOfItems[item].itemSoftmenuName;
+
           char *aimCursorPos = aimBuffer;
           char *aimBottomPos = aimBuffer + stringByteLength(aimBuffer);
           uint32_t itemLen = stringByteLength(addChar);
