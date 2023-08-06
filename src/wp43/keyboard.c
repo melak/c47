@@ -730,7 +730,7 @@ printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%
               }
             }
             _closeCatalog();
-            refreshScreen(102);
+            refreshScreen();
           }
 
           else {
@@ -986,12 +986,12 @@ printf(">>>> R000C                                %d |%s| shiftF=%d, shiftG=%d t
             return;
           }
           else if(calcMode == CM_PEM && catalog && catalog != CATALOG_MVAR && (!tam.mode || tam.function != ITM_CLP)) { // TODO: is that correct
+            fnKeyInCatalog = 1;
             if(indexOfItems[item].func == fnGetSystemFlag && (tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) && !tam.indirect) {
               tam.value = (indexOfItems[item].param & 0xff);
               tam.alpha = true;
               addStepInProgram(tamOperation());
               tamLeaveMode();
-              hourGlassIconEnabled = false;
             }
             else if(tam.mode) {
               const char *itmLabel = dynmenuGetLabel(dynamicMenuItem);
@@ -1000,7 +1000,6 @@ printf(">>>> R000C                                %d |%s| shiftF=%d, shiftG=%d t
               tam.alpha = true;
               addStepInProgram(tamOperation());
               tamLeaveMode();
-              hourGlassIconEnabled = false;
             }
             else {
               #if defined(VERBOSEKEYS)
@@ -1008,7 +1007,9 @@ printf(">>>> R000C                                %d |%s| shiftF=%d, shiftG=%d t
               #endif //VERBOSEKEYS
               runFunction(item);
             }
+            hourGlassIconEnabled = false;
             _closeCatalog();
+            fnKeyInCatalog = 0;
             refreshScreen(113);
             screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
             return;
@@ -1183,7 +1184,6 @@ bool_t allowShiftsToClearError = false;
   #if defined(PC_BUILD)
     char tmp[200]; sprintf(tmp,"^^^^^^^keyboard.c: determineitem: key_no: %d:",key_no); jm_show_comment(tmp);
   #endif //PC_BUILD
-
 
 //.    if(kbd_usr[36].primaryTam == ITM_EXIT1) //opposite keyboard V43 LT, 43S, V43 RT
       key = getSystemFlag(FLAG_USER) ? (kbd_usr + key_no) : (kbd_std + key_no);
@@ -1606,6 +1606,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         #endif //PC_BUILD_TELLTALE
         //printf("----- %i ----- |%s|\n",item,funcParam);
         if(!keyActionProcessed) {
+
           showFunctionName(item, 1000, funcParam);// "SF:B"); // 1000ms = 1s
         }
       }
@@ -1688,7 +1689,6 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
   #if defined(DMCP_BUILD)
     void btnPressed(void *data) {
       nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
-      
       int16_t item;
       int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
       if(checkNumber((uint8_t)keyCode)) {
@@ -1737,9 +1737,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
       showFunctionNameItem = 0;
       if(item != ITM_NOP && item != ITM_NULL) {
-
         processKeyAction(item);
-        
         if(!keyActionProcessed) {
           showFunctionName(item, 1000, funcParam); //"SF:C"); // 1000ms = 1s
         }
@@ -1780,7 +1778,6 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
     #endif // PC_BUILD &&MONITOR_CLRSCR
     jm_show_calc_state("##### keyboard.c: btnReleased begin: showFunctionNameItem");
   #endif // PC_BUILD
-
   #if defined(DMCP_BUILD)
     void btnReleased(void *data) {
   #endif // DMCP_BUILD
@@ -1796,13 +1793,12 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
         return;
       }
-  
-      if(calcMode == CM_ASN_BROWSER && lastItem == ITM_PERIOD) {
-        fnAsnDisplayUSER = true;
-  //      refreshScreen(115);
-        goto RELEASE_END;
-        return;
-      }
+    if(calcMode == CM_ASN_BROWSER && lastItem == ITM_PERIOD) {
+      fnAsnDisplayUSER = true;
+//      refreshScreen();
+      goto RELEASE_END;
+      return;
+    }
 
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && tamBuffer[0] == 0) {
         assignToKey((char *)data);
@@ -1971,10 +1967,10 @@ RELEASE_END:
          ) {
       temporaryInformation = TI_NO_INFO;
     }
-
     if(programRunStop == PGM_WAITING) {
       programRunStop = PGM_STOPPED;
     }
+
     #if(REAL34_WIDTH_TEST == 1)
       longInteger_t lgInt;
       longIntegerInit(lgInt);
@@ -1983,6 +1979,7 @@ RELEASE_END:
     if(item == KEY_COMPLEX && calcMode == CM_MIM) {   //JM Allow COMPLEX to function as CC if in Matrix
       item = ITM_CC;
     }
+
     if((calcMode == CM_GRAPH || calcMode == CM_PLOT_STAT) && item != ITM_BACKSPACE && item != ITM_EXIT1 && item != ITM_UP1 && item != ITM_DOWN1) {
       keyActionProcessed = true;
     } else
@@ -2001,6 +1998,7 @@ RELEASE_END:
           keyActionProcessed = true;   //JM move this to before fnKeyBackspace to allow fnKeyBackspace to cancel it if needed to allow this function via timing out to NOP, and this is incorporated with the CLRDROP
           fnKeyBackspace(NOPARAM);
         }
+
         break;
       }
 
@@ -2914,10 +2912,10 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         case CM_FONT_BROWSER:
         case CM_CONFIRMATION:
         case CM_ERROR_MESSAGE:
-        case CM_BUG_ON_SCREEN: {
+      case CM_BUG_ON_SCREEN: {
             // Browser or message should be closed first
             break;
-            }
+      }
 
         default: {
             if(catalog && (catalog != CATALOG_MVAR || !tam.mode)) {
@@ -2938,7 +2936,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
                 }
                 return;
             }
-      }
+    }
     }
 
     if(tam.mode) {                               //if in TAM mode
@@ -2958,7 +2956,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       return;
     }
 
-    switch(calcMode) {                           
+    switch(calcMode) {
       case CM_REGISTER_BROWSER:
       case CM_FLAG_BROWSER:
       case CM_ASN_BROWSER:
