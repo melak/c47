@@ -394,7 +394,8 @@ static void _bstInPem(void) {
 }
 
 void fnBst(uint16_t unusedButMandatoryParameter) {
-  screenUpdatingMode = SCRUPD_AUTO;
+//  screenUpdatingMode = SCRUPD_AUTO;
+  screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
   if(calcMode == CM_PEM) {
     if(aimBuffer[0] != 0) {
       if(getSystemFlag(FLAG_ALPHA)) {
@@ -458,7 +459,8 @@ static void _sstInPem(void) {
 }
 
 void fnSst(uint16_t unusedButMandatoryParameter) {
-  screenUpdatingMode = SCRUPD_AUTO;
+//  screenUpdatingMode = SCRUPD_AUTO;
+  screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
   if(calcMode == CM_PEM) {
     if(aimBuffer[0] != 0) {
       if(getSystemFlag(FLAG_ALPHA)) {
