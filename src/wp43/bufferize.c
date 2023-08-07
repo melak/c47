@@ -294,22 +294,24 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           displayBugScreen(errorMessage);
         }
         else if(calcMode == CM_EIM) {
-          const char *addChar = item == ITM_PAIR_OF_PARENTHESES ? "()" :
-                                item == ITM_VERTICAL_BAR        ? "||" :
-                                item == ITM_ROOT_SIGN           ? STD_SQUARE_ROOT "()" :
-                                item == ITM_ALOG_SYMBOL         ? "e" STD_SUB_E "^()" :
-                                item == ITM_LG_SIGN             ? "LOG()" :     //C47
-                                item == ITM_LN_SIGN             ? "LN()"  :     //C47
-                                item == ITM_SIN_SIGN            ? "SIN()" :     //C47
-                                item == ITM_COS_SIGN            ? "COS()" :     //C47
-                                item == ITM_TAN_SIGN            ? "TAN()" :     //C47
-                                item == ITM_ASIN_SIGN           ? "ASIN()" :    //C47
-                                item == ITM_ACOS_SIGN           ? "ACOS()" :    //C47
-                                item == ITM_ATAN_SIGN           ? "ATAN()" :    //C47
-                                item == ITM_OBELUS              ? STD_SLASH  :  //C47
-                                item == ITM_poly_SIGN           ? "b3" STD_DOT "x^3+b2" STD_DOT "x^2+b1" STD_DOT "x+b0" :
-                                item == ITM_op_j_SIGN           ? COMPLEX_UNIT :
-                                  indexOfItems[item].itemSoftmenuName;
+          const char *addChar = item == ITM_PAIR_OF_PARENTHESES  ? "()" :
+                                item == ITM_VERTICAL_BAR         ? "||" :
+                                item == ITM_ROOT_SIGN            ? STD_SQUARE_ROOT "()" :
+                                item == ITM_ALOG_SYMBOL          ? STD_EulerE "^()" :
+                                item == ITM_LG_SIGN              ? "LOG()" :     //C47
+                                item == ITM_LN_SIGN              ? "LN()"  :     //C47
+                                item == ITM_SIN_SIGN             ? "SIN()" :     //C47
+                                item == ITM_COS_SIGN             ? "COS()" :     //C47
+                                item == ITM_TAN_SIGN             ? "TAN()" :     //C47
+                                item == ITM_ASIN_SIGN            ? "ASIN()" :    //C47
+                                item == ITM_ACOS_SIGN            ? "ACOS()" :    //C47
+                                item == ITM_ATAN_SIGN            ? "ATAN()" :    //C47
+                                item == ITM_OBELUS               ? STD_SLASH  :  //C47
+                                item == ITM_poly_SIGN            ? "b3" STD_DOT "x^3+b2" STD_DOT "x^2+b1" STD_DOT "x+b0" :
+                                item == ITM_op_j_SIGN            ? COMPLEX_UNIT :
+                                item >= CST_01 && item <= CST_77 ? indexOfItems[item].itemCatalogName :
+                                                                   indexOfItems[item].itemSoftmenuName;
+
           char *aimCursorPos = aimBuffer;
           char *aimBottomPos = aimBuffer + stringByteLength(aimBuffer);
           uint32_t itemLen = stringByteLength(addChar);
@@ -443,6 +445,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
             light_ASB_icon();
           #endif // !TESTSUITE_BUILD
         }
+        if (calcMode == CM_PEM) hourGlassIconEnabled = false;
       }
 
       else if(tam.mode) {
@@ -1573,7 +1576,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         break;
       }
 
-      case ITM_ENTER:                                //JM BASE SETTING HEX
+      case ITM_ENTER:                                  //JM DEFAULT BASE SETTING 10
       case ITM_LOG10: { // D for decimal base          //JM
         if(nimNumberPart == NP_INT_BASE && aimBuffer[strlen(aimBuffer) - 1] == '#') {
           strcat(aimBuffer, "10");
@@ -1585,6 +1588,15 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       case ITM_RCL: { // H for hexadecimal base
         if(nimNumberPart == NP_INT_BASE && aimBuffer[strlen(aimBuffer) - 1] == '#') {
           strcat(aimBuffer, "16");
+          goto addItemToNimBuffer_exit;
+        }
+        break;
+      }
+
+      case ITM_Rdown: { // I for longinteger
+        if(nimNumberPart == NP_INT_BASE && aimBuffer[strlen(aimBuffer) - 1] == '#') {
+          aimBuffer[strlen(aimBuffer)-1]=0;
+          nimNumberPart = NP_INT_10;
           goto addItemToNimBuffer_exit;
         }
         break;
@@ -1856,11 +1868,33 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           displayBugScreen(errorMessage);
         }
       }
-
-      if(RADIX34_MARK_CHAR == ',') {
-        for(index=stringByteLength(nimBufferDisplay) - 1; index>0; index--) {
+      uint16_t _len = stringByteLength(nimBufferDisplay);
+      if(RADIX34_MARK_STRING[0] != '.') {
+        for(index=_len - 1; index>0; index--) {
           if(nimBufferDisplay[index] == '.') {
-            nimBufferDisplay[index] = ',';
+            nimBufferDisplay[index] = RADIX34_MARK_STRING[0];
+            if(RADIX34_MARK_STRING[1] != 1) {
+              uint16_t index2=_len;
+              while(index2 >= index) {
+                nimBufferDisplay[index2+1] = nimBufferDisplay[index2];
+                index2--;
+              }
+              nimBufferDisplay[index+1] = RADIX34_MARK_STRING[1];
+            }
+          }
+        }
+      }
+      for(index=stringByteLength(nimBufferDisplay) - 1; index>0; index--) {
+        if(nimBufferDisplay[index] == (char)0xab) {
+          nimBufferDisplay[index] = SEPARATOR_LEFT[0];
+          if(nimBufferDisplay[index+1] == 1) {
+            nimBufferDisplay[index+1] = SEPARATOR_LEFT[1];
+          }
+        }
+        if(nimBufferDisplay[index] == (char)0xbb) {
+          nimBufferDisplay[index] = SEPARATOR_RIGHT[0];
+          if(nimBufferDisplay[index+1] == 1) {
+            nimBufferDisplay[index+1] = SEPARATOR_RIGHT[1];
           }
         }
       }
@@ -1908,12 +1942,17 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     if((numDigits - nth) % GROUPWIDTH_LEFT == 1 || GROUPWIDTH_LEFT == 1) {
       char tt[4];
       if(SEPARATOR_LEFT[1]!=1) {
-        strcpy(tt,SEPARATOR_LEFT);
+        //strcpy(tt,SEPARATOR_LEFT);
+        tt[0] = 0xab;  //token
+        tt[1] = 1;
+        tt[2] = 0;
         strcpy(displayBuffer, tt);
         return 2;
       }
       else {
-        tt[0] = SEPARATOR_LEFT[0]; tt[1] = 0;
+        //tt[0] = SEPARATOR_LEFT[0]; tt[1] = 0;
+        tt[0] = 0xab;  //token
+        tt[1] = 0;
         strcpy(displayBuffer, tt);
         return 1;
       }
@@ -1937,12 +1976,17 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     if(nth % GROUPWIDTH_RIGHT == GROUPWIDTH_RIGHT - 1) {
       char tt[4];
       if(SEPARATOR_RIGHT[1]!=1) {
-        strcpy(tt,SEPARATOR_RIGHT);
+        //strcpy(tt,SEPARATOR_RIGHT);
+        tt[0] = 0xbb;   //token
+        tt[1] = 1;
+        tt[2] = 0;
         strcpy(displayBuffer, tt);
         return 2;
       }
       else {
-        tt[0] = SEPARATOR_RIGHT[0]; tt[1] = 0;
+        //tt[0] = SEPARATOR_RIGHT[0]; tt[1] = 0;
+        tt[0] = 0xbb;  //token
+        tt[1] = 0;
         strcpy(displayBuffer, tt);
         return 1;
       }

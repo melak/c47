@@ -222,6 +222,7 @@ pyx
 
 fractionalPart
 integerPart
+integerPartLonginteger
 realPart
 imaginaryPart
 swapRealImaginary

@@ -427,7 +427,7 @@
       // Do nothing if it wasn't enter or backspace as the text input is handled elsewhere
       return;
     }
-    else if(item == ITM_alpha) {
+    else if(!((tam.function == ITM_toINT || tam.function == ITM_HASH_JM)) && item == ITM_alpha) {
       bool_t allowAlphaMode = false, beginWithLowercase = false;
       allowAlphaMode = allowAlphaMode || (!tam.digitsSoFar && !tam.dot && !valueParameter && (tam.mode == TM_STORCL || tam.mode == TM_M_DIM || tam.mode == TM_REGISTER || tam.mode == TM_CMP || tam.function == ITM_MVAR));
       allowAlphaMode = allowAlphaMode || (!tam.digitsSoFar && !tam.dot && tam.indirect);

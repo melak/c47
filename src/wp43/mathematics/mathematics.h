@@ -78,6 +78,7 @@
   #include "incDec.h"
   #include "int.h"
   #include "integerPart.h"
+  #include "integerPartLonginteger.h"
   #include "invert.h"
   #include "iteration.h"
   #include "ixyz.h"

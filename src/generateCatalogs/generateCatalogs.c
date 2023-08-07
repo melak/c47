@@ -28,7 +28,7 @@
 bool_t  funcOK;
 glyph_t glyphNotFound = {.charCode = 0x0000, .colsBeforeGlyph = 0, .colsGlyph = 13, .colsAfterGlyph = 0, .rowsGlyph = 19, .data = NULL};
 
-#define MAX_NUMBER_OF_ITEMS 1100
+#define MAX_NUMBER_OF_ITEMS 1200
 #define GENERATION_FOR_DMCP    1
 #define GENERATION_FOR_PC      2
 #define GENERATION_FOR_BOTH    3
