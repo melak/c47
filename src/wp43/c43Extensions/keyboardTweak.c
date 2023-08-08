@@ -729,7 +729,7 @@ void resetKeytimers(void) {
         btnFnClicked(unused, charKey);                                             //Execute
       }
 
-      if(!(calcMode == CM_REGISTER_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_ASN_BROWSER || calcMode == CM_FONT_BROWSER || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH  || calcMode == CM_LISTXY)) {
+      if(!(calcMode == CM_REGISTER_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_ASN_BROWSER || calcMode == CM_FONT_BROWSER || GRAPHMODE || calcMode == CM_LISTXY)) {
         if(FN_timed_out_to_NOP) { //Clear any possible underline residues
           showSoftmenuCurrentPart();
         }

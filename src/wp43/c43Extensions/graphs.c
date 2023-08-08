@@ -271,7 +271,7 @@ void fnPlotSQ(uint16_t unusedButMandatoryParameter) {
   hourGlassIconEnabled = true;
   showHideHourGlass();
   Aspect_Square = true;
-  if(calcMode != CM_GRAPH && calcMode != CM_PLOT_STAT) {
+  if(!GRAPHMODE) {
     previousCalcMode = calcMode;
   }
   if(previousCalcMode == CM_GRAPH || previousCalcMode == CM_PLOT_STAT) {
@@ -453,7 +453,7 @@ void graph_text(void) {
     showString(padEquals(ss), &standardFont, n+3,  ypos, vmNormal, false, false);
     ypos -= 38;
 
-    snprintf(tmpString, TMP_STR_LENGTH, "y %.3f/tick  ", tick_int_y);
+    snprintf(tmpString, TMP_STR_LENGTH, "  y %.3f/tick  ", tick_int_y);
     ii = 0;
     oo = 0;
     outstr[0] = 0;
@@ -465,7 +465,7 @@ void graph_text(void) {
     showString(outstr, &standardFont, 1, ypos, vmNormal, true, true);  //JM
     ypos -= 12;
 
-    snprintf(tmpString, TMP_STR_LENGTH, "x %.3f/tick  ", tick_int_x);
+    snprintf(tmpString, TMP_STR_LENGTH, "  x %.3f/tick  ", tick_int_x);
     ii = 0;
     oo = 0;
     outstr[0] = 0;
@@ -491,10 +491,10 @@ void graph_text(void) {
     uint8_t axisdisp =  (!(yzero == SCREEN_HEIGHT_GRAPH-1 || yzero == minny) ? 2 : 0)
                       + (!(xzero == SCREEN_WIDTH-1        || xzero == minnx) ? 1 : 0);
     switch(axisdisp) {
-      case 0: strcpy(tmpString,"          ");                    break;
-      case 1: snprintf(tmpString, TMP_STR_LENGTH, "y-axis x 0"); break;
-      case 2: snprintf(tmpString, TMP_STR_LENGTH, "x-axis y 0"); break;
-      case 3: snprintf(tmpString, TMP_STR_LENGTH, "axis 0.0 ");  break;
+      case 0: strcpy(tmpString,"            ");                    break;
+      case 1: snprintf(tmpString, TMP_STR_LENGTH, "  y-axis x 0"); break;
+      case 2: snprintf(tmpString, TMP_STR_LENGTH, "  x-axis y 0"); break;
+      case 3: snprintf(tmpString, TMP_STR_LENGTH, "  axis 0.0 ");  break;
       default: ;
     }
 
@@ -560,6 +560,22 @@ void graph_plotmem(void) {
           printf("i = %3u x = %9f; y = %9f\n", i, grf_x(i), grf_y(i));
         }
       #endif // STATDEBUG && PC_BUILD
+
+      if(!reDraw) {
+        #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+          printf("graph_plotmem: Not reDrawing, text only\n");
+        #endif // PC_BUILD &&MONITOR_CLRSCR
+        clearScreenGraphs(1, clrTextArea, !clrGraphArea);
+        graph_text();
+        return;
+      } else {
+        #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+          printf("graph_plotmem: Drawing\n");
+        #endif // PC_BUILD &&MONITOR_CLRSCR
+        clearScreenGraphs(2, !clrTextArea, clrGraphArea);
+        reDraw = false; //draw now and block reDraw in the next round
+      } //continue with draw
+
 
       uint16_t cnt, ix, statnum;
       uint16_t xo, xn, xN;

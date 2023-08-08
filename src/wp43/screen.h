@@ -15,21 +15,19 @@
   #include <gdk/gdk.h>
   #endif // PC_BUILD
 
-//#define displayStackSHOIDISP 2                  //JMSHOIDISP  displayStackSHOIDISP=1: 3 lines of X-repeats
-                                                  //JMSHOIDISP  displayStackSHOIDISP=2: 2 lines of X-repeats
-                                                  //JMSHOIDISP  displayStackSHOIDISP=3: 1 lines of X-repeats
-                                                  //JMSHOIDISP  displayStackSHOIDISP=4: 0 lines of X-repeats
-
   void     FN_handler();                                                                                          //JM LONGPRESS
   void     Shft_handler();                                                                                        //JM LONGPRESS f/g
   void     LongpressKey_handler();                                                                                //JM LONGPRESS CLX
   void     Shft_stop();                                                                                           //JM reset shift after  4s
   void     underline(int16_t y);                                                                                  //JM SHIFT LINE
   void     clear_ul(void);                                                                                        //JMUL
-  void     clearScreen_old(bool_t clearStatusBar, bool_t clearRegisterLines, bool_t clearSoftkeys);               //JMOLD
+  void     clearScreenOld(bool_t clearStatusBar, bool_t clearRegisterLines, bool_t clearSoftkeys);               //JMOLD
+  void     clearScreenGraphs(uint8_t source, bool_t clearTextArea, bool_t clearGraphArea);
   #define  clrStatusBar true
   #define  clrRegisterLines true
   #define  clrSoftkeys true
+  #define  clrTextArea true
+  #define  clrGraphArea true
 
   void     fnScreenDump                       (uint16_t unusedButMandatoryParameter);
   void     fnSNAP                             (uint16_t unusedButMandatoryParameter);
@@ -114,6 +112,9 @@ void       fnAGraph                           (uint16_t regist);
   extern uint8_t  multiEdLines;
   extern uint16_t current_cursor_x;
   extern uint16_t current_cursor_y;
+
+  extern bool_t   reDraw;
+
 
   //Stack string large font display
   #define STACK_X_STR_LRG_FONT

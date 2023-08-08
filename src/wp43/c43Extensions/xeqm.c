@@ -1093,7 +1093,7 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
       #endif // (VERBOSE_LEVEL >= 2)
 
       #if(VERBOSE_LEVEL >= 1)
-        clearScreen_old(false, true, true);
+        clearScreenOld(false, true, true);
       #endif // (VERBOSE_LEVEL >= 1)
 
       displaywords(line1);       //output  is  in  tmpString
@@ -1106,7 +1106,7 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
       #endif // (VERBOSE_LEVEL >= 2)
 
       #if(VERBOSE_LEVEL >= 1)
-        clearScreen_old(false, true, true);
+        clearScreenOld(false, true, true);
       #endif // (VERBOSE_LEVEL >= 1)
 
       execute_string(line1,exec, scanning);
@@ -1114,7 +1114,7 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
       #if(VERBOSE_LEVEL >= 2)
         #if defined(DMCP_BUILD)
           press_key();
-          clearScreen_old(false, true, true);
+          clearScreenOld(false, true, true);
         #endif // DMCP_BUILD
       #endif // (VERBOSE_LEVEL >= 2)
 
@@ -1125,18 +1125,20 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
 
 void fnXEQMENU(uint16_t XEQM_no) {
   #if !defined(TESTSUITE_BUILD)
-    clearScreen_old(false, true, true);
+    clearScreenOld(false, true, true);
     print_linestr("Loading XEQM program file:", true);
 
     screenUpdatingMode = SCRUPD_AUTO | SCRUPD_ONE_TIME_FLAGS;
     refreshScreen(61);
-    clearScreen_old(!clrStatusBar, clrRegisterLines, clrSoftkeys);
+    clearScreenOld(!clrStatusBar, clrRegisterLines, clrSoftkeys);
 
     char line[XEQ_STR_LENGTH_LONG];
     XEQMENU_Selection( XEQM_no, line, EXEC, !SCAN);
 
-    screenUpdatingMode = SCRUPD_AUTO;
-    refreshScreen(62);
+    if(!GRAPHMODE) {
+      screenUpdatingMode = SCRUPD_AUTO;
+      refreshScreen(62);
+    }
 
 
     //calcMode = CM_BUG_ON_SCREEN;
@@ -1149,7 +1151,7 @@ void XEQMENU_loadAllfromdisk(void) {
   #if !defined(SAVE_SPACE_DM42_2)
     #if !defined(TESTSUITE_BUILD)
       //uint16_t Delay;
-      clearScreen_old(false, true, true);
+      clearScreenOld(false, true, true);
       print_inlinestr("", true);
       print_inlinestr("Loading XEQM:", false);
 

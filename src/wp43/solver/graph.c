@@ -486,6 +486,7 @@ void graph_stat(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
     calcMode = CM_GRAPH;
     screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+    reDraw = true;
 
     lastPlotMode = PLOT_NOTHING;
     strcpy(plotStatMx,"STATS");

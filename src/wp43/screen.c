@@ -51,6 +51,8 @@
 
 //#define DEBUGCLEARS
 
+bool_t reDraw = true;
+
 uint8_t multiEdLines = 0;            // lines   0
 uint8_t yMultiLineEdOffset = 0;      // pixels
 uint8_t xMultiLineEdOffset = 0;      // pixels 40
@@ -657,7 +659,7 @@ void execTimerApp(uint16_t timerType) {
   void underline(int16_t y) {                     //JM
     int16_t i;
     for(i=0; i<6; i++ ) {
-      if((maxfgLines(y) || (fgLN == RB_FGLNFUL)) && ((calcMode != CM_GRAPH && calcMode != CM_PLOT_STAT) || ((calcMode == CM_GRAPH || calcMode == CM_PLOT_STAT) && (i <= 1)))) {
+      if((maxfgLines(y) || (fgLN == RB_FGLNFUL)) && ( !GRAPHMODE || (GRAPHMODE && (i <= 1)) )) {
         underline_softkey(i, y, true);
       }
     }
@@ -676,7 +678,7 @@ void execTimerApp(uint16_t timerType) {
     int16_t x, y, x1, y1, x2, y2;
     uint32_t tmp;
 
-    if((calcMode == CM_GRAPH || calcMode == CM_PLOT_STAT) && xSoftkey >= 2) {
+    if(GRAPHMODE && xSoftkey >= 2) {
       return;
     }
 
@@ -1501,7 +1503,7 @@ void execTimerApp(uint16_t timerType) {
 
       if(lastline > yMultiLineEdOffset) {
         if(!noshow1) {
-//          clearScreen_old(false, true,false);
+//          clearScreenOld(false, true,false);
         }
         x = xMultiLineEdOffset;
         y = (yincr-1) + yMultiLineEdOffset * (yincr-1);
@@ -1788,7 +1790,6 @@ void execTimerApp(uint16_t timerType) {
     // Clear SHIFT f and SHIFT g in case they were present (otherwise they will be obscured by the function name)
     clearShiftState();
     showString(padding, &standardFont, /*1*/ 16, Y_POSITION_OF_REGISTER_T_LINE /*+ 6*/, vmNormal, true, true);      //JM
-          printf("BB screenUpdatingMode=%u temporaryInformation=%u\n", screenUpdatingMode, temporaryInformation);
 
     if(temporaryInformation != TI_NO_INFO) {
       temporaryInformation = TI_NO_INFO;
@@ -2066,7 +2067,7 @@ void execTimerApp(uint16_t timerType) {
       lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE-4, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
     }
 
-    if((calcMode != CM_BUG_ON_SCREEN) && (calcMode != CM_PLOT_STAT) && (calcMode != CM_GRAPH) && (calcMode != CM_LISTXY)) {               //JM
+    if((calcMode != CM_BUG_ON_SCREEN) && !GRAPHMODE && (calcMode != CM_LISTXY)) {               //JM
       if(temporaryInformation != TI_SHOW_REGISTER_BIG) {                        //JMSHOW
         clearRegisterLine(regist, true, (regist != REGISTER_Y));
       }                                                                         //JMSHOW
@@ -3917,24 +3918,26 @@ void execTimerApp(uint16_t timerType) {
         #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
           printf("   >>> lcd_fill_rect SCRUPD_MANUAL_STATUSBAR\n");
         #endif // PC_BUILD &&MONITOR_CLRSCR
-        lcd_fill_rect(0, 0, SCREEN_WIDTH, Y_POSITION_OF_REGISTER_T_LINE, LCD_SET_VALUE);
+        lcd_fill_rect(0, 0, (GRAPHMODE ? SCREEN_WIDTH / 3 : SCREEN_WIDTH), Y_POSITION_OF_REGISTER_T_LINE, LCD_SET_VALUE);
       }
       if(!(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME))) {
         #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
           printf("   >>> lcd_fill_rect SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME\n");
         #endif // PC_BUILD && MONITOR_CLRSCR
-        lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE-4, SCREEN_WIDTH, 240 - Y_POSITION_OF_REGISTER_T_LINE - SOFTMENU_HEIGHT * 3+4, LCD_SET_VALUE);
-        //C47 had 0,-4,0,+4 to clear from y=20, not y=24.
+        lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE-4, SCREEN_WIDTH - 240 - 2, 240 - Y_POSITION_OF_REGISTER_T_LINE - SOFTMENU_HEIGHT * 3+4, LCD_SET_VALUE);
+        if(!GRAPHMODE) { //in GRAPHMODE, protect the square graph area
+          lcd_fill_rect(SCREEN_WIDTH - 240 - 2, Y_POSITION_OF_REGISTER_T_LINE-4, 240 + 2, 240 - Y_POSITION_OF_REGISTER_T_LINE - SOFTMENU_HEIGHT * 3+4, LCD_SET_VALUE);
+        } //C47 had 0,-4,0,+4 to clear from y=20, not y=24.
       }
       if((calcMode != CM_NIM) && !(screenUpdatingMode & (SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME))) {
         #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
           printf("   >>> lcd_fill_rect SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME\n");
         #endif // PC_BUILD && MONITOR_CLRSCR
-        lcd_fill_rect(0, 240 - SOFTMENU_HEIGHT * 3, SCREEN_WIDTH - 240, SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
+        lcd_fill_rect(0, 240 - SOFTMENU_HEIGHT * 3, SCREEN_WIDTH - 240 - 2, SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
         clear_ul(); //JMUL
         lcd_fill_rect(0, 240 - SOFTMENU_HEIGHT * 3 - 3, 20, 6, LCD_SET_VALUE);
-        if(calcMode != CM_GRAPH) {
-          lcd_fill_rect(SCREEN_WIDTH - 240, 240 - SOFTMENU_HEIGHT * 3, 240, SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
+        if(!GRAPHMODE) { //in GRAPHMODE, protect the square graph area
+          lcd_fill_rect(SCREEN_WIDTH - 240 - 2, 240 - SOFTMENU_HEIGHT * 3, 240 + 2, SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
         }
       }
     }
@@ -3942,7 +3945,7 @@ void execTimerApp(uint16_t timerType) {
 
 
 //#if !defined(TESTSUITE_BUILD)
-//  void clearScreen_old(bool_t clearStatusBar, bool_t clearRegisterLines, bool_t clearSoftkeys) {      //JMOLD
+//  void clearScreenOld(bool_t clearStatusBar, bool_t clearRegisterLines, bool_t clearSoftkeys) {      //JMOLD
 //    if(clearStatusBar) {
 //      lcd_fill_rect(0, 0, SCREEN_WIDTH, 20, 0);
 //    }
@@ -3958,10 +3961,10 @@ void execTimerApp(uint16_t timerType) {
 //#endif // !TESTSUITE_BUILD
 
 
-  #if !defined(TESTSUITE_BUILD)
-    void clearScreen_old(bool_t clearStatusBar, bool_t clearRegisterLines, bool_t clearSoftkeys) {  //clrStatusBar, clrRegisterLines, clrSoftkeys
+  #if !defined(TESTSUITE_BUILD)  //clearScreenOld(clrStatusBar, clrRegisterLines, clrSoftkeys);
+    void clearScreenOld(bool_t clearStatusBar, bool_t clearRegisterLines, bool_t clearSoftkeys) {  //clrStatusBar, clrRegisterLines, clrSoftkeys
       #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
-        printf("       clearScreen_old clearStatusBar=%u, clearRegisterLines=%u, clearSoftkeys=%u\n",clearStatusBar, clearRegisterLines, clearSoftkeys);
+        printf("       clearScreenOld calcMode=%u clearStatusBar=%u, clearRegisterLines=%u, clearSoftkeys=%u\n",calcMode, clearStatusBar, clearRegisterLines, clearSoftkeys);
       #endif // PC_BUILD &&MONITOR_CLRSCR
       uint8_t origScreenUpdatingMode = screenUpdatingMode;
       if(clearStatusBar) {
@@ -3983,6 +3986,25 @@ void execTimerApp(uint16_t timerType) {
         _selectiveClearScreen();
       }
       screenUpdatingMode = origScreenUpdatingMode;
+    }
+
+    void clearScreenGraphs(uint8_t source, bool_t clearTextArea, bool_t clearGraphArea) {
+      #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+        printf("       clearScreenGraphs(%u) clearTextArea=%u, clearGraphArea=%u \n",source, clearTextArea, clearGraphArea);
+      #endif // PC_BUILD &&MONITOR_CLRSCR
+      uint8_t origCalcMode = calcMode;
+      if(clearTextArea) {
+        calcMode = CM_GRAPH; //in GRAPHMODE, protect the square graph area
+      }
+      if(clearGraphArea) {
+        reDraw = true;
+        calcMode = CM_NORMAL;
+      }
+      clearScreenOld(clrStatusBar, clrRegisterLines, clrSoftkeys);
+      screenUpdatingMode |= SCRUPD_MANUAL_MENU;
+      screenUpdatingMode |= SCRUPD_MANUAL_STACK;
+      screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
+      calcMode = origCalcMode;
     }
   #endif // !TESTSUITE_BUILD
 
@@ -4219,14 +4241,12 @@ void execTimerApp(uint16_t timerType) {
         break;
 
       case CM_GRAPH:
-        if(screenUpdatingMode == SCRUPD_AUTO) {
-          _selectiveClearScreen();
+          graph_plotmem();
           displayShiftAndTamBuffer();
           showSoftmenuCurrentPart();
           hourGlassIconEnabled = true;
           refreshStatusBar();
-          //graphPlotstat(plotSelection);
-          graph_plotmem();
+
           if(lastErrorCode != ERROR_NONE) {
             //printf("lastErrorCode1=%d\n", lastErrorCode);
             //printf(">>>> %d\n", softmenu[softmenuStack[0].softmenuId].menuItem);
@@ -4240,16 +4260,15 @@ void execTimerApp(uint16_t timerType) {
           hourGlassIconEnabled = false;
           showHideHourGlass();
           refreshStatusBar();
-        }
         break;
 
       case CM_PLOT_STAT:
-        if(screenUpdatingMode == SCRUPD_AUTO) {
+          graphPlotstat(plotSelection);
           displayShiftAndTamBuffer();
           showSoftmenuCurrentPart();
           hourGlassIconEnabled = true;
           refreshStatusBar();
-          graphPlotstat(plotSelection);
+
           if(lastErrorCode != ERROR_NONE) {
             if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_GRAPH) {
               popSoftmenu();
@@ -4268,7 +4287,6 @@ void execTimerApp(uint16_t timerType) {
           hourGlassIconEnabled = false;
           showHideHourGlass();
           refreshStatusBar();
-        }
         break;
 
       default: ;

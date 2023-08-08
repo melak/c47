@@ -933,282 +933,297 @@ void graphPlotstat(uint16_t selection){
      roundedTicks = false;
    }
 
-  //  graphAxisDraw();                        //Draw the axis on any uncontrolled scale to start. Maybe optimize by remembering if there is an image on screen Otherwise double axis draw.
-  graph_axis();
-  plotmode = _SCAT;
-
-    if((plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) ||
-      (plotStatMx[0]=='D' && drawMxN() >= 2) ||
-      (plotStatMx[0]=='H' && statMxN() >= 3)) {
-      switch(plotStatMx[0]) {
-        case 'S': realToInt32(SIGMA_N, statnum); break;
-        case 'D': statnum = drawMxN();           break;
-        case 'H': statnum = statMxN();           break;
-        default: ;
-      }
-      #if defined(STATDEBUG) && defined(PC_BUILD)
-        printf("graphPlotstat: statnum n=%d\n",statnum);
-      #endif // STATDEBUG && PC_BUILD
-
-
-    //AUTOSCALE
-    x_min = FLoatingMax;
-    x_max = FLoatingMin;
-    y_min = FLoatingMax;
-    y_max = FLoatingMin;
+  if((plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) ||
+    (plotStatMx[0]=='D' && drawMxN() >= 2) ||
+    (plotStatMx[0]=='H' && statMxN() >= 3)) {
+    switch(plotStatMx[0]) {
+      case 'S': realToInt32(SIGMA_N, statnum); break;
+      case 'D': statnum = drawMxN();           break;
+      case 'H': statnum = statMxN();           break;
+      default: ;
+    }
     #if defined(STATDEBUG) && defined(PC_BUILD)
-      printf("Axis0: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
+      printf("graphPlotstat: statnum n=%d\n",statnum);
     #endif // STATDEBUG && PC_BUILD
 
 
-    //#################################################### vvv SCALING LOOP  vvv
-    for(cnt=0; (cnt < statnum); cnt++) {
+    if(reDraw) {
+      //  graphAxisDraw();                        //Draw the axis on any uncontrolled scale to start. Maybe optimize by remembering if there is an image on screen Otherwise double axis draw.
+      graph_axis();
+      plotmode = _SCAT;
+
+      #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+        printf("       graphPlotstat: Drawing, text only\n");
+      #endif // PC_BUILD &&MONITOR_CLRSCR
+      reDraw = false;
+      clearScreenGraphs(3, !clrTextArea, clrGraphArea);
+  
+      //AUTOSCALE
+      x_min = FLoatingMax;
+      x_max = FLoatingMin;
+      y_min = FLoatingMax;
+      y_max = FLoatingMin;
       #if defined(STATDEBUG) && defined(PC_BUILD)
-        printf("Axis0a: x: %f y: %f   \n",grf_x(cnt), grf_y(cnt));
+        printf("Axis0: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
       #endif // STATDEBUG && PC_BUILD
-      if(grf_x(cnt) < x_min) {
-        x_min = grf_x(cnt);
-      }
-      if(grf_x(cnt) > x_max) {
-        x_max = grf_x(cnt);
-      }
-      if(grf_y(cnt) < y_min) {
-        y_min = grf_y(cnt);
-      }
-      if(grf_y(cnt) > y_max) {
-        y_max = grf_y(cnt);
-      }
-      #if defined(STATDEBUG) && defined(PC_BUILD)
-        printf("Axis0b: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
-      #endif // STATDEBUG && PC_BUILD
-      if(keyWaiting()) {
-        return;
-      }
-    }
-    //##  ################################################## ^^^ SCALING LOOP ^^^
-      #if defined(STATDEBUG) && defined(PC_BUILD)
-        printf("Axis1a: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
-      #endif // STATDEBUG && PC_BUILD
-
-      if(x_min <= FLoatingMin || x_max <= FLoatingMin || y_min <= FLoatingMin || y_max <= FLoatingMin) {
-        goto scaleMinusInfinity;
-      }
-      if(x_min >= FLoatingMax || x_max >= FLoatingMax || y_min >= FLoatingMax || y_max >= FLoatingMax) {
-        goto scalePlusInfinity;
-      }
-
-    //Check and correct if min and max is swapped
-    if(x_min>0.0f && x_min > x_max) {
-      x_min = x_min - (-x_max+x_min)* 1.1f;
-    }
-    if(x_min<0.0f && x_min > x_max) {
-      x_min = x_min + (-x_max+x_min)* 1.1f;
-    }
-    #if defined(STATDEBUG) && defined(PC_BUILD)
-      printf("Axis1b: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
-    #endif // STATDEBUG && PC_BUILD
-
-    //Always include the 0 axis
-    if(!extentx) {
-      if(x_min>0.0f && x_max>0.0f) {
-        if(x_min<=x_max) {
-          x_min = -0.05f*x_max;
-        }
-        else {
-          x_min = 0.0f;
-        }
-      }
-      if(x_min<0.0f && x_max<0.0f) {
-        if(x_min>=x_max) {
-          x_min = -0.05f*x_max;
-        }
-        else {
-          x_max = 0.0f;
-        }
-      }
-    }
-    if(!extenty) {
-      if(y_min>0.0f && y_max>0.0f) {
-        if(y_min<=y_max) {
-          y_min = -0.05f*y_max;
-        }
-        else {
-          y_min = 0.0f;
-        }
-      }
-      if(y_min<0.0f && y_max<0.0f) {
-        if(y_min>=y_max) {
-          y_min = -0.05f*y_max;
-        }
-        else {
-          y_max = 0.0f;
-        }
-      }
-    }
-
-    //Cause scales to be the same
-    if(PLOT_SCALE) {
-      x_min = min(x_min,y_min);
-      x_max = max(x_max,y_max);
-      y_min = x_min;
-      y_max = x_max;
-    }
-
-    //Calc zoom scales
-    if(PLOT_ZMX != 0) {
-      x_min = pow(2.0f,-PLOT_ZMX) * x_min;
-      x_max = pow(2.0f,-PLOT_ZMX) * x_max;
-    }
-    if(PLOT_ZMY != 0) {
-      y_min = pow(2.0f,-PLOT_ZMY) * y_min;
-      y_max = pow(2.0f,-PLOT_ZMY) * y_max;
-    }
-      #if defined(STATDEBUG) && defined(PC_BUILD)
-      printf("Axis2: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
-      #endif // STATDEBUG && PC_BUILD
-
-    float dx = x_max-x_min;
-    float dy = y_max-y_min;
-
-    if(dy == 0.0f) {
-      dy = 1.0f;
-      y_max = y_min + dy/2.0f;
-      y_min = y_max - dy;
-    }
-    if(dx == 0.0f) {
-      dx = 1.0f;
-      x_max = x_min + dx/2.0f;
-      x_min = x_max - dx;
-    }
-
-      /*
-      (pow(4.5f, (int8_t)(PLOT_ZOOM & 0x03))) / 20
-      0 1/20      = 0.05  * 2 = 0.10    width: dx * 1.10       Reference 1
-      1 4,5/20    = 0.23  * 2 = 0.45    width: dx * 1.45       factor 1.32
-      2 20,25/20  = 1.01  * 2 = 2.03    width: dx * 2.03       factor 2.75
-      3 91,125/20 = 4.56  * 2 = 9.11    width: dx * 10.11      factor 9.19
-      ( (int8_t)(PLOT_ZOOM & 0x03) == 0 ? 1.0f : (int8_t)(PLOT_ZOOM & 0x03) == 1 ? 4.5f : (int8_t)(PLOT_ZOOM & 0x03) == 2 ? 20.25f : 91.125f )
-      */
-      float histofactor = drawHistogram == 0 ? 1 : 1/zoomfactor * (((float)statnum + 2.0f)  /  ((float)(statnum) - 1.0f) - 1)/2;     //Create space on the sides of the graph for the wider histogram columns
-      float plotzoomx = pow(4.5f, (int8_t)(PLOT_ZOOM & 0x03));
-      float plotzoomy = drawHistogram == 1 ? 1 : plotzoomx;
-
-      x_min = x_min - dx * histofactor * zoomfactor * plotzoomx;
-      y_min = y_min - dy * histofactor * zoomfactor * plotzoomy;
-      x_max = x_max + dx * histofactor * zoomfactor * plotzoomx;
-      y_max = y_max + dy * histofactor * zoomfactor * plotzoomy;
-      if(drawHistogram == 1) {
-        y_min = 0;
-      }
-      #if defined(STATDEBUG) && defined(PC_BUILD)
-      printf("Axis3a: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
-      #endif // STATDEBUG && PC_BUILD
-
-    //graphAxisDraw();
-    if(calcMode == CM_GRAPH) {
-      roundedTicks = true;
-    }
-    else {
-      roundedTicks = false;
-    }
-
-    if(x_min <= FLoatingMin || x_max <= FLoatingMin || y_min <= FLoatingMin || y_max <= FLoatingMin) {
-       goto scaleMinusInfinity;
-     }
-     if(x_min >= FLoatingMax || x_max >= FLoatingMax || y_min >= FLoatingMax || y_max >= FLoatingMax) {
-       goto scalePlusInfinity;
-     }
-
-
-
-    graph_axis();
-    yn = screen_window_y(y_min,grf_y(0),y_max);
-    xn = screen_window_x(x_min,grf_x(0),x_max);
-    xN = xn;
-    yN = yn;
-      #if defined(STATDEBUG) && defined(PC_BUILD)
-      printf("Axis3c: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
-      #endif // STATDEBUG && PC_BUILD
-
-      int16_t colw = (int16_t) (
-                                 (  (screen_window_x(x_min,grf_x(1),x_max) - screen_window_x(x_min,grf_x(0),x_max))  / 2.0f  )
-                                ) - 1;
-      //#################################################### vvv MAIN GRAPH LOOP vvv
-      for(ix = 0; (ix < statnum); ++ix) {
-        x = grf_x(ix);
-        y = grf_y(ix);
-        xo = xN;
-        yo = yN;
-        xN = screen_window_x(x_min,x,x_max);
-        yN = screen_window_y(y_min,y,y_max);
-
+  
+  
+      //#################################################### vvv SCALING LOOP  vvv
+      for(cnt=0; (cnt < statnum); cnt++) {
         #if defined(STATDEBUG) && defined(PC_BUILD)
-          printf("plotting graph table[%d] = x:%f y:%f xN:%d yN:%d drawHistogram:%d ", ix, x, y, xN, yN, drawHistogram);
+          printf("Axis0a: x: %f y: %f   \n",grf_x(cnt), grf_y(cnt));
         #endif // STATDEBUG && PC_BUILD
-
-      int16_t minN_y,minN_x;
-      if(!Aspect_Square) {
-        minN_y = SCREEN_NONSQ_HMIN;
-        minN_x = 0;
+        if(grf_x(cnt) < x_min) {
+          x_min = grf_x(cnt);
+        }
+        if(grf_x(cnt) > x_max) {
+          x_max = grf_x(cnt);
+        }
+        if(grf_y(cnt) < y_min) {
+          y_min = grf_y(cnt);
+        }
+        if(grf_y(cnt) > y_max) {
+          y_max = grf_y(cnt);
+        }
+        #if defined(STATDEBUG) && defined(PC_BUILD)
+          printf("Axis0b: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
+        #endif // STATDEBUG && PC_BUILD
+        if(keyWaiting()) {
+          return;
+        }
       }
-      else {
-        minN_y = 0;
-        minN_x = SCREEN_WIDTH-SCREEN_HEIGHT_GRAPH;
+      //##  ################################################## ^^^ SCALING LOOP ^^^
+        #if defined(STATDEBUG) && defined(PC_BUILD)
+          printf("Axis1a: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
+        #endif // STATDEBUG && PC_BUILD
+  
+        if(x_min <= FLoatingMin || x_max <= FLoatingMin || y_min <= FLoatingMin || y_max <= FLoatingMin) {
+          goto scaleMinusInfinity;
+        }
+        if(x_min >= FLoatingMax || x_max >= FLoatingMax || y_min >= FLoatingMax || y_max >= FLoatingMax) {
+          goto scalePlusInfinity;
+        }
+  
+      //Check and correct if min and max is swapped
+      if(x_min>0.0f && x_min > x_max) {
+        x_min = x_min - (-x_max+x_min)* 1.1f;
       }
-      if(xN<SCREEN_WIDTH_GRAPH && xN>=minN_x && yN<SCREEN_HEIGHT_GRAPH && yN>=minN_y) {
-        yn = yN;
-        xn = xN;
-
-          if(drawHistogram != 0) {
-            plotHisto_col(xN, yN, minN_y, SCREEN_HEIGHT_GRAPH - minN_y, colw);
+      if(x_min<0.0f && x_min > x_max) {
+        x_min = x_min + (-x_max+x_min)* 1.1f;
+      }
+      #if defined(STATDEBUG) && defined(PC_BUILD)
+        printf("Axis1b: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
+      #endif // STATDEBUG && PC_BUILD
+  
+      //Always include the 0 axis
+      if(!extentx) {
+        if(x_min>0.0f && x_max>0.0f) {
+          if(x_min<=x_max) {
+            x_min = -0.05f*x_max;
           }
-
-        if(PLOT_CROSS) {
-            #if defined(STATDEBUG) && defined(PC_BUILD)
-            printf("Plotting cross to x=%d y=%d\n",xn,yn);
-            #endif // STATDEBUG && PC_BUILD
-          plotcross(xn,yn);
+          else {
+            x_min = 0.0f;
+          }
         }
-
-        if(PLOT_BOX) {
-            #if defined(STATDEBUG) && defined(PC_BUILD)
-            printf("Plotting box to x=%d y=%d\n",xn,yn);
-            #endif // STATDEBUG && PC_BUILD
-          plotbox_fat(xn,yn);
+        if(x_min<0.0f && x_max<0.0f) {
+          if(x_min>=x_max) {
+            x_min = -0.05f*x_max;
+          }
+          else {
+            x_max = 0.0f;
+          }
         }
-
-        if(PLOT_LINE) {
-            #if defined(STATDEBUG) && defined(PC_BUILD)
-            printf("Plotting line to x=%d y=%d\n",xn,yn);
-            #endif // STATDEBUG && PC_BUILD
-          plotline(xo, yo, xn, yn);
+      }
+      if(!extenty) {
+        if(y_min>0.0f && y_max>0.0f) {
+          if(y_min<=y_max) {
+            y_min = -0.05f*y_max;
+          }
+          else {
+            y_min = 0.0f;
+          }
         }
+        if(y_min<0.0f && y_max<0.0f) {
+          if(y_min>=y_max) {
+            y_min = -0.05f*y_max;
+          }
+          else {
+            y_max = 0.0f;
+          }
+        }
+      }
+  
+      //Cause scales to be the same
+      if(PLOT_SCALE) {
+        x_min = min(x_min,y_min);
+        x_max = max(x_max,y_max);
+        y_min = x_min;
+        y_max = x_max;
+      }
+  
+      //Calc zoom scales
+      if(PLOT_ZMX != 0) {
+        x_min = pow(2.0f,-PLOT_ZMX) * x_min;
+        x_max = pow(2.0f,-PLOT_ZMX) * x_max;
+      }
+      if(PLOT_ZMY != 0) {
+        y_min = pow(2.0f,-PLOT_ZMY) * y_min;
+        y_max = pow(2.0f,-PLOT_ZMY) * y_max;
+      }
+        #if defined(STATDEBUG) && defined(PC_BUILD)
+        printf("Axis2: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
+        #endif // STATDEBUG && PC_BUILD
+  
+      float dx = x_max-x_min;
+      float dy = y_max-y_min;
+  
+      if(dy == 0.0f) {
+        dy = 1.0f;
+        y_max = y_min + dy/2.0f;
+        y_min = y_max - dy;
+      }
+      if(dx == 0.0f) {
+        dx = 1.0f;
+        x_max = x_min + dx/2.0f;
+        x_min = x_max - dx;
+      }
+  
+        /*
+        (pow(4.5f, (int8_t)(PLOT_ZOOM & 0x03))) / 20
+        0 1/20      = 0.05  * 2 = 0.10    width: dx * 1.10       Reference 1
+        1 4,5/20    = 0.23  * 2 = 0.45    width: dx * 1.45       factor 1.32
+        2 20,25/20  = 1.01  * 2 = 2.03    width: dx * 2.03       factor 2.75
+        3 91,125/20 = 4.56  * 2 = 9.11    width: dx * 10.11      factor 9.19
+        ( (int8_t)(PLOT_ZOOM & 0x03) == 0 ? 1.0f : (int8_t)(PLOT_ZOOM & 0x03) == 1 ? 4.5f : (int8_t)(PLOT_ZOOM & 0x03) == 2 ? 20.25f : 91.125f )
+        */
+        float histofactor = drawHistogram == 0 ? 1 : 1/zoomfactor * (((float)statnum + 2.0f)  /  ((float)(statnum) - 1.0f) - 1)/2;     //Create space on the sides of the graph for the wider histogram columns
+        float plotzoomx = pow(4.5f, (int8_t)(PLOT_ZOOM & 0x03));
+        float plotzoomy = drawHistogram == 1 ? 1 : plotzoomx;
+  
+        x_min = x_min - dx * histofactor * zoomfactor * plotzoomx;
+        y_min = y_min - dy * histofactor * zoomfactor * plotzoomy;
+        x_max = x_max + dx * histofactor * zoomfactor * plotzoomx;
+        y_max = y_max + dy * histofactor * zoomfactor * plotzoomy;
+        if(drawHistogram == 1) {
+          y_min = 0;
+        }
+        #if defined(STATDEBUG) && defined(PC_BUILD)
+        printf("Axis3a: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
+        #endif // STATDEBUG && PC_BUILD
+  
+      //graphAxisDraw();
+      if(calcMode == CM_GRAPH) {
+        roundedTicks = true;
       }
       else {
-          #if defined(PC_BUILD)
-          printf("Not plotted point: (%u %u) ",xN,yN);
-            if(xN >= SCREEN_WIDTH_GRAPH) {
-              printf("x>>%u ", SCREEN_WIDTH_GRAPH);
-            }
-            else if(xN < minN_x) {
-              printf("x<<%u ", minN_x);
-            }
-
-            if(yN >= SCREEN_HEIGHT_GRAPH) {
-              printf("y>>%u ", SCREEN_HEIGHT_GRAPH);
-            }
-            else if(yN < 1+minN_y) {
-              printf("y<<%u ", 1+minN_y);
-            }
-          printf("\n");
-          //printf("Not plotted: xN=%d<SCREEN_WIDTH_GRAPH=%d && xN=%d>minN_x=%d && yN=%d<SCREEN_HEIGHT_GRAPH=%d && yN=%d>1+minN_y=%d\n",xN,SCREEN_WIDTH_GRAPH,xN,minN_x,yN,SCREEN_HEIGHT_GRAPH,yN,1+minN_y);
-          #endif // PC_BUILD
+        roundedTicks = false;
       }
-      if(keyWaiting()) {
-         return;
+  
+      if(x_min <= FLoatingMin || x_max <= FLoatingMin || y_min <= FLoatingMin || y_max <= FLoatingMin) {
+         goto scaleMinusInfinity;
+       }
+       if(x_min >= FLoatingMax || x_max >= FLoatingMax || y_min >= FLoatingMax || y_max >= FLoatingMax) {
+         goto scalePlusInfinity;
+       }
+  
+  
+  
+      graph_axis();
+      yn = screen_window_y(y_min,grf_y(0),y_max);
+      xn = screen_window_x(x_min,grf_x(0),x_max);
+      xN = xn;
+      yN = yn;
+        #if defined(STATDEBUG) && defined(PC_BUILD)
+        printf("Axis3c: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
+        #endif // STATDEBUG && PC_BUILD
+  
+        int16_t colw = (int16_t) (
+                                   (  (screen_window_x(x_min,grf_x(1),x_max) - screen_window_x(x_min,grf_x(0),x_max))  / 2.0f  )
+                                  ) - 1;
+  
+        //#################################################### vvv MAIN GRAPH LOOP vvv
+        for(ix = 0; (ix < statnum); ++ix) {
+          x = grf_x(ix);
+          y = grf_y(ix);
+          xo = xN;
+          yo = yN;
+          xN = screen_window_x(x_min,x,x_max);
+          yN = screen_window_y(y_min,y,y_max);
+  
+          #if defined(STATDEBUG) && defined(PC_BUILD)
+            printf("plotting graph table[%d] = x:%f y:%f xN:%d yN:%d drawHistogram:%d ", ix, x, y, xN, yN, drawHistogram);
+          #endif // STATDEBUG && PC_BUILD
+  
+        int16_t minN_y,minN_x;
+        if(!Aspect_Square) {
+          minN_y = SCREEN_NONSQ_HMIN;
+          minN_x = 0;
+        }
+        else {
+          minN_y = 0;
+          minN_x = SCREEN_WIDTH-SCREEN_HEIGHT_GRAPH;
+        }
+        if(xN<SCREEN_WIDTH_GRAPH && xN>=minN_x && yN<SCREEN_HEIGHT_GRAPH && yN>=minN_y) {
+          yn = yN;
+          xn = xN;
+  
+            if(drawHistogram != 0) {
+              plotHisto_col(xN, yN, minN_y, SCREEN_HEIGHT_GRAPH - minN_y, colw);
+            }
+  
+          if(PLOT_CROSS) {
+              #if defined(STATDEBUG) && defined(PC_BUILD)
+              printf("Plotting cross to x=%d y=%d\n",xn,yn);
+              #endif // STATDEBUG && PC_BUILD
+            plotcross(xn,yn);
+          }
+  
+          if(PLOT_BOX) {
+              #if defined(STATDEBUG) && defined(PC_BUILD)
+              printf("Plotting box to x=%d y=%d\n",xn,yn);
+              #endif // STATDEBUG && PC_BUILD
+            plotbox_fat(xn,yn);
+          }
+  
+          if(PLOT_LINE) {
+              #if defined(STATDEBUG) && defined(PC_BUILD)
+              printf("Plotting line to x=%d y=%d\n",xn,yn);
+              #endif // STATDEBUG && PC_BUILD
+            plotline(xo, yo, xn, yn);
+          }
+        }
+        else {
+            #if defined(PC_BUILD)
+            printf("Not plotted point: (%u %u) ",xN,yN);
+              if(xN >= SCREEN_WIDTH_GRAPH) {
+                printf("x>>%u ", SCREEN_WIDTH_GRAPH);
+              }
+              else if(xN < minN_x) {
+                printf("x<<%u ", minN_x);
+              }
+  
+              if(yN >= SCREEN_HEIGHT_GRAPH) {
+                printf("y>>%u ", SCREEN_HEIGHT_GRAPH);
+              }
+              else if(yN < 1+minN_y) {
+                printf("y<<%u ", 1+minN_y);
+              }
+            printf("\n");
+            //printf("Not plotted: xN=%d<SCREEN_WIDTH_GRAPH=%d && xN=%d>minN_x=%d && yN=%d<SCREEN_HEIGHT_GRAPH=%d && yN=%d>1+minN_y=%d\n",xN,SCREEN_WIDTH_GRAPH,xN,minN_x,yN,SCREEN_HEIGHT_GRAPH,yN,1+minN_y);
+            #endif // PC_BUILD
+        }
+        if(keyWaiting()) {
+           return;
+        }
       }
-    }
-    //#################################################### ^^^ MAIN GRAPH LOOP ^^^
+      //#################################################### ^^^ MAIN GRAPH LOOP ^^^
+    } 
+    else {
+      #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+        printf("       graphPlotstat: Not Drawing, text only\n");
+      #endif // PC_BUILD &&MONITOR_CLRSCR
+      clearScreenGraphs(4, clrTextArea, !clrGraphArea);
+    } //continue with text only
 
     if(calcMode == CM_GRAPH) {
       int16_t index = -1;
@@ -1246,7 +1261,7 @@ void graphPlotstat(uint16_t selection){
       realToFloat(&hBr, &hB);
       realToFloat(&nBr, &nB);
 
-      strcpy(ss,histElementXorY == 1 ? "Histogram(y)" : "Histogram(x)");
+      strcpy(ss,histElementXorY == 1 ? "  Histogram(y)" : "  Histogram(x)");
       showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -4 +autoshift, vmNormal, false, false);
 
       eformat_eng2(ss, "(", x_max, 2, "");

@@ -101,9 +101,36 @@
   #define VERBOSEKEYS
   #undef VERBOSEKEYS
   #define MONITOR_CLRSCR
-  #undef MONITOR_CLRSCR
+//  #undef MONITOR_CLRSCR
   #define PC_BUILD_TELLTALE            //JM verbose on PC: jm_show_comment
   #undef  PC_BUILD_TELLTALE
+
+//Verbose STAT
+  #define DEBUG_STAT                 0 // PLOT & STATS verbose level can be 0, 1 or 2 (more)
+  #if(DEBUG_STAT == 0)
+    #undef STATDEBUG
+    #undef STATDEBUG_VERBOSE
+    #endif // DEBUG_STAT == 0
+  #if(DEBUG_STAT == 1)
+    #define STATDEBUG
+    #undef STATDEBUG_VERBOSE
+    #endif // DEBUG_STAT == 1
+  #if(DEBUG_STAT == 2)
+    #define STATDEBUG
+    #define STATDEBUG_VERBOSE
+    #endif // DEBUG_STAT == 2
+
+//Debugging
+  #if defined(PC_BUILD)
+    //#define DEBUGUNDO
+    #undef DEBUGUNDO
+  #else // !PC_BUILD
+    #undef DEBUGUNDO
+  #endif // PC_BUILD
+
+
+
+
 
 #define PAIMDEBUG
 #undef PAIMDEBUG
@@ -243,29 +270,6 @@
   #if defined(LINUX)
   #define _XOPEN_SOURCE                700 // see: https://stackoverflow.com/questions/5378778/what-does-d-xopen-source-do-mean
 #endif // LINUX
-
-
-#define DEBUG_STAT                       0 // PLOT & STATS verbose level can be 0, 1 or 2 (more)
-#if(DEBUG_STAT == 0)
-  #undef STATDEBUG
-  #undef STATDEBUG_VERBOSE
-  #endif // DEBUG_STAT == 0
-#if(DEBUG_STAT == 1)
-  #define STATDEBUG
-  #undef STATDEBUG_VERBOSE
-  #endif // DEBUG_STAT == 1
-#if(DEBUG_STAT == 2)
-  #define STATDEBUG
-  #define STATDEBUG_VERBOSE
-  #endif // DEBUG_STAT == 2
-
-
-  #if defined(PC_BUILD)
-    //#define DEBUGUNDO
-    #undef DEBUGUNDO
-  #else // !PC_BUILD
-    #undef DEBUGUNDO
-  #endif // PC_BUILD
 
 
 #define REAL34_WIDTH_TEST 0 // For debugging real34 ALL 0 formating. Use UP/DOWN to shrink or enlarge the available space. The Z register holds the available width.
@@ -980,13 +984,13 @@ typedef enum {
 
 // Screen updating mode
 #define SCRUPD_AUTO                             0x00
-#define SCRUPD_MANUAL_STATUSBAR                 0x01
-#define SCRUPD_MANUAL_STACK                     0x02
-#define SCRUPD_MANUAL_MENU                      0x04
-#define SCRUPD_MANUAL_SHIFT_STATUS              0x08
-//#define SCRUPD_SKIP_STATUSBAR_ONE_TIME          0x10
-#define SCRUPD_SKIP_STACK_ONE_TIME              0x20
-#define SCRUPD_SKIP_MENU_ONE_TIME               0x40
+#define SCRUPD_MANUAL_STATUSBAR                 0x01       //0000 0001
+#define SCRUPD_MANUAL_STACK                     0x02       //0000 0010
+#define SCRUPD_MANUAL_MENU                      0x04       //0000 0100
+#define SCRUPD_MANUAL_SHIFT_STATUS              0x08       //0000 1000
+//#define SCRUPD_SKIP_STATUSBAR_ONE_TIME          0x10     //0001 0000   16d
+#define SCRUPD_SKIP_STACK_ONE_TIME              0x20       //0010 0000   32d
+#define SCRUPD_SKIP_MENU_ONE_TIME               0x40       //0100 0000   64d
 //#define SCRUPD_SHIFT_STATUS                     0x80
 #define SCRUPD_ONE_TIME_FLAGS                   0xf0
 
@@ -1238,6 +1242,7 @@ typedef enum {
 #define nbrOfElements(x)                     (sizeof(x) / sizeof((x)[0]))                                    //dr
 
 #define SHOWMODE                             (calcMode == CM_NORMAL && (temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL || temporaryInformation == TI_SHOWNOTHING))
+#define GRAPHMODE                            (calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH)
 
 #define COMPLEX_UNIT                         (getSystemFlag(FLAG_CPXj)   ? STD_op_j  : STD_op_i)  //Do not change back to single byte character - code must also change accordingly
 #define PRODUCT_SIGN                         (getSystemFlag(FLAG_MULTx)  ? STD_CROSS : STD_DOT)
