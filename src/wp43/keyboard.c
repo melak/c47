@@ -1152,12 +1152,12 @@ printf(">>>> R000F                                %d |%s| shiftF=%d, shiftG=%d t
       }
     }
   #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
-    printf(">>>  refreshScreen3 from keyboard.c executeFunction calcMode=%u\n",calcMode);
+    printf(">>>  refreshScreen3 from keyboard.c executeFunction calcMode=%u screenUpdatingMode=%u\n",calcMode, screenUpdatingMode);
   #endif
     refreshScreen(114);
 //TODO 2023-04-15 check here. It needs to be changed not to always refresh the screen.
   #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
-    printf(">>>  refreshScreen4 from keyboard.c executeFunction calcMode=%u\n",calcMode);
+    printf(">>>  refreshScreen4 from keyboard.c executeFunction calcMode=%u screenUpdatingMode=%u\n",calcMode, screenUpdatingMode);
   #endif
 
     screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
@@ -1224,7 +1224,7 @@ bool_t allowShiftsToClearError = false;
   #endif //PC_BUILD
 
     // Shift f pressed and JM REMOVED shift g not active
-    if(key->primary == ITM_SHIFTf && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
+    if(key->primary == ITM_SHIFTf && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || GRAPHMODE || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       if(temporaryInformation == TI_SHOW_REGISTER || SHOWMODE) allowShiftsToClearError = true; //JM
       if(temporaryInformation != TI_NO_INFO) {
         screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
@@ -1259,7 +1259,7 @@ bool_t allowShiftsToClearError = false;
     }
 
     // Shift g pressed and JM REMOVED shift f not active
-    else if(key->primary == ITM_SHIFTg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
+    else if(key->primary == ITM_SHIFTg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || GRAPHMODE || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       if(temporaryInformation == TI_SHOW_REGISTER || SHOWMODE) allowShiftsToClearError = true; //JM
       if(temporaryInformation != TI_NO_INFO) {
         screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
@@ -1295,7 +1295,7 @@ bool_t allowShiftsToClearError = false;
 
     // JM Shift f pressed  //JM shifts change f/g to a single function key toggle to match DM42 keyboard
     // JM Inserted new section and removed old f and g key processing sections
-    else if(key->primary == KEY_fg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
+    else if(key->primary == KEY_fg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || GRAPHMODE || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       Shft_timeouts = true;                         //JM SHIFT NEW
       fnTimerStart(TO_FG_LONG, TO_FG_LONG, JM_TO_FG_LONG);    //vv dr
       if(ShiftTimoutMode) {
@@ -1358,7 +1358,7 @@ bool_t allowShiftsToClearError = false;
     else if(tam.mode) {
       result = key->primaryTam; // No shifted function in TAM
     }
-    else if(calcMode == CM_NORMAL || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_FONT_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_ASN_BROWSER || calcMode == CM_REGISTER_BROWSER || calcMode == CM_BUG_ON_SCREEN || calcMode == CM_CONFIRMATION || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_TIMER  || calcMode == CM_LISTXY) {
+    else if(calcMode == CM_NORMAL || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_FONT_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_ASN_BROWSER || calcMode == CM_REGISTER_BROWSER || calcMode == CM_BUG_ON_SCREEN || calcMode == CM_CONFIRMATION || calcMode == CM_PEM || GRAPHMODE || calcMode == CM_ASSIGN || calcMode == CM_TIMER  || calcMode == CM_LISTXY) {
       result = shiftF ? key->fShifted :
                shiftG ? key->gShifted :
                         key->primary;
@@ -1532,6 +1532,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
 
     void btnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
+      reDraw = false;
       nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
 
       int16_t item;
@@ -1687,6 +1688,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
   #if defined(DMCP_BUILD)
     void btnPressed(void *data) {
+      reDraw = false;
       nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
       
       int16_t item;
@@ -1983,7 +1985,7 @@ RELEASE_END:
     if(item == KEY_COMPLEX && calcMode == CM_MIM) {   //JM Allow COMPLEX to function as CC if in Matrix
       item = ITM_CC;
     }
-    if((calcMode == CM_GRAPH || calcMode == CM_PLOT_STAT) && item != ITM_BACKSPACE && item != ITM_EXIT1 && item != ITM_UP1 && item != ITM_DOWN1) {
+    if(GRAPHMODE && item != ITM_BACKSPACE && item != ITM_EXIT1 && item != ITM_UP1 && item != ITM_DOWN1) {
       keyActionProcessed = true;
     } else
 
@@ -2643,6 +2645,9 @@ RELEASE_END:
 
       setCatalogLastPos();
     }
+    #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+       printf("#### menuUp: screenUpdatingMode=%u\n",screenUpdatingMode);
+    #endif // PC_BUILD &&MONITOR_CLRSCR
   }
 
 
@@ -2684,6 +2689,9 @@ RELEASE_END:
       }
       setCatalogLastPos();
     }
+    #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+       printf("#### menuDown: screenUpdatingMode=%u\n",screenUpdatingMode);
+    #endif // PC_BUILD &&MONITOR_CLRSCR
   }
 #endif // !TESTSUITE_BUILD
 
@@ -3170,10 +3178,10 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       }
 
       case CM_LISTXY: {                     //JM vv
-        calcMode = CM_GRAPH;
-        screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
-        refreshScreen(125);
-        softmenuStack[0].firstItem = 0;
+        popSoftmenu();
+        calcMode = CM_NORMAL;
+        keyActionProcessed = true;
+        screenUpdatingMode = SCRUPD_AUTO;
         break;                              //JM ^^
       }
 
@@ -3206,7 +3214,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         fnClDrawMx();
         restoreStats();
         screenUpdatingMode = SCRUPD_AUTO;
-        refreshScreen(126);
+//        refreshScreen(126);
         break;
       }
 
@@ -3515,14 +3523,17 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
         fnUndo(NOPARAM);
         fnClDrawMx();
         restoreStats();
+        screenUpdatingMode = SCRUPD_AUTO;
         break;
       }
 
-      case CM_LISTXY: {                    //JM vv
-        calcMode = previousCalcMode;
+      case CM_LISTXY: {                     //JM vv
+        popSoftmenu();
+        calcMode = CM_NORMAL;
         keyActionProcessed = true;
-        break;
-      }                                    //JM ^^
+        screenUpdatingMode = SCRUPD_AUTO;
+        break;                              //JM ^^
+      }
 
       case CM_CONFIRMATION: {
         calcMode = previousCalcMode;

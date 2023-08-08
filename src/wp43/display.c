@@ -2807,9 +2807,9 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
 
     #if !defined(TESTSUITE_BUILD)
       #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
-        printf(">>> ---- clearScreen_old from display.c fnShow_SCROLL\n");
+        printf(">>> ---- clearScreenOld from display.c fnShow_SCROLL\n");
       #endif // PC_BUILD && MONITOR_CLRSCR
-        //      clearScreen_old(!clrStatusBar, clrRegisterLines, !clrSoftkeys); //Clear screen content while NEW SHOW
+        //      clearScreenOld(!clrStatusBar, clrRegisterLines, !clrSoftkeys); //Clear screen content while NEW SHOW
         refreshScreen(153);
 
     #endif // !TESTSUITE_BUILD
@@ -3309,7 +3309,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
       case dtComplex34Matrix:
 //        screenUpdatingMode = SCRUPD_AUTO;                     //first clear the screen and update
   //      refreshScreen(152);
-        clearScreen_old(!clrStatusBar, clrRegisterLines, clrSoftkeys);
+        clearScreenOld(!clrStatusBar, clrRegisterLines, clrSoftkeys);
         dispM(showRegis, tmpString + 2100);                   //then display the matrix
         lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE-4, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
         temporaryInformation = TI_SHOWNOTHING;                //then tell the system it is in show nothing mode,

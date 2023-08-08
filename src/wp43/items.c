@@ -134,7 +134,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
     }
 
     if((indexOfItems[func].status & US_STATUS) == US_ENABLED || (indexOfItems[func].status & US_STATUS) == US_ENABL_XEQ) {
-      if((programRunStop != PGM_RUNNING || getSystemFlag(FLAG_IGN1ER)) && calcMode != CM_GRAPH && calcMode != CM_NO_UNDO && !getSystemFlag(FLAG_SOLVING)) {
+      if((programRunStop != PGM_RUNNING || getSystemFlag(FLAG_IGN1ER)) && !GRAPHMODE && calcMode != CM_NO_UNDO && !getSystemFlag(FLAG_SOLVING)) {
         #if defined(DEBUGUNDO)
           printf(">>> saveForUndo from reallyRunFunction: %s, calcMode = %i ",indexOfItems[func].itemCatalogName, calcMode);
         #endif // DEBUGUNDO
@@ -157,7 +157,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
         }
       }
     }
-    else if(((indexOfItems[func].status & US_STATUS) == US_CANCEL) && calcMode != CM_NO_UNDO && calcMode !=CM_GRAPH){
+    else if(((indexOfItems[func].status & US_STATUS) == US_CANCEL) && calcMode != CM_NO_UNDO && !GRAPHMODE){
       thereIsSomethingToUndo = false;
     }
 
@@ -199,6 +199,44 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 
     indexOfItems[func].func(param);
 
+    switch(func) {
+      case ITM_DRAW:       //EQN Draw
+
+      case ITM_PLOT_STAT:  //Plot menu
+      case ITM_PLINE:                     
+      case ITM_DIFF:                      
+      case ITM_RMS:                       
+      case ITM_PCROS:                     
+      case ITM_NVECT:                     
+      case ITM_EXTY:                      
+      case ITM_PZOOMX:                    
+      case ITM_SNAP:                      
+      case ITM_NULL:                      
+      case ITM_SCALE:                 
+      case ITM_INTG:                  
+      case ITM_SHADE:                 
+      case ITM_PBOX:                  
+      case ITM_VECT:                  
+      case ITM_EXTX:                  
+      case ITM_PZOOMY:                
+      case ITM_LISTXY:                
+      case ITM_PLOTRST:               
+
+
+      case ITM_PLOT_LR:      //Assess
+      case ITM_PLOT_NXT:
+      case ITM_PLOT_REV:
+
+      case ITM_PLOT:         //Scatter
+      case ITM_PLOT_CENTRL:
+      case ITM_SMI: 
+
+      case ITM_HPLOT:        //HPLOT
+      case ITM_HNORM:
+      case ITM_PLOTZOOM:
+
+        reDraw = true;
+    }
 
     if(lastErrorCode == ERROR_NONE && temporaryInformation == TI_NO_INFO) {
       switch(softmenu[softmenuStack[0].softmenuId].menuItem) {
