@@ -75,6 +75,7 @@
    * \param[in] unusedButMandatoryParameter
    * \return bool_t
    */
+  bool_t isStatsMatrixN(uint16_t *rows, calcRegister_t regStats);
   bool_t isStatsMatrix(uint16_t *rows, char *mx);
 
   bool_t checkMinimumDataPoints(const real_t *n);

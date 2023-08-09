@@ -121,7 +121,7 @@ void statGraphReset(void){
     float xf=0;
     real_t xr;
 
-    calcRegister_t regStats = findNamedVariable(plotStatMx);
+    calcRegister_t regStats = regStatsXY;
     if(regStats != INVALID_VARIABLE) {
       real34Matrix_t stats;
       linkToRealMatrixRegister(regStats, &stats);
@@ -143,7 +143,7 @@ void statGraphReset(void){
     float yf=0;
     real_t yr;
 
-    calcRegister_t regStats = findNamedVariable(plotStatMx);
+    calcRegister_t regStats = regStatsXY;
     if(regStats != INVALID_VARIABLE) {
       real34Matrix_t stats;
       linkToRealMatrixRegister(regStats, &stats);
@@ -948,6 +948,7 @@ void graphPlotstat(uint16_t selection){
 
 
     if(reDraw) {
+      regStatsXY = findNamedVariable(plotStatMx);
       //  graphAxisDraw();                        //Draw the axis on any uncontrolled scale to start. Maybe optimize by remembering if there is an image on screen Otherwise double axis draw.
       graph_axis();
       plotmode = _SCAT;
@@ -989,6 +990,7 @@ void graphPlotstat(uint16_t selection){
           printf("Axis0b: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
         #endif // STATDEBUG && PC_BUILD
         if(keyWaiting()) {
+          regStatsXY = INVALID_VARIABLE;
           return;
         }
       }
@@ -1213,9 +1215,11 @@ void graphPlotstat(uint16_t selection){
             #endif // PC_BUILD
         }
         if(keyWaiting()) {
+           regStatsXY = INVALID_VARIABLE;
            return;
         }
       }
+      regStatsXY = INVALID_VARIABLE;
       //#################################################### ^^^ MAIN GRAPH LOOP ^^^
     } 
     else {

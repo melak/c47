@@ -46,7 +46,7 @@
 #endif
 
 #include "wp43.h"
-#define BACKUP_VERSION                     782  // remove FM program support
+#define BACKUP_VERSION                     783  // add regStatsXY
 #define OLDEST_COMPATIBLE_BACKUP_VERSION   779  // save running app
 #define configFileVersion                  10000005 // arbitrary starting point version 10 000 001. Allowable values are 10000000 to 20000000
 #define VersionAllowed                     10000005 // This code will not autoload versions earlier than this
@@ -387,6 +387,10 @@ static uint32_t restore(void *buffer, uint32_t size) {
     save(&grpGroupingGr1Left,                 sizeof(grpGroupingGr1Left));        //JM
     save(&grpGroupingRight,                   sizeof(grpGroupingRight));          //JM
 
+    save(&regStatsXY,                         sizeof(regStatsXY));                //JM
+
+
+
     ioFileClose();
     printf("End of calc's backup\n");
   }
@@ -715,6 +719,13 @@ static uint32_t restore(void *buffer, uint32_t size) {
         restore(&grpGroupingGr1Left,                 sizeof(grpGroupingGr1Left));        //JM
         restore(&grpGroupingRight,                   sizeof(grpGroupingRight));          //JM
       }
+
+      if(backupVersion >= 783) {
+        restore(&regStatsXY,                         sizeof(regStatsXY));               //JM
+      } else {
+        regStatsXY = INVALID_VARIABLE;
+      }
+
 
       ioFileClose();
       printf("End of calc's restoration\n");

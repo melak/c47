@@ -304,6 +304,8 @@ real34_t               nBins ;
 real34_t               hiBinR;
 char                   statMx[8];
 char                   plotStatMx[8];
+calcRegister_t         regStatsXY;
+
 
 bool_t temporaryFlagRect;
 

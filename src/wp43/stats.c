@@ -17,6 +17,7 @@
 #include "stats.h"
 
 #include "constantPointers.h"
+#include "c43Extensions/graphText.h"
 #include "debug.h"
 #include "error.h"
 #include "flags.h"
@@ -29,6 +30,7 @@
 #include "plotstat.h"
 #include "registers.h"
 #include "registerValueConversions.h"
+#include "screen.h"
 #include "stack.h"
 #include <string.h>
 
@@ -39,6 +41,30 @@
   static void calcMax(uint16_t maxOffset);
   static void calcMin(uint16_t maxOffset);
 #endif // !TESTSUITE_BUILD
+
+bool_t isStatsMatrixN(uint16_t *rows, calcRegister_t regStats) {
+  #if !defined(TESTSUITE_BUILD)
+    *rows = 0;
+    if(regStats == INVALID_VARIABLE) {
+      return false;
+    }
+    else {
+      if(getRegisterDataType(regStats) != dtReal34Matrix) {
+        return false;
+      }
+      else {
+        real34Matrix_t stats;
+        linkToRealMatrixRegister(regStats, &stats);
+        *rows = stats.header.matrixRows;
+        if(stats.header.matrixColumns != 2) {
+          return false;
+        }
+      }
+    }
+  #endif // !TESTSUITE_BUILD
+  return true;
+}
+
 
 
 bool_t isStatsMatrix(uint16_t *rows, char *mx) {
@@ -509,6 +535,7 @@ void calcSigma(uint16_t maxOffset) {
         addSigma(&x, &y);
       }
     }
+print_linestr("",force);
   #endif //TESTSUITE_BUILD
 }
 

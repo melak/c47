@@ -262,18 +262,9 @@ uint8_t DXR = 0, DYR = 0, DXI = 0, DYI = 0;
       strcpy(plotStatMx,"DrwMX");
     }
     calcRegister_t regStats = findNamedVariable(plotStatMx);
-    if(regStats == INVALID_VARIABLE) {
-      allocateNamedVariable(plotStatMx, dtReal34, REAL34_SIZE);
-      regStats = findNamedVariable(plotStatMx);
-    }
-    fnDeleteVariable(regStats);
-    if(regStats == INVALID_VARIABLE) {
-      displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "DrwMX matrix not created");
-        moreInfoOnError("In function fnClPlotData:", errorMessage, NULL, NULL);
-      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    }
+    if(regStats != INVALID_VARIABLE) {
+      fnDeleteVariable(regStats);
+    };
   }
 
 
@@ -281,9 +272,10 @@ uint8_t DXR = 0, DYR = 0, DXI = 0, DYI = 0;
   static void AddtoDrawMx() {
     real_t x, y;
     uint16_t rows = 0, cols;
-    calcRegister_t regStats = findNamedVariable(plotStatMx);
-    if(!isStatsMatrix(&rows,plotStatMx)) {
+    calcRegister_t regStats = regStatsXY;
+    if(!isStatsMatrixN(&rows,regStats)) {
       regStats = allocateNamedMatrix(plotStatMx, 1, 2);
+      regStatsXY = regStats;
       real34Matrix_t stats;
       linkToRealMatrixRegister(regStats, &stats);
       realMatrixInit(&stats,1,2);
@@ -321,6 +313,7 @@ uint8_t DXR = 0, DYR = 0, DXI = 0, DYI = 0;
 
 void graph_eqn(uint16_t mode) {
   #if !defined(TESTSUITE_BUILD)
+    regStatsXY = findNamedVariable(plotStatMx);
     double x;
     double x01 = x_min;
     double y01 = 0;
@@ -345,10 +338,16 @@ void graph_eqn(uint16_t mode) {
     double yAvg = 0.1;
 
     if(graphVariable <= 0 || graphVariable > 65535) {
+      regStatsXY = INVALID_VARIABLE;
       return;
     }
+    hourGlassIconEnabled = false;
+    showHideHourGlass();
     calcMode = CM_GRAPH;
+    hourGlassIconEnabled = true;
+    showHideHourGlass();
     screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+    screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR;
     fnClearStack(0);
 
     convertDoubleToReal34RegisterPush(x_max, REGISTER_X);
@@ -478,6 +477,7 @@ void graph_eqn(uint16_t mode) {
 
     fnClearStack(0);
     fnPlot(0);
+    regStatsXY = INVALID_VARIABLE;
   #endif // !TESTSUITE_BUILD
 }
 

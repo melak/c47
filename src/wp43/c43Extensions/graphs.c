@@ -577,6 +577,7 @@ void graph_plotmem(void) {
       } //continue with draw
 
 
+      regStatsXY = findNamedVariable(plotStatMx);
       uint16_t cnt, ix, statnum;
       uint16_t xo, xn, xN;
       uint8_t yo, yn, yN;
@@ -710,6 +711,7 @@ void graph_plotmem(void) {
 /**/            }
 /**/          }
 /**/          if(keyWaiting()) {
+                 regStatsXY = INVALID_VARIABLE;
 /**/             return;
 /**/          }
 /**/        }
@@ -793,6 +795,7 @@ void graph_plotmem(void) {
 /**/            printf("Axis0b: x: %f -> %f y: %f -> %f   \n", x_min, x_max, y_min, y_max);
 /**/          #endif // STATDEBUG
 /**/          if(keyWaiting()) {
+                regStatsXY = INVALID_VARIABLE;
 /**/            return;
 /**/          }
 /**/        }
@@ -818,6 +821,7 @@ void graph_plotmem(void) {
 /**/          y_max = sy;
 /**/        }
 /**/        if(keyWaiting()) {
+              regStatsXY = INVALID_VARIABLE;
 /**/          return;
 /**/        }
 /**/      }
@@ -1146,6 +1150,7 @@ void graph_plotmem(void) {
             #endif // PC_BUILD
           }
           if(keyWaiting()) {
+            regStatsXY = INVALID_VARIABLE;
             return;
           }
         }
@@ -1158,6 +1163,7 @@ void graph_plotmem(void) {
           moreInfoOnError("In function graph_plotmem:", errorMessage, NULL, NULL);
         #endif // EXTRA_INFO_ON_CALC_ERROR == 1
       }
+      regStatsXY = INVALID_VARIABLE;
     #endif // !TESTSUITE_BUILD
   #endif // !SAVE_SPACE_DM42_13GRF_JM
 }
@@ -1195,7 +1201,7 @@ void fnStatList() {
         printf("Stat data %d - %d (%s)\n",statnum-1, max(0, statnum-1-6), tmpString );
       #endif // STATDEBUG
 
-      if(statnum - 0 - 1 + ListXYposition > statnum-1) {
+      if(ListXYposition > 0) {
         ListXYposition = 0;
       }
       else if(statnum - (min(10,statnum)-1) - 1 + ListXYposition < 0) {

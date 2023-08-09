@@ -4224,61 +4224,58 @@ void execTimerApp(uint16_t timerType) {
         break;
 
       case CM_LISTXY:                     //JM
-        if(screenUpdatingMode == SCRUPD_AUTO) {
-          displayShiftAndTamBuffer();
-          refreshStatusBar();
-          fnStatList();
-          hourGlassIconEnabled = false;
-          refreshStatusBar();
-        }
+        displayShiftAndTamBuffer();
+        fnStatList();
+        hourGlassIconEnabled = false;
+        refreshStatusBar();
         break;
 
       case CM_GRAPH:
-          graph_plotmem();
-          displayShiftAndTamBuffer();
-          showSoftmenuCurrentPart();
-          hourGlassIconEnabled = true;
-          refreshStatusBar();
+        graph_plotmem();
+        displayShiftAndTamBuffer();
+        showSoftmenuCurrentPart();
+        hourGlassIconEnabled = true;
+        refreshStatusBar();
 
-          if(lastErrorCode != ERROR_NONE) {
-            //printf("lastErrorCode1=%d\n", lastErrorCode);
-            //printf(">>>> %d\n", softmenu[softmenuStack[0].softmenuId].menuItem);
-            if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_GRAPH) {
-              popSoftmenu();
-              calcMode = CM_NORMAL;
-              refreshScreen(82);
-            }
+        if(lastErrorCode != ERROR_NONE) {
+          //printf("lastErrorCode1=%d\n", lastErrorCode);
+          //printf(">>>> %d\n", softmenu[softmenuStack[0].softmenuId].menuItem);
+          if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_GRAPH) {
+            popSoftmenu();
+            calcMode = CM_NORMAL;
+            refreshScreen(82);
           }
-          hourGlassIconEnabled = false;
-          showHideHourGlass();
-          refreshStatusBar();
+        }
+        hourGlassIconEnabled = false;
+        showHideHourGlass();
+        refreshStatusBar();
         break;
 
       case CM_PLOT_STAT:
-          graphPlotstat(plotSelection);
-          displayShiftAndTamBuffer();
-          showSoftmenuCurrentPart();
-          hourGlassIconEnabled = true;
-          refreshStatusBar();
+        graphPlotstat(plotSelection);
+        displayShiftAndTamBuffer();
+        showSoftmenuCurrentPart();
+        hourGlassIconEnabled = true;
+        refreshStatusBar();
 
-          if(lastErrorCode != ERROR_NONE) {
-            if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_GRAPH) {
-              popSoftmenu();
-              calcMode = CM_NORMAL;
-              refreshScreen(83);
-            }
+        if(lastErrorCode != ERROR_NONE) {
+          if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_GRAPH) {
+            popSoftmenu();
+            calcMode = CM_NORMAL;
+            refreshScreen(83);
           }
-          graphDrawLRline(plotSelection);
-          if(lastErrorCode != ERROR_NONE) {
-            if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HPLOT || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HPLOT || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_STAT) {
-              popSoftmenu();
-              calcMode = CM_NORMAL;
-              refreshScreen(84);
-            }
+        }
+        graphDrawLRline(plotSelection);
+        if(lastErrorCode != ERROR_NONE) {
+          if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HPLOT || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HPLOT || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_STAT) {
+            popSoftmenu();
+            calcMode = CM_NORMAL;
+            refreshScreen(84);
           }
-          hourGlassIconEnabled = false;
-          showHideHourGlass();
-          refreshStatusBar();
+        }
+        hourGlassIconEnabled = false;
+        showHideHourGlass();
+        refreshStatusBar();
         break;
 
       default: ;

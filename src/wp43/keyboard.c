@@ -1224,7 +1224,7 @@ bool_t allowShiftsToClearError = false;
   #endif //PC_BUILD
 
     // Shift f pressed and JM REMOVED shift g not active
-    if(key->primary == ITM_SHIFTf && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || GRAPHMODE || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
+    if(key->primary == ITM_SHIFTf && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       if(temporaryInformation == TI_SHOW_REGISTER || SHOWMODE) allowShiftsToClearError = true; //JM
       if(temporaryInformation != TI_NO_INFO) {
         screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
@@ -1259,7 +1259,7 @@ bool_t allowShiftsToClearError = false;
     }
 
     // Shift g pressed and JM REMOVED shift f not active
-    else if(key->primary == ITM_SHIFTg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || GRAPHMODE || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
+    else if(key->primary == ITM_SHIFTg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       if(temporaryInformation == TI_SHOW_REGISTER || SHOWMODE) allowShiftsToClearError = true; //JM
       if(temporaryInformation != TI_NO_INFO) {
         screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
@@ -1295,7 +1295,7 @@ bool_t allowShiftsToClearError = false;
 
     // JM Shift f pressed  //JM shifts change f/g to a single function key toggle to match DM42 keyboard
     // JM Inserted new section and removed old f and g key processing sections
-    else if(key->primary == KEY_fg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || GRAPHMODE || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
+    else if(key->primary == KEY_fg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       Shft_timeouts = true;                         //JM SHIFT NEW
       fnTimerStart(TO_FG_LONG, TO_FG_LONG, JM_TO_FG_LONG);    //vv dr
       if(ShiftTimoutMode) {
@@ -1315,6 +1315,9 @@ bool_t allowShiftsToClearError = false;
       }
 
       if(lastErrorCode != 0) allowShiftsToClearError = true;                                                                                         //JM shifts
+      if(programRunStop == PGM_WAITING) {
+        programRunStop = PGM_STOPPED;
+      }
       lastErrorCode = 0;                                                                                                      //JM shifts
 
       fg_processing_jm();
@@ -1327,6 +1330,18 @@ bool_t allowShiftsToClearError = false;
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;
     }
+
+    else if((key->primary == KEY_fg || key->primary == ITM_SHIFTf || key->primary == ITM_SHIFTg) && (calcMode == CM_PLOT_STAT || calcMode == CM_LISTXY)) {   //JM shifts
+      temporaryInformation = TI_NO_INFO;     //reconsider: Temporary commented out. This clears SHOW (and other TI's) when fg is pressed. That means SNAP and shiftEXP are not possible with SHOW
+
+      if(lastErrorCode != 0) allowShiftsToClearError = true;                                                                                         //JM shifts
+      if(programRunStop == PGM_WAITING) {
+        programRunStop = PGM_STOPPED;
+      }
+      lastErrorCode = 0;                                                                                                      //JM shifts
+      return ITM_NOP;
+    }
+
 
   #if defined(PC_BUILD)
     sprintf(tmp,"^^^^^^^keyboard.c: determineitem: key->primary3: %d:",key->primary); jm_show_comment(tmp);
@@ -1616,7 +1631,10 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         lastshiftF = ff;
         lastshiftG = gg;
       }
-      refreshScreen(140);
+      
+      if(calcMode != CM_LISTXY) {
+        refreshScreen(140);
+      }
       sprintf(tmp,"^^^^btnPressed End item=%d:\'%s\' showFunctionNameItem=%d\n",item,(char *)data,showFunctionNameItem); jm_show_comment(tmp);
     }
 
@@ -1750,7 +1768,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         shiftF = f;
         shiftG = g;
       }
-    refreshScreen(139);
+      if(calcMode != CM_LISTXY) {
+        refreshScreen(139);
+      }
     }
   #endif // DMCP_BUILD
 
@@ -2012,7 +2032,7 @@ RELEASE_END:
         if(!keyActionProcessed) {    //JMvv
           addItemToBuffer(ITM_UP_ARROW);    //Let the arrows produce arrow up and arrow down in ALPHA mode
         }                            //JM^^
-        if(currentSoftmenuScrolls() || calcMode != CM_NORMAL || temporaryInformation != TI_NO_INFO) {
+        if(calcMode != CM_LISTXY && (currentSoftmenuScrolls() || calcMode != CM_NORMAL || temporaryInformation != TI_NO_INFO)) {
           refreshScreen(118);
         }
 //        temporaryInformation = TI_NO_INFO; REMOVED as this clears SHOW
@@ -2033,7 +2053,7 @@ RELEASE_END:
         if(!keyActionProcessed){     //JM
            addItemToBuffer(ITM_DOWN_ARROW);    //Let the arrows produce arrow up and arrow down in ALPHA mode
         }                            //JM^^
-        if(currentSoftmenuScrolls() || calcMode != CM_NORMAL  || temporaryInformation != TI_NO_INFO) {
+        if(calcMode != CM_LISTXY && (currentSoftmenuScrolls() || calcMode != CM_NORMAL  || temporaryInformation != TI_NO_INFO)) {
           refreshScreen(119);
         }
 //        temporaryInformation = TI_NO_INFO; REMOVED as this clears SHOW
@@ -3211,8 +3231,11 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
           printf(">>> Undo from fnKeyExit\n");
         #endif // DEBUGUNDO
         fnUndo(NOPARAM);
+        print_status("Clear Draw Matrix",force);
         fnClDrawMx();
+        print_status("Restore Stats",force);
         restoreStats();
+        print_status("Done",force);
         screenUpdatingMode = SCRUPD_AUTO;
 //        refreshScreen(126);
         break;

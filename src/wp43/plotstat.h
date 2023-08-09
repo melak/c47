@@ -45,7 +45,7 @@ extern  bool_t   PLOT_AXIS;
 extern  int8_t   PLOT_ZMX;
 extern  int8_t   PLOT_ZMY;
 extern  uint8_t  PLOT_ZOOM;
-  extern  uint8_t  drawHistogram;
+extern  uint8_t  drawHistogram;
 
 #define _VECT 0
 #define _SCAT 1

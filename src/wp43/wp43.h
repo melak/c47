@@ -373,6 +373,8 @@
   extern real34_t               hiBinR;
   extern char                   statMx[8];
   extern char                   plotStatMx[8];
+  extern calcRegister_t         regStatsXY;
+
 
   extern bool_t                 temporaryFlagRect;
 

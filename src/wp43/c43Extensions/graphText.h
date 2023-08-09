@@ -57,6 +57,7 @@ int16_t      export_string_to_filename(const char line1[TMP_STR_LENGTH], uint8_t
 extern char         filename_csv[filenamelen]; //JMMAX                //JM_CSV
 extern uint32_t     mem__32;                                          //JM_CSV
 extern bool_t       cancelFilename;
+void         print_status   (const char *line1, uint8_t forced);
 void         print_numberstr(const char *line1, bool_t line_init);
 void         print_linestr  (const char *line1, bool_t line_init);
 int16_t      export_xy_to_file(float x, float y);

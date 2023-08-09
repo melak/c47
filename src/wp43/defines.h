@@ -105,6 +105,9 @@
   #define PC_BUILD_TELLTALE            //JM verbose on PC: jm_show_comment
   #undef  PC_BUILD_TELLTALE
 
+  #define VERBOSE_REGISTERS
+  #undef VERBOSE_REGISTERS
+
 //Verbose STAT
   #define DEBUG_STAT                 0 // PLOT & STATS verbose level can be 0, 1 or 2 (more)
   #if(DEBUG_STAT == 0)
