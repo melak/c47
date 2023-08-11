@@ -3231,13 +3231,12 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
           printf(">>> Undo from fnKeyExit\n");
         #endif // DEBUGUNDO
         fnUndo(NOPARAM);
-        print_status("Clear Draw Matrix",force);
         fnClDrawMx();
-        print_status("Restore Stats",force);
-        restoreStats();
-        print_status("Done",force);
+        if(statMx[0]!='S') {
+          printStatus(errorMessages[RESTORING_STATS],force);
+          restoreStats();
+        }
         screenUpdatingMode = SCRUPD_AUTO;
-//        refreshScreen(126);
         break;
       }
 
@@ -3517,55 +3516,19 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
         break;
       }
 
-      case CM_BUG_ON_SCREEN:
-      case CM_PLOT_STAT:
-      case CM_GRAPH: {
-        if(calcMode == CM_PLOT_STAT) {
-          for(int16_t ii = 0; ii < 3; ii++) {
-            if( (softmenuStack[0].softmenuId > 1) && !(
-              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_HIST) ||
-              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_PLOTTING) ||
-              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_MODEL) ||
-              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_REGR)
-              )) {
-              popSoftmenu();
-            }
-          }
-        }
-        else {
-          popSoftmenu();
-        }
+       //Rather use the Exit routine as the code was the same
+       case CM_BUG_ON_SCREEN:
+       case CM_LISTXY:
+       case CM_GRAPH:
+       case CM_PLOT_STAT:
+       case CM_CONFIRMATION: {
+         #if defined(PC_BUILD)
+           jm_show_calc_state("fnKeyBackspace, calling fnKeyExit");
+         #endif
+         fnKeyExit(0);
+         break;
+       }
 
-        lastPlotMode = PLOT_NOTHING;
-        plotSelection = 0;
-
-        calcModeNormal();
-        #if defined(DEBUGUNDO)
-          printf(">>> Undo from fnKeyExit\n");
-        #endif // DEBUGUNDO
-        fnUndo(NOPARAM);
-        fnClDrawMx();
-        restoreStats();
-        screenUpdatingMode = SCRUPD_AUTO;
-        break;
-      }
-
-      case CM_LISTXY: {                     //JM vv
-        popSoftmenu();
-        calcMode = CM_NORMAL;
-        keyActionProcessed = true;
-        screenUpdatingMode = SCRUPD_AUTO;
-        break;                              //JM ^^
-      }
-
-      case CM_CONFIRMATION: {
-        calcMode = previousCalcMode;
-        temporaryInformation = TI_NO_INFO;
-        if(programRunStop == PGM_WAITING) {
-          programRunStop = PGM_STOPPED;
-        }
-        break;
-      }
 
       case CM_PEM: {
         #if !defined(SAVE_SPACE_DM42_10)

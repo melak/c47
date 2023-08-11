@@ -78,13 +78,14 @@
   bool_t isStatsMatrixN(uint16_t *rows, calcRegister_t regStats);
   bool_t isStatsMatrix(uint16_t *rows, char *mx);
 
-  bool_t checkMinimumDataPoints(const real_t *n);
-  void   initStatisticalSums   (void);
-  void   calcSigma             (uint16_t maxOffset);
+  bool_t checkMinimumDataPoints  (const real_t *n);
+  void   initStatisticalSums     (void);
+  void   calcSigma               (uint16_t maxOffset);
 
-  void   fnSetLoBin            (uint16_t unusedButMandatoryParameter);
-  void   fnSetHiBin            (uint16_t unusedButMandatoryParameter);
-  void   fnSetNBins            (uint16_t unusedButMandatoryParameter);
-  void   fnConvertStatsToHisto (uint16_t statsVariableToHistogram);
+  void   fnSetLoBin              (uint16_t unusedButMandatoryParameter);
+  void   fnSetHiBin              (uint16_t unusedButMandatoryParameter);
+  void   fnSetNBins              (uint16_t unusedButMandatoryParameter);
+  void   fnConvertStatsToHisto   (uint16_t statsVariableToHistogram);
+  void   setStatisticalSumsUpdate(bool_t para);
 
 #endif // STATS_H

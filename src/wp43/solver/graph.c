@@ -20,6 +20,7 @@
 
 #include "solver/graph.h"
 
+#include "c43Extensions/addons.h"
 #include "defines.h"
 #include "mathematics/comparisonReals.h"
 #include "charString.h"
@@ -27,6 +28,7 @@
 #include "error.h"
 #include "flags.h"
 #include "c43Extensions/graphs.h"
+#include "c43Extensions/graphText.h"
 #include "items.h"
 #include "mathematics/invert.h"
 #include "mathematics/matrix.h"
@@ -71,27 +73,24 @@
 #if !defined(TESTSUITE_BUILD)
 static void fnPlot(uint16_t unusedButMandatoryParameter) {
     lastPlotMode = PLOT_NOTHING;
-    //    fnPlotStat(PLOT_GRAPH);
-    //  C43 advanced plot vv
     strcpy(plotStatMx, "DrwMX");
     PLOT_LINE = true;
     PLOT_SHADE = true;
     fnPlotSQ(0);
-    //  C43 advanced plot ^^
 }
 
 
 
-static void fnRCL(int16_t inp) { //DONE
-    setSystemFlag(FLAG_ASLIFT);
-    if(inp == TEMP_REGISTER_1) {
-      liftStack();
-      copySourceRegisterToDestRegister(inp, REGISTER_X);
-    }
-    else {
-      fnRecall(inp);
-    }
-  }
+//static void fnRCL(int16_t inp) { //DONE
+//    setSystemFlag(FLAG_ASLIFT);
+//    if(inp == TEMP_REGISTER_1) {
+//      liftStack();
+//      copySourceRegisterToDestRegister(inp, REGISTER_X);
+//    }
+//    else {
+//      fnRecall(inp);
+//    }
+//  }
 
   static void convertDoubleToReal34RegisterPush(double x, calcRegister_t destination) {
     setSystemFlag(FLAG_ASLIFT);
@@ -128,13 +127,28 @@ static void fnRCL(int16_t inp) { //DONE
 
   static void execute_rpn_function(void){
     if(graphVariable <= 0 || graphVariable > 65535) {
+      #if defined(PC_BUILD) //PC_BUILD
+        printf("Error: No graph variable %u\n",graphVariable);
+      #endif //PC_BUILD
       return;
     }
 
     calcRegister_t regStats = graphVariable;
     if(regStats != INVALID_VARIABLE) {
       fnStore(regStats);                  //place X register into x
+
+      #if defined(PC_BUILD) //PC_BUILD
+        printf("Graph variable x=%u: ",graphVariable);
+        printRegisterToConsole(graphVariable, " = ","\n");
+      #endif //PC_BUILD
+
       fnEqCalc(0);
+
+      #if defined(PC_BUILD) //PC_BUILD
+        printf("Graph variable y ");
+        printRegisterToConsole(REGISTER_X, " = ","\n");
+      #endif //PC_BUILD
+
       #if defined(PC_BUILD)
         if(lastErrorCode != 0) {
           #if defined(VERBOSE_SOLVER00)
@@ -237,6 +251,8 @@ uint8_t DXR = 0, DYR = 0, DXI = 0, DYI = 0;
 //PLOTTER
   int32_t drawMxN(void){
     uint16_t rows = 0;
+printf("drawMxN: plotStatMx = %s\n",plotStatMx);
+
     if(plotStatMx[0]!='D') {
       return 0;
     }
@@ -258,10 +274,7 @@ uint8_t DXR = 0, DYR = 0, DXI = 0, DYI = 0;
 
   void fnClDrawMx(void) {
     PLOT_ZOOM = 0;
-    if(plotStatMx[0]!='D') {
-      strcpy(plotStatMx,"DrwMX");
-    }
-    calcRegister_t regStats = findNamedVariable(plotStatMx);
+    calcRegister_t regStats = findNamedVariable("DrwMX");
     if(regStats != INVALID_VARIABLE) {
       fnDeleteVariable(regStats);
     };
@@ -288,16 +301,15 @@ uint8_t DXR = 0, DYR = 0, DXI = 0, DYI = 0;
       }
     }
     if(regStats != INVALID_VARIABLE) {
-
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
 
-      real34Matrix_t stats;
-      linkToRealMatrixRegister(regStats, &stats);
-      rows = stats.header.matrixRows;
-      cols = stats.header.matrixColumns;
-      realToReal34(&x, &stats.matrixElements[(rows-1) * cols    ]);
-      realToReal34(&y, &stats.matrixElements[(rows-1) * cols + 1]);
+    real34Matrix_t stats;
+    linkToRealMatrixRegister(regStats, &stats);
+    rows = stats.header.matrixRows;
+    cols = stats.header.matrixColumns;
+    realToReal34(&x, &stats.matrixElements[(rows-1) * cols    ]);
+    realToReal34(&y, &stats.matrixElements[(rows-1) * cols + 1]);
     }
     else {
       displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
@@ -341,21 +353,35 @@ void graph_eqn(uint16_t mode) {
       regStatsXY = INVALID_VARIABLE;
       return;
     }
-    hourGlassIconEnabled = false;
-    showHideHourGlass();
+
+    #if defined (LOW_GRAPH_ACC)
+      //Change to SDIGS digit operation for graphs;
+      if(significantDigitsForEqnGraphs <= 6) {
+        ctxtReal34.digits = significantDigitsForEqnGraphs;
+        ctxtReal39.digits = significantDigitsForEqnGraphs+3;
+        ctxtReal51.digits = significantDigitsForEqnGraphs+6;
+        ctxtReal75.digits = significantDigitsForEqnGraphs+9;
+      }
+    #endif
+
+    if(!GRAPHMODE) { //Change over hourglass to the left side
+      clearScreenOld(clrStatusBar, !clrRegisterLines, !clrSoftkeys);
+    }
     calcMode = CM_GRAPH;
-    hourGlassIconEnabled = true;
+    hourGlassIconEnabled = true;       //clear the current portion of statusbar
     showHideHourGlass();
-    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
-    screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR;
+    refreshStatusBar();
+
+
     fnClearStack(0);
 
     convertDoubleToReal34RegisterPush(x_max, REGISTER_X);
     execute_rpn_function();
     yAvg += 2 * fabs(convertRegisterToDouble(REGISTER_Y));
 
-    if(mode == 1) {
+    if(mode == initDrwMx) {
       fnClDrawMx();
+      strcpy(plotStatMx,"DrwMX");
     }
     #if defined(DEBUG_GR)
       printf("dx0=%f discontinuityDetected:%u grad2IncreaseDetected:%u\n",dx0, discontinuityDetected, grad2IncreaseDetected);
@@ -473,11 +499,39 @@ void graph_eqn(uint16_t mode) {
       #if defined(DEBUG_GR)
         printf("dx0=%f dx=%f yAvg=%f count=%i discontinuityDetected:%u grad2IncreaseDetected:%u\n",dx0, dx, yAvg, count, discontinuityDetected, grad2IncreaseDetected);
       #endif // DEBUG_GR
+
+      if(keyWaiting()) {
+        fnClearStack(0);
+        calcMode = CM_NORMAL;
+        screenUpdatingMode = SCRUPD_AUTO;
+        return;
+      }
     }
 
+    #if defined (LOW_GRAPH_ACC)
+      //Change to SDIGS digit operation for fresh stack;
+      ctxtReal34.digits = 34; //Change back to normal operation for stack;
+      ctxtReal39.digits = 39; //Change back to 39 digit operation for stack;
+    #endif //LOW_GRAPH_ACC
+
     fnClearStack(0);
+
+    #if defined (LOW_GRAPH_ACC)
+      //Change to SDIGS digit operation for screen graphs;
+      ctxtReal34.digits = significantDigitsForScreen;
+      ctxtReal39.digits = significantDigitsForScreen+3;
+    #endif //LOW_GRAPH_ACC
+
     fnPlot(0);
-    regStatsXY = INVALID_VARIABLE;
+
+    #if defined (LOW_GRAPH_ACC)
+      //Change to normal operation for graphs;
+      ctxtReal34.digits = 34;
+      ctxtReal39.digits = 39;
+      ctxtReal51.digits = 51;
+      ctxtReal75.digits = 75;
+    #endif //LOW_GRAPH_ACC    
+
   #endif // !TESTSUITE_BUILD
 }
 
@@ -485,12 +539,10 @@ void graph_eqn(uint16_t mode) {
 void graph_stat(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
     calcMode = CM_GRAPH;
-    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
     reDraw = true;
 
     lastPlotMode = PLOT_NOTHING;
     strcpy(plotStatMx,"STATS");
-
     PLOT_LINE = true;
     PLOT_SHADE = true;
 
@@ -1233,7 +1285,9 @@ void fnEqSolvGraph (uint16_t func) {
 
   switch(func) {
     case EQ_SOLVE: {
+      printStatus(errorMessages[COMPLEX_SOLVER],force);
       fnClDrawMx();
+      strcpy(plotStatMx,"DrwMX");
       statGraphReset();
 
       double ix1 = convertRegisterToDouble(REGISTER_X);
@@ -1258,6 +1312,7 @@ void fnEqSolvGraph (uint16_t func) {
       break;
     }
     case EQ_PLOT: {
+      printStatus(errorMessages[GRAPHING],force);
       double ix1 = convertRegisterToDouble(REGISTER_X);
       double ix0 = convertRegisterToDouble(REGISTER_Y);
       #if(defined(VERBOSE_SOLVER00) || defined(VERBOSE_SOLVER0)) && defined(PC_BUILD)
@@ -1266,6 +1321,7 @@ void fnEqSolvGraph (uint16_t func) {
       #endif // (VERBOSE_SOLVER00 || VERBOSE_SOLVER0) && PC_BUILD
 
       fnClDrawMx();
+      strcpy(plotStatMx,"DrwMX");
       //statGraphReset();    //C43 removed to allow changing of graph params
 
       fnDrop(0);
@@ -1292,7 +1348,7 @@ void fnEqSolvGraph (uint16_t func) {
       #endif // (VERBOSE_SOLVER00 || VERBOSE_SOLVER0) && PC_BUILD
 
       initialize_function();
-      graph_eqn(0);
+      graph_eqn(noInitDrwMx);
       break;
     }
     default: ;

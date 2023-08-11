@@ -1174,6 +1174,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
 
     statisticalSumsPointer = NULL;
     savedStatisticalSumsPointer = NULL;
+    statisticalSumsUpdate = true;
     lrChosen    = 0;
     lrChosenUndo = 0;
     lastPlotMode = PLOT_NOTHING;

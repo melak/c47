@@ -102,6 +102,10 @@ void       fnAGraph                           (uint16_t regist);
 #endif // DMCP_BUILD
 
   void     execTimerApp                         (uint16_t timerType);
+
+  #define  force 1
+  #define  timed 0
+
   #if !defined(TESTSUITE_BUILD)
 
   void     refreshFn                            (uint16_t timerType);                                           //dr - general timeout handler
@@ -156,8 +160,6 @@ void       fnAGraph                           (uint16_t regist);
   void     underline_softkey                  (int16_t xSoftkey, int16_t ySoftKey, bool_t dontclear);          //JM LONGPRESS
   void     refresh_gui                        (void);                                                          //JM
 
-  #define  force 1
-  #define  timed 0
   void     force_refresh(uint8_t mode);                                                          //JM SCREEN
   void     printHalfSecUpdate_Integer(uint8_t mode, char * txt, int loop);
 

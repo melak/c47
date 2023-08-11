@@ -152,6 +152,7 @@ uint8_t                entryStatus;
 uint8_t                screenUpdatingMode;
 uint8_t               *beginOfProgramMemory;
 uint8_t               *firstFreeProgramByte;
+bool_t                 statisticalSumsUpdate;
 
 tamState_t             tam;
 int16_t                currentRegisterBrowserScreen;

@@ -225,6 +225,7 @@
   extern uint8_t                screenUpdatingMode;
   extern uint8_t               *beginOfProgramMemory;
   extern uint8_t               *firstFreeProgramByte;
+  extern bool_t                 statisticalSumsUpdate;
 
   /**
    * Instance of the internal state for TAM.

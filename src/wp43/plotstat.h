@@ -97,6 +97,7 @@ char * padEquals(const char * ss);
   #if !defined(TESTSUITE_BUILD)
 int16_t screen_window_x(float x_min, float x, float x_max);
 int16_t screen_window_y(float y_min, float y, float y_max);
+int32_t statMxN(void);
   #endif // !TESTSUITE_BUILD
 
 void    statGraphReset     (void);

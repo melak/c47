@@ -990,7 +990,6 @@ void graphPlotstat(uint16_t selection){
           printf("Axis0b: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
         #endif // STATDEBUG && PC_BUILD
         if(keyWaiting()) {
-          regStatsXY = INVALID_VARIABLE;
           return;
         }
       }
@@ -1215,11 +1214,9 @@ void graphPlotstat(uint16_t selection){
             #endif // PC_BUILD
         }
         if(keyWaiting()) {
-           regStatsXY = INVALID_VARIABLE;
            return;
         }
       }
-      regStatsXY = INVALID_VARIABLE;
       //#################################################### ^^^ MAIN GRAPH LOOP ^^^
     } 
     else {
@@ -1750,6 +1747,16 @@ void fnPlotStat(uint16_t plotMode){
     }
     #endif //STATDEBUG
 
+
+    if(!GRAPHMODE) { //Change over hourglass to the left side
+      clearScreenOld(clrStatusBar, !clrRegisterLines, !clrSoftkeys);
+    }
+    calcMode = CM_GRAPH;
+    hourGlassIconEnabled = true;       //clear the current portion of statusbar
+    showHideHourGlass();
+    refreshStatusBar();
+
+
     if((plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) ||
        (plotStatMx[0]=='D' && drawMxN() >= 2) ||
        (plotStatMx[0]=='H' && statMxN() >= 3) ) {
@@ -1790,9 +1797,6 @@ void fnPlotStat(uint16_t plotMode){
             }
         }
       }
-
-      hourGlassIconEnabled = true;
-      showHideHourGlass();
 
         #if defined(DMCP_BUILD)
         lcd_refresh();

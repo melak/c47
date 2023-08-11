@@ -91,22 +91,27 @@
 #define MAXLINES 2                  // two lines at small font maximum allowed in entry
 #define allowShowDigits false     
 
+#define LOW_GRAPH_ACC                                     //Lowered graph accuracy for EQN graphs
+#define significantDigitsForEqnGraphs (significantDigits) //If 6 is chosen by user, all four types are changes as follows: 34 to SDIGS; 39 to SDIGS+3; 51 to SDIGS+6; 75 to SDIGS+9
+#define significantDigitsForScreen    4                   //Only for screen coord scaling of the resulting graphic matrix: 34 to 4; 39 to 4+3; 51 to 4+3; 75 to 4+3
+//#undef LOW_GRAPH_ACC
+
 //Testing and debugging
-  #define DM42_KEYCLICK              //Add a 1 ms click after key presses and releases, for scope syncing
-  #undef DM42_KEYCLICK
-  #define CLICK_REFRESHSCR             //Add a 5 ms click before refresh screen
-  //#undef CLICK_REFRESHSCR
+  #define    DM42_KEYCLICK              //Add a 1 ms click after key presses and releases, for scope syncing
+  #undef     DM42_KEYCLICK
+  #define    CLICK_REFRESHSCR             //Add a 5 ms click before refresh screen
+  #undef     CLICK_REFRESHSCR
 
 //Verbose options
-  #define VERBOSEKEYS
-  #undef VERBOSEKEYS
-  #define MONITOR_CLRSCR
-//  #undef MONITOR_CLRSCR
-  #define PC_BUILD_TELLTALE            //JM verbose on PC: jm_show_comment
-  #undef  PC_BUILD_TELLTALE
-
-  #define VERBOSE_REGISTERS
-  #undef VERBOSE_REGISTERS
+  #define    VERBOSEKEYS
+  #undef     VERBOSEKEYS
+  #define    MONITOR_CLRSCR
+  #undef     MONITOR_CLRSCR
+  #define    PC_BUILD_TELLTALE            //JM verbose on PC: jm_show_comment
+  #undef     PC_BUILD_TELLTALE
+   
+  #define    VERBOSE_REGISTERS
+  #undef     VERBOSE_REGISTERS
 
 //Verbose STAT
   #define DEBUG_STAT                 0 // PLOT & STATS verbose level can be 0, 1 or 2 (more)
@@ -354,10 +359,17 @@
 #define ERROR_INVALID_DATA_TYPE_FOR_POLAR_RECT    52
 #define ERROR_BAD_INPUT                           53 // This error is not in ReM and cannot occur (theoretically).
 #define ERROR_NO_PROGRAM_SPECIFIED                54
-
 #define ERROR_CANNOT_WRITE_FILE                   55
 
-#define NUMBER_OF_ERROR_CODES                     56
+//Status output messages for time consuming tasks, to keep user informed 
+#define LOADING_STATE_FILE                        56
+#define SAVING_STATE_FILE                         57
+#define RESTORING_STATS                           58
+#define COMPLEX_SOLVER                            59
+#define GRAPHING                                  60
+#define RECALC_SUMS                               61
+
+#define NUMBER_OF_ERROR_CODES                     62
 #define SIZE_OF_EACH_ERROR_MESSAGE                48
 
 #define NUMBER_OF_BUG_SCREEN_MESSAGES             10

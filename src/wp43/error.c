@@ -105,6 +105,15 @@ TO_QSPI const char errorMessages[NUMBER_OF_ERROR_CODES][SIZE_OF_EACH_ERROR_MESSA
 /* 53 */  "Bad input", // This error is not in ReM and cannot occur (theoretically).
 /* 54 */  "No program specified",
 /* 55 */  "Cannot write file ",
+
+//Status output messages for time consuming tasks, to keep user informed 
+/* 56 */  "  Loading state file ...",
+/* 57 */  "  Saving state file ...",
+/* 58 */  "  Restoring stats...",
+/* 59 */  "  Complex solver...",
+/* 60 */  "  Calculating graph coordinates...",
+/* 61 */  "  Re-calculating sums ... ",
+
 };
 
 
