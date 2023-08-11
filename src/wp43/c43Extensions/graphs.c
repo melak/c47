@@ -74,6 +74,7 @@ void graph_reset(void){
 void fnClGrf(uint16_t unusedButMandatoryParameter) {
   graph_reset();
   fnClDrawMx();
+  strcpy(plotStatMx,"DrwMX");
   fnRefreshState();                //jm
 }
 
@@ -262,14 +263,15 @@ void fnPlotReset(uint16_t unusedButMandatoryParameter) {
 
 
 void fnPlotSQ(uint16_t unusedButMandatoryParameter) {
+  #if !defined(TESTSUITE_BUILD)
   #if defined(DMCP_BUILD)
     lcd_refresh();
   #else // !DMCP_BUILD
     refreshLcd(NULL);
   #endif // DMCP_BUILD
   PLOT_AXIS = true;
-  hourGlassIconEnabled = true;
-  showHideHourGlass();
+//  hourGlassIconEnabled = true;
+  //showHideHourGlass();
   Aspect_Square = true;
   if(!GRAPHMODE) {
     previousCalcMode = calcMode;
@@ -277,24 +279,29 @@ void fnPlotSQ(uint16_t unusedButMandatoryParameter) {
   if(previousCalcMode == CM_GRAPH || previousCalcMode == CM_PLOT_STAT) {
     previousCalcMode = CM_NORMAL;
   }
+
+  if(!GRAPHMODE) { //Change over hourglass to the left side
+    clearScreenOld(clrStatusBar, !clrRegisterLines, !clrSoftkeys);
+  }
   calcMode = CM_GRAPH;
-  screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
-  #if !defined(TESTSUITE_BUILD)
+  hourGlassIconEnabled = true;       //clear the current portion of statusbar
+  showHideHourGlass();
+  refreshStatusBar();
+
+  calcMode = CM_GRAPH;
     if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_PLOT) {
       showSoftmenu(-MNU_PLOT);                         //JM MENU Prevent resetting the softmenu to the default no 1 page position
     }
   #endif // !TESTSUITE_BUILD
-  screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
 }
 
 
 void fnListXY(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
-  if((plotStatMx[0]=='S' ? checkMinimumDataPoints(const_1):false) || (plotStatMx[0]=='D' ? drawMxN() >= 1:false)) {
+  if((plotStatMx[0]=='S' ? statMxN() >= 1 : false) || (plotStatMx[0]=='D' ? drawMxN() >= 1 : false)) {
     calcMode = CM_LISTXY; //Used to view graph/listing
     ListXYposition = 0;
     }
-  screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
   #endif // !TESTSUITE_BUILD
 }
 
@@ -555,7 +562,7 @@ void graph_plotmem(void) {
         uint16_t i;
         int16_t cnt1;
         cnt1 = drawMxN();
-        printf("Stored values\n");
+        printf("Stored values n=%i of matrix:%s\n",cnt1, plotStatMx);
         for(i = 0; i < cnt1; ++i) {
           printf("i = %3u x = %9f; y = %9f\n", i, grf_x(i), grf_y(i));
         }
@@ -576,7 +583,14 @@ void graph_plotmem(void) {
         reDraw = false; //draw now and block reDraw in the next round
       } //continue with draw
 
-
+      #if defined (LOW_GRAPH_ACC)
+        //Change to SDIGS digit operation for graphs;
+        ctxtReal34.digits = significantDigitsForScreen;
+        ctxtReal39.digits = significantDigitsForScreen+3;
+        ctxtReal51.digits = significantDigitsForScreen+3;
+        ctxtReal75.digits = significantDigitsForScreen+3;
+      #endif //LOW_GRAPH_ACC
+      regStatsXY = findNamedVariable(plotStatMx);
       uint16_t cnt, ix, statnum;
       uint16_t xo, xn, xN;
       uint8_t yo, yn, yN;
@@ -605,9 +619,9 @@ void graph_plotmem(void) {
         plotmode = _SCAT;
       }
 
-      if((plotStatMx[0]=='S' ? checkMinimumDataPoints(const_2):false) || (plotStatMx[0]=='D' ? drawMxN() >= 2:false)) {
+      if((plotStatMx[0]=='S' ? statMxN() >= 2 : false) || (plotStatMx[0]=='D' ? drawMxN() >= 2:false)) {
         if(plotStatMx[0]=='S') {
-          realToInt32(SIGMA_N, statnum);
+          statnum = statMxN();  //          realToInt32(SIGMA_N, statnum);
         }
         else {
           statnum = drawMxN();
@@ -710,7 +724,7 @@ void graph_plotmem(void) {
 /**/            }
 /**/          }
 /**/          if(keyWaiting()) {
-/**/             return;
+                 return;
 /**/          }
 /**/        }
 /**/      }
@@ -793,7 +807,7 @@ void graph_plotmem(void) {
 /**/            printf("Axis0b: x: %f -> %f y: %f -> %f   \n", x_min, x_max, y_min, y_max);
 /**/          #endif // STATDEBUG
 /**/          if(keyWaiting()) {
-/**/            return;
+                return;
 /**/          }
 /**/        }
 /**/      }
@@ -818,7 +832,7 @@ void graph_plotmem(void) {
 /**/          y_max = sy;
 /**/        }
 /**/        if(keyWaiting()) {
-/**/          return;
+              return;
 /**/        }
 /**/      }
 /**/    }
@@ -1158,6 +1172,14 @@ void graph_plotmem(void) {
           moreInfoOnError("In function graph_plotmem:", errorMessage, NULL, NULL);
         #endif // EXTRA_INFO_ON_CALC_ERROR == 1
       }
+
+      #if defined (LOW_GRAPH_ACC)
+        //Change to normal operation for graphs;
+        ctxtReal34.digits = 34;
+        ctxtReal39.digits = 39;
+        ctxtReal51.digits = 51;
+        ctxtReal75.digits = 75;
+      #endif //LOW_GRAPH_ACC
     #endif // !TESTSUITE_BUILD
   #endif // !SAVE_SPACE_DM42_13GRF_JM
 }
@@ -1179,9 +1201,11 @@ void fnStatList() {
       plotmode = _SCAT;
     }
 
-    if((plotStatMx[0] == 'S' ? checkMinimumDataPoints(const_1) : false) || (plotStatMx[0]=='D' ? drawMxN() >= 1 : false)) {
+    if(regStatsXY != INVALID_VARIABLE && 
+      ((plotStatMx[0] == 'S' ? statMxN() >= 1 : false) || (plotStatMx[0]=='D' ? drawMxN() >= 1 : false))) {
+
       if(plotStatMx[0] == 'S') {
-        realToInt32(SIGMA_N, statnum);
+        statnum = statMxN();  //        realToInt32(SIGMA_N, statnum);
       }
       else {
         statnum = drawMxN();
@@ -1195,7 +1219,7 @@ void fnStatList() {
         printf("Stat data %d - %d (%s)\n",statnum-1, max(0, statnum-1-6), tmpString );
       #endif // STATDEBUG
 
-      if(statnum - 0 - 1 + ListXYposition > statnum-1) {
+      if(ListXYposition > 0) {
         ListXYposition = 0;
       }
       else if(statnum - (min(10,statnum)-1) - 1 + ListXYposition < 0) {

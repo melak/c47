@@ -13,6 +13,7 @@
 #include "hal/io.h"
 #include "items.h"
 #include "c43Extensions/addons.h"
+#include "c43Extensions/graphText.h"
 #include "c43Extensions/xeqm.h"
 #include "c43Extensions/jm.h"
 #include "c43Extensions/radioButtonCatalog.h"
@@ -46,7 +47,7 @@
 #endif
 
 #include "wp43.h"
-#define BACKUP_VERSION                     782  // remove FM program support
+#define BACKUP_VERSION                     783  // add regStatsXY
 #define OLDEST_COMPATIBLE_BACKUP_VERSION   779  // save running app
 #define configFileVersion                  10000005 // arbitrary starting point version 10 000 001. Allowable values are 10000000 to 20000000
 #define VersionAllowed                     10000005 // This code will not autoload versions earlier than this
@@ -387,6 +388,10 @@ static uint32_t restore(void *buffer, uint32_t size) {
     save(&grpGroupingGr1Left,                 sizeof(grpGroupingGr1Left));        //JM
     save(&grpGroupingRight,                   sizeof(grpGroupingRight));          //JM
 
+    save(&regStatsXY,                         sizeof(regStatsXY));                //JM
+
+
+
     ioFileClose();
     printf("End of calc's backup\n");
   }
@@ -716,6 +721,13 @@ static uint32_t restore(void *buffer, uint32_t size) {
         restore(&grpGroupingRight,                   sizeof(grpGroupingRight));          //JM
       }
 
+      if(backupVersion >= 783) {
+        restore(&regStatsXY,                         sizeof(regStatsXY));               //JM
+      } else {
+        regStatsXY = INVALID_VARIABLE;
+      }
+
+
       ioFileClose();
       printf("End of calc's restoration\n");
 
@@ -987,6 +999,7 @@ void fnSave(uint16_t saveMode) {
 void doSave(uint16_t saveType) {
 flushBufferCnt = 0;
 #if !defined(TESTSUITE_BUILD)
+  printStatus(errorMessages[SAVING_STATE_FILE],force);
   ioFilePath_t path;
   char tmpString[3000];           //The concurrent use of the global tmpString
                                   //as target does not work while the source is at
@@ -2630,6 +2643,7 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
 
 
 void fnLoad(uint16_t loadMode) {
+  printStatus(errorMessages[LOADING_STATE_FILE],force);
   if(loadMode == LM_STATE_LOAD) {
     doLoad(LM_ALL, 0, 0, 0, stateLoad);
   }

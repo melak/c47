@@ -121,7 +121,7 @@ void statGraphReset(void){
     float xf=0;
     real_t xr;
 
-    calcRegister_t regStats = findNamedVariable(plotStatMx);
+    calcRegister_t regStats = regStatsXY;
     if(regStats != INVALID_VARIABLE) {
       real34Matrix_t stats;
       linkToRealMatrixRegister(regStats, &stats);
@@ -143,7 +143,7 @@ void statGraphReset(void){
     float yf=0;
     real_t yr;
 
-    calcRegister_t regStats = findNamedVariable(plotStatMx);
+    calcRegister_t regStats = regStatsXY;
     if(regStats != INVALID_VARIABLE) {
       real34Matrix_t stats;
       linkToRealMatrixRegister(regStats, &stats);
@@ -948,6 +948,7 @@ void graphPlotstat(uint16_t selection){
 
 
     if(reDraw) {
+      regStatsXY = findNamedVariable(plotStatMx);
       //  graphAxisDraw();                        //Draw the axis on any uncontrolled scale to start. Maybe optimize by remembering if there is an image on screen Otherwise double axis draw.
       graph_axis();
       plotmode = _SCAT;
@@ -1746,6 +1747,16 @@ void fnPlotStat(uint16_t plotMode){
     }
     #endif //STATDEBUG
 
+
+    if(!GRAPHMODE) { //Change over hourglass to the left side
+      clearScreenOld(clrStatusBar, !clrRegisterLines, !clrSoftkeys);
+    }
+    calcMode = CM_GRAPH;
+    hourGlassIconEnabled = true;       //clear the current portion of statusbar
+    showHideHourGlass();
+    refreshStatusBar();
+
+
     if((plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) ||
        (plotStatMx[0]=='D' && drawMxN() >= 2) ||
        (plotStatMx[0]=='H' && statMxN() >= 3) ) {
@@ -1786,9 +1797,6 @@ void fnPlotStat(uint16_t plotMode){
             }
         }
       }
-
-      hourGlassIconEnabled = true;
-      showHideHourGlass();
 
         #if defined(DMCP_BUILD)
         lcd_refresh();

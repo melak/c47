@@ -225,6 +225,7 @@
   extern uint8_t                screenUpdatingMode;
   extern uint8_t               *beginOfProgramMemory;
   extern uint8_t               *firstFreeProgramByte;
+  extern bool_t                 statisticalSumsUpdate;
 
   /**
    * Instance of the internal state for TAM.
@@ -373,6 +374,8 @@
   extern real34_t               hiBinR;
   extern char                   statMx[8];
   extern char                   plotStatMx[8];
+  extern calcRegister_t         regStatsXY;
+
 
   extern bool_t                 temporaryFlagRect;
 

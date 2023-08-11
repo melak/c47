@@ -1225,7 +1225,7 @@ bool_t allowShiftsToClearError = false;
   #endif //PC_BUILD
 
     // Shift f pressed and JM REMOVED shift g not active
-    if(key->primary == ITM_SHIFTf && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || GRAPHMODE || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
+    if(key->primary == ITM_SHIFTf && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       if(temporaryInformation == TI_SHOW_REGISTER || SHOWMODE) allowShiftsToClearError = true; //JM
       if(temporaryInformation != TI_NO_INFO) {
         screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
@@ -1260,7 +1260,7 @@ bool_t allowShiftsToClearError = false;
     }
 
     // Shift g pressed and JM REMOVED shift f not active
-    else if(key->primary == ITM_SHIFTg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || GRAPHMODE || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
+    else if(key->primary == ITM_SHIFTg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       if(temporaryInformation == TI_SHOW_REGISTER || SHOWMODE) allowShiftsToClearError = true; //JM
       if(temporaryInformation != TI_NO_INFO) {
         screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
@@ -1296,7 +1296,7 @@ bool_t allowShiftsToClearError = false;
 
     // JM Shift f pressed  //JM shifts change f/g to a single function key toggle to match DM42 keyboard
     // JM Inserted new section and removed old f and g key processing sections
-    else if(key->primary == KEY_fg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || GRAPHMODE || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
+    else if(key->primary == KEY_fg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       Shft_timeouts = true;                         //JM SHIFT NEW
       fnTimerStart(TO_FG_LONG, TO_FG_LONG, JM_TO_FG_LONG);    //vv dr
       if(ShiftTimoutMode) {
@@ -1316,6 +1316,9 @@ bool_t allowShiftsToClearError = false;
       }
 
       if(lastErrorCode != 0) allowShiftsToClearError = true;                                                                                         //JM shifts
+      if(programRunStop == PGM_WAITING) {
+        programRunStop = PGM_STOPPED;
+      }
       lastErrorCode = 0;                                                                                                      //JM shifts
 
       fg_processing_jm();
@@ -1328,6 +1331,18 @@ bool_t allowShiftsToClearError = false;
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;
     }
+
+    else if((key->primary == KEY_fg || key->primary == ITM_SHIFTf || key->primary == ITM_SHIFTg) && (calcMode == CM_PLOT_STAT || calcMode == CM_LISTXY)) {   //JM shifts
+      temporaryInformation = TI_NO_INFO;     //reconsider: Temporary commented out. This clears SHOW (and other TI's) when fg is pressed. That means SNAP and shiftEXP are not possible with SHOW
+
+      if(lastErrorCode != 0) allowShiftsToClearError = true;                                                                                         //JM shifts
+      if(programRunStop == PGM_WAITING) {
+        programRunStop = PGM_STOPPED;
+      }
+      lastErrorCode = 0;                                                                                                      //JM shifts
+      return ITM_NOP;
+    }
+
 
   #if defined(PC_BUILD)
     sprintf(tmp,"^^^^^^^keyboard.c: determineitem: key->primary3: %d:",key->primary); jm_show_comment(tmp);
@@ -1617,7 +1632,10 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         lastshiftF = ff;
         lastshiftG = gg;
       }
-      refreshScreen(140);
+      
+      if(calcMode != CM_LISTXY) {
+        refreshScreen(140);
+      }
       sprintf(tmp,"^^^^btnPressed End item=%d:\'%s\' showFunctionNameItem=%d\n",item,(char *)data,showFunctionNameItem); jm_show_comment(tmp);
     }
 
@@ -1751,7 +1769,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         shiftF = f;
         shiftG = g;
       }
-    refreshScreen(139);
+      if(calcMode != CM_LISTXY) {
+        refreshScreen(139);
+      }
     }
   #endif // DMCP_BUILD
 
@@ -2013,7 +2033,7 @@ RELEASE_END:
         if(!keyActionProcessed) {    //JMvv
           addItemToBuffer(ITM_UP_ARROW);    //Let the arrows produce arrow up and arrow down in ALPHA mode
         }                            //JM^^
-        if(currentSoftmenuScrolls() || calcMode != CM_NORMAL || temporaryInformation != TI_NO_INFO) {
+        if(calcMode != CM_LISTXY && (currentSoftmenuScrolls() || calcMode != CM_NORMAL || temporaryInformation != TI_NO_INFO)) {
           refreshScreen(118);
         }
 //        temporaryInformation = TI_NO_INFO; REMOVED as this clears SHOW
@@ -2034,7 +2054,7 @@ RELEASE_END:
         if(!keyActionProcessed){     //JM
            addItemToBuffer(ITM_DOWN_ARROW);    //Let the arrows produce arrow up and arrow down in ALPHA mode
         }                            //JM^^
-        if(currentSoftmenuScrolls() || calcMode != CM_NORMAL  || temporaryInformation != TI_NO_INFO) {
+        if(calcMode != CM_LISTXY && (currentSoftmenuScrolls() || calcMode != CM_NORMAL  || temporaryInformation != TI_NO_INFO)) {
           refreshScreen(119);
         }
 //        temporaryInformation = TI_NO_INFO; REMOVED as this clears SHOW
@@ -3214,9 +3234,11 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         #endif // DEBUGUNDO
         fnUndo(NOPARAM);
         fnClDrawMx();
-        restoreStats();
+        if(statMx[0]!='S') {
+          printStatus(errorMessages[RESTORING_STATS],force);
+          restoreStats();
+        }
         screenUpdatingMode = SCRUPD_AUTO;
-//        refreshScreen(126);
         break;
       }
 
@@ -3496,55 +3518,19 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
         break;
       }
 
-      case CM_BUG_ON_SCREEN:
-      case CM_PLOT_STAT:
-      case CM_GRAPH: {
-        if(calcMode == CM_PLOT_STAT) {
-          for(int16_t ii = 0; ii < 3; ii++) {
-            if( (softmenuStack[0].softmenuId > 1) && !(
-              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_HIST) ||
-              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_PLOTTING) ||
-              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_MODEL) ||
-              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_REGR)
-              )) {
-              popSoftmenu();
-            }
-          }
-        }
-        else {
-          popSoftmenu();
-        }
+       //Rather use the Exit routine as the code was the same
+       case CM_BUG_ON_SCREEN:
+       case CM_LISTXY:
+       case CM_GRAPH:
+       case CM_PLOT_STAT:
+       case CM_CONFIRMATION: {
+         #if defined(PC_BUILD)
+           jm_show_calc_state("fnKeyBackspace, calling fnKeyExit");
+         #endif
+         fnKeyExit(0);
+         break;
+       }
 
-        lastPlotMode = PLOT_NOTHING;
-        plotSelection = 0;
-
-        calcModeNormal();
-        #if defined(DEBUGUNDO)
-          printf(">>> Undo from fnKeyExit\n");
-        #endif // DEBUGUNDO
-        fnUndo(NOPARAM);
-        fnClDrawMx();
-        restoreStats();
-        screenUpdatingMode = SCRUPD_AUTO;
-        break;
-      }
-
-      case CM_LISTXY: {                     //JM vv
-        popSoftmenu();
-        calcMode = CM_NORMAL;
-        keyActionProcessed = true;
-        screenUpdatingMode = SCRUPD_AUTO;
-        break;                              //JM ^^
-      }
-
-      case CM_CONFIRMATION: {
-        calcMode = previousCalcMode;
-        temporaryInformation = TI_NO_INFO;
-        if(programRunStop == PGM_WAITING) {
-          programRunStop = PGM_STOPPED;
-        }
-        break;
-      }
 
       case CM_PEM: {
         #if !defined(SAVE_SPACE_DM42_10)

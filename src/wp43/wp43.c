@@ -152,6 +152,7 @@ uint8_t                entryStatus;
 uint8_t                screenUpdatingMode;
 uint8_t               *beginOfProgramMemory;
 uint8_t               *firstFreeProgramByte;
+bool_t                 statisticalSumsUpdate;
 
 tamState_t             tam;
 int16_t                currentRegisterBrowserScreen;
@@ -304,6 +305,8 @@ real34_t               nBins ;
 real34_t               hiBinR;
 char                   statMx[8];
 char                   plotStatMx[8];
+calcRegister_t         regStatsXY;
+
 
 bool_t temporaryFlagRect;
 

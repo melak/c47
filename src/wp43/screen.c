@@ -79,18 +79,18 @@ uint16_t current_cursor_y = 0;
                                        "RJvM" spc "NL," spc1
                                        "Walter" spc "DE.";
 
-  TO_QSPI static const char *versionStr  = "  Gitlab: " VERSION_STRING ".";
+  TO_QSPI static const char *disclaimerStr     = "  C47 firmware is free, open source and \n  neither provided nor supported by \n  SwissMicros. Press a key to continue.";
 
-  TO_QSPI static const char *disclaimerStr = "  C47 firmware is free, open source and is \n  neither provided nor supported by \n  SwissMicros. Press a key to continue.";
+  TO_QSPI static const char *versionStr        = "  C47 " VERSION_STRING ".";
 
   #if defined(PC_BUILD)
-    TO_QSPI static const char *versionStr2 = "  C47 Sim " VERSION1 ", compiled " __DATE__;
+    TO_QSPI static const char *versionStr2     = "  C47 Sim " VERSION1 ", compiled " __DATE__ ".";
   #else // !PC_BUILD
     #if defined(TWO_FILE_PGM)
-      TO_QSPI static const char *versionStr2 = "  C47 QSPI " VERSION1 ", compiled " __DATE__;
+      TO_QSPI static const char *versionStr2   = "  C47 QSPI " VERSION1 ", compiled " __DATE__ ".";
     #else // !TWO_FILE_PGM
       #if !defined(TWO_FILE_PGM)
-        TO_QSPI static const char *versionStr2 = "  C47 No QSPI " VERSION1 ", compiled " __DATE__;
+        TO_QSPI static const char *versionStr2 = "  C47 No QSPI " VERSION1 ", compiled " __DATE__ ".";
       #endif // !TWO_FILE_PGM
     #endif // TWO_FILE_PGM
   #endif // PC_BUILD
@@ -4231,13 +4231,10 @@ void execTimerApp(uint16_t timerType) {
         break;
 
       case CM_LISTXY:                     //JM
-        if(screenUpdatingMode == SCRUPD_AUTO) {
-          displayShiftAndTamBuffer();
-          refreshStatusBar();
-          fnStatList();
-          hourGlassIconEnabled = false;
-          refreshStatusBar();
-        }
+        displayShiftAndTamBuffer();
+        fnStatList();
+        hourGlassIconEnabled = false;
+        refreshStatusBar();
         break;
 
       case CM_GRAPH:
@@ -4256,7 +4253,6 @@ void execTimerApp(uint16_t timerType) {
               refreshScreen(82);
             }
           }
-
           hourGlassIconEnabled = false;
           showHideHourGlass();
           refreshStatusBar();

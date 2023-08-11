@@ -45,7 +45,7 @@ extern  bool_t   PLOT_AXIS;
 extern  int8_t   PLOT_ZMX;
 extern  int8_t   PLOT_ZMY;
 extern  uint8_t  PLOT_ZOOM;
-  extern  uint8_t  drawHistogram;
+extern  uint8_t  drawHistogram;
 
 #define _VECT 0
 #define _SCAT 1
@@ -97,6 +97,7 @@ char * padEquals(const char * ss);
   #if !defined(TESTSUITE_BUILD)
 int16_t screen_window_x(float x_min, float x, float x_max);
 int16_t screen_window_y(float y_min, float y, float y_max);
+int32_t statMxN(void);
   #endif // !TESTSUITE_BUILD
 
 void    statGraphReset     (void);

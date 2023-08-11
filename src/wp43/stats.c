@@ -17,6 +17,7 @@
 #include "stats.h"
 
 #include "constantPointers.h"
+#include "c43Extensions/graphText.h"
 #include "debug.h"
 #include "error.h"
 #include "flags.h"
@@ -29,6 +30,7 @@
 #include "plotstat.h"
 #include "registers.h"
 #include "registerValueConversions.h"
+#include "screen.h"
 #include "stack.h"
 #include <string.h>
 
@@ -39,6 +41,30 @@
   static void calcMax(uint16_t maxOffset);
   static void calcMin(uint16_t maxOffset);
 #endif // !TESTSUITE_BUILD
+
+bool_t isStatsMatrixN(uint16_t *rows, calcRegister_t regStats) {
+  #if !defined(TESTSUITE_BUILD)
+    *rows = 0;
+    if(regStats == INVALID_VARIABLE) {
+      return false;
+    }
+    else {
+      if(getRegisterDataType(regStats) != dtReal34Matrix) {
+        return false;
+      }
+      else {
+        real34Matrix_t stats;
+        linkToRealMatrixRegister(regStats, &stats);
+        *rows = stats.header.matrixRows;
+        if(stats.header.matrixColumns != 2) {
+          return false;
+        }
+      }
+    }
+  #endif // !TESTSUITE_BUILD
+  return true;
+}
+
 
 
 bool_t isStatsMatrix(uint16_t *rows, char *mx) {
@@ -438,14 +464,22 @@ static void clearStatisticalSums(void) {
 
 
 void initStatisticalSums(void) {
-  if(statisticalSumsPointer == NULL) {
-    statisticalSumsPointer = allocWp43(NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
-    clearStatisticalSums();
+  if(statisticalSumsUpdate) {
+    if(statisticalSumsPointer == NULL) {
+      statisticalSumsPointer = allocWp43(NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
+      clearStatisticalSums();
     }
-  else {
-      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+    uint16_t rows;
+    strcpy(statMx,"STATS");                     //any stats operation restores the stats matrix. The purpose of the changed names are just to be able to exchange the matrixes for reading and graphing
+    calcRegister_t regStats = findNamedVariable(statMx);
+    if(isStatsMatrixN(&rows, regStats) && rows > 0) {
+      calcSigma(0);
     }
   }
+}
 
 
 
@@ -498,17 +532,22 @@ void calcSigma(uint16_t maxOffset) {
       initStatisticalSums();
     }
     calcRegister_t regStats = findNamedVariable(statMx);
-    if(regStats != INVALID_VARIABLE) {
+    uint16_t rr = 1;
+    if(regStats >= FIRST_NAMED_VARIABLE && isStatsMatrixN(&rr, regStats) && regStats != INVALID_VARIABLE) {
       real34Matrix_t stats;
       linkToRealMatrixRegister(regStats, &stats);
       const uint16_t rows = stats.header.matrixRows, cols = stats.header.matrixColumns;
       real_t x, y;
+      char aa[100];
       for(uint16_t i = 0; i < rows - maxOffset; i++) {
+        sprintf(aa,"%s%s (%u of %u)",errorMessages[RECALC_SUMS], statMx,i,rows - maxOffset);
+        printStatus(aa,force);
         real34ToReal(&stats.matrixElements[i * cols    ], &x);
         real34ToReal(&stats.matrixElements[i * cols + 1], &y);
         addSigma(&x, &y);
       }
     }
+    printStatus(" ",force);
   #endif //TESTSUITE_BUILD
 }
 
@@ -635,6 +674,34 @@ static calcRegister_t fnClHisto(bool_t deleteVariable) {
 }
 
 
+void setStatisticalSumsUpdate(bool_t para) {
+  //if going off auto, or confirming it is still on auto off, clear sums
+  if(!para) {
+    if(statisticalSumsPointer != NULL) {
+      freeWp43(statisticalSumsPointer, NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
+      statisticalSumsPointer = NULL;
+      if(lastErrorCode != ERROR_NONE) {
+        return;
+      }
+    }    
+  }
+  if (statisticalSumsUpdate && !para) {
+    //It is on auto and it is being switched off auto. Stats sums already cleared, just set the flag.
+    statisticalSumsUpdate = false;
+  } else
+  if (!statisticalSumsUpdate && para) {
+    //it is off auto and it is swithing on to auto update. Clear and sums and calc up any existing matrix.
+    statisticalSumsUpdate = true;
+    initStatisticalSums(); //calcSigma is implied
+    if(lastErrorCode != ERROR_NONE) {
+      return;
+    }
+  }
+  //it it is off auto and switched off, it must remain so. Not further actions
+  //if it is on  auto and switched on, it must remain so. Not further actions
+}
+
+
 void fnClSigma(uint16_t unusedButMandatoryParameter) {
   fnClHisto(true);
   strcpy(statMx,"STATS");                     //any stats operation restores the stats matrix. The purpose of the changed names are just to be able to exchange the matrixes for reading and graphing
@@ -678,8 +745,13 @@ void fnSigma(uint16_t plusMinus) {
     if(   (getRegisterDataType(REGISTER_X) == dtLongInteger || getRegisterDataType(REGISTER_X) == dtReal34)
        && (getRegisterDataType(REGISTER_Y) == dtLongInteger || getRegisterDataType(REGISTER_Y) == dtReal34)) {
 
-        if(statisticalSumsPointer == NULL) {
+        if(statisticalSumsUpdate && statisticalSumsPointer == NULL) {
           initStatisticalSums();
+          if(lastErrorCode != ERROR_NONE) {
+            return;
+          }
+        } else {
+          setStatisticalSumsUpdate(statisticalSumsUpdate);    //ensure it deletes the sums anyway if clear
           if(lastErrorCode != ERROR_NONE) {
             return;
           }
@@ -701,7 +773,9 @@ void fnSigma(uint16_t plusMinus) {
         real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
       }
 
-        addSigma(&x, &y);
+        if(statisticalSumsUpdate) {
+          addSigma(&x, &y);
+        }
         AddtoStatsMatrix(&x, &y);
         realCopy(&x,      &SAVED_SIGMA_LASTX);
         realCopy(&y,      &SAVED_SIGMA_LASTY);
@@ -712,15 +786,22 @@ void fnSigma(uint16_t plusMinus) {
           printRegisterToConsole(regStats,"From: AddtoStatsMatrix STATS:\n","\n");
         #endif //DEBUGUNDO
 
-        temporaryInformation = TI_STATISTIC_SUMS;
+        if(statisticalSumsPointer != NULL) {
+          temporaryInformation = TI_STATISTIC_SUMS;
+        }
       }
       else if(getRegisterDataType(REGISTER_X) == dtReal34Matrix && plusMinus == 1) {
         real34Matrix_t matrix;
         linkToRealMatrixRegister(REGISTER_X, &matrix);
 
         if(matrix.header.matrixColumns == 2) {
-          if(statisticalSumsPointer == NULL) {
+          if(statisticalSumsUpdate && statisticalSumsPointer == NULL) {
             initStatisticalSums();
+            if(lastErrorCode != ERROR_NONE) {
+              return;
+            }
+          } else {
+            setStatisticalSumsUpdate(statisticalSumsUpdate);    //ensure it deletes the sums anyway if clear
             if(lastErrorCode != ERROR_NONE) {
               return;
             }
@@ -732,7 +813,9 @@ void fnSigma(uint16_t plusMinus) {
           for(uint16_t i = 0; i < matrix.header.matrixRows; ++i) {
             real34ToReal(&matrix.matrixElements[i * 2    ], &x);
             real34ToReal(&matrix.matrixElements[i * 2 + 1], &y);
-            addSigma(&x, &y);
+            if(statisticalSumsUpdate) {
+              addSigma(&x, &y);
+            }
             AddtoStatsMatrix(&x, &y);
           }
 
@@ -741,7 +824,9 @@ void fnSigma(uint16_t plusMinus) {
           convertRealToReal34ResultRegister(&y, REGISTER_Y);
           reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
           convertRealToReal34ResultRegister(&x, REGISTER_X);
-          temporaryInformation = TI_STATISTIC_SUMS;
+          if(statisticalSumsPointer != NULL) {
+            temporaryInformation = TI_STATISTIC_SUMS;
+          }
         }
         else {
           displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
@@ -762,7 +847,9 @@ void fnSigma(uint16_t plusMinus) {
     else { // SIGMA-
       if(checkMinimumDataPoints(const_1)) {
         getLastRowStatsMatrix(&x, &y);
-        subSigma(&x, &y);
+        if(statisticalSumsUpdate) {
+          subSigma(&x, &y);
+        }
         removeLastRowFromStatsMatrix();
 
         if(statisticalSumsPointer != NULL) {
@@ -1017,27 +1104,29 @@ void fnConvertStatsToHisto(uint16_t statsVariableToHistogram) {
     real_t lb, hb, nb, nn;
 
     if(statMx[0]=='S' && isStatsMatrix(&rows,statMx)) {
-      if(statsVariableToHistogram == ITM_Y) {
-        realToReal34(SIGMA_YMIN, &loBinR);                                     //set up the user variables from auto estimates from the data
-        realToReal34(SIGMA_YMAX, &hiBinR);                                     //set up the user variables from auto estimates from the data
-        histElementXorY = 1;
-      } else if(statsVariableToHistogram == ITM_X) {
-        realToReal34(SIGMA_XMIN, &loBinR);                                     //set up the user variables from auto estimates from the data
-        realToReal34(SIGMA_XMAX, &hiBinR);                                     //set up the user variables from auto estimates from the data
-        histElementXorY = 0;
-      }
-      else {
-        return;
-      }
+      if(checkMinimumDataPoints(const_3)) {
+        if(statsVariableToHistogram == ITM_Y) {
+          realToReal34(SIGMA_YMIN, &loBinR);                                     //set up the user variables from auto estimates from the data
+          realToReal34(SIGMA_YMAX, &hiBinR);                                     //set up the user variables from auto estimates from the data
+          histElementXorY = 1;
+        } else if(statsVariableToHistogram == ITM_X) {
+          realToReal34(SIGMA_XMIN, &loBinR);                                     //set up the user variables from auto estimates from the data
+          realToReal34(SIGMA_XMAX, &hiBinR);                                     //set up the user variables from auto estimates from the data
+          histElementXorY = 0;
+        }
+        else {
+          return;
+        }
 
-      real34ToReal(&loBinR, &lb);
-      real34ToReal(&hiBinR, &hb);
-      realCopy(SIGMA_N, &nn);
-      realSquareRoot(&nn,&nb,&ctxtReal39);
-      realToIntegralValue(&nb, &nb, DEC_ROUND_CEILING, &ctxtReal39);  //number of bins are defaulted to square root of data points  nb = CEIL (sqrt(SIGMA_N))
-      realToReal34(&nb, &nBins);                                      //set up the user variables from auto estimates from the data
+        real34ToReal(&loBinR, &lb);
+        real34ToReal(&hiBinR, &hb);
+        realCopy(SIGMA_N, &nn);
+        realSquareRoot(&nn,&nb,&ctxtReal39);
+        realToIntegralValue(&nb, &nb, DEC_ROUND_CEILING, &ctxtReal39);  //number of bins are defaulted to square root of data points  nb = CEIL (sqrt(SIGMA_N))
+        realToReal34(&nb, &nBins);                                      //set up the user variables from auto estimates from the data
 
-      convertStatsMatrixToHistoMatrix(statsVariableToHistogram);
+        convertStatsMatrixToHistoMatrix(statsVariableToHistogram);
+      }
     }
     else {
       displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
