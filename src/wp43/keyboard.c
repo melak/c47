@@ -480,6 +480,10 @@ bool_t lowercaseselected;
     #endif //PAIMDEBUG
 #endif //PC_BUILD
 
+    if(scrLock != NC_NORMAL) {
+      nextChar = scrLock;
+    }
+
     if(keyReplacements(item, &item1, numLock, lastshiftF, lastshiftG) > 0) {  //JMvv
       if(item1 > 0) {
         addItemToBuffer(item1);
@@ -1043,7 +1047,13 @@ printf(">>>> R000D                                %d |%s| shiftF=%d, shiftG=%d t
   //            addItemToBuffer(item);
   //JM this is handled later
   //          }
-          else if(calcMode == CM_EIM && catalog && catalog != CATALOG_MVAR) {
+
+          else if(calcMode == CM_EIM && ((catalog && catalog != CATALOG_MVAR) || 
+                  ( softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQ_EDIT &&                       //Allow only EIM enabled functions through to be added as text
+                    item != ITM_EQ_LEFT && item != ITM_EQ_RIGHT && item != CHR_num && item != CHR_case &&
+                    (indexOfItems[item].status & EIM_STATUS) == EIM_ENABLED
+                    )
+                  ))  {
             addItemToBuffer(item);
             while(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQ_EDIT) {
               popSoftmenu();
@@ -1317,10 +1327,10 @@ bool_t allowShiftsToClearError = false;
                shiftG ? key->gShiftedAim :
                         key->primaryAim;
       if(calcMode == CM_PEM && getSystemFlag(FLAG_ALPHA)) {
-        if(result == ITM_DOWN_ARROW) {
+        if(result == ITM_DOWN_ARROW || scrLock == NC_SUBSCRIPT) {
           nextChar = NC_SUBSCRIPT;
         }
-        else if(result == ITM_UP_ARROW) {
+        else if(result == ITM_UP_ARROW || scrLock == NC_SUPERSCRIPT) {
           nextChar = NC_SUPERSCRIPT;
         }
       }

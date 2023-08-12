@@ -156,6 +156,7 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   {CHR_num,              JC_NL,                  CB_JC},  //
   {CHR_case,             JC_UC,                  CB_JC},  //
   {ITM_USERMODE,         JC_UU,                  CB_JC},  //
+  {ITM_SCR,              JC_SS,                  CB_JC},  //
 
   {ITM_BCD,              JC_BCD,                 CB_JC},  //
   {ITM_TOPHEX,           JC_TOPHEX,              CB_JC},  //
@@ -340,6 +341,7 @@ int8_t fnCbIsSet(int16_t item) {
             case JC_NL:                  cb_param = numLock;                                                          break;
             case JC_UC:                  cb_param = !alphaCase;                                                       break;
             case JC_UU:                  cb_param = getSystemFlag(FLAG_USER);                                         break;
+            case JC_SS:                  cb_param = scrLock != NC_NORMAL;                                             break;
             case JC_BCD:                 cb_param = bcdDisplay;                                                       break;
             case JC_TOPHEX:              cb_param = topHex;                                                           break;
             case JC_SI_All:              cb_param = SI_All;                                                           break;
@@ -398,6 +400,7 @@ int16_t fnItemShowValue(int16_t item) {
     case ITM_DENMAX2:   result = denMax;                                            break;
     case ITM_SETSIG2:   result = (significantDigits == 0 ? 34 : significantDigits); break;
     case ITM_DSPCYCLE:  result = 32700 + displayFormat;                             break;
+    case ITM_SCR:       result = (scrLock & 0x03) | (nextChar & 0x03);              break;
     case ITM_DSP:       result = displayFormatDigits;                               break;
     case ITM_HIDE:      result = exponentHideLimit;                                 break;
     //case ITM_BESTF:     result = (~lrSelection) & 0x1FF;                            break;

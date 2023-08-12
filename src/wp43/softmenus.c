@@ -573,12 +573,39 @@ TO_QSPI const int16_t menu_TamLblAlpha[] = { ITM_INDIRECTION,               -MNU
 
 
 
-TO_QSPI const int16_t menu_Eim[]         = { ITM_EQ_LEFT,                   ITM_CIRCUMFLEX,             ITM_ROOT_SIGN,            CHR_num,               CHR_case,                    ITM_EQ_RIGHT,
-                                             ITM_COLON,                     ITM_VERTICAL_BAR,           ITM_LEFT_PARENTHESIS,     ITM_RIGHT_PARENTHESIS, ITM_EQUAL,                  -MNU_CATALOG,
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
+TO_QSPI const int16_t menu_Eim[]         = { 
 
-                                             ITM_ALOG_SYMBOL,               ITM_op_j_SIGN,              ITM_pi,                   ITM_SIN_SIGN,          ITM_COS_SIGN,                ITM_TAN_SIGN,
-                                             ITM_poly_SIGN,                 ITM_LG_SIGN,                ITM_LN_SIGN,              ITM_ASIN_SIGN,          ITM_ACOS_SIGN,                ITM_ATAN_SIGN               };
+ITM_EQ_LEFT , ITM_LEFT_PARENTHESIS  , ITM_RIGHT_PARENTHESIS , CHR_num , CHR_case  , ITM_EQ_RIGHT  ,
+ITM_ALOG_SYMBOL , ITM_LN , ITM_CIRCUMFLEX  , ITM_ROOT_SIGN , ITM_EQUAL , ITM_COLON ,
+ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  ,
+                      
+ITM_EQ_LEFT , ITM_pi  , ITM_sin , ITM_cos , ITM_tan , ITM_EQ_RIGHT  ,
+ITM_LOG10 , ITM_op_j_SIGN  , ITM_arcsin  , ITM_arccos  , ITM_arctan  , ITM_atan2 ,
+ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  ,
+                      
+ITM_EQ_LEFT , ITM_VERTICAL_BAR  , ITM_ARG , ITM_RE  , ITM_IM  , ITM_EQ_RIGHT  ,
+ITM_NULL  , ITM_FLOOR , ITM_CEIL  , ITM_MAX , ITM_MIN , ITM_NULL  ,
+ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  ,
+                      
+ITM_EQ_LEFT , ITM_LOGXY , ITM_LOG10 , ITM_LOG2  , ITM_poly_SIGN , ITM_EQ_RIGHT  ,
+ITM_FIB , ITM_COMB  , ITM_PERM  , ITM_XFACT , ITM_sinc  , ITM_sincpi  ,
+ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  ,
+                      
+ITM_EQ_LEFT , ITM_IDIV  , ITM_sinh  , ITM_cosh  , ITM_tanh  , ITM_EQ_RIGHT  ,
+ITM_MOD , ITM_RMD , ITM_arsinh  , ITM_arcosh  , ITM_artanh  , -MNU_CATALOG  ,
+ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  ,
+                      
+ITM_EQ_LEFT , ITM_HN  , ITM_Lm  , ITM_GAMMAX  , ITM_Pn  , ITM_EQ_RIGHT  ,
+ITM_M1X , ITM_HNP , ITM_LmALPHA , ITM_LNGAMMA , ITM_Tn  , ITM_Un  ,
+ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  ,
+                      
+ITM_EQ_LEFT , ITM_BN  , ITM_ERF , ITM_WM  , ITM_WM1 , ITM_EQ_RIGHT  ,
+ITM_zetaX , ITM_BNS , ITM_ERFC  , ITM_NULL  , ITM_NULL  , ITM_NULL  ,
+ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  ,
+
+};
+
+
 
 TO_QSPI const int16_t menu_Timer[]       = { ITM_TIMER_ADD,                 ITM_NULL,                   ITM_NULL,                 ITM_TIMER_0_1S,        ITM_NULL,                    ITM_TIMER_RESET               };
 
@@ -690,7 +717,7 @@ TO_QSPI const int16_t menu_PLOT[]        = { ITM_PLINE,                     ITM_
 
 TO_QSPI const int16_t menu_ALPHA[]       = { ITM_T_UP_ARROW,                ITM_T_DOWN_ARROW,           ITM_T_LLEFT_ARROW,        ITM_T_LEFT_ARROW,      ITM_T_RIGHT_ARROW,           ITM_T_RRIGHT_ARROW,
                                              -MNU_MyAlpha,                 -MNU_ALPHA_OMEGA,           -MNU_ALPHADOT,            -MNU_ALPHAMATH,        -MNU_ALPHAINTL,               ITM_ASSIGN,                           //JM
-                                             ITM_XEDIT,                     ITM_XPARSE,                 ITM_CLA,                  CHR_num,               CHR_case,                    ITM_USERMODE                     };   //JM
+                                             ITM_XEDIT,                     ITM_XPARSE,                 ITM_SCR,                  CHR_num,               CHR_case,                    ITM_USERMODE                     };   //JM
 
 TO_QSPI const int16_t menu_XXEQ[]        = { ITM_XSAVE,                     ITM_XLOAD,                  ITM_XEDIT,                ITM_XNEW,              ITM_XXEQ,                     -MNU_XEQ                        };   //JM
 
@@ -1626,6 +1653,13 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
                           case 32703 : stringAppend(showText + stringByteLength(showText), "ENG" ); *showValue = NOVAL; break;
                           case 32704 : stringAppend(showText + stringByteLength(showText), "SIG" ); *showValue = NOVAL; break;
                           case 32705 : stringAppend(showText + stringByteLength(showText), "UNIT"); *showValue = NOVAL; break;
+                          default: ;
+                        }
+                        break;
+      case ITM_SCR    :switch(*showValue) {
+                          case NC_NORMAL      : *showValue = NOVAL; break;
+                          case NC_SUBSCRIPT   : stringAppend(showText + stringByteLength(showText), alphaCase == AC_LOWER ? STD_SUB_s STD_SUB_u STD_SUB_b : alphaCase == AC_UPPER ? STD_SUB_S STD_SUB_U STD_SUB_B : ""); *showValue = NOVAL; break;
+                          case NC_SUPERSCRIPT : stringAppend(showText + stringByteLength(showText), alphaCase == AC_LOWER ? STD_SUP_s STD_SUP_u STD_SUP_p : alphaCase == AC_UPPER ? STD_SUP_S STD_SUP_U STD_SUP_P : ""); *showValue = NOVAL; break;
                           default: ;
                         }
                         break;

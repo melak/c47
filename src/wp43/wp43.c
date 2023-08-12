@@ -175,6 +175,7 @@ int16_t                lastCatalogPosition[NUMBER_OF_CATALOGS];
 int16_t                showFunctionNameItem;
 
 uint8_t               displayStackSHOIDISP;          //JM SHOIDISP
+uint8_t               scrLock;
 bool_t                numLock;                       //JM
 bool_t                doRefreshSoftMenu;                       //dr
 bool_t                jm_BASE_SCREEN;                          //JM Screen / keyboard operation setup

@@ -762,6 +762,10 @@ void pemAlpha(int16_t item) {
     SetSetting(indexOfItems[item].param);
     return;
   }
+  else if(item == ITM_SCR) { // JM addon
+    SetSetting(indexOfItems[item].param);
+    return;
+  }
 
   else if(indexOfItems[item].func == fnT_ARROW) { // JM addon
     fnT_ARROW(indexOfItems[item].param);
