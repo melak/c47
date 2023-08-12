@@ -2076,8 +2076,10 @@ RELEASE_END:
         }
         temporaryInformation = TI_NO_INFO;
         keyActionProcessed = true;
+        screenUpdatingMode = SCRUPD_AUTO;
         break;
       }
+
 
       case ITM_op_j:
       case ITM_CC:
@@ -3035,7 +3037,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
           }
           else {                  //jm: this is where 43S cleared an error
             popSoftmenu();
-            stayInAIM(); //JM
+//            stayInAIM(); //JM
           }
           screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
           if(temporaryInformation == TI_NO_INFO) {
@@ -3235,7 +3237,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         fnUndo(NOPARAM);
         fnClDrawMx();
         if(statMx[0]!='S') {
-          printStatus(errorMessages[RESTORING_STATS],force);
+          printStatus(0, errorMessages[RESTORING_STATS],force);
           restoreStats();
         }
         screenUpdatingMode = SCRUPD_AUTO;
@@ -3420,6 +3422,16 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
           screenUpdatingMode = SCRUPD_AUTO;
           if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_SHOW) {
             popSoftmenu();
+          }
+          return;
+        }
+        else
+        if(temporaryInformation != TI_NO_INFO) {
+          temporaryInformation = TI_NO_INFO;
+          keyActionProcessed = true;
+          screenUpdatingMode = SCRUPD_AUTO;
+          if(lastErrorCode != 0) {
+            lastErrorCode = 0;
           }
           return;
         }

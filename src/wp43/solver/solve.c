@@ -21,6 +21,7 @@
 #include "solver/solve.h"
 
 #include "c43Extensions/addons.h"
+#include "c43Extensions/graphText.h"
 #include "charString.h"
 #include "constantPointers.h"
 #include "defines.h"
@@ -226,6 +227,7 @@ void fnSolve(uint16_t labelOrVariable) {
 
 void fnSolveVar(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
+  printStatus(1, errorMessages[REAL_SOLVER],force);
   const char *var = (char *)getNthString(dynamicSoftmenu[softmenuStack[0].softmenuId].menuContent, dynamicMenuItem);
   const uint16_t regist = findOrAllocateNamedVariable(var);
   if(currentMvarLabel != INVALID_VARIABLE) {
@@ -564,10 +566,8 @@ int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34
 
 
             printHalfSecUpdate_Integer(timed, "Iter: ",loop++); //timed
-
             #if defined(DMCP_BUILD)
               if(keyWaiting()) {
-                  showString("key Waiting ...", &standardFont, 20, 40, vmNormal, false, false);
                   printHalfSecUpdate_Integer(force+1, "Interrupted Iter:",loop);
                 break;
               }

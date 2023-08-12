@@ -80,24 +80,12 @@ static void fnPlot(uint16_t unusedButMandatoryParameter) {
 }
 
 
-
-//static void fnRCL(int16_t inp) { //DONE
-//    setSystemFlag(FLAG_ASLIFT);
-//    if(inp == TEMP_REGISTER_1) {
-//      liftStack();
-//      copySourceRegisterToDestRegister(inp, REGISTER_X);
-//    }
-//    else {
-//      fnRecall(inp);
-//    }
-//  }
-
-  static void convertDoubleToReal34RegisterPush(double x, calcRegister_t destination) {
-    setSystemFlag(FLAG_ASLIFT);
-    liftStack();
-    convertDoubleToReal34Register(x, destination);
-    setSystemFlag(FLAG_ASLIFT);
-  }
+static void convertDoubleToReal34RegisterPush(double x, calcRegister_t destination) {
+  setSystemFlag(FLAG_ASLIFT);
+  liftStack();
+  convertDoubleToReal34Register(x, destination);
+  setSystemFlag(FLAG_ASLIFT);
+}
 
 
 #if !defined(SAVE_SPACE_DM42_13GRF)
@@ -125,53 +113,53 @@ static void fnPlot(uint16_t unusedButMandatoryParameter) {
 #endif // !SAVE_SPACE_DM42_13GRF
 
 
-  static void execute_rpn_function(void){
-    if(graphVariable <= 0 || graphVariable > 65535) {
-      #if defined(PC_BUILD) //PC_BUILD
-        printf("Error: No graph variable %u\n",graphVariable);
-      #endif //PC_BUILD
-      return;
-    }
+static void execute_rpn_function(void){
+  if(graphVariable <= 0 || graphVariable > 65535) {
+    #if defined(PC_BUILD) //PC_BUILD
+      printf("Error: No graph variable %u\n",graphVariable);
+    #endif //PC_BUILD
+    return;
+  }
 
-    calcRegister_t regStats = graphVariable;
-    if(regStats != INVALID_VARIABLE) {
-      fnStore(regStats);                  //place X register into x
+  calcRegister_t regStats = graphVariable;
+  if(regStats != INVALID_VARIABLE) {
+    fnStore(regStats);                  //place X register into x
 
-      #if defined(PC_BUILD) //PC_BUILD
-        printf("Graph variable x=%u: ",graphVariable);
-        printRegisterToConsole(graphVariable, " = ","\n");
-      #endif //PC_BUILD
+    #if defined(PC_BUILD) //PC_BUILD
+      printf("Graph variable x=%u: ",graphVariable);
+      printRegisterToConsole(graphVariable, " = ","\n");
+    #endif //PC_BUILD
 
-      fnEqCalc(0);
+    fnEqCalc(0);
 
-      #if defined(PC_BUILD) //PC_BUILD
-        printf("Graph variable y ");
-        printRegisterToConsole(REGISTER_X, " = ","\n");
-      #endif //PC_BUILD
+    #if defined(PC_BUILD) //PC_BUILD
+      printf("Graph variable y ");
+      printRegisterToConsole(REGISTER_X, " = ","\n");
+    #endif //PC_BUILD
 
-      #if defined(PC_BUILD)
-        if(lastErrorCode != 0) {
-          #if defined(VERBOSE_SOLVER00)
-          printf("ERROR CODE in execute_rpn_function/fnEqCalc: %u\n",lastErrorCode);
-          #endif // VERBOSE_SOLVER00
-          lastErrorCode = 0;
-        }
-      #endif // PC_BUILD
-      fnRCL(regStats);
-      #if defined(VERBOSE_SOLVER0) && defined(PC_BUILD)
-        printRegisterToConsole(REGISTER_X,">>> Calc x=","");
-        printRegisterToConsole(REGISTER_Y," y=","");
-      #endif // VERBOSE_SOLVER0 && PC_BUILD
-    }
-    else {
-      #if defined(PC_BUILD)
+    #if defined(PC_BUILD)
+      if(lastErrorCode != 0) {
         #if defined(VERBOSE_SOLVER00)
-        printf("ERROR in execute_rpn_function; invalid variable: %u\n",lastErrorCode);
+        printf("ERROR CODE in execute_rpn_function/fnEqCalc: %u\n",lastErrorCode);
         #endif // VERBOSE_SOLVER00
         lastErrorCode = 0;
-      #endif
-    }
+      }
+    #endif // PC_BUILD
+    fnRCL(regStats);
+    #if defined(VERBOSE_SOLVER0) && defined(PC_BUILD)
+      printRegisterToConsole(REGISTER_X,">>> Calc x=","");
+      printRegisterToConsole(REGISTER_Y," y=","");
+    #endif // VERBOSE_SOLVER0 && PC_BUILD
   }
+  else {
+    #if defined(PC_BUILD)
+      #if defined(VERBOSE_SOLVER00)
+      printf("ERROR in execute_rpn_function; invalid variable: %u\n",lastErrorCode);
+      #endif // VERBOSE_SOLVER00
+      lastErrorCode = 0;
+    #endif
+  }
+}
 
 #if !defined(SAVE_SPACE_DM42_13GRF)
   static bool_t regIsLowerThanTol(calcRegister_t REG, calcRegister_t TOL) {
@@ -348,6 +336,8 @@ void graph_eqn(uint16_t mode) {
     uint8_t discontinuityDetected = 0;
     bool_t  grad2IncreaseDetected = false;
     double yAvg = 0.1;
+    int loop = 0;
+
 
     if(graphVariable <= 0 || graphVariable > 65535) {
       regStatsXY = INVALID_VARIABLE;
@@ -500,12 +490,17 @@ void graph_eqn(uint16_t mode) {
         printf("dx0=%f dx=%f yAvg=%f count=%i discontinuityDetected:%u grad2IncreaseDetected:%u\n",dx0, dx, yAvg, count, discontinuityDetected, grad2IncreaseDetected);
       #endif // DEBUG_GR
 
-      if(keyWaiting()) {
-        fnClearStack(0);
-        calcMode = CM_NORMAL;
-        screenUpdatingMode = SCRUPD_AUTO;
-        return;
-      }
+      printHalfSecUpdate_Integer(timed, "Iter: ",loop++); //timed
+      #if defined(DMCP_BUILD)
+        if(keyWaiting()) {
+          printHalfSecUpdate_Integer(force+1, "Interrupted Iter:",loop);
+          fnClearStack(0);
+          calcMode = CM_NORMAL;
+          screenUpdatingMode = SCRUPD_AUTO;
+          break;
+        }
+      #endif //DMCP_BUILD
+
     }
 
     #if defined (LOW_GRAPH_ACC)
@@ -577,7 +572,7 @@ void graph_stat(uint16_t unusedButMandatoryParameter) {
 
 #if !defined(SAVE_SPACE_DM42_13GRF)
 #if !defined(TESTSUITE_BUILD)
-  static void graph_solver() {         //Input parameters in registers SREG_STARTX0, SREG_STARTX1
+  static void complexSolver() {         //Input parameters in registers SREG_STARTX0, SREG_STARTX1
     if(graphVariable <= 0 || graphVariable > 65535) {
       return;
     }
@@ -615,6 +610,8 @@ void graph_stat(uint16_t unusedButMandatoryParameter) {
     DXR = 0, DYR = 0, DXI = 0, DYI = 0;
     ix = 0; ixd = 0;
     int16_t kicker = 0;
+    int loop = 0;
+
 
     // Initialize all temporary registers
     // Registers are being used in the DEMO data programs
@@ -1190,6 +1187,16 @@ void graph_stat(uint16_t unusedButMandatoryParameter) {
         refreshLcd(NULL);
       #endif // DMCP_BUILD
 
+      printHalfSecUpdate_Integer(timed, "Iter: ",loop++); //timed
+      #if defined(DMCP_BUILD)
+        if(keyWaiting()) {
+          printHalfSecUpdate_Integer(force+1, "Interrupted Iter:",loop);
+          fnClearStack(0);
+          calcMode = CM_NORMAL;
+          screenUpdatingMode = SCRUPD_AUTO;
+          break;
+        }
+      #endif //DMCP_BUILD
     }
 
 
@@ -1285,7 +1292,7 @@ void fnEqSolvGraph (uint16_t func) {
 
   switch(func) {
     case EQ_SOLVE: {
-      printStatus(errorMessages[COMPLEX_SOLVER],force);
+      printStatus(1,errorMessages[COMPLEX_SOLVER],force);
       fnClDrawMx();
       strcpy(plotStatMx,"DrwMX");
       statGraphReset();
@@ -1308,11 +1315,11 @@ void fnEqSolvGraph (uint16_t func) {
         printf("xmin:%f, xmax:%f\n",x_min,x_max);
       #endif // (VERBOSE_SOLVER00 || VERBOSE_SOLVER0) && PC_BUILD
       initialize_function();
-      graph_solver();
+      complexSolver();
       break;
     }
     case EQ_PLOT: {
-      printStatus(errorMessages[GRAPHING],force);
+      printStatus(1,errorMessages[GRAPHING],force);
       double ix1 = convertRegisterToDouble(REGISTER_X);
       double ix0 = convertRegisterToDouble(REGISTER_Y);
       #if(defined(VERBOSE_SOLVER00) || defined(VERBOSE_SOLVER0)) && defined(PC_BUILD)
