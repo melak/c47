@@ -874,7 +874,7 @@ int16_t export_append_line(char *inputstring) {
 //################################################################################################
 
 uint32_t ttt = 0;
-void printStatus(const char *line1, uint8_t forced) {
+void printStatus(uint8_t row, const char *line1, uint8_t forced) {
   #if defined (PC_BUILD)
     if(ttt==0) ttt = (uint32_t)(g_get_monotonic_time());
     printf("Status: %10u, %s\n", (uint32_t)(g_get_monotonic_time())-ttt, line1);
@@ -882,13 +882,18 @@ void printStatus(const char *line1, uint8_t forced) {
   #if !defined(TESTSUITE_BUILD)
     int16_t g_line_x, g_line_y;
     g_line_y = Y_POSITION_OF_REGISTER_T_LINE; //20
-    g_line_x = 0;
+    g_line_x = 20 * row;
+
+    refreshRegisterLine(REGISTER_T);
+
     //g_line_x = showStringEnhanced(line1, &standardFont, g_line_x, g_line_y, vmNormal, false, false, NO_compress, NO_raise, DO_Show, NO_LF);
     g_line_x = showString(line1, &standardFont, (uint32_t) g_line_x, (uint32_t) g_line_y, vmNormal, true, true);
+
     while((uint32_t)g_line_x < SCREEN_WIDTH - 20) { //pad
       //g_line_x = showStringEnhanced(" ", &standardFont, g_line_x, g_line_y, vmNormal, false, false, NO_compress, NO_raise, DO_Show, NO_LF);
       g_line_x = showString(" ", &standardFont, (uint32_t) g_line_x, (uint32_t) g_line_y, vmNormal, true, true);
     }
+
     if(forced == force) {
       force_refresh(force);
     } else {

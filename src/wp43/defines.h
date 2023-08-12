@@ -368,8 +368,24 @@
 #define COMPLEX_SOLVER                            59
 #define GRAPHING                                  60
 #define RECALC_SUMS                               61
+#define REAL_SOLVER                               62
 
-#define NUMBER_OF_ERROR_CODES                     62
+//TI Messages (incomplete)
+#define TI_Backup_restored                        63
+#define TI_State_file_restored                    64
+#define TI_Saved_programs_and_equations           65
+#define TI_appended                               66
+#define TI_Saved_global_and_local_registers       67
+#define TI_w_local_flags_restored                 68
+#define TI_Saved_system_settings_restored         69
+#define TI_Saved_statistic_data_restored          70
+#define TI_Saved_user_variables_restored          71
+#define TI_Program_file_loaded                    72
+#define TI_Not_enough_memory_for_undo             73
+
+
+
+#define NUMBER_OF_ERROR_CODES                     74
 #define SIZE_OF_EACH_ERROR_MESSAGE                48
 
 #define NUMBER_OF_BUG_SCREEN_MESSAGES             10

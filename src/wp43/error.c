@@ -109,10 +109,25 @@ TO_QSPI const char errorMessages[NUMBER_OF_ERROR_CODES][SIZE_OF_EACH_ERROR_MESSA
 //Status output messages for time consuming tasks, to keep user informed 
 /* 56 */  "  Loading state file ...",
 /* 57 */  "  Saving state file ...",
-/* 58 */  "  Restoring stats...",
-/* 59 */  "  Complex solver...",
-/* 60 */  "  Calculating graph coordinates...",
+/* 58 */  "  Restoring stats ...",
+/* 59 */  "  Solving for real/complex root ...",
+/* 60 */  "  Calculating graph coordinates ...",
 /* 61 */  "  Re-calculating sums ... ",
+/* 62 */  "  Solving for real root ...",
+
+//TI Messages (incomplete)
+/* 63 */  "Backup restored",
+/* 64 */  "State file restored",
+/* 65 */  "Saved programs and equations",
+/* 66 */  "appended",
+/* 67 */  "Saved global and local registers",
+/* 68 */  "(w/ local flags) restored",
+/* 69 */  "Saved system settings restored",
+/* 70 */  "Saved statistic data restored",
+/* 71 */  "Saved user variables restored",
+/* 72 */  "Program file loaded",
+/* 73 */  "Not enough memory for undo",
+/* 74 */ 
 
 };
 

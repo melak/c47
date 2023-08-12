@@ -499,7 +499,7 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
       currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
 
     #if defined VERBOSE_REGISTERS
-      printStatus("allocateLocalRegisters1",force);
+      printStatus(0, "allocateLocalRegisters1",force);
     #endif //VERBOSE_REGISTERS
     // All the new local registers are real34s initialized to 0.0
     for(r=FIRST_LOCAL_REGISTER; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
@@ -560,7 +560,7 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
     }                                                   //JM defaults ^^
 
     #if defined VERBOSE_REGISTERS
-      printStatus(" ",force);
+      printStatus(0, " ",force);
     #endif //VERBOSE_REGISTERS
 
     }
@@ -580,7 +580,7 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
         currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
 
        #if defined VERBOSE_REGISTERS
-        printStatus("allocateLocalRegisters2",force);
+        printStatus(0, "allocateLocalRegisters2",force);
        #endif //VERBOSE_REGISTERS
       // All the new local registers are real34s initialized to 0.0
       for(r=FIRST_LOCAL_REGISTER+oldNumberOfLocalRegisters; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
@@ -637,7 +637,7 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
           }
         }
         #if defined VERBOSE_REGISTERS
-          printStatus(" ",force);
+          printStatus(0, " ",force);
         #endif //VERBOSE_REGISTERS
       }
       else {
@@ -648,7 +648,7 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
     }
     else {
       #if defined VERBOSE_REGISTERS
-       printStatus("allocateLocalRegisters3",force);
+       printStatus(0, "allocateLocalRegisters3",force);
       #endif //VERBOSE_REGISTERS
       // free memory allocated to the data of the deleted local registers
       for(r=numberOfRegistersToAllocate; r<currentNumberOfLocalRegisters; r++) {
@@ -659,7 +659,7 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
       currentLocalRegisters = (numberOfRegistersToAllocate == 0 ? NULL : (registerHeader_t *)(currentSubroutineLevelData + 4));
       currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
       #if defined VERBOSE_REGISTERS
-        printStatus("",force);
+        printStatus(0, "",force);
       #endif //VERBOSE_REGISTERS
     }
   }
@@ -797,7 +797,7 @@ static calcRegister_t _findReservedVariable(const char *variableName) {
   }
 int i;
   #if defined VERBOSE_REGISTERS
-    printStatus("_findReservedVariable",force);
+    printStatus(0, "_findReservedVariable",force);
   #endif //VERBOSE_REGISTERS
   //printf("|%20s|%20s|\n",(char *)(allReservedVariables[0].reservedVariableName + 1), variableName);
   for(/*int*/ i = 0; i < NUMBER_OF_RESERVED_VARIABLES; i++) {
@@ -808,13 +808,13 @@ int i;
   }
 
   #if defined VERBOSE_REGISTERS
-    printStatus(" ",force);
+    printStatus(0, " ",force);
   #endif //VERBOSE_REGISTERS
   return INVALID_VARIABLE;
 
 found:
   #if defined VERBOSE_REGISTERS
-    printStatus(" ",force);
+    printStatus(0, " ",force);
   #endif //VERBOSE_REGISTERS
   return i + FIRST_RESERVED_VARIABLE;
 }
@@ -885,7 +885,7 @@ void allocateNamedVariable(const char *variableName, dataType_t dataType, uint16
   }
 
   #if defined VERBOSE_REGISTERS
-    printStatus("allocateNamedVariable",force);
+    printStatus(0, "allocateNamedVariable",force);
   #endif //VERBOSE_REGISTERS
   len = stringByteLength(variableName);
   allNamedVariables[regist].variableName[0] = len;
@@ -897,7 +897,7 @@ void allocateNamedVariable(const char *variableName, dataType_t dataType, uint16
   setRegisterDataType(regist, dataType, amNone);
   setRegisterDataPointer(regist, allocWp43(fullDataSizeInBlocks));
   #if defined VERBOSE_REGISTERS
-    printStatus(" ",force);
+    printStatus(0, " ",force);
   #endif //VERBOSE_REGISTERS
 }
 
@@ -916,7 +916,7 @@ calcRegister_t findNamedVariable(const char *variableName) {
   }
 
   #if defined VERBOSE_REGISTERS
-    printStatus("findNamedVariable",force);
+    printStatus(0, "findNamedVariable",force);
   #endif //VERBOSE_REGISTERS
   //printf("|%20s|%20s|\n",(char *)(allNamedVariables[0].variableName + 1), variableName);
   for(int i = 0; i < numberOfNamedVariables; i++) {
@@ -926,7 +926,7 @@ calcRegister_t findNamedVariable(const char *variableName) {
     }
   }
   #if defined VERBOSE_REGISTERS
-    printStatus(" ",force);
+    printStatus(0, " ",force);
   #endif //VERBOSE_REGISTERS
   return regist;
 }
@@ -969,7 +969,7 @@ calcRegister_t findOrAllocateNamedVariable(const char *variableName) {
 
 void fnDeleteVariable(uint16_t regist) {
   #if defined VERBOSE_REGISTERS
-    printStatus("fnDeleteVariable",force);
+    printStatus(0, "fnDeleteVariable",force);
   #endif //VERBOSE_REGISTERS
   if(regist >= FIRST_NAMED_VARIABLE && regist < (FIRST_NAMED_VARIABLE + numberOfNamedVariables)) {
     freeRegisterData(regist);
@@ -988,7 +988,7 @@ void fnDeleteVariable(uint16_t regist) {
     displayCalcErrorMessage(ERROR_CANNOT_DELETE_PREDEF_ITEM, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
   }
   #if defined VERBOSE_REGISTERS
-    printStatus(" ",force);
+    printStatus(0, " ",force);
   #endif //VERBOSE_REGISTERS
 }
 
