@@ -333,9 +333,8 @@ TO_QSPI const int16_t menu_HPLOT[]   = {
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
 
-TO_QSPI const int16_t menu_STK[]         = { ITM_Xex,                       ITM_Yex,                    ITM_Zex,                  ITM_Tex,               ITM_SHUFFLE,                 ITM_CLSTK,                          //JM Re-arranged
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_DROPY,                          //JM Added CLRSTK
-                                             ITM_FILL,                      ITM_LASTX,                  ITM_NULL,                 ITM_Rdown,             ITM_Rup,                     ITM_DROP                      };    //JM Added missing STACK items
+TO_QSPI const int16_t menu_STK[]         = { ITM_Rdown,                     ITM_DROP,                   ITM_DROPY,                ITM_LASTX,             ITM_FILL,                    ITM_CLSTK,
+                                             ITM_Rup,                       ITM_Xex,                    ITM_Yex,                  ITM_Zex,               ITM_Tex,                     ITM_SHUFFLE                   };
 
 /*      Menu name                           <----------------------------------------------------------------------------- 6 functions ---------------------------------------------------------------------------->  */
 /*                                          <---------------------------------------------------------------------- 6 f shifted functions ------------------------------------------------------------------------->  */
