@@ -1273,20 +1273,6 @@ void fnXEQMLOAD (uint16_t XEQM_no) {                                  //DISK to 
 
 
 void fnXSWAP (uint16_t unusedButMandatoryParameter) {
-    if(false && (calcMode == CM_AIM || calcMode == CM_AIM) && aimBuffer[0] != 0) {          //JM if something already in the AIMB|UFFER when X-EDIT is called, store this in the stack first
-      setSystemFlag(FLAG_ASLIFT);
-      liftStack();
-      copySourceRegisterToDestRegister(REGISTER_Y, REGISTER_X);
-      copySourceRegisterToDestRegister(REGISTER_Z, REGISTER_Y);
-
-      int16_t len = stringByteLength(aimBuffer) + 1;
-      reallocateRegister(REGISTER_Z, dtString, TO_BLOCKS(len), amNone);
-      xcopy(REGISTER_STRING_DATA(REGISTER_Z), aimBuffer, len);
-      aimBuffer[0] = 0;
-
-      setSystemFlag(FLAG_ASLIFT);
-    } else   
-
     if(calcMode == CM_EIM || calcMode == CM_AIM) {
       if(calcMode==CM_AIM) fnSwapXY(0);
       //convert X to string if needed
@@ -1353,9 +1339,6 @@ void fnXSWAP (uint16_t unusedButMandatoryParameter) {
           showSoftmenu(-MNU_ALPHA);
         #endif // !TESTSUITE_BUILD
       }
-      //else {
-      //  printf(">>> !@# stringByteLength(REGISTER_STRING_DATA(REGISTER_Y))=%d; AIM_BUFFER_LENGTH=%d\n",stringByteLength(REGISTER_STRING_DATA(REGISTER_Y)),AIM_BUFFER_LENGTH);
-      //}
     }
     else if(calcMode == CM_NORMAL && getRegisterDataType(REGISTER_X) != dtString) {
       char line1[XEQ_STR_LENGTH_LONG];
