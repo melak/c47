@@ -329,16 +329,24 @@ if(calcMode == CM_AIM || calcMode == CM_EIM || tam.mode) {
       copyScreenToClipboard();
       break;
 
-    case 40:
+    case 40:           //(
       if(calcMode == CM_EIM) {
-        shiftF = true;
-        btnFnClicked(w, "3");  //( F3
+        shiftF = false;
+          int16_t jj = softmenuStack[0].firstItem;
+          softmenuStack[0].firstItem = 0;
+          btnFnClicked(w, "2");  //F2
+          softmenuStack[0].firstItem = jj;
+          showSoftmenuCurrentPart();
       }
       break;
-    case 41:
+    case 41:           //)
       if(calcMode == CM_EIM) {
-        shiftF = true;
-        btnFnClicked(w, "4");  //) F4
+        shiftF = false;
+          int16_t jj = softmenuStack[0].firstItem;
+          softmenuStack[0].firstItem = 0;
+          btnFnClicked(w, "3");  //F3
+          softmenuStack[0].firstItem = jj;
+          showSoftmenuCurrentPart();
       }
       break;
     case 61:
@@ -372,24 +380,28 @@ if(calcMode == CM_AIM || calcMode == CM_EIM || tam.mode) {
     case 65361:                                               //JM     // CursorLt BST //JM Left
       if(AlphaArrowsOffAndUpDn) {
       }
-      else if(calcMode == CM_EIM)
-        if(softmenuStack[0].firstItem == 0) {
+      else if(calcMode == CM_EIM) {
+
+          int16_t jj = softmenuStack[0].firstItem;
+          softmenuStack[0].firstItem = 0;
           btnFnClicked(w, "1");  //F1
-        }
-        else {
-        }
+          softmenuStack[0].firstItem = jj;
+          showSoftmenuCurrentPart();
+      }
       else
         btnFnClicked(w, "5");  //F5
       break;
     case 65363:                                               //JM     // CursorRt SST //JM Right
       if(AlphaArrowsOffAndUpDn) {
       }
-      else if(calcMode == CM_EIM)
-        if(softmenuStack[0].firstItem == 0) {
+      else if(calcMode == CM_EIM) {
+
+          int16_t jj = softmenuStack[0].firstItem;
+          softmenuStack[0].firstItem = 0;
           btnFnClicked(w, "6");  //F6
-        }
-        else {
-        }
+          softmenuStack[0].firstItem = jj;
+          showSoftmenuCurrentPart();
+      }
       else {
         btnFnClicked(w, "6");  //F6
       }

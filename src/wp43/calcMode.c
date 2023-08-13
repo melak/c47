@@ -100,6 +100,7 @@
     alphaCase = AC_UPPER;
     nextChar = NC_NORMAL;
     numLock = false;
+    scrLock = NC_NORMAL;
 
     if(!tam.mode && calcMode != CM_ASSIGN && calcMode != CM_PEM) {
       calcMode = CM_AIM;
@@ -221,6 +222,7 @@
           alphaCase = AC_UPPER;
           nextChar = NC_NORMAL;
           numLock = false;
+          scrLock = NC_NORMAL;
         }
 
 

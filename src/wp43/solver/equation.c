@@ -200,6 +200,7 @@ void fnEqEdit(uint16_t unusedButMandatoryParameter) {
     alphaCase = AC_LOWER;
     nextChar = NC_NORMAL;//JM C43
     numLock = false;     //JM C43
+    scrLock = NC_NORMAL;
     setSystemFlag(FLAG_ALPHA);
     yCursor = 0;
     xCursor = equationString ? stringGlyphLength(equationString) : 0;

@@ -1281,7 +1281,8 @@ void fnXEQMLOAD (uint16_t XEQM_no) {                                  //DISK to 
 }
 
 
-void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
+
+void fnXEDIT (uint16_t unusedButMandatoryParameter) {
   if(calcMode == CM_AIM && aimBuffer[0] != 0) {          //JM if something already in the AIMB|UFFER when X-EDIT is called, store this in the stack first
     setSystemFlag(FLAG_ASLIFT);
     liftStack();
@@ -1294,9 +1295,31 @@ void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
     aimBuffer[0] = 0;
 
     setSystemFlag(FLAG_ASLIFT);
+  } else   
+
+  if(calcMode == CM_EIM) {          //JM if something already in the AIMB|UFFER when X-EDIT is called, store this in the stack first
+    calcRegister_t kk = REGISTER_X;
+    if(aimBuffer[0] != 0) {
+      setSystemFlag(FLAG_ASLIFT);
+      liftStack();
+      int16_t len = stringByteLength(aimBuffer) + 1;
+      reallocateRegister(REGISTER_X, dtString, TO_BLOCKS(len), amNone);
+      xcopy(REGISTER_STRING_DATA(REGISTER_X), aimBuffer, len);
+      setSystemFlag(FLAG_ASLIFT);
+      kk = REGISTER_Y;
+    }
+    if(getRegisterDataType(kk) == dtString) {
+      if(stringByteLength(REGISTER_STRING_DATA(kk)) < AIM_BUFFER_LENGTH) {
+        if(eRPN) {      //JM NEWERPN
+          setSystemFlag(FLAG_ASLIFT);            //JM NEWERPN OVERRIDE SLS, AS ERPN ENTER ALWAYS HAS SLS SET
+        }                                        //JM NEWERPN
+        strcpy(aimBuffer, REGISTER_STRING_DATA(kk));
+        xCursor = stringGlyphLength(aimBuffer);
+        refreshRegisterLine(REGISTER_X);        //JM Execute here, to make sure that the 5/2 line check is done
+      }
+    }
   }
-
-
+  else
   if(calcMode == CM_AIM && getRegisterDataType(REGISTER_Y) == dtString) {
     //printf(">>> !@# stringByteLength(REGISTER_STRING_DATA(REGISTER_Y))=%d; AIM_BUFFER_LENGTH=%d\n", stringByteLength(REGISTER_STRING_DATA(REGISTER_Y)), AIM_BUFFER_LENGTH);
     if(stringByteLength(REGISTER_STRING_DATA(REGISTER_Y)) < AIM_BUFFER_LENGTH) {
@@ -1366,7 +1389,7 @@ void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
       liftStack();
       reallocateRegister(REGISTER_X, dtString, TO_BLOCKS(len), amNone);
       strcpy(REGISTER_STRING_DATA(REGISTER_X), line1);
-      fnXEQMEDIT(0);
+      fnXEDIT(0);
     }
   }
   screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
@@ -1396,6 +1419,6 @@ void fnXEQMXXEQ (uint16_t unusedButMandatoryParameter) {
 void fnXEQNEW (uint16_t unusedButMandatoryParameter) {
   #if !defined(SAVE_SPACE_DM42_2)
     fnStrtoX("XEQC47 XEQLBL 01 XXXXXX ");
-    fnXEQMEDIT(0);
+    fnXEDIT(0);
   #endif // !SAVE_SPACE_DM42_2
 }

@@ -1323,7 +1323,7 @@ void fnCla(uint16_t unusedButMandatoryParameter) {
     //Not using calcModeAim becose some modes are reset which should not be
     aimBuffer[0]=0;
     T_cursorPos = 0;
-    nextChar = NC_NORMAL;
+    nextChar = scrLock;
     xCursor = 1;
     yCursor = Y_POSITION_OF_AIM_LINE + 6;
     cursorFont = &standardFont;
