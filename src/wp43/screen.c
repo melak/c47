@@ -37,6 +37,7 @@
 #include "registerValueConversions.h"
 #include "softmenus.h"
 #include "stack.h"
+#include "sort.h"
 #include "statusBar.h"
 #include "timer.h"
 #include "ui/matrixEditor.h"
@@ -3327,14 +3328,22 @@ void execTimerApp(uint16_t timerType) {
 
           else if(temporaryInformation == TI_LAST_CONST_CATNAME) {
             if(regist == REGISTER_X) {
-              prefix[0]=0;
-              if(strcmp(lastFuncSoftmenuName(),lastFuncCatalogName()) ) {
-                strcpy(prefix, lastFuncSoftmenuName());
+              strcpy(prefix, lastFuncSoftmenuName());
+              if(prefix[0] != 0) {
                 strcat(prefix,  " ");
+                if(compareString(lastFuncSoftmenuName(), lastFuncCatalogName(), CMP_BINARY) != 0) {
+                  char prefix_[16];
+                  prefix_[0]=0;
+                  strcat(prefix_, lastFuncCatalogName());
+                  if(prefix_[0] != 0) {
+                    strcat(prefix,prefix_);
+                  }
+                }
+                if(prefix[0] != 0) {
+                  strcat(prefix,  " = ");
+                }
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
-              strcat(prefix, lastFuncCatalogName());
-              strcat(prefix,  " = ");
-              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
@@ -4146,7 +4155,6 @@ void execTimerApp(uint16_t timerType) {
         if(!(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR)) {
           refreshStatusBar();
         }
-
         #if(REAL34_WIDTH_TEST == 1)
           for(int y=Y_POSITION_OF_REGISTER_Y_LINE; y<Y_POSITION_OF_REGISTER_Y_LINE + 2*REGISTER_LINE_HEIGHT; y++ ) {
             setBlackPixel(SCREEN_WIDTH - largeur - 1, y);
@@ -4253,6 +4261,7 @@ void execTimerApp(uint16_t timerType) {
               refreshScreen(82);
             }
           }
+
           hourGlassIconEnabled = false;
           showHideHourGlass();
           refreshStatusBar();

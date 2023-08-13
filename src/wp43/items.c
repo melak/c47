@@ -83,6 +83,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   int16_t lastParam = 0;
   char    lastTemp[16];
   char *lastFuncCatalogName(void) {
+    if(lastFunc == ITM_VERS || lastFunc == NOPARAM) return "";
     if(lastFunc == ITM_CNST) {
       if(lastParam < 79) {
         strcpy(lastTemp, indexOfItems[lastParam + 128].itemCatalogName);
@@ -98,6 +99,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   }
 
   char *lastFuncSoftmenuName(void) {
+    if(lastFunc == ITM_VERS || lastFunc == NOPARAM) return "";
     if(lastFunc == ITM_CNST) {
       if(lastParam < 79) {
         strcpy(lastTemp, indexOfItems[lastParam + 128].itemSoftmenuName);
@@ -115,14 +117,15 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void reallyRunFunction(int16_t func, uint16_t param) {
     lastFunc = func;
     lastParam = param;
-    if(func >= CST_01 && func <= CST_79 && calcMode == CM_NORMAL)  {
-      if(!getSystemFlag(FLAG_SOLVING)) {
-        temporaryInformation = TI_LAST_CONST_CATNAME;
-      }
-      else {
-        temporaryInformation = TI_NO_INFO;
-      }
+    if(temporaryInformation == TI_LAST_CONST_CATNAME && (currentSolverStatus & 0x000F) != 0) {
+      temporaryInformation = TI_NO_INFO;
+    } else
+    if(func >= CST_01 && func <= CST_79 && calcMode == CM_NORMAL) {
+      temporaryInformation = TI_LAST_CONST_CATNAME;
     }
+    //else {                                                 //Removed code for TI of any last command
+    //  temporaryInformation = TI_LAST_FUNC_CATNAME;
+    //}
 
 
 
