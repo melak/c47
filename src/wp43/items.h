@@ -2010,7 +2010,7 @@
 #define ITM_T_LLEFT_ARROW           1954
 #define ITM_T_RRIGHT_ARROW          1955
 #define ITM_XNEW                    1956
-#define ITM_XEDIT                   1957
+#define ITM_XSWAP                   1957
 #define ITM_OCT                     1958
 #define ITM_USER_C47                1959
 #define ITM_USER_V47                1960

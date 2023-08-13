@@ -584,7 +584,7 @@ ITM_LOG10 , ITM_op_j_SIGN  , ITM_arcsin  , ITM_arccos  , ITM_arctan  , ITM_atan2
 ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  ,
                       
 ITM_EQ_LEFT , ITM_VERTICAL_BAR  , ITM_ARG , ITM_RE  , ITM_IM  , ITM_EQ_RIGHT  ,
-ITM_NULL  , ITM_FLOOR , ITM_CEIL  , ITM_MAX , ITM_MIN , ITM_XEDIT ,
+ITM_NULL  , ITM_FLOOR , ITM_CEIL  , ITM_MAX , ITM_MIN , ITM_XSWAP ,
 ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  , ITM_NULL  ,
                       
 ITM_EQ_LEFT , ITM_LOGXY , ITM_LOG10 , ITM_LOG2  , ITM_poly_SIGN , ITM_EQ_RIGHT  ,
@@ -717,9 +717,9 @@ TO_QSPI const int16_t menu_PLOT[]        = { ITM_PLINE,                     ITM_
 
 TO_QSPI const int16_t menu_ALPHA[]       = { ITM_T_UP_ARROW,                ITM_T_DOWN_ARROW,           ITM_T_LLEFT_ARROW,        ITM_T_LEFT_ARROW,      ITM_T_RIGHT_ARROW,           ITM_T_RRIGHT_ARROW,
                                              -MNU_MyAlpha,                 -MNU_ALPHA_OMEGA,           -MNU_ALPHADOT,            -MNU_ALPHAMATH,        -MNU_ALPHAINTL,               ITM_ASSIGN,                           //JM
-                                             ITM_XEDIT,                     ITM_XPARSE,                 ITM_SCR,                  CHR_num,               CHR_case,                    ITM_USERMODE                     };   //JM
+                                             ITM_XSWAP,                     ITM_XPARSE,                 ITM_SCR,                  CHR_num,               CHR_case,                    ITM_USERMODE                     };   //JM
 
-TO_QSPI const int16_t menu_XXEQ[]        = { ITM_XSAVE,                     ITM_XLOAD,                  ITM_XEDIT,                ITM_XNEW,              ITM_XXEQ,                     -MNU_XEQ                        };   //JM
+TO_QSPI const int16_t menu_XXEQ[]        = { ITM_XSAVE,                     ITM_XLOAD,                  ITM_XSWAP,                ITM_XNEW,              ITM_XXEQ,                     -MNU_XEQ                        };   //JM
 
 
 TO_QSPI const int16_t menu_GAP_L[]       = { ITM_GAPPER_L,                  ITM_GAPCOM_L,               ITM_GAPDOT_L,             ITM_GAPNARAPO_L,       ITM_GAPSPC_L,                ITM_GAPNIL_L,

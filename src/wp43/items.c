@@ -1034,7 +1034,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnXEQNEW                   (uint16_t unusedButMandatoryParameter) {}
   void fnXEQMSAVE                 (uint16_t unusedButMandatoryParameter) {}
   void fnXEQMLOAD                 (uint16_t unusedButMandatoryParameter) {}
-  void fnXEDIT                    (uint16_t unusedButMandatoryParameter) {}
+  void fnXSWAP                    (uint16_t unusedButMandatoryParameter) {}
   void fnXEQMXXEQ                 (uint16_t unusedButMandatoryParameter) {}
   void fnAngularModeJM            (uint16_t unusedButMandatoryParameter) {}
   void fnChangeBaseJM             (uint16_t unusedButMandatoryParameter) {}
@@ -3116,7 +3116,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1954 */  { fnT_ARROW,                    ITM_T_LLEFT_ARROW,           "",                                            STD_LEFT_DASHARROW,                            (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1955 */  { fnT_ARROW,                    ITM_T_RRIGHT_ARROW,          "",                                            STD_RIGHT_DASHARROW,                           (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1956 */  { fnXEQNEW,                     NOPARAM,                     "X.NEW",                                       "X.NEW",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 1957 */  { fnXEDIT,                      NOPARAM,                     "X.EDIT",                                      "X.EDIT",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1957 */  { fnXSWAP,                      NOPARAM,                     "X.SWAP",                                      "X.SWAP",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1958 */  { addItemToBuffer,              NOPARAM,                     "OCT",                                         "O",                                           (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1959 */  { fnUserJM,                     USER_C47,                    "C47",                                         "C47",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1960 */  { fnUserJM,                     USER_V47,                    "V47",                                         "V47",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
