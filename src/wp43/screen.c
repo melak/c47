@@ -50,6 +50,7 @@
 #include "registerValueConversions.h"
 #include "softmenus.h"
 #include "stack.h"
+#include "sort.h"
 #include "statusBar.h"
 #include "timer.h"
 #include "ui/matrixEditor.h"
@@ -3331,10 +3332,21 @@ void execTimerApp(uint16_t timerType) {
           else if(temporaryInformation == TI_LAST_CONST_CATNAME) {
             if(regist == REGISTER_X) {
               strcpy(prefix, lastFuncSoftmenuName());
-              strcat(prefix,  " ");
-              strcat(prefix, lastFuncCatalogName());
-              strcat(prefix,  " = ");
-              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              if(prefix[0] != 0) {
+                strcat(prefix,  " ");
+                if(compareString(lastFuncSoftmenuName(), lastFuncCatalogName(), CMP_BINARY) != 0) {
+                  char prefix_[16];
+                  prefix_[0]=0;
+                  strcat(prefix_, lastFuncCatalogName());
+                  if(prefix_[0] != 0) {
+                    strcat(prefix,prefix_);
+                  }
+                }
+                if(prefix[0] != 0) {
+                  strcat(prefix,  " = ");
+                }
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              }
             }
           }
 
