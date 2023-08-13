@@ -26,7 +26,7 @@
 
 #define VERSION1 "0.108.11.08"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
-//2023-08-13-0.108.11-08 snapshot all work done non-master
+//2023-07-30-0.108.11.10
 
   #undef SAVE_SPACE_DM42
   #undef SAVE_SPACE_DM42_0
@@ -360,6 +360,7 @@
 #define ERROR_INVALID_DATA_TYPE_FOR_POLAR_RECT    52
 #define ERROR_BAD_INPUT                           53 // This error is not in ReM and cannot occur (theoretically).
 #define ERROR_NO_PROGRAM_SPECIFIED                54
+
 #define ERROR_CANNOT_WRITE_FILE                   55
 
 //Status output messages for time consuming tasks, to keep user informed 
@@ -935,6 +936,8 @@ typedef enum {
 #define TI_SUMS_RESTORED                          88    //DL
 #define TI_VARIABLES_RESTORED                     89    //DL
 #define TI_SHOWNOTHING                            90
+#define TI_SCATTER_SMI                            91
+
 
 // Register browser mode
 #define RBR_GLOBAL                                 0 // Global registers are browsed

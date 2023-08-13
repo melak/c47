@@ -1675,6 +1675,7 @@ void fnPlotCloseSmi(uint16_t unusedButMandatoryParameter){
     printf(">>> Undo from fnPlotCloseSmi\n");
   #endif // DEBUGUNDO
   fnMinExpStdDev(0);
+  temporaryInformation = TI_SCATTER_SMI;
 }
 
 
