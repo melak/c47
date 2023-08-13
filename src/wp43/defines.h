@@ -896,6 +896,7 @@ typedef enum {
 #define TI_SETTINGS_RESTORED                      87    //DL
 #define TI_SUMS_RESTORED                          88    //DL
 #define TI_VARIABLES_RESTORED                     89    //DL
+#define TI_SCATTER_SMI                            90
 
 
 // Register browser mode
