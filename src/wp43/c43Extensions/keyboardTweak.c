@@ -395,7 +395,7 @@ void resetKeytimers(void) {
           break;
         case ITM_ENTER:
           if(tam.mode == 0) {
-            longpressDelayedkey1 = ITM_XEDIT;
+            longpressDelayedkey1 = ITM_XSWAP;
           }
           break;
         default:;
@@ -413,7 +413,7 @@ void resetKeytimers(void) {
           break;
         case ITM_ENTER:
           if(tam.mode == 0) {
-            longpressDelayedkey1 = ITM_XEDIT;
+            longpressDelayedkey1 = ITM_XSWAP;
           }
           break;
         default:;

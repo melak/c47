@@ -2575,7 +2575,7 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
   labelCaptionAimFa(keys, lbl36Fa);                     //vv dr - new AIM //JM newest AIM
   labelCaptionAim(keys++, btn36A, lbl36Gr, lbl36L);     //^^
 
-  labelCaptionAimFaChr(   keys,   lbl41Fa, ITM_XEDIT);  //JM
+  labelCaptionAimFaChr(   keys,   lbl41Fa, ITM_XSWAP);  //JM
   labelCaptionAim(keys++, btn41,  lbl41Gr, lbl41L);
 //  labelCaptionAimFaChr(   keys,   lbl42Fa, ITM_ex);     //vv dr - new AIM
   labelCaptionAimFa(keys, lbl42Fa);                     //vv dr - new AIM //JM newest AIM
