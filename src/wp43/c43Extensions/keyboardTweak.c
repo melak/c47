@@ -405,7 +405,7 @@ void resetKeytimers(void) {
           break;
         case ITM_ENTER:
           if(tam.mode == 0) {
-            longpressDelayedkey1 = ITM_XEDIT;
+            longpressDelayedkey1 = ITM_XSWAP;
           }
           break;
         default:;
@@ -423,7 +423,7 @@ void resetKeytimers(void) {
           break;
         case ITM_ENTER:
           if(tam.mode == 0) {
-            longpressDelayedkey1 = ITM_XEDIT;
+            longpressDelayedkey1 = ITM_XSWAP;
           }
           break;
         default:;
@@ -1333,7 +1333,7 @@ void fnCla(uint16_t unusedButMandatoryParameter) {
     //Not using calcModeAim becose some modes are reset which should not be
     aimBuffer[0]=0;
     T_cursorPos = 0;
-    nextChar = NC_NORMAL;
+    nextChar = scrLock;
     xCursor = 1;
     yCursor = Y_POSITION_OF_AIM_LINE + 6;
     cursorFont = &standardFont;

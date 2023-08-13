@@ -59,7 +59,7 @@
 #endif
 
 #include "wp43.h"
-#define BACKUP_VERSION                     782  // remove FM program support
+#define BACKUP_VERSION                     784  // add scrLock
 #define OLDEST_COMPATIBLE_BACKUP_VERSION   779  // save running app
 #define configFileVersion                  10000005 // arbitrary starting point version 10 000 001. Allowable values are 10000000 to 20000000
 #define VersionAllowed                     10000005 // This code will not autoload versions earlier than this
@@ -98,7 +98,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
 
 #if defined(PC_BUILD)
   void saveCalc(void) {
-    uint8_t  compatibility_u8 = 0;           //defaults to use when settings are removed
+//    uint8_t  compatibility_u8 = 0;           //defaults to use when settings are removed
     bool_t   compatibility_bool = false;     //defaults to use when settings are removed
     uint32_t backupVersion = BACKUP_VERSION;
     uint32_t ramSize       = RAM_SIZE;
@@ -188,7 +188,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
     save(&significantDigits,                  sizeof(significantDigits));
     save(&shortIntegerMode,                   sizeof(shortIntegerMode));
     save(&currentAngularMode,                 sizeof(currentAngularMode));
-    save(&compatibility_u8,                   sizeof(compatibility_u8));
+    save(&scrLock,                            sizeof(scrLock));
     save(&roundingMode,                       sizeof(roundingMode));
     save(&calcMode,                           sizeof(calcMode));
     save(&nextChar,                           sizeof(nextChar));
@@ -408,7 +408,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
 
   void restoreCalc(void) {
     printf("RestoreCalc\n");
-    uint8_t  compatibility_u8;        //defaults to use when settings are removed
+//    uint8_t  compatibility_u8;        //defaults to use when settings are removed
       bool_t   compatibility_bool;      //defaults to use when settings are removed
     uint32_t backupVersion, ramSize, ramPtr;
     int ret;
@@ -517,7 +517,12 @@ static uint32_t restore(void *buffer, uint32_t size) {
       restore(&significantDigits,                  sizeof(significantDigits));
       restore(&shortIntegerMode,                   sizeof(shortIntegerMode));
       restore(&currentAngularMode,                 sizeof(currentAngularMode));
-      restore(&compatibility_u8,                   sizeof(compatibility_u8));
+      restore(&scrLock,                            sizeof(scrLock));
+      if(backupVersion < 784) {                                                     //re-using existing old uint8 slot
+        scrLock = 0;
+      } else {
+        scrLock &= 0x03;
+      }
       restore(&roundingMode,                       sizeof(roundingMode));
       restore(&calcMode,                           sizeof(calcMode));
       restore(&nextChar,                           sizeof(nextChar));

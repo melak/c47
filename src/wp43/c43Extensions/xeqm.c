@@ -1271,60 +1271,58 @@ void fnXEQMLOAD (uint16_t XEQM_no) {                                  //DISK to 
 }
 
 
-void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
-  if(aimBuffer[0] != 0) {          //JM if something already in the AIMB|UFFER when X-EDIT is called, store this in the stack first
-    setSystemFlag(FLAG_ASLIFT);
-    liftStack();
-    copySourceRegisterToDestRegister(REGISTER_Y, REGISTER_X);
-    copySourceRegisterToDestRegister(REGISTER_Z, REGISTER_Y);
 
-    int16_t len = stringByteLength(aimBuffer) + 1;
-    reallocateRegister(REGISTER_Z, dtString, TO_BLOCKS(len), amNone);
-    xcopy(REGISTER_STRING_DATA(REGISTER_Z), aimBuffer, len);
-    aimBuffer[0] = 0;
-
-    setSystemFlag(FLAG_ASLIFT);
-  }
-
-
-  if(calcMode == CM_AIM && getRegisterDataType(REGISTER_Y) == dtString) {
-    //printf(">>> !@# stringByteLength(REGISTER_STRING_DATA(REGISTER_Y))=%d; AIM_BUFFER_LENGTH=%d\n", stringByteLength(REGISTER_STRING_DATA(REGISTER_Y)), AIM_BUFFER_LENGTH);
-    if(stringByteLength(REGISTER_STRING_DATA(REGISTER_Y)) < AIM_BUFFER_LENGTH) {
-      if(eRPN) {      //JM NEWERPN
-        setSystemFlag(FLAG_ASLIFT);            //JM NEWERPN OVERRIDE SLS, AS ERPN ENTER ALWAYS HAS SLS SET
-      }                                        //JM NEWERPN
-      strcpy(aimBuffer, REGISTER_STRING_DATA(REGISTER_Y));
-      T_cursorPos = stringByteLength(aimBuffer);
-      fnDrop(0);
-      //refreshRegisterLine(REGISTER_T);
-      //refreshRegisterLine(REGISTER_Z);
-      //refreshRegisterLine(REGISTER_Y);
-      refreshRegisterLine(REGISTER_X);        //JM Execute here, to make sure that the 5/2 line check is done
-      last_CM = 253;
-    }
-  }
-  else {
-    if(calcMode == CM_AIM && (getRegisterDataType(REGISTER_Y) == dtReal34 || getRegisterDataType(REGISTER_Y) == dtComplex34  || getRegisterDataType(REGISTER_Y) == dtLongInteger   || getRegisterDataType(REGISTER_Y) == dtShortInteger    || getRegisterDataType(REGISTER_Y) == dtTime   || getRegisterDataType(REGISTER_Y) == dtDate)) {
-      if(stringByteLength(REGISTER_STRING_DATA(REGISTER_Y)) < AIM_BUFFER_LENGTH) {
-        if(eRPN) {      //JM NEWERPN
-          setSystemFlag(FLAG_ASLIFT);            //JM NEWERPN OVERRIDE SLS, AS ERPN ENTER ALWAYS HAS SLS SET
-        }                                        //JM NEWERPN
-
+void fnXSWAP (uint16_t unusedButMandatoryParameter) {
+    if(calcMode == CM_EIM || calcMode == CM_AIM) {
+      if(calcMode==CM_AIM) fnSwapXY(0);
+      //convert X to string if needed
+      if(getRegisterDataType(REGISTER_X) == dtString && stringByteLength(REGISTER_STRING_DATA(REGISTER_X)) >= AIM_BUFFER_LENGTH) {
+        if(calcMode==CM_AIM) fnSwapXY(0);
+        return;
+      }
+      if(getRegisterDataType(REGISTER_X) == dtReal34 || getRegisterDataType(REGISTER_X) == dtComplex34  || getRegisterDataType(REGISTER_X) == dtLongInteger   || getRegisterDataType(REGISTER_X) == dtShortInteger    || getRegisterDataType(REGISTER_X) == dtTime   || getRegisterDataType(REGISTER_X) == dtDate) {
+        copySourceRegisterToDestRegister(REGISTER_Y, TEMP_REGISTER_1);
         char tmp[2];
         tmp[0] = 0;
         int16_t len = stringByteLength(tmp) + 1;
-
-        reallocateRegister(REGISTER_X, dtString, TO_BLOCKS(len), amNone);           //Make blank string in X
-        xcopy(REGISTER_STRING_DATA(REGISTER_X), tmp, len);
+        reallocateRegister(REGISTER_Y, dtString, TO_BLOCKS(len), amNone);           //Make blank string in X
+        xcopy(REGISTER_STRING_DATA(REGISTER_Y), tmp, len);
         addition[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();//Convert Y number to string in X REGISTER
         adjustResult(REGISTER_X, false, false, -1, -1, -1);                          //Copy X string to Aimbuffer
-        strcpy(aimBuffer, REGISTER_STRING_DATA(REGISTER_X));
-
-        T_cursorPos = stringByteLength(aimBuffer);
-        fnDrop(0);
-        refreshRegisterLine(REGISTER_X);        //JM Execute here, to make sure that the 5/2 line check is done
-        last_CM = 253;
+        copySourceRegisterToDestRegister(TEMP_REGISTER_1, REGISTER_Y);
+        clearRegister(TEMP_REGISTER_1);
+        //resulting in a converted string in X, with Y unchanged
       }
+      if(getRegisterDataType(REGISTER_X) != dtString) {
+        if(calcMode==CM_AIM) fnSwapXY(0);
+        return;
+      }
+      //Save aimbuffer to TEMP1
+      if(aimBuffer[0] != 0) {
+        int16_t len = stringByteLength(aimBuffer) + 1;
+        reallocateRegister(TEMP_REGISTER_1, dtString, TO_BLOCKS(len), amNone);
+        xcopy(REGISTER_STRING_DATA(TEMP_REGISTER_1), aimBuffer, len);
+      }
+
+      //In essence, after conversions,
+      //If X is string shorter than buffer max, copy X to aimbuffer & copy aimbuffer to X
+      //If X is no string, ignore, then aimbuffer remains unchanged.
+      if(getRegisterDataType(REGISTER_X) == dtString) {
+        if(stringByteLength(REGISTER_STRING_DATA(REGISTER_X)) < AIM_BUFFER_LENGTH) {
+          strcpy(aimBuffer, REGISTER_STRING_DATA(REGISTER_X));
+          copySourceRegisterToDestRegister(TEMP_REGISTER_1, REGISTER_X);
+          if(calcMode==CM_AIM) {
+            fnSwapXY(0);
+            T_cursorPos = stringByteLength(aimBuffer);
+          } else { //EIM
+            xCursor = stringGlyphLength(aimBuffer);          
+          }
+          refreshRegisterLine(REGISTER_X);        //JM Execute here, to make sure that the 5/2 line check is done
+          last_CM = 253;
+          refreshScreen();
+        }
+      }
+      clearRegister(TEMP_REGISTER_1);
     }
 
     else if(calcMode == CM_NORMAL && getRegisterDataType(REGISTER_X) == dtString) {
@@ -1341,9 +1339,6 @@ void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
           showSoftmenu(-MNU_ALPHA);
         #endif // !TESTSUITE_BUILD
       }
-      //else {
-      //  printf(">>> !@# stringByteLength(REGISTER_STRING_DATA(REGISTER_Y))=%d; AIM_BUFFER_LENGTH=%d\n",stringByteLength(REGISTER_STRING_DATA(REGISTER_Y)),AIM_BUFFER_LENGTH);
-      //}
     }
     else if(calcMode == CM_NORMAL && getRegisterDataType(REGISTER_X) != dtString) {
       char line1[XEQ_STR_LENGTH_LONG];
@@ -1356,9 +1351,8 @@ void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
       liftStack();
       reallocateRegister(REGISTER_X, dtString, TO_BLOCKS(len), amNone);
       strcpy(REGISTER_STRING_DATA(REGISTER_X), line1);
-      fnXEQMEDIT(0);
+      fnXSWAP(0);
     }
-  }
   last_CM = 252;
   refreshScreen();
   last_CM = 251;
@@ -1387,7 +1381,10 @@ void fnXEQMXXEQ (uint16_t unusedButMandatoryParameter) {
 
 void fnXEQNEW (uint16_t unusedButMandatoryParameter) {
   #if !defined(SAVE_SPACE_DM42_2)
+    setSystemFlag(FLAG_ASLIFT);
+    liftStack();
     fnStrtoX("XEQC47 XEQLBL 01 XXXXXX ");
-    fnXEQMEDIT(0);
+    fnXSWAP(0);
+    fnDrop(0);
   #endif // !SAVE_SPACE_DM42_2
 }

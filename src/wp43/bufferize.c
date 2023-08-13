@@ -72,8 +72,6 @@ TO_QSPI static const char bugScreenNoParam[] = "In function addItemToBuffer:item
 
 
 uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
-/*JM*/ //nextChar = NC_NORMAL;
-
     if(subOrSup == NC_SUBSCRIPT) {
       nextChar = NC_NORMAL;            //JM de-latching superscript / suscript /sup/sub, removing the lock. Comment out to let sup/sub lock
       if(item >= ITM_0 && item <= ITM_9) return (uint16_t)((int16_t)item + (int16_t)ITM_SUB_0 - (int16_t)ITM_0); else //JM optimized
@@ -84,70 +82,9 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         case ITM_delta    :return ITM_SUB_delta;
         case ITM_mu       :return ITM_SUB_mu;
         case ITM_SUN      :return ITM_SUB_SUN;
-//        case ITM_h        :return ITM_SUB_h;
-//        case ITM_t        :return ITM_SUB_t;
         case ITM_INFINITY :return ITM_SUB_INFINITY;
-//        case ITM_s        :return ITM_SUB_s;
         case ITM_PLUS     :return ITM_SUB_PLUS;
         case ITM_MINUS    :return ITM_SUB_MINUS;
-/* //JM optimized
-        case ITM_0        :
-        case ITM_1        :
-        case ITM_2        :
-        case ITM_3        :
-        case ITM_4        :
-        case ITM_5        :
-        case ITM_6        :
-        case ITM_7        :
-        case ITM_8        :
-        case ITM_9        :
-        case ITM_a        :
-        case ITM_b        :
-        case ITM_c        :
-        case ITM_d        :
-        case ITM_e        :
-        case ITM_i        :
-        case ITM_j        :
-        case ITM_k        :
-        case ITM_l        :
-        case ITM_m        :
-        case ITM_n        :
-        case ITM_o        :
-        case ITM_p        :
-        case ITM_q        :
-        case ITM_u        :
-        case ITM_v        :
-        case ITM_w        :
-        case ITM_x        :
-        case ITM_y        :
-        case ITM_z        :
-        case ITM_A        :
-        case ITM_B        :
-        case ITM_C        :
-        case ITM_D        :
-        case ITM_E        :
-        case ITM_F        :
-        case ITM_G        :
-        case ITM_H        :
-        case ITM_I        :
-        case ITM_J        :
-        case ITM_K        :
-        case ITM_L        :
-        case ITM_M        :
-        case ITM_N        :
-        case ITM_O        :
-        case ITM_P        :
-        case ITM_Q        :
-        case ITM_R        :
-        case ITM_S        :
-        case ITM_T        :
-        case ITM_U        :
-        case ITM_V        :
-        case ITM_W        :
-        case ITM_X        :
-        case ITM_Y        :
-        case ITM_Z        :
-*/
         default           :return item;
       }
     }
@@ -157,32 +94,12 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       if(item >= ITM_a && item <= ITM_z) return (uint16_t)((int16_t)item + (int16_t)ITM_SUP_a - (int16_t)ITM_a); else //JM optimized
       if(item >= ITM_A && item <= ITM_Z) return (uint16_t)((int16_t)item + (int16_t)ITM_SUP_A - (int16_t)ITM_A); else //JM optimized
       switch(item) {
-//        case ITM_a        :return ITM_SUP_a;
-//        case ITM_x        :return ITM_SUP_x;
         case ITM_INFINITY :return ITM_SUP_INFINITY;
         case ITM_PLUS     :return ITM_SUP_PLUS;
         case ITM_MINUS    :return ITM_SUP_MINUS;
-/*JM optimized
-        case ITM_0        :
-        case ITM_1        :
-        case ITM_2        :
-        case ITM_3        :
-        case ITM_4        :
-        case ITM_5        :
-        case ITM_6        :
-        case ITM_7        :
-        case ITM_8        :
-        case ITM_9        :return item + (ITM_SUP_0 - ITM_0);
-        case ITM_f        :return ITM_SUP_f;
-        case ITM_g        :return ITM_SUP_g;
-        case ITM_h        :return ITM_SUP_h;
-        case ITM_r        :return ITM_SUP_r;
-        case ITM_T        :return ITM_SUP_T;
-*/
         default           :return item;
       }
     }
-
     return item;
   }
 
@@ -277,6 +194,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     #endif // PC_BUILD
     //resetKeytimers();  //JM
 
+printf("Itemtobuffer\n");
 
     if(item == NOPARAM) {
       displayBugScreen(bugScreenNoParam);
@@ -294,23 +212,32 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           displayBugScreen(errorMessage);
         }
         else if(calcMode == CM_EIM) {
-          const char *addChar = item == ITM_PAIR_OF_PARENTHESES  ? "()" :
+          const char *addChar0 = item == ITM_PAIR_OF_PARENTHESES  ? "()" :
                                 item == ITM_VERTICAL_BAR         ? "||" :
                                 item == ITM_ROOT_SIGN            ? STD_SQUARE_ROOT "()" :
                                 item == ITM_ALOG_SYMBOL          ? STD_EulerE "^()" :
-                                item == ITM_LG_SIGN              ? "LOG()" :     //C47
-                                item == ITM_LN_SIGN              ? "LN()"  :     //C47
-                                item == ITM_SIN_SIGN             ? "SIN()" :     //C47
-                                item == ITM_COS_SIGN             ? "COS()" :     //C47
-                                item == ITM_TAN_SIGN             ? "TAN()" :     //C47
-                                item == ITM_ASIN_SIGN            ? "ASIN()" :    //C47
-                                item == ITM_ACOS_SIGN            ? "ACOS()" :    //C47
-                                item == ITM_ATAN_SIGN            ? "ATAN()" :    //C47
-                                item == ITM_OBELUS               ? STD_SLASH  :  //C47
+                                item == ITM_LG_SIGN              ? "LOG()" :     //C47 used for assigns (blue in alpha mode)
+                                item == ITM_LN_SIGN              ? "LN()"  :     //C47 used for assigns (blue in alpha mode)
+                                item == ITM_SIN_SIGN             ? "SIN()" :     //C47 used for assigns (blue in alpha mode)
+                                item == ITM_COS_SIGN             ? "COS()" :     //C47 used for assigns (blue in alpha mode)
+                                item == ITM_TAN_SIGN             ? "TAN()" :     //C47 used for assigns (blue in alpha mode)
+                                item == ITM_OBELUS               ? STD_SLASH :
                                 item == ITM_poly_SIGN            ? "b3" STD_DOT "x^3+b2" STD_DOT "x^2+b1" STD_DOT "x+b0" :
                                 item == ITM_op_j_SIGN            ? COMPLEX_UNIT :
-                                item >= CST_01 && item <= CST_77 ? indexOfItems[item].itemCatalogName :
-                                                                   indexOfItems[item].itemSoftmenuName;
+                                item >= CST_01 && item <= CST_77 ? indexOfItems[item].itemCatalogName : "";
+
+          char addChar[100];
+          int16_t jj = 0;
+          addChar[0]=0;
+          if(addChar0[0] == 0) {
+            stringAppend(addChar,indexOfItems[item].itemSoftmenuName);
+            if ((indexOfItems[item].itemSoftmenuName[0]!=0) && (indexOfItems[item].status & EIM_STATUS) == EIM_ENABLED) {              
+              stringAppend(addChar + stringByteLength(addChar), "()");
+              jj = 1;
+            }
+          } else {
+            stringAppend(addChar,addChar0);
+          }
 
           char *aimCursorPos = aimBuffer;
           char *aimBottomPos = aimBuffer + stringByteLength(aimBuffer);
@@ -322,40 +249,38 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
             *(aimBottomPos + itemLen) = *aimBottomPos;
           }
           xcopy(aimCursorPos, addChar, itemLen);
-          switch(item) {
-            case ITM_poly_SIGN: {    //C47
-              xCursor += 21;
-              break;
-            }
-            case ITM_ASIN_SIGN:      //C47
-            case ITM_ACOS_SIGN:      //C47
-            case ITM_ATAN_SIGN: {    //C47
-              xCursor += 5;
-              break;
-            }
-            case ITM_ALOG_SYMBOL:
-            case ITM_LG_SIGN:       //C47
-            case ITM_SIN_SIGN:      //C47
-            case ITM_COS_SIGN:      //C47
-            case ITM_TAN_SIGN: {    //C47
-              xCursor += 4;
-              break;
-            }
-            case ITM_ROOT_SIGN: {
-              xCursor += 2;
-              break;
-            }
-            case ITM_LN_SIGN: {     //C47
-              xCursor += 3;
-              break;
-            }
-            case ITM_PAIR_OF_PARENTHESES:
-            case ITM_VERTICAL_BAR: {
-              xCursor += 1;
-              break;
-            }
-            default: {
-              xCursor += stringGlyphLength(indexOfItems[item].itemSoftmenuName);
+          if(jj != 0) {
+              xCursor += stringGlyphLength(addChar) - jj;
+          } else {
+            switch(item) {
+              case ITM_poly_SIGN: {    //C47
+                xCursor += 21;
+                break;
+              }
+              case ITM_LG_SIGN:       //C47 used for assigns (blue in alpha mode)
+              case ITM_SIN_SIGN:      //C47 used for assigns (blue in alpha mode)
+              case ITM_COS_SIGN:      //C47 used for assigns (blue in alpha mode)
+              case ITM_TAN_SIGN: {    //C47 used for assigns (blue in alpha mode)
+                xCursor += 4;
+                break;
+              }
+              case ITM_ALOG_SYMBOL:
+              case ITM_LN_SIGN: {     //C47 used for assigns (blue in alpha mode)
+                xCursor += 3;
+                break;
+              }
+              case ITM_ROOT_SIGN: {
+                xCursor += 2;
+                break;
+              }
+              case ITM_PAIR_OF_PARENTHESES:
+              case ITM_VERTICAL_BAR: {
+                xCursor += 1;
+                break;
+              }
+              default: {
+                xCursor += stringGlyphLength(indexOfItems[item].itemSoftmenuName);
+              }
             }
           }
         }
