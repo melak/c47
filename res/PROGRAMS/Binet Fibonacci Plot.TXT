@@ -31,7 +31,7 @@ RETURN                   // STOPS PROCESSING
 
 //---SUBROUTINE----------   ------------------------------------------------------------
 LBL M4                   // CALC SUBROUTINE: N IS 0 TO (STARTNO-1)
-  RCL 02 DEC X / 7 *    // SCALE THE RANGE TO: ([0:100]/(101-1)*7)-2
+  RCL 02 DECR X / 7 *    // SCALE THE RANGE TO: ([0:100]/(101-1)*7)-2
   2 -                    // SHIFT THE X RANGE: 0*7/100-2 to 100*7/100-2
                          // CONVERTED TO RANGE: -2 to 5 in a 100 steps
   ENTER                  // DUPLICATE N

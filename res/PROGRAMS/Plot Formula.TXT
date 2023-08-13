@@ -21,7 +21,7 @@ CHS STO 11             // REG11: Higher X
   RCL 02                 // GET THE START VALUE OF THE LOOP COUNTER
   RCL 00 -               // REVERSE THE RANGE TO: 0 TO STARTNO-1
 
-  RCL 02 DEC X 2 IDIV /  // SCALE STEP RANGE [0:(101-1)] TO: ([0:100]/ ((101-1)/2)); i.e. [0:2]
+  RCL 02 DECR X 2 IDIV /  // SCALE STEP RANGE [0:(101-1)] TO: ([0:100]/ ((101-1)/2)); i.e. [0:2]
   2 /                    // [0-1]
   RCL 11 RCL 10 - *      // GET TARGET RANGE
   RCL 10 +               // GET TARGET OFFSET
