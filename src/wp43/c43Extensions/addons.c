@@ -942,6 +942,10 @@ void fnP_All_Regs(uint16_t option) {
         stackregister_csv_out(REGISTER_X, REGISTER_D);
         stackregister_csv_out(REGISTER_L, REGISTER_K);
         stackregister_csv_out(0, 99);
+        if(currentNumberOfLocalRegisters > 0) stackregister_csv_out(FIRST_LOCAL_REGISTER, FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters - 1);
+        if(numberOfNamedVariables > 0) stackregister_csv_out(FIRST_NAMED_VARIABLE, FIRST_NAMED_VARIABLE + numberOfNamedVariables - 1);
+
+
         //stackregister_csv_out(FIRST_LOCAL_REGISTER,FIRST_LOCAL_REGISTER+100);
         break;
 
@@ -953,8 +957,12 @@ void fnP_All_Regs(uint16_t option) {
         stackregister_csv_out(0, 99);
         break;
 
-      case 3:                    //USER Registers
-        stackregister_csv_out(FIRST_LOCAL_REGISTER, LAST_LOCAL_REGISTER);
+      case 3:                    //LOCAL Registers
+        if(currentNumberOfLocalRegisters > 0) stackregister_csv_out(FIRST_LOCAL_REGISTER, FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters - 1);
+        break;
+
+      case 4:                    //NAMED Registers
+        if(numberOfNamedVariables > 0) stackregister_csv_out(FIRST_NAMED_VARIABLE, FIRST_NAMED_VARIABLE + numberOfNamedVariables - 1);
         break;
 
       default: ;

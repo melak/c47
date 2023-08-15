@@ -1286,33 +1286,32 @@ void fnXSWAP (uint16_t unusedButMandatoryParameter) {
     if(calcMode == CM_EIM || calcMode == CM_AIM) {
       if(calcMode==CM_AIM) fnSwapXY(0);
       //convert X to string if needed
-      if(getRegisterDataType(REGISTER_X) == dtString && stringByteLength(REGISTER_STRING_DATA(REGISTER_X)) >= AIM_BUFFER_LENGTH) {
-        if(calcMode==CM_AIM) fnSwapXY(0);
+      int type_x = getRegisterDataType(REGISTER_X);
+      if(type_x == dtString && stringByteLength(REGISTER_STRING_DATA(REGISTER_X)) >= AIM_BUFFER_LENGTH) {
+        if(calcMode==CM_AIM) fnSwapXY(0);                                           //swap back before returning with nothing done
         return;
       }
-      if(getRegisterDataType(REGISTER_X) == dtReal34 || getRegisterDataType(REGISTER_X) == dtComplex34  || getRegisterDataType(REGISTER_X) == dtLongInteger   || getRegisterDataType(REGISTER_X) == dtShortInteger    || getRegisterDataType(REGISTER_X) == dtTime   || getRegisterDataType(REGISTER_X) == dtDate) {
-        copySourceRegisterToDestRegister(REGISTER_Y, TEMP_REGISTER_1);
+      if(type_x == dtReal34 || type_x == dtComplex34 || type_x == dtLongInteger || type_x == dtShortInteger || type_x == dtTime || type_x == dtDate) {
+        copySourceRegisterToDestRegister(REGISTER_Y, TEMP_REGISTER_1);              //Save Y to temp register
         char tmp[2];
         tmp[0] = 0;
         int16_t len = stringByteLength(tmp) + 1;
         reallocateRegister(REGISTER_Y, dtString, TO_BLOCKS(len), amNone);           //Make blank string in X
         xcopy(REGISTER_STRING_DATA(REGISTER_Y), tmp, len);
-        addition[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();//Convert Y number to string in X REGISTER
-        adjustResult(REGISTER_X, false, false, -1, -1, -1);                          //Copy X string to Aimbuffer
-        copySourceRegisterToDestRegister(TEMP_REGISTER_1, REGISTER_Y);
-        clearRegister(TEMP_REGISTER_1);
+        addition[type_x][getRegisterDataType(REGISTER_Y)]();                        //Convert X (number) to string in X
+        adjustResult(REGISTER_X, false, false, -1, -1, -1);
+        copySourceRegisterToDestRegister(TEMP_REGISTER_1, REGISTER_Y);              //restore Y
+        clearRegister(TEMP_REGISTER_1);                                             //Clear in case it was a really long longinteger
         //resulting in a converted string in X, with Y unchanged
       }
-      if(getRegisterDataType(REGISTER_X) != dtString) {
+      if(getRegisterDataType(REGISTER_X) != dtString) {                             //somehow failed to convert then return with whatever was done in X
         if(calcMode==CM_AIM) fnSwapXY(0);
         return;
       }
-      //Save aimbuffer to TEMP1
-      if(aimBuffer[0] != 0) {
-        int16_t len = stringByteLength(aimBuffer) + 1;
-        reallocateRegister(TEMP_REGISTER_1, dtString, TO_BLOCKS(len), amNone);
-        xcopy(REGISTER_STRING_DATA(TEMP_REGISTER_1), aimBuffer, len);
-      }
+      //Save aimbuffer to TEMP1 as a string register
+      int16_t len = stringByteLength(aimBuffer) + 1;
+      reallocateRegister(TEMP_REGISTER_1, dtString, TO_BLOCKS(len), amNone);
+      xcopy(REGISTER_STRING_DATA(TEMP_REGISTER_1), aimBuffer, len);
 
       //In essence, after conversions,
       //If X is string shorter than buffer max, copy X to aimbuffer & copy aimbuffer to X
