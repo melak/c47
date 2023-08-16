@@ -329,6 +329,16 @@ if(calcMode == CM_AIM || calcMode == CM_EIM || tam.mode) {
       copyScreenToClipboard();
       break;
 
+    case 33:           //!
+      if(calcMode == CM_EIM) {
+        shiftF = true;
+          int16_t jj = softmenuStack[0].firstItem;
+          softmenuStack[0].firstItem = 18*3;
+          btnFnClicked(w, "4");  //F4
+          softmenuStack[0].firstItem = jj;
+          showSoftmenuCurrentPart();
+      }
+      break;
     case 40:           //(
       if(calcMode == CM_EIM) {
         shiftF = false;
