@@ -3329,7 +3329,7 @@ void execTimerApp(uint16_t timerType) {
             }
           }
 
-          else if(temporaryInformation == TI_LAST_CONST_CATNAME) {
+          else if(temporaryInformation == TI_LAST_CONST_CATNAME || temporaryInformation == TI_SCATTER_SMI) {
             if(regist == REGISTER_X) {
               strcpy(prefix, lastFuncSoftmenuName());
               if(prefix[0] != 0) {
