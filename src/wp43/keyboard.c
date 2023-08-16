@@ -99,8 +99,10 @@ printf(">>>>Z 0090a determineFunctionKeyItem       -softmenu[menuId].menuItem=%i
       }
 
       case MNU_MyAlpha: {
-        dynamicMenuItem = firstItem + itemShift + fn;
-        item = userAlphaItems[dynamicMenuItem].item;
+        if(calcMode != CM_EIM) {
+          dynamicMenuItem = firstItem + itemShift + fn;
+          item = userAlphaItems[dynamicMenuItem].item;
+        }
 #if defined(VERBOSEKEYS)
 printf(">>>>Z 0091   case MNU_MyAlpha             data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",data,data[0],item,itemShift, FN_key_pressed);
 printf(">>>>  0092     dynamicMenuItem=%d\n",dynamicMenuItem);
@@ -729,7 +731,7 @@ printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%
               addItemToBuffer(item);
               fnKeyInCatalog = 0;
             }
-            if(calcMode == CM_EIM && !tam.mode) {
+            if(calcMode == CM_EIM && !tam.mode) {   //this EIM portion moved to after release, to allow longpress and double press
               while(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQ_EDIT) {
                 popSoftmenu();
               }
@@ -1132,7 +1134,6 @@ printf(">>>> R000E                                %d |%s| shiftF=%d, shiftG=%d t
                       default:;
                     }
                   }                           //JM^^                          //JM^^
-
                 }
               }
               else if(calcMode == CM_ASSIGN && tam.alpha && tam.mode != TM_NEWMENU && item != ITM_NOP) {
@@ -1146,7 +1147,26 @@ printf(">>>> R000E                                %d |%s| shiftF=%d, shiftG=%d t
                 #if defined(VERBOSEKEYS)
                   printf("keyboard.c: executeFunction %i (before runfunction): %i, %s tam.mode=%i\n", item, softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName, tam.mode);
                 #endif //VERBOSEKEYS
+
                 runFunction(item);
+
+                if(calcMode == CM_EIM && !tam.mode) {
+                  switch (-softmenu[softmenuStack[0].softmenuId].menuItem) {
+                    //case MNU_ALPHAINTL:
+                    case MNU_ALPHA_OMEGA:
+                    case MNU_ALPHAMATH:
+                    case MNU_MyAlpha:
+                    case MNU_ALPHADOT:
+                    case MNU_alpha_omega: {
+                    //case MNU_ALPHAintl:
+                      while(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQ_EDIT) {
+                        popSoftmenu();
+                      }
+                      default:;
+                    }
+                  }
+                }  
+                
                 #if defined(VERBOSEKEYS)
                   printf("keyboard.c: executeFunction %i (after runfunction): %i, %s tam.mode=%i\n", item, softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName, tam.mode);
                 #endif //VERBOSEKEYS
