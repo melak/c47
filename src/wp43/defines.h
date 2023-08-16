@@ -24,9 +24,9 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
-#define VERSION1 "0.108.12.01prog"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
+#define VERSION1 "0.108.12.00.RC1"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
-//2023-08-13-0.108.12.01-RC-Snapshot not released
+//2023-08-13-0.108.12.00-RC1-Snapshot
 
   #undef SAVE_SPACE_DM42
   #undef SAVE_SPACE_DM42_0
