@@ -206,7 +206,7 @@ typedef struct {
 TO_QSPI const function_t indexOfFunctions[] = {
   #if !defined(SAVE_SPACE_DM42_2)
     //        function              functionName
-//XEQM CODE 2023-07-30
+//XEQM CODE 2023-08-17
               {ITM_PRIME,                     "@"},
               {ITM_ENTER,                     "ENTER"},
               {ITM_XexY,                      "X<>Y"},
@@ -364,14 +364,14 @@ TO_QSPI const function_t indexOfFunctions[] = {
               {ITM_PRINTERSTK,                "PRSTK"},
               {ITM_UNIT,                      "@"},
               {ITM_M_NEW,                     "@"},
-              {ITM_ADD,                       "PLUS"},
-              {ITM_SUB,                       "MIN"},
-              {ITM_MULT,                      "MULT"},
-              {ITM_DIV,                       "DIV"},
 
 
 
-              {ITM_MULTCR,                    "MULTCR "},
+
+
+
+
+              {ITM_MULTCR,                    "MULTCR"},
               {ITM_MULTDOT,                   "MULTDOT"},
               {ITM_DMY,                       "@"},
               {ITM_YMD,                       "@"},
@@ -410,7 +410,7 @@ TO_QSPI const function_t indexOfFunctions[] = {
               {ITM_GAPPER_L,                  "IPER"},
               {ITM_GAPCOM_L,                  "ICOM"},
               {ITM_GAPAPO_L,                  "IWTICK"},
-              {ITM_GAPSPC_L,                  "IPSPC"},
+              {ITM_GAPSPC_L,                  "ISPC"},
               {ITM_GAPDBLSPC_L,               "IWSPC"},
               {ITM_GAPDOT_L,                  "IDOT"},
               {ITM_GAPUND_L,                  "IUNDR"},
