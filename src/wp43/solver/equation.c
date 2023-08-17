@@ -1126,7 +1126,7 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
         else {
           displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
           #if(EXTRA_INFO_ON_CALC_ERROR == 1)
-            moreInfoOnError("In function parseEquation:", strPtr, "is not a valid name!", NULL);
+            moreInfoOnError("In function parseEquation 1:", strPtr, "is not a valid name!", NULL);
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         }
       }
@@ -1169,7 +1169,7 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
         else {
           displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
           #if(EXTRA_INFO_ON_CALC_ERROR == 1)
-            moreInfoOnError("In function parseEquation:", strPtr, "is not a valid name!", NULL);
+            moreInfoOnError("In function parseEquation 2:", strPtr, "is not a valid name!", NULL);
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         }
       }

@@ -194,8 +194,6 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     #endif // PC_BUILD
     //resetKeytimers();  //JM
 
-printf("Itemtobuffer\n");
-
     if(item == NOPARAM) {
       displayBugScreen(bugScreenNoParam);
     }
@@ -207,24 +205,26 @@ printf("Itemtobuffer\n");
       }
       if((fnKeyInCatalog || !catalog || catalog == CATALOG_MVAR) && (((calcMode == CM_AIM || calcMode == CM_EIM) && !tam.mode) || tam.alpha)) {
         item = convertItemToSubOrSup(item, nextChar);
-        if(stringByteLength(aimBuffer) + stringByteLength(indexOfItems[item].itemSoftmenuName) >= AIM_BUFFER_LENGTH) { /// TODO this error should never happen but who knows!
+        if(stringByteLength(aimBuffer) + (item == ITM_poly_SIGN ? 24 : stringByteLength(indexOfItems[item].itemSoftmenuName)) >= AIM_BUFFER_LENGTH) { /// TODO this error should never happen but who knows!
           sprintf(errorMessage, "In function addItemToBuffer:the AIM input buffer is full! %d bytes for now", AIM_BUFFER_LENGTH);
           displayBugScreen(errorMessage);
         }
         else if(calcMode == CM_EIM) {
           const char *addChar0 = item == ITM_PAIR_OF_PARENTHESES  ? "()" :
-                                item == ITM_VERTICAL_BAR         ? "||" :
-                                item == ITM_ROOT_SIGN            ? STD_SQUARE_ROOT "()" :
-                                item == ITM_ALOG_SYMBOL          ? STD_EulerE "^()" :
-                                item == ITM_LG_SIGN              ? "LOG()" :     //C47 used for assigns (blue in alpha mode)
-                                item == ITM_LN_SIGN              ? "LN()"  :     //C47 used for assigns (blue in alpha mode)
-                                item == ITM_SIN_SIGN             ? "SIN()" :     //C47 used for assigns (blue in alpha mode)
-                                item == ITM_COS_SIGN             ? "COS()" :     //C47 used for assigns (blue in alpha mode)
-                                item == ITM_TAN_SIGN             ? "TAN()" :     //C47 used for assigns (blue in alpha mode)
-                                item == ITM_OBELUS               ? STD_SLASH :
-                                item == ITM_poly_SIGN            ? "b3" STD_DOT "x^3+b2" STD_DOT "x^2+b1" STD_DOT "x+b0" :
-                                item == ITM_op_j_SIGN            ? COMPLEX_UNIT :
-                                item >= CST_01 && item <= CST_77 ? indexOfItems[item].itemCatalogName : "";
+                                 item == ITM_VERTICAL_BAR         ? "||" :
+                                 item == ITM_ROOT_SIGN            ? STD_SQUARE_ROOT "()" :
+                                 item == ITM_ALOG_SYMBOL          ? STD_EulerE "^()" :
+                                 item == ITM_LG_SIGN              ? "LOG()" :
+                                 item == ITM_LN_SIGN              ? "LN()"  :
+                                 item == ITM_SIN_SIGN             ? "SIN()" :
+                                 item == ITM_COS_SIGN             ? "COS()" :
+                                 item == ITM_TAN_SIGN             ? "TAN()" :
+                                 item == ITM_OBELUS               ? STD_SLASH :
+                                 item == ITM_poly_SIGN            ? "b3" STD_DOT "x^3+b2" STD_DOT "x^2+b1" STD_DOT "x+b0" :
+                                 item == ITM_op_j_SIGN            ? COMPLEX_UNIT :
+                                 item == ITM_zetaX                ? STD_zeta "()" :
+                                 item == ITM_GAMMAX               ? STD_GAMMA "()" :
+                                 item >= CST_01 && item <= CST_77 ? indexOfItems[item].itemCatalogName : "";
 
           char addChar[100];
           int16_t jj = 0;
@@ -253,23 +253,25 @@ printf("Itemtobuffer\n");
               xCursor += stringGlyphLength(addChar) - jj;
           } else {
             switch(item) {
-              case ITM_poly_SIGN: {    //C47
+              case ITM_poly_SIGN: {
                 xCursor += 21;
                 break;
               }
-              case ITM_LG_SIGN:       //C47 used for assigns (blue in alpha mode)
-              case ITM_SIN_SIGN:      //C47 used for assigns (blue in alpha mode)
-              case ITM_COS_SIGN:      //C47 used for assigns (blue in alpha mode)
-              case ITM_TAN_SIGN: {    //C47 used for assigns (blue in alpha mode)
+              case ITM_LG_SIGN:
+              case ITM_SIN_SIGN:
+              case ITM_COS_SIGN:
+              case ITM_TAN_SIGN: {
                 xCursor += 4;
                 break;
               }
               case ITM_ALOG_SYMBOL:
-              case ITM_LN_SIGN: {     //C47 used for assigns (blue in alpha mode)
+              case ITM_LN_SIGN: {
                 xCursor += 3;
                 break;
               }
-              case ITM_ROOT_SIGN: {
+              case ITM_ROOT_SIGN:
+              case ITM_GAMMAX:
+              case ITM_zetaX: {
                 xCursor += 2;
                 break;
               }
@@ -279,7 +281,7 @@ printf("Itemtobuffer\n");
                 break;
               }
               default: {
-                xCursor += stringGlyphLength(indexOfItems[item].itemSoftmenuName);
+                xCursor += stringGlyphLength(addChar);
               }
             }
           }

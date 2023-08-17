@@ -26,7 +26,7 @@
 
 #define VERSION1 "0.109.00.00prog"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
-//2023-08-15-0.109.00.00 not released
+//2023-08-13-0.108.12.01-RC-Snapshot not released
 
   #undef SAVE_SPACE_DM42
   #undef SAVE_SPACE_DM42_0
