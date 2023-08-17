@@ -1276,7 +1276,11 @@ typedef enum {
 #define IS_SEPARATOR_(digitCount)            (   (digitCount+1 == GROUPWIDTH_LEFT1) \
                                               || ((digitCount+1  > GROUPWIDTH_LEFT1 || digitCount < 0) \
                                                   && (modulo(digitCountNEW(digitCount), (uint16_t)GROUPWIDTH_(digitCount)) == (uint16_t)GROUPWIDTH_(digitCount) - 1)) )
-
+#define BLOCK_DOUBLEPRESS_MENU(menu, x, y)   ( \
+                                               (softmenu[menu].menuItem == -MNU_ALPHA    && y == 0) || \
+                                               (softmenu[menu].menuItem == -MNU_M_EDIT   && y == 0 && (x == 0 || x == 1 || x == 4 || x == 5)) || \
+                                               (softmenu[menu].menuItem == -MNU_EQ_EDIT  && y == 0 && (x == 4 || x == 5)) \
+                                             )
 
 #define clearScreen()                        {lcd_fill_rect(0, 0, SCREEN_WIDTH, 240, LCD_SET_VALUE); clear_ul();}
 #define currentReturnProgramNumber           (currentSubroutineLevelData[0].returnProgramNumber)
