@@ -211,20 +211,20 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         }
         else if(calcMode == CM_EIM) {
           const char *addChar0 = item == ITM_PAIR_OF_PARENTHESES  ? "()" :
-                                item == ITM_VERTICAL_BAR         ? "||" :
-                                item == ITM_ROOT_SIGN            ? STD_SQUARE_ROOT "()" :
-                                item == ITM_ALOG_SYMBOL          ? STD_EulerE "^()" :
-                                item == ITM_LG_SIGN              ? "LOG()" :
-                                item == ITM_LN_SIGN              ? "LN()"  :
-                                item == ITM_SIN_SIGN             ? "SIN()" :
-                                item == ITM_COS_SIGN             ? "COS()" :
-                                item == ITM_TAN_SIGN             ? "TAN()" :
-                                item == ITM_OBELUS               ? STD_SLASH :
-                                item == ITM_poly_SIGN            ? "b3" STD_DOT "x^3+b2" STD_DOT "x^2+b1" STD_DOT "x+b0" :
-                                item == ITM_op_j_SIGN            ? COMPLEX_UNIT :
-                                item == ITM_zetaX                ? STD_zeta "()" :
-                                item == ITM_GAMMAX               ? STD_GAMMA "()" :
-                                item >= CST_01 && item <= CST_77 ? indexOfItems[item].itemCatalogName : "";
+                                 item == ITM_VERTICAL_BAR         ? "||" :
+                                 item == ITM_ROOT_SIGN            ? STD_SQUARE_ROOT "()" :
+                                 item == ITM_ALOG_SYMBOL          ? STD_EulerE "^()" :
+                                 item == ITM_LG_SIGN              ? "LOG()" :
+                                 item == ITM_LN_SIGN              ? "LN()"  :
+                                 item == ITM_SIN_SIGN             ? "SIN()" :
+                                 item == ITM_COS_SIGN             ? "COS()" :
+                                 item == ITM_TAN_SIGN             ? "TAN()" :
+                                 item == ITM_OBELUS               ? STD_SLASH :
+                                 item == ITM_poly_SIGN            ? "b3" STD_DOT "x^3+b2" STD_DOT "x^2+b1" STD_DOT "x+b0" :
+                                 item == ITM_op_j_SIGN            ? COMPLEX_UNIT :
+                                 item == ITM_zetaX                ? STD_zeta "()" :
+                                 item == ITM_GAMMAX               ? STD_GAMMA "()" :
+                                 item >= CST_01 && item <= CST_77 ? indexOfItems[item].itemCatalogName : "";
 
           char addChar[100];
           int16_t jj = 0;
@@ -281,7 +281,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
                 break;
               }
               default: {
-                xCursor += stringGlyphLength(addChar0);
+                xCursor += stringGlyphLength(addChar);
               }
             }
           }
