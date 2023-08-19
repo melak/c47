@@ -600,7 +600,7 @@ TO_QSPI const int16_t menu_Eim[]         = {
                                              ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 
                                              
                                              ITM_BN,                   ITM_ERF,                  ITM_WM,                   ITM_zetaX,                ITM_EQ_LEFT,              ITM_EQ_RIGHT,             
-                                             ITM_BNS,                  ITM_ERFC,                 ITM_WM1,                  MNU_CONST,                -MNU_CHARS,               ITM_XSWAP,                
+                                             ITM_BNS,                  ITM_ERFC,                 ITM_WM1,                  -MNU_CONST,               -MNU_CHARS,               ITM_XSWAP,                
                                              ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 
 
 //
