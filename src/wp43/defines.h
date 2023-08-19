@@ -88,7 +88,7 @@
 
 
 #define TEXT_MULTILINE_EDIT         // 5 line buffer
-#define MAXLINES 2                  // two lines at small font maximum allowed in entry
+#define MAXLINES 5                  // numner of equavalent lines in small font maximum that is allowed in entry. Entry is hardlocked to multiline 3 lines bif font, but this is still the limit. WP has 2 lines fixed small font.
 
 
 //Testing and debugging
@@ -278,14 +278,9 @@
 #define NUMBER_OF_NUMERIC_FONT_LINES_PER_SCREEN    5 // Used in the font browser application
 #define NUMBER_OF_STANDARD_FONT_LINES_PER_SCREEN   8 // Used in the font browser application
 
-#define AIM_BUFFER_LENGTH                        400 // 199 double byte glyphs + trailing 0 + 1 byte to round up to a 4 byte boundary
+#define AIM_BUFFER_LENGTH                       1024 // WP=199 double byte glyphs + trailing 0 + 1 byte to round up to a 4 byte boundary; JM increase from WP43 to 512*2 so as to exceed the 508*2+extras;
 #define TAM_BUFFER_LENGTH                         32 // TODO: find the exact maximum needed
-#if defined(BUFFER_CLICK_DETECTION)
-#define NIM_BUFFER_LENGTH                        200 //JM(100-24-10) TEMP POC CHANGE FROM 100//JMMAX changed from 200 // TODO: find the exact maximum needed
-#else // !BUFFER_CLICK_DETECTION
-#define NIM_BUFFER_LENGTH                        200 //JM(100-24) TEMP POC CHANGE FROM 100//JMMAX changed from 200 // TODO: find the exact maximum needed
-#endif // BUFFER_CLICK_DETECTION
-
+#define NIM_BUFFER_LENGTH                        200 // TODO: find the exact maximum needed
 
 #define DEBUG_LINES                               68 // Used in for the debug panel
 
@@ -1047,7 +1042,7 @@ typedef enum {
 #define SIGMA_YMIN   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_YMIN  )) // could be a real34
 #define SIGMA_YMAX   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_YMAX  )) // could be a real34
 
-#define MAX_NUMBER_OF_GLYPHS_IN_STRING           196
+#define MAX_NUMBER_OF_GLYPHS_IN_STRING           508 //WP=196: Change to 512 less 3, Also change error message 33, and AIM_BUFFER_LENGTH, and MAXLINES
 #define NUMBER_OF_GLYPH_ROWS                     250  //Used in the font browser application
 
 #define MAX_DENMAX                              9999 // Biggest denominator in fraction display mode
