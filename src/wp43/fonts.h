@@ -388,6 +388,9 @@
 #define STD_num                       "\xa6\x7e"  //JM
 #define STD_RIGHT_TACK                "\xa2\xa2"  //JM
 
+#define STD_MODE_F                    "\x9E\x9D"  //1E9D
+#define STD_MODE_G                    "\x9E\x9F"  //1E9F
+
 #define STD_LEFT_DASHARROW            "\xa1\xe0"
 #define STD_UP_DASHARROW              "\xa1\xe1" 
 #define STD_RIGHT_DASHARROW           "\xa1\xe2" 

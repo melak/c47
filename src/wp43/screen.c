@@ -1034,7 +1034,7 @@ void execTimerApp(uint16_t timerType) {
     #define REDUCT_A 3
     #define REDUCT_B 4
     #define REDUCT_OFF 3
-    bool_t numDouble = font == &numericFont && checkHP && temporaryInformation == TI_NO_INFO && charCodeFromString(STD_SUP_f, 0)!=charCode && charCodeFromString(STD_SUP_g, 0)!=charCode; //this also triggers the vertical doubling
+    bool_t numDouble = font == &numericFont && checkHP && temporaryInformation == TI_NO_INFO; //&& charCodeFromString(STD_MODE_G, 0)!=charCode && charCodeFromString(STD_MODE_G, 0)!=charCode; //this also triggers the vertical doubling
     uint8_t doubling = numDouble ? DOUBLING : 4u;      //this is the horizontal factor
 
     // Clearing the space needed by the glyph
@@ -3870,21 +3870,23 @@ void execTimerApp(uint16_t timerType) {
 
 
   void clearShiftState(void) {
-    //uint32_t fcol, frow, gcol, grow;
-    //getGlyphBounds(STD_SUP_f, 0, &numericFont, &fcol, &frow);
-    //getGlyphBounds(STD_SUP_g, 0, &numericFont, &gcol, &grow);
-    //lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, (fcol > gcol ? fcol : gcol), (frow > grow ? frow : grow), LCD_SET_VALUE);
+    uint32_t fcol, frow, gcol, grow;
+    getGlyphBounds(STD_MODE_F, 0, &standardFont, &fcol, &frow);
+    getGlyphBounds(STD_MODE_G, 0, &standardFont, &gcol, &grow);
+    lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, (fcol > gcol ? fcol : gcol), (frow > grow ? frow : grow), LCD_SET_VALUE);
 
     //lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, 15, NUMERIC_FONT_HEIGHT, LCD_SET_VALUE);
-    lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE-2, 12, 32, LCD_SET_VALUE);
+    //lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE-2, 12, 32, LCD_SET_VALUE);
   }
   void showShiftStateF(void) {
     //showGlyph(STD_SUP_f, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // f is pixel 4+8+3 wide
-    showStringC43(STD_f, numHalf, nocompress, 0, Y_POSITION_OF_REGISTER_T_LINE-2, vmNormal, false, false);    
+    //showStringC43(STD_f, numHalf, nocompress, 0, Y_POSITION_OF_REGISTER_T_LINE-2, vmNormal, false, false);    
+    showGlyph(STD_MODE_F, &standardFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // f is pixel 4+8+3 wide
   }
   void showShiftStateG(void) {
     //showGlyph(STD_SUP_g, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // g is pixel 4+10+1 wide
-    showStringC43(STD_g, numHalf, nocompress, 0, Y_POSITION_OF_REGISTER_T_LINE-2-4, vmNormal, false, false);    
+    //showStringC43(STD_g, numHalf, nocompress, 0, Y_POSITION_OF_REGISTER_T_LINE-2-4, vmNormal, false, false);    
+    showGlyph(STD_MODE_G, &standardFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // f is pixel 4+8+3 wide
   }
 
 
