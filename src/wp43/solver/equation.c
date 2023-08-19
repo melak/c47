@@ -881,7 +881,6 @@ static void _runEqFunction(char *mvarBuffer, uint16_t item) {
     case ITM_HN:
     case ITM_HNP:
     case ITM_Lm:
-    case ITM_LmALPHA:
     case ITM_Pn:
     case ITM_Tn:
     case ITM_Un:

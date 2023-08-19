@@ -581,7 +581,7 @@ TO_QSPI const int16_t menu_Eim[]         = {
                                              ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 
                                              
                                              ITM_EQ_LEFT,              ITM_HN,                   ITM_Lm,                   ITM_GAMMAX,               ITM_Pn,                   ITM_EQ_RIGHT,             
-                                             ITM_NULL,                 ITM_HNP,                  ITM_LmALPHA,              ITM_LNGAMMA,              ITM_Tn,                   ITM_Un,                   
+                                             ITM_NULL,                 ITM_HNP,                  ITM_NULL,                 ITM_LNGAMMA,              ITM_Tn,                   ITM_Un,                   
                                              ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 
                                              
                                              ITM_EQ_LEFT,              ITM_BN,                   ITM_ERF,                  ITM_WM,                   ITM_WM1,                  ITM_EQ_RIGHT,             
