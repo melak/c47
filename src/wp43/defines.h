@@ -24,9 +24,9 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
-#define VERSION1 "0.108.12.00.RC3"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
+#define VERSION1 "0.108.12.00.RC4"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
-//2023-08-17-0.108.12.00-RC3-Snapshot
+//2023-08-19-0.108.12.00-RC4-Snapshot
 
   #undef SAVE_SPACE_DM42
   #undef SAVE_SPACE_DM42_0
@@ -664,12 +664,12 @@ typedef enum {
 #define X_COMPLEX_MODE_ADJ                        -8  //note, auto moved left if REAL_COMPLEX is not present
 #define X_ANGULAR_MODE                    160//       157
 #define X_FRAC_MODE                       187//       185
-#define X_INTEGER_MODE                    244//       260
-#define X_OVERFLOW_CARRY                  274//       292
-#define X_ALPHA_MODE                      290//       300
-#define X_SSIZE_BEGIN                     309//       307  //If this needs to be used, the positioning will clash. Needs to be re-balanced
-#define X_HOURGLASS                       319//       311
-#define X_HOURGLASS_GRAPHS                       160-20
+#define X_INTEGER_MODE                    262//       260
+#define X_OVERFLOW_CARRY                         292
+#define X_ALPHA_MODE                             300
+#define X_SSIZE_BEGIN                            315  //If this needs to be used, the positioning will clash. Needs to be re-balanced
+#define X_HOURGLASS                              315  //311
+#define X_HOURGLASS_GRAPHS                       140
 #define X_WATCH                           335//       336
 #define X_SERIAL_IO                              351
 #define X_PRINTER                                361
