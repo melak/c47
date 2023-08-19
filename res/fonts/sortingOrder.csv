@@ -632,5 +632,7 @@
 `U+2147`,121,121,`Double-Struck Italic Small E`,`eEuler`,`ⅇ`,`e`,`U+0045`
 `U+2148`,169,169,`Double-Struck Italic Small I`,`op-i`,`ⅈ`,`j`,`U+0049`
 `U+2149`,191,191,`Double-Struck Italic Small J`,`op-j`,`ⅉ`,`j`,`U+004a`
+`U+1E9D`,146,146,`longshighstroke`,`long f`,`ẝ`,`f`,`U+0046`
+`U+1E9F`,152,152,`delta`,`long g`,`ẟ`,`g`,`U+0047`
 `U+001D`,1,9,`INFORMATION SEPARATOR THREE`,,,,`U+0020`
 ,,,,,,,

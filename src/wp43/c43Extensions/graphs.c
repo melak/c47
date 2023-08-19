@@ -451,7 +451,7 @@ void graph_text(void) {
     showString(padEquals(ss), &standardFont, n+3,  ypos, vmNormal, false, false);
     ypos -= 38;
 
-    snprintf(tmpString, TMP_STR_LENGTH, "y %.3f/tick  ", tick_int_y);
+    snprintf(tmpString, TMP_STR_LENGTH, "  y %.3f/tick  ", tick_int_y);
     ii = 0;
     oo = 0;
     outstr[0] = 0;
@@ -463,7 +463,7 @@ void graph_text(void) {
     showString(outstr, &standardFont, 1, ypos, vmNormal, true, true);  //JM
     ypos -= 12;
 
-    snprintf(tmpString, TMP_STR_LENGTH, "x %.3f/tick  ", tick_int_x);
+    snprintf(tmpString, TMP_STR_LENGTH, "  x %.3f/tick  ", tick_int_x);
     ii = 0;
     oo = 0;
     outstr[0] = 0;
@@ -489,10 +489,10 @@ void graph_text(void) {
     uint8_t axisdisp =  (!(yzero == SCREEN_HEIGHT_GRAPH-1 || yzero == minny) ? 2 : 0)
                       + (!(xzero == SCREEN_WIDTH-1        || xzero == minnx) ? 1 : 0);
     switch(axisdisp) {
-      case 0: strcpy(tmpString,"          ");                    break;
-      case 1: snprintf(tmpString, TMP_STR_LENGTH, "y-axis x 0"); break;
-      case 2: snprintf(tmpString, TMP_STR_LENGTH, "x-axis y 0"); break;
-      case 3: snprintf(tmpString, TMP_STR_LENGTH, "axis 0.0 ");  break;
+      case 0: strcpy(tmpString,"            ");                    break;
+      case 1: snprintf(tmpString, TMP_STR_LENGTH, "  y-axis x 0"); break;
+      case 2: snprintf(tmpString, TMP_STR_LENGTH, "  x-axis y 0"); break;
+      case 3: snprintf(tmpString, TMP_STR_LENGTH, "  axis 0.0 ");  break;
       default: ;
     }
 
