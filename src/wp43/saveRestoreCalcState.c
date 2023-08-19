@@ -1700,6 +1700,24 @@ int32_t stringToInt32(const char *str) {
   }
 
 
+#define LOADDEBUG
+#undef LOADDEBUG
+#if defined(LOADDEBUG)
+  static void debugPrintf(int s1, const char * s2, const char * s3) {
+    #if defined(PC_BUILD)
+      printf("%i %s %s\n", s1, s2, s3);
+    #else
+      char yy[1000];
+      sprintf(yy,"%i %s %s\n", s1, s2, s3);
+//      printHalfSecUpdate_Integer(force+1, yy, 0);
+//      print_linestr(yy,false);
+
+    #endif //!PC_BUILD
+  }
+#endif //LOADDEBUG
+
+
+
   static bool_t restoreOneSection(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
     int16_t i, numberOfRegs;
     calcRegister_t regist;
@@ -1712,7 +1730,7 @@ int32_t stringToInt32(const char *str) {
     showHideHourGlass();
     readLine(tmpString);
     #if defined(LOADDEBUG)
-      sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+      sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
       debugPrintf(0, "-", tmpString);
     #endif //LOADDEBUG
 
@@ -1727,7 +1745,7 @@ int32_t stringToInt32(const char *str) {
 
         if(loadMode == LM_ALL || (loadMode == LM_REGISTERS && regist < REGISTER_X) || (loadMode == LM_REGISTERS_PARTIAL && regist >= s && regist < (s + n))) {
           #if defined(LOADDEBUG)
-            sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+            sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
             debugPrintf(1, "-", tmpString);
           #endif //LOADDEBUG
           restoreRegister(loadMode == LM_REGISTERS_PARTIAL ? (regist - s + d) : regist, aimBuffer, tmpString);
@@ -1743,7 +1761,7 @@ int32_t stringToInt32(const char *str) {
       readLine(tmpString); // Global flags
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
         #if defined(LOADDEBUG)
-          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(2, "-", tmpString);
         #endif //LOADDEBUG
         str = tmpString;
@@ -1804,7 +1822,7 @@ int32_t stringToInt32(const char *str) {
       numberOfRegs = stringToInt16(tmpString);
       if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
         #if defined(LOADDEBUG)
-          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(3, "A", tmpString);
         #endif //LOADDEBUG
         allocateLocalRegisters(numberOfRegs);
@@ -1812,7 +1830,7 @@ int32_t stringToInt32(const char *str) {
 
       if((loadMode != LM_ALL && loadMode != LM_REGISTERS) || lastErrorCode == ERROR_NONE) {
         #if defined(LOADDEBUG)
-          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(3, "B", tmpString);
         #endif //LOADDEBUG
         for(i=0; i<numberOfRegs; i++) {
@@ -1823,7 +1841,7 @@ int32_t stringToInt32(const char *str) {
 
           if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
             #if defined(LOADDEBUG)
-              sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+              sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
               debugPrintf(3, "C", tmpString);
             #endif //LOADDEBUG
             restoreRegister(regist, aimBuffer, tmpString);
@@ -1838,13 +1856,13 @@ int32_t stringToInt32(const char *str) {
 
     else if(strcmp(tmpString, "LOCAL_FLAGS") == 0) {
       #if defined(LOADDEBUG)
-        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+        sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
         debugPrintf(4, "A", tmpString);
       #endif //LOADDEBUG
       readLine(tmpString); // LOCAL_FLAGS
       if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
         #if defined(LOADDEBUG)
-          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(4, "B", tmpString);
         #endif //LOADDEBUG
         currentLocalFlags->localFlags = stringToUint32(tmpString);
@@ -1853,7 +1871,7 @@ int32_t stringToInt32(const char *str) {
 
     else if(strcmp(tmpString, "NAMED_VARIABLES") == 0) {
       #if defined(LOADDEBUG)
-        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+        sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
         debugPrintf(20, "A", tmpString);
       #endif //LOADDEBUG
       readLine(tmpString); // Number of named variables
@@ -1867,7 +1885,7 @@ int32_t stringToInt32(const char *str) {
           (loadMode == LM_SUMS && ((strcmp(errorMessage, "STATS") == 0) || (strcmp(errorMessage, "HISTO") == 0)))) {
 
           #if defined(LOADDEBUG)
-            sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+            sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
             debugPrintf(20, "B", tmpString);
           #endif //LOADDEBUG
           char *varName = errorMessage + strlen(errorMessage) + 1;
@@ -1893,7 +1911,7 @@ int32_t stringToInt32(const char *str) {
       numberOfRegs = stringToInt16(tmpString);
       if(numberOfRegs > 0 && (loadMode == LM_ALL || loadMode == LM_SUMS)) {
         #if defined(LOADDEBUG)
-          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(6, "A", tmpString);
         #endif //LOADDEBUG
 
@@ -1904,7 +1922,7 @@ int32_t stringToInt32(const char *str) {
           if(statisticalSumsPointer) { // likely
             if(loadMode == LM_ALL || loadMode == LM_SUMS) {
               #if defined(LOADDEBUG)
-                sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+                sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
                 debugPrintf(6, "B", tmpString);
               #endif //LOADDEBUG
               stringToReal(tmpString, (real_t *)(statisticalSumsPointer + REAL_SIZE * i), &ctxtReal75);
@@ -1918,7 +1936,7 @@ int32_t stringToInt32(const char *str) {
       readLine(tmpString); // Global flags
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
         #if defined(LOADDEBUG)
-          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(7, "-", tmpString);
         #endif //LOADDEBUG
         systemFlags = stringToUint64(tmpString);
@@ -1932,7 +1950,7 @@ int32_t stringToInt32(const char *str) {
         readLine(tmpString); // key
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
           #if defined(LOADDEBUG)
-            sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+            sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
             debugPrintf(8, "-", tmpString);
           #endif //LOADDEBUG
           str = tmpString;
@@ -2010,7 +2028,7 @@ int32_t stringToInt32(const char *str) {
       numberOfRegs = stringToInt16(tmpString);
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
         #if defined(LOADDEBUG)
-          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(9, "A", tmpString);
         #endif //LOADDEBUG
         freeWp43(userKeyLabel, TO_BLOCKS(userKeyLabelSize));
@@ -2022,7 +2040,7 @@ int32_t stringToInt32(const char *str) {
         readLine(tmpString); // key
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
           #if defined(LOADDEBUG)
-            sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+            sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
             debugPrintf(9, "B", tmpString);
           #endif //LOADDEBUG
           str = tmpString;
@@ -2052,7 +2070,7 @@ int32_t stringToInt32(const char *str) {
         readLine(tmpString); // key
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
           #if defined(LOADDEBUG)
-            sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+            sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
             debugPrintf(10, "-", tmpString);
           #endif //LOADDEBUG
           str = tmpString;
@@ -2081,7 +2099,7 @@ int32_t stringToInt32(const char *str) {
         readLine(tmpString); // key
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
           #if defined(LOADDEBUG)
-            sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+            sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
             debugPrintf(11, "-", tmpString);
           #endif //LOADDEBUG
           str = tmpString;
@@ -2111,7 +2129,7 @@ int32_t stringToInt32(const char *str) {
         int16_t target = -1;
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
           #if defined(LOADDEBUG)
-            sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+            sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
             debugPrintf(12, "-", tmpString);
           #endif //LOADDEBUG
           utf8ToString((uint8_t *)tmpString, tmpString + TMP_STR_LENGTH / 2);
@@ -2132,7 +2150,7 @@ int32_t stringToInt32(const char *str) {
           readLine(tmpString); // key
           if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
             #if defined(LOADDEBUG)
-              sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+              sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
               debugPrintf(13, "-", tmpString);
             #endif //LOADDEBUG
             str = tmpString;
@@ -2158,7 +2176,7 @@ int32_t stringToInt32(const char *str) {
     else if(strcmp(tmpString, "PROGRAMS") == 0) {
       #if defined(LOADDEBUG)
         if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
-          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(14, "-", tmpString);
         }
       #endif //LOADDEBUG
@@ -2251,7 +2269,7 @@ int32_t stringToInt32(const char *str) {
 
       if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
         #if defined(LOADDEBUG)
-          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(15, "A", tmpString);
         #endif //LOADDEBUG
         for(i = numberOfFormulae; i > 0; --i) {
@@ -2263,7 +2281,7 @@ int32_t stringToInt32(const char *str) {
       formulae = stringToUint16(tmpString);
       if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
         #if defined(LOADDEBUG)
-          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(15, "B", tmpString);
         #endif //LOADDEBUG
         allFormulae = allocWp43(TO_BLOCKS(sizeof(formulaHeader_t)) * formulae);
@@ -2279,7 +2297,7 @@ int32_t stringToInt32(const char *str) {
         readLine(tmpString); // One formula
         if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
           #if defined(LOADDEBUG)
-            sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+            sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
             debugPrintf(15, "C", tmpString);
           #endif //LOADDEBUG
           utf8ToString((uint8_t *)tmpString, tmpString + TMP_STR_LENGTH / 2);
@@ -2291,7 +2309,7 @@ int32_t stringToInt32(const char *str) {
     else if(strcmp(tmpString, "OTHER_CONFIGURATION_STUFF") == 0) {
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
         #if defined(LOADDEBUG)
-          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
           debugPrintf(16, "A", tmpString);
         #endif //LOADDEBUG
         resetOtherConfigurationStuff(); //Ensure all the configuration stuff below is reset prior to loading.
@@ -2304,7 +2322,7 @@ int32_t stringToInt32(const char *str) {
         readLine(tmpString); // value
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
           #if defined(LOADDEBUG)
-            sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+            sprintf(line,", loadMode:%d, %s\n",loadMode,tmpString);
             debugPrintf(16, "B", tmpString);
           #endif //LOADDEBUG
 
@@ -2473,20 +2491,6 @@ int32_t stringToInt32(const char *str) {
 #endif // !TESTSUITE_BUILD
 
 
-#undef LOADDEBUG
-#if defined(LOADDEBUG)
-  static void debugPrintf(int s1, const char * s2, const char * s3) {
-    #if defined(PC_BUILD)
-      printf("%i %s %s\n", s1, s2, s3);
-    #else
-      char yy[100];
-      sprintf(yy,"%i %s %s\n", s1, s2, s3);
-//      printHalfSecUpdate_Integer(force+1, yy, 0);
-//      print_linestr(yy,false);
-
-    #endif //!PC_BUILD
-  }
-#endif //LOADDEBUG
 
 
 void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t loadType) {

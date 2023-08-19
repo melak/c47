@@ -599,8 +599,7 @@ void resetKeytimers(void) {
     //printf("^^^^ softmenu=%d -MNU_ALPHA=%d currentFirstItem=%d\n", softmenu[softmenuStack[0].softmenuId].menuItem, -MNU_ALPHA, softmenuStack[0].firstItem);
     //**************JM DOUBLE CLICK DETECTION ******************************* // JM FN-DOUBLE
     double_click_detected = false;                                            //JM FN-DOUBLE - Dip detection flag
-    int mI = softmenu[softmenuStack[0].softmenuId].menuItem;
-    if((jm_G_DOUBLETAP && /*calcMode != CM_AIM*/ mI != -MNU_ALPHA && mI != -MNU_EQ_EDIT)) {
+    if((jm_G_DOUBLETAP && !BLOCK_DOUBLEPRESS_MENU(softmenuStack[0].softmenuId,FN_key_pressed-38,0)  )) {
       if(exexute_double_g) {
         if(FN_key_pressed !=0 && FN_key_pressed == FN_key_pressed_last) {     //Identified valid double press dip, the same key in rapid succession
           shiftF = false;                                                     //JM
@@ -693,8 +692,7 @@ void resetKeytimers(void) {
       printf(">>>>Z 0050B btnFnReleased_StateMachine ------------------ FN_state=%d\n", FN_state);
     #endif // VERBOSEKEYS
 
-    int mI = softmenu[softmenuStack[0].softmenuId].menuItem;
-    if(jm_G_DOUBLETAP && /*calcMode != CM_AIM*/ mI != -MNU_ALPHA && FN_state == ST_2_REL1 && FN_handle_timed_out_to_EXEC) {
+    if(jm_G_DOUBLETAP && !BLOCK_DOUBLEPRESS_MENU(softmenuStack[0].softmenuId,FN_key_pressed-38,0) && FN_state == ST_2_REL1 && FN_handle_timed_out_to_EXEC) {
       uint8_t offset =  0;
       if(shiftF && !shiftG) {
         offset =  6;

@@ -82,7 +82,7 @@ TO_QSPI const char errorMessages[NUMBER_OF_ERROR_CODES][SIZE_OF_EACH_ERROR_MESSA
 /* 30 */  "Function to be coded for that data type",
 /* 31 */  "Input data types do not match",
 /* 32 */  "This system flag is write protected",
-/* 33 */  "Output would exceed 196 characters",
+/* 33 */  "Output would exceed 508 characters",
 /* 34 */  "This does not work with an empty string",
 /* 35 */  "No backup data found",
 /* 36 */  "Undefined source variable",
