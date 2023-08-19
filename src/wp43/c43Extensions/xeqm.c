@@ -1271,6 +1271,7 @@ void fnXEQMLOAD (uint16_t XEQM_no) {                                  //DISK to 
 }
 
 
+#define DISALLOW_ZERO_STRING
 
 void fnXSWAP (uint16_t unusedButMandatoryParameter) {
     if(calcMode == CM_EIM || calcMode == CM_AIM) {
@@ -1290,9 +1291,13 @@ void fnXSWAP (uint16_t unusedButMandatoryParameter) {
         reallocateRegister(REGISTER_Y, dtString, TO_BLOCKS(len), amNone);           //Make blank string in Y
         xcopy(REGISTER_STRING_DATA(REGISTER_Y), tmp, len);
         addition[type_x][getRegisterDataType(REGISTER_Y)]();                        //Convert X (number) to string in X
-        if(!(getRegisterDataType(REGISTER_X) == dtString && REGISTER_STRING_DATA(REGISTER_X)[0]!=0)) { //never allow a zero string in a register
-          clearRegister(REGISTER_X);
-        }
+        
+        #if defined (DISALLOW_ZERO_STRING)
+          if(!(getRegisterDataType(REGISTER_X) == dtString && REGISTER_STRING_DATA(REGISTER_X)[0]!=0)) { //never allow a zero string in a register
+            clearRegister(REGISTER_X);                                                //create 0. instead of zero string
+          }
+        #endif //DISALLOW_ZERO_STRING
+        
         adjustResult(REGISTER_X, false, false, -1, -1, -1);
         copySourceRegisterToDestRegister(TEMP_REGISTER_1, REGISTER_Y);              //restore Y
         clearRegister(TEMP_REGISTER_1);                                             //Clear in case it was a really long longinteger
@@ -1314,10 +1319,18 @@ void fnXSWAP (uint16_t unusedButMandatoryParameter) {
         if(stringByteLength(REGISTER_STRING_DATA(REGISTER_X)) < AIM_BUFFER_LENGTH) {
           strcpy(aimBuffer, REGISTER_STRING_DATA(REGISTER_X));
 
-          //copy aimbuffer to X
-          if((getRegisterDataType(TEMP_REGISTER_1) == dtString && REGISTER_STRING_DATA(TEMP_REGISTER_1)[0]!=0)) { //never allow a zero string in a register
+          #if defined(DISALLOW_ZERO_STRING)
+            if(!(getRegisterDataType(TEMP_REGISTER_1) == dtString && REGISTER_STRING_DATA(TEMP_REGISTER_1)[0]!=0)) { //never allow a zero string in a register
+              clearRegister(TEMP_REGISTER_1);
+              goto returnZeroAim;
+            } else
+          #endif //DISALLOW_ZERO_STRING
+          {
+            //copy aimbuffer to X
             copySourceRegisterToDestRegister(TEMP_REGISTER_1, REGISTER_X);
           }
+          
+
           //Set cursors
           if(calcMode==CM_AIM) {
             fnSwapXY(0);
@@ -1361,6 +1374,10 @@ void fnXSWAP (uint16_t unusedButMandatoryParameter) {
       strcpy(REGISTER_STRING_DATA(REGISTER_X), line1);
       fnXSWAP(0);
     }
+  #if defined(DISALLOW_ZERO_STRING)
+    returnZeroAim:
+  #endif //DISALLOW_ZERO_STRING
+
   last_CM = 252;
   refreshScreen();
   last_CM = 251;
