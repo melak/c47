@@ -74,9 +74,23 @@ TO_QSPI void (* const power[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DAT
 
 void PowerReal(const real_t *y, const real_t *x, real_t *res, realContext_t *realContext) {
   real_t lny;
-  WP34S_Ln(y, &lny, realContext);
-  realMultiply(x, &lny, res, realContext);
-  realExp(res, res, realContext);
+  if(realIsNegative(y) && realIsAnInteger(x) && realIsPositive(x)) {
+    realDivideRemainder(x, const_2, &lny, realContext);
+    bool_t isOdd = !realIsZero(&lny);
+    realCopyAbs(y, &lny);
+    WP34S_Ln(&lny, &lny, realContext);
+    realMultiply(x, &lny, res, realContext);
+    realExp(res, res, realContext);
+    fflush(stdout);
+    if(isOdd) {
+      realChangeSign(res);
+    }
+  }
+  else {
+    WP34S_Ln(y, &lny, realContext);
+    realMultiply(x, &lny, res, realContext);
+    realExp(res, res, realContext);
+  }
 }
 
 
