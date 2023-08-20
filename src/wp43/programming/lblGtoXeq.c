@@ -867,7 +867,7 @@ void runProgram(bool_t singleStep, uint16_t menuLabel) {
     if(singleStep) {
       break;
     }
-      #if defined(PC_BUILD)
+    #if defined(PC_BUILD)
       refreshLcd(NULL);
     #endif // PC_BUILD
   }
@@ -881,7 +881,10 @@ stopProgram:
   }
   if(!getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
     showHideHourGlass();
-      #if defined(DMCP_BUILD)
+    if(screenUpdatingMode == SCRUPD_AUTO) {
+      refreshScreen();
+    }
+    #if defined(DMCP_BUILD)
       lcd_refresh();
       fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, PROGRAM_STOP);
     #else // !DMCP_BUILD

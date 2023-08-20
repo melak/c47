@@ -102,6 +102,17 @@
   #define    CLICK_REFRESHSCR             //Add a 5 ms click before refresh screen
   #undef     CLICK_REFRESHSCR
 
+//Debud showFunctionName
+#define DEBUG_SHOWNAME
+#undef DEBUG_SHOWNAME
+#if defined(DEBUG_SHOWNAME)
+  #define DEBUGSFN true
+#else
+  #define DEBUGSFN false
+#endif
+
+
+
 //Verbose options
   #define    VERBOSEKEYS
   #undef     VERBOSEKEYS

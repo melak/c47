@@ -12,10 +12,11 @@
   #include <gtk/gtk.h>
   #include <gdk/gdk.h>
 #endif // PC_BUILD
+#include "typeDefinitions.h"
 
 
 #if !defined(TESTSUITE_BUILD)
-  int16_t determineFunctionKeyItem(const char *data, int16_t itemShift);
+  int16_t determineFunctionKeyItem_C47(const char *data, bool_t shiftF, bool_t shiftG);
 #endif // !TESTSUITE_BUILD
 
 
