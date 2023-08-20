@@ -628,18 +628,65 @@ typedef enum {
 #define NUMBER_OF_DYNAMIC_SOFTMENUS               18
 #define SOFTMENU_HEIGHT                           23
 
+
+// Status bar updating mode
+#define SBARUPD_Date                            0x00000001
+#define SBARUPD_Time                            0x00000002
+#define SBARUPD_ComplexResult                   0x00000004
+#define SBARUPD_ComplexMode                     0x00000008
+#define SBARUPD_AngularModeBasic                0x00000010
+#define SBARUPD_AngularMode                     0x00000020
+#define SBARUPD_FractionModeAndBaseMode         0x00000040
+#define SBARUPD_IntegerMode                     0x00000080
+#define SBARUPD_MatrixMode                      0x00000100
+#define SBARUPD_TVMMode                         0x00000200
+#define SBARUPD_OCCarryMode                     0x00000400
+#define SBARUPD_AlphaMode                       0x00000800
+#define SBARUPD_HourGlass                       0x00001000
+#define SBARUPD_StackSize                       0x00002000
+#define SBARUPD_Watch                           0x00004000
+#define SBARUPD_SerialIO                        0x00008000
+#define SBARUPD_Printer                         0x00010000
+#define SBARUPD_UserMode                        0x00020000
+#define SBARUPD_Battery                         0x00040000
+
+#define statusBarMask                           (uint32_t)( \
+                                                (    SBARUPD_Date                    ) | \
+                                                (    SBARUPD_Time                    ) | \
+                                                (0 & SBARUPD_ComplexResult           ) | \
+                                                (    SBARUPD_ComplexMode             ) | \
+                                                (0 & SBARUPD_AngularModeBasic        ) | \
+                                                (    SBARUPD_AngularMode             ) | \
+                                                (    SBARUPD_FractionModeAndBaseMode ) | \
+                                                (    SBARUPD_IntegerMode             ) | \
+                                                (    SBARUPD_MatrixMode              ) | \
+                                                (    SBARUPD_TVMMode                 ) | \
+                                                (    SBARUPD_OCCarryMode             ) | \
+                                                (    SBARUPD_AlphaMode               ) | \
+                                                (    SBARUPD_HourGlass               ) | \
+                                                (0 & SBARUPD_StackSize               ) | \
+                                                (    SBARUPD_Watch                   ) | \
+                                                (    SBARUPD_SerialIO                ) | \
+                                                (    SBARUPD_Printer                 ) | \
+                                                (    SBARUPD_UserMode                ) | \
+                                                (    SBARUPD_Battery                 ) )
+
+
 // Horizontal offsets in the status bar
 #define X_DATE                                     1
-#define X_REAL_COMPLEX                           133
-#define X_COMPLEX_MODE                           143
-#define X_ANGULAR_MODE                           157
-#define X_FRAC_MODE                              185
-#define X_INTEGER_MODE                           260
+#define X_TIME                                    45  //note, this is used only if DATE is not displayed
+#define X_REAL_COMPLEX                    136//       133
+#define X_COMPLEX_MODE                    146//       143
+#define X_COMPLEX_MODE_ADJ                        -8  //note, auto moved left if REAL_COMPLEX is not present
+#define X_ANGULAR_MODE                    160//       157
+#define X_FRAC_MODE                       187//       185
+#define X_INTEGER_MODE                    262//       260
 #define X_OVERFLOW_CARRY                         292
 #define X_ALPHA_MODE                             300
-#define X_HOURGLASS                              311
-#define X_PROGRAM_BEGIN                          324
-#define X_WATCH                                  336
+#define X_SSIZE_BEGIN                            315  //If this needs to be used, the positioning will clash. Needs to be re-balanced
+#define X_HOURGLASS                              315  //311
+#define X_HOURGLASS_GRAPHS                       140
+#define X_WATCH                           335//       336
 #define X_SERIAL_IO                              351
 #define X_PRINTER                                361
 #define X_USER_MODE                              375
