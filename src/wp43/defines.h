@@ -95,6 +95,17 @@
 //#define DM42_KEYCLICK              //Add a 1 ms click after key presses and releases, for scope syncing
 
 
+//Debud showFunctionName
+#define DEBUG_SHOWNAME
+#undef DEBUG_SHOWNAME
+#if defined(DEBUG_SHOWNAME)
+  #define DEBUGSFN true
+#else
+  #define DEBUGSFN false
+#endif
+
+
+
 //Verbose options
 #define VERBOSEKEYS
 #undef VERBOSEKEYS

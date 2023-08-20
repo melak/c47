@@ -51,38 +51,6 @@ void fnSHIFTg(uint16_t unusedButMandatoryParameter) {
 }
 
 
-int16_t determineFunctionKeyItem_C43(const char *data, bool_t shiftF, bool_t shiftG) {
-  int16_t item = ITM_NOP;
-  #if !defined(TESTSUITE_BUILD)
-    int16_t itemShift = (shiftF ? 6 : (shiftG ? 12 : 0));
-    int16_t menuId = softmenuStack[0].softmenuId;
-
-    #if defined(PC_BUILD)
-      int16_t fn = *(data) - '0';
-      char tmp[200];
-      sprintf(tmp,"^^^^determineFunctionKeyItem_C43(%d): itemShift=%d menuId=%d menuItem=%d", fn, itemShift, menuId, -softmenu[menuId].menuItem);
-      jm_show_comment(tmp);
-    #endif // PC_BUILD
-
-    #if defined(VERBOSEKEYS)
-      printf(">>>>Z 0100a determineFunctionKeyItem_C43 data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n", data, data[0], item, itemShift, FN_key_pressed);
-    #endif // VERBOSEKEYS
-
-    if(!(menuId==0 && !jm_BASE_SCREEN) ) {
-      item = determineFunctionKeyItem(data, itemShift);
-
-      #if defined(VERBOSEKEYS)
-        printf(">>>>Z 0100b determineFunctionKeyItem_C43 data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n", data, data[0], item, itemShift, FN_key_pressed);
-      #endif // VERBOSEKEYS
-    }
-    else {
-      item = 0;
-    }
-  #endif // !TESTSUITE_BUILD
-  return item;
-}
-
-
 void keyClick(uint8_t length) {  //Debugging on scope, a pulse after every key edge. !!!!! Destroys the prior volume setting
   #if defined(DMCP_BUILD)
     #if defined(DM42_KEYCLICK)
@@ -456,16 +424,17 @@ void resetKeytimers(void) {
 
 
   //******************* JM LONGPRESS & JM DOUBLE CLICK START *******************************
-  int16_t nameFunction(int16_t fn, int16_t itemShift) { //JM LONGPRESS vv
+  int16_t nameFunction(int16_t fn, bool_t shiftF, bool_t shiftG) { //JM LONGPRESS vv
     int16_t func = 0;
 
     char str[3];
     str[0] = '0' + fn;
+    str[1] = 0;
 
-    func = determineFunctionKeyItem(str, itemShift);
+    func = determineFunctionKeyItem_C47(str, shiftF, shiftG);
 
     #if defined(PC_BUILD)
-      printf(">>> nameFunction fn=%i itemShift=%i: %s %s\n", fn, itemShift, indexOfItems[abs(func)].itemCatalogName, indexOfItems[abs(func)].itemSoftmenuName);
+      printf(">>> nameFunction fn=%i shifts=%u %u: %s %s\n", fn, shiftF, shiftG, indexOfItems[abs(func)].itemCatalogName, indexOfItems[abs(func)].itemSoftmenuName);
     #endif // PC_BUILD
 
     return abs(func);
@@ -632,36 +601,39 @@ void resetKeytimers(void) {
       fnTimerStart(TO_FN_LONG, TO_FN_LONG, JM_TO_FN_LONG);    //dr
       FN_timed_out_to_NOP = false;
 
-      char *varCatalogItem = NULL;
 
       if(!shiftF && !shiftG) {
-        int16_t Dyn = nameFunction(FN_key_pressed-37,0);
-        //printf("dynamicMenuItem=%i\n", dynamicMenuItem);
-        if(dynamicMenuItem > -1) {
+        char *varCatalogItem = "SF:U";
+        int16_t Dyn = nameFunction(FN_key_pressed-37, shiftF, shiftG);
+        //printf("dynamicMenuItem=%i %i\n", dynamicMenuItem, Dyn);
+        if(dynamicMenuItem > -1 && !DEBUGSFN) {
           varCatalogItem = dynmenuGetLabel(dynamicMenuItem);
         }
-        //strcpy(tmpString, varCatalogItem); //tempString system not used to preview argument names
-        showFunctionName(Dyn, 0, varCatalogItem); //"SF:U");
+        showFunctionName(Dyn, 0, varCatalogItem);
         underline_softkey(FN_key_pressed-38, 0, !true /*dontclear at first call*/); //JMUL inverted clearflag
       }
+
+
       else if(shiftF && !shiftG) {
-        int16_t Dyn = nameFunction(FN_key_pressed-37,6);
-        //printf("dynamicMenuItem=%i\n", dynamicMenuItem);
-        if(dynamicMenuItem > -1) {
+        char *varCatalogItem = "SF:V";
+        int16_t Dyn = nameFunction(FN_key_pressed-37, shiftF, shiftG);
+        //printf("dynamicMenuItem=%i %i\n", dynamicMenuItem, Dyn);
+        if(dynamicMenuItem > -1 && !DEBUGSFN) {
           varCatalogItem = dynmenuGetLabel(dynamicMenuItem);
         }
-        //strcpy(tmpString, varCatalogItem);
-        showFunctionName(Dyn, 0, varCatalogItem); //"SF:V");
+        showFunctionName(Dyn, 0,  varCatalogItem);
         underline_softkey(FN_key_pressed-38, 1, !true /*dontclear at first call*/); //JMUL inverted clearflag
       }
+
+
       else if(!shiftF && shiftG) {
-        int16_t Dyn = nameFunction(FN_key_pressed-37,12);
+        char *varCatalogItem = "SF:W";
+        int16_t Dyn = nameFunction(FN_key_pressed-37, shiftF, shiftG);
         //printf("dynamicMenuItem=%i\n", dynamicMenuItem);
-        if(dynamicMenuItem > -1) {
+        if(dynamicMenuItem > -1 && !DEBUGSFN) {
           varCatalogItem = dynmenuGetLabel(dynamicMenuItem);
         }
-        //strcpy(tmpString, varCatalogItem);
-        showFunctionName(Dyn, 0, varCatalogItem); //"SF:W");
+        showFunctionName(Dyn, 0,  varCatalogItem);
         underline_softkey(FN_key_pressed-38, 2, !true /*dontclear at first call*/); //JMUL inverted clearflag
       }                                                                       //further shifts are done within FN_handler
     }

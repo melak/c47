@@ -738,14 +738,15 @@ void execTimerApp(uint16_t timerType) {
 
   void FN_handler_StepToF(uint32_t time) {
     shiftF = true;        //S_shF();                  //   New shift state
+    shiftG = false;
     showShiftState();
     refreshRegisterLine(REGISTER_T); //clearRegisterLine(Y_POSITION_OF_REGISTER_T_LINE - 4, REGISTER_LINE_HEIGHT); //JM FN clear the previous shift function name
-    char *varCatalogItem = "";
-    int16_t Dyn = nameFunction(FN_key_pressed-37, 6);
-    if(dynamicMenuItem > -1) {
+    char *varCatalogItem = "SF:F";
+    int16_t Dyn = nameFunction(FN_key_pressed-37, shiftF, shiftG);
+    if(dynamicMenuItem > -1 && !DEBUGSFN) {
       varCatalogItem = dynmenuGetLabel(dynamicMenuItem);
     }
-    showFunctionName(Dyn,0,varCatalogItem); //"SF:F");
+    showFunctionName(Dyn,0, varCatalogItem);
     FN_timed_out_to_RELEASE_EXEC = true;
     underline_softkey(FN_key_pressed-38, 1, false);
     fnTimerStart(TO_FN_LONG, TO_FN_LONG, time);          //dr
@@ -753,16 +754,16 @@ void execTimerApp(uint16_t timerType) {
 
 
   void FN_handler_StepToG(uint32_t time) {
-    shiftG = true;
     shiftF = false;
+    shiftG = true;
     showShiftState();
     refreshRegisterLine(REGISTER_T); //clearRegisterLine(Y_POSITION_OF_REGISTER_T_LINE - 4, REGISTER_LINE_HEIGHT); //JM FN clear the previous shift function name
-    char *varCatalogItem = "";
-    int16_t Dyn = nameFunction(FN_key_pressed-37,12);
-    if(dynamicMenuItem > -1) {
+    char *varCatalogItem = "SF:G";
+    int16_t Dyn = nameFunction(FN_key_pressed-37, shiftF, shiftG);
+    if(dynamicMenuItem > -1 && !DEBUGSFN) {
       varCatalogItem = dynmenuGetLabel(dynamicMenuItem);
     }
-    showFunctionName(Dyn,0,varCatalogItem); //"SF:G");
+    showFunctionName(Dyn,0, varCatalogItem);
     FN_timed_out_to_RELEASE_EXEC = true;
     underline_softkey(FN_key_pressed-38, 2, false);
     fnTimerStart(TO_FN_LONG, TO_FN_LONG, time);          //dr
@@ -796,7 +797,7 @@ void execTimerApp(uint16_t timerType) {
           }
 
           #if defined(FN_TIME_DEBUG1)
-            printf("Handler 1, KEY=%d =%i\n",FN_key_pressed,nameFunction(FN_key_pressed-37,6));
+            printf("Handler 1, KEY=%d =%i\n",FN_key_pressed,nameFunction(FN_key_pressed-37, shiftF, shiftG));
           #endif // FN_TIME_DEBUG1
         }
         else if(shiftF && !shiftG) {                          //From F State 2
@@ -807,13 +808,13 @@ void execTimerApp(uint16_t timerType) {
             FN_handler_StepToNOP();                           //To NOP State 4
           }
           #if defined(FN_TIME_DEBUG1)
-            printf("Handler 2, KEY=%d =%i\n",FN_key_pressed,nameFunction(FN_key_pressed-37,12));
+            printf("Handler 2, KEY=%d =%i\n",FN_key_pressed,nameFunction(FN_key_pressed-37, shiftF, shiftG));
           #endif // FN_TIME_DEBUG1
         }
         else if((!shiftF && shiftG) || (shiftF && shiftG)) {  //From G: 3 (or illegal state FG)
           FN_handler_StepToNOP();                             //To NOP State 4
           #if defined(FN_TIME_DEBUG1)
-            printf("Handler 3, KEY=%d \n", FN_key_pressed);
+            printf("Handler 3, KEY=%d =%i\n",FN_key_pressed,nameFunction(FN_key_pressed-37, shiftF, shiftG));
           #endif // FN_TIME_DEBUG1
         }
       }
@@ -1745,7 +1746,7 @@ void execTimerApp(uint16_t timerType) {
     int16_t item = (int16_t)itm;
     //printf("---Function par:%4u %4u-- converted %4u--arg:|%s|-=-", itm, (int16_t)itm, item, arg );
     uint32_t fcol, frow, gcol, grow;
-    char functionName[16];
+    char functionName[64];
     char padding[20];                                          //JM
     functionName[0] = 0;
 
@@ -1755,31 +1756,54 @@ void execTimerApp(uint16_t timerType) {
     //}
     //else
 
-    if(item == ITM_XEQ) {
-      stringAppend(functionName,arg);
-      if(functionName[0]==0) {
+    #if defined(DEBUG_SHOWNAME)
+      if(item < LAST_ITEM && (item == ITM_XEQ || item != ITM_RCL)) {
+        stringAppend(functionName + stringByteLength(functionName), indexOfItems[abs(item)].itemCatalogName);
+        stringAppend(functionName + stringByteLength(functionName), ":");
+      }
+      if(item < LAST_ITEM && (item == ITM_RCL || item != ITM_XEQ)) {
+        stringAppend(functionName + stringByteLength(functionName), indexOfItems[abs(item)].itemSoftmenuName);
+        stringAppend(functionName + stringByteLength(functionName), ":");
+      }
+      if(arg != NULL) {
+        stringAppend(functionName + stringByteLength(functionName), arg);
+        stringAppend(functionName + stringByteLength(functionName), ":");
+      }
+      if(item >= ITM_X_P1 && item <= ITM_X_g6) {
+        stringAppend(functionName, indexOfItemsXEQM + 8*(item-fnXEQMENUpos));
+        stringAppend(functionName + stringByteLength(functionName), ":");
+      }
+      if(dynamicMenuItem > -1) {
+        stringAppend(functionName + stringByteLength(functionName),dynmenuGetLabel(dynamicMenuItem));
+      }
+
+    #else //DEBUG_SHOWNAME
+      if(item == ITM_XEQ) {
+        if(arg != NULL) stringAppend(functionName,arg);
+        if(functionName[0]==0) {
+          stringAppend(functionName,indexOfItems[abs(item)].itemCatalogName);
+        }
+      }
+      else if(item == ITM_RCL) {
+        if(arg != NULL) stringAppend(functionName,arg);
+        if(functionName[0]==0) {
+          stringAppend(functionName,indexOfItems[abs(item)].itemCatalogName);
+        }
+      }
+      else if(item >= ITM_X_P1 && item <= ITM_X_g6) {
+        stringAppend(functionName, indexOfItemsXEQM + 8*(item-fnXEQMENUpos));
+      }
+      else if(item >= CST_01 && item <= CST_79) {
+        stringAppend(functionName,indexOfItems[abs(item)].itemSoftmenuName);
+      }
+      else if(item < LAST_ITEM && item != MNU_DYNAMIC) {
         stringAppend(functionName,indexOfItems[abs(item)].itemCatalogName);
       }
-    }
-    else if(item == ITM_RCL) {
-      stringAppend(functionName,arg);
-      if(functionName[0]==0) {
-        stringAppend(functionName,indexOfItems[abs(item)].itemCatalogName);
+      else {
+        if(dynamicMenuItem > -1) stringAppend(functionName,dynmenuGetLabel(dynamicMenuItem));
       }
-    }
-    else if(item >= ITM_X_P1 && item <= ITM_X_g6) {
-      stringAppend(functionName, indexOfItemsXEQM + 8*(item-fnXEQMENUpos));
-    }
-    else if(item >= CST_01 && item <= CST_79) {
-      stringAppend(functionName,indexOfItems[abs(item)].itemSoftmenuName);
-    }
-    else if(item != MNU_DYNAMIC) {
-      stringAppend(functionName,indexOfItems[abs(item)].itemCatalogName);
-    }
-    else {
-      stringAppend(functionName,dynmenuGetLabel(dynamicMenuItem));
-    }
-    //printf("---|%s|---\n", functionName);
+    #endif //DEBUG_SHOWNAME
+      //printf("---|%s|---\n", functionName);
 
     showFunctionNameItem = item;
     if(running_program_jm) {
