@@ -191,6 +191,26 @@ bool_t   cancelFilename = false;
   //###################################################################################
 
 
+    typedef struct {              //JM VALUES DEMO
+      uint8_t  count;
+      char     *itemName;
+    } nstr;
+
+    TO_QSPI const nstr IOMsgs[] = {
+      { 0,  "" },
+      { 1,  "Write error ID001--> " },
+      { 2,  "File open error ID002--> " },
+      { 3,  "Seek error ID003--> " },
+      { 4,  "Write error ID004--> " },
+      { 5,  "Close error ID005--> " },
+      { 6,  "Not found ID006 --> " },
+      { 7,  "No path ID007 --> " },
+      { 8,  ". Using fallback." },
+      { 9,  "ERROR too long file using fallback" },
+      {100,"Msg List"}
+    };
+
+
   int16_t export_append_string_to_file(const char line1[TMP_STR_LENGTH], uint8_t mode, const char filedir[40]) {
     char line[200]; // Line buffer
     FIL fil;        // File object
@@ -201,7 +221,7 @@ bool_t   cancelFilename = false;
     sys_disk_write_enable(1);
     fr = sys_is_disk_write_enable();
     if(fr==0) {
-      sprintf(line,"Write error ID001--> %d    \n",fr);
+      sprintf(line,"%s%d    \n",IOMsgs[1].itemName, fr);
       print_linestr(line,true);
       f_close(&fil);
       sys_disk_write_enable(0);
@@ -216,7 +236,7 @@ bool_t   cancelFilename = false;
       fr = f_open(&fil, filedir, FA_WRITE | FA_CREATE_ALWAYS);
     }
     if(fr) {
-      sprintf(line,"File open error ID002--> %d    \n", fr);
+      sprintf(line,"%s%d    \n",IOMsgs[2].itemName,  fr);
       print_linestr(line,false);
       f_close(&fil);
       sys_disk_write_enable(0);
@@ -227,7 +247,7 @@ bool_t   cancelFilename = false;
     if(mode == APPEND) {
       fr = f_lseek(&fil, f_size(&fil));
       if(fr) {
-        sprintf(line,"Seek error ID003--> %d    \n", fr);
+        sprintf(line,"%s%d    \n",IOMsgs[3].itemName, fr);
         print_linestr(line,false);
         f_close(&fil);
         sys_disk_write_enable(0);
@@ -238,7 +258,7 @@ bool_t   cancelFilename = false;
     // Create string and output
     fr = f_puts(line1, &fil);
     if(fr == EOF) {
-      sprintf(line,"Write error ID004--> %d    \n", fr);
+      sprintf(line,"%s%d    \n",IOMsgs[4].itemName, fr);
       print_linestr(line,false);
       f_close(&fil);
       sys_disk_write_enable(0);
@@ -248,7 +268,7 @@ bool_t   cancelFilename = false;
     // close the file
     fr = f_close(&fil);
     if(fr) {
-      sprintf(line,"Close error ID005--> %d    \n", fr);
+      sprintf(line,"%s%d    \n",IOMsgs[4].itemName,  fr);
       print_linestr(line,false);
       f_close(&fil);
       sys_disk_write_enable(0);
@@ -273,7 +293,8 @@ bool_t   cancelFilename = false;
         sys_disk_write_enable(1);
         fr = sys_is_disk_write_enable();
         if(fr == 0) {
-          sprintf(line,"Write error ID001--> %d    \n",fr);    print_linestr(line,true);
+          sprintf(line,"%s%d    \n",IOMsgs[1].itemName,  fr);
+          print_linestr(line,true);
           f_close(&fil);
           sys_disk_write_enable(0);
           return (int)fr;
@@ -286,7 +307,8 @@ bool_t   cancelFilename = false;
           fr = f_open(&fil, filedir, FA_WRITE|FA_CREATE_ALWAYS);
         }
         if(fr) {
-          sprintf(line,"File open error ID002--> %d    \n",fr);       print_linestr(line,false);
+          sprintf(line,"%s%d    \n",IOMsgs[2].itemName,  fr);
+          print_linestr(line,false);
           f_close(&fil);
           sys_disk_write_enable(0);
           return (int)fr;
@@ -295,7 +317,7 @@ bool_t   cancelFilename = false;
         if(mode == APPEND) {
           fr = f_lseek(&fil, f_size(&fil));
           if(fr) {
-            sprintf(line,"Seek error ID003--> %d    \n",fr);            print_linestr(line,false);
+            sprintf(line,"%s%d    \n",IOMsgs[3].itemName,  fr);            print_linestr(line,false);
             f_close(&fil);
             sys_disk_write_enable(0);
             return (int)fr;
@@ -307,7 +329,7 @@ bool_t   cancelFilename = false;
         /* Create string and output */
         fr = f_puts(line1, &fil);
         if(fr == EOF) {
-          sprintf(line,"Write error ID004--> %d    \n",fr);            print_linestr(line,false);
+          sprintf(line,"%s%d    \n",IOMsgs[4].itemName,  fr);            print_linestr(line,false);
           f_close(&fil);
           sys_disk_write_enable(0);
           return (int)fr;
@@ -318,7 +340,7 @@ bool_t   cancelFilename = false;
         /* close the file */
         fr = f_close(&fil);
         if(fr) {
-          sprintf(line,"Close error ID005--> %d    \n",fr);     print_linestr(line,false);
+          sprintf(line,"%s%d    \n",IOMsgs[5].itemName,  fr);     print_linestr(line,false);
           f_close(&fil);
           sys_disk_write_enable(0);
           return (int)fr;
@@ -448,19 +470,19 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
         print_inlinestr("Not open. ",false);
         #if(VERBOSE_LEVEL >= 2)
           if(fr == 4) {
-            sprintf(line,"Not found ID006 --> %d ", fr);
+            sprintf(line,"%s%d ",IOMsgs[6].itemName,   fr);
             print_inlinestr(line, false);
             sprintf(line,"File: %s \n", dirfile);
             print_inlinestr(line, false);
           }
           else if(fr == 5) {
-            sprintf(line,"No path ID007 --> %d ", fr);
+            sprintf(line,"%s%d ",IOMsgs[7].itemName,   fr);
             print_inlinestr(line, false);
             sprintf(line,"File: %s \n", dirfile);
             print_inlinestr(line, false);
           }
           else {
-            sprintf(line,"File open error --> %d ", fr);
+            sprintf(line,"%s%d ",IOMsgs[2].itemName,   fr);
             print_inlinestr(line, false);
             sprintf(line,"File: %s \n", dirfile);
             print_inlinestr(line, false);
@@ -489,19 +511,19 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
             print_inlinestr("Not open. ",false);
             #if(VERBOSE_LEVEL >= 2)
               if(fr == 4) {
-                sprintf(line,"Not found ID007 --> %d ", fr);
+                sprintf(line,"%s%d ",IOMsgs[7].itemName,  fr);
                 print_inlinestr(line, false);
                 sprintf(line,"File: %s \n",dirfile);
                 print_inlinestr(line, false);
               }
               else {
-                sprintf(line,"File open error --> %d ", fr);
+                sprintf(line,"%s%d ",IOMsgs[2].itemName,   fr);
                 print_inlinestr(line, false);
               }
             #endif // VERBOSE_LEVEL >= 2
           #endif // VERBOSE_LEVEL >= 1
           #if(VERBOSE_LEVEL >= 1)
-            print_inlinestr(". Using fallback.", true);
+            print_inlinestr("%s",IOMsgs[8].itemName,   true);
           #endif // VERBOSE_LEVEL >= 1
           f_close(&fil);
           strcpy(line1, fallback);
@@ -510,7 +532,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
       }
       else {
         #if(VERBOSE_LEVEL >= 1)
-          print_inlinestr("Using fallback.", true);
+          print_inlinestr("%s",IOMsgs[8].itemName,   true);
         #endif
         strcpy(line1, fallback);
         return 1;
@@ -534,7 +556,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
     if(stringByteLength(line1) >= TMP_STR_LENGTH-1) {
       strcpy(line1, fallback);
       #if(VERBOSE_LEVEL >= 1)
-        print_inlinestr("ERROR too long file using fallback",true);
+        print_inlinestr("%s",IOMsgs[9].itemName, true);
       #endif
       return 1;
     }
@@ -579,7 +601,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
     sys_disk_write_enable(1);
     fr = sys_is_disk_write_enable();
     if(fr==0) {
-      sprintf(line,"Write error--> %d    \n", fr);
+      sprintf(line,"%s%d    \n",IOMsgs[4].itemName,  fr);
       print_linestr(line, false);
       f_close(&fil);
       sys_disk_write_enable(0);
@@ -590,7 +612,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
     // Opens an existing file. If not exist, creates a new file.
     fr = f_open(&fil, filename_csv, FA_OPEN_APPEND | FA_WRITE);
     if(fr) {
-      sprintf(line,"File open error--> %d    \n", fr);
+      sprintf(line,"%s%d    \n",IOMsgs[2].itemName,  fr);
       print_linestr(line, false);
       f_close(&fil);
       sys_disk_write_enable(0);
@@ -615,7 +637,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
     #endif // VERBOSE_LEVEL >= 1
 
     if(fr == 0) {
-      sprintf(line,"Write error--> %d    \n", fr);
+      sprintf(line,"%s%d    \n",IOMsgs[4].itemName,  fr);
       print_linestr(line, false);
       f_close(&fil);
       sys_disk_write_enable(0);
@@ -625,7 +647,7 @@ int16_t import_string_from_filename(char *line1,  char *dirname,  char *filename
     // close the file
     fr = f_close(&fil);
     if(fr) {
-      sprintf(line,"File close error--> %d    \n", fr);
+      sprintf(line,"%s%d    \n",IOMsgs[5].itemName,  fr);
       print_linestr(line, false);
       f_close(&fil);
       sys_disk_write_enable(0);
