@@ -561,63 +561,33 @@ TO_QSPI const int16_t menu_TamLblAlpha[] = { ITM_INDIRECTION,               -MNU
 
 
 TO_QSPI const int16_t menu_Eim[]         = { 
+                                             ITM_LEFT_PARENTHESIS,      ITM_RIGHT_PARENTHESIS,     CHR_num,                   CHR_case,                  ITM_EQ_LEFT,               ITM_EQ_RIGHT,              
+                                             ITM_ALOG_SYMBOL,           ITM_LN_SIGN,               ITM_CIRCUMFLEX,            ITM_ROOT_SIGN,             ITM_EQUAL,                 ITM_COLON,                 
+                                             ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  
 
-                                             ITM_LEFT_PARENTHESIS,     ITM_RIGHT_PARENTHESIS,    CHR_num,                  CHR_case,                 ITM_EQ_LEFT,              ITM_EQ_RIGHT,             
-                                             ITM_ALOG_SYMBOL,          ITM_LN_SIGN,              ITM_CIRCUMFLEX,           ITM_ROOT_SIGN,            ITM_EQUAL,                ITM_COLON,                
-                                             ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 
-                                             
-                                             ITM_sin,                  ITM_cos,                  ITM_tan,                  ITM_pi,                   ITM_EQ_LEFT,              ITM_EQ_RIGHT,             
-                                             ITM_arcsin,               ITM_arccos,               ITM_arctan,               ITM_op_j_SIGN,            ITM_atan2,                ITM_XSWAP,                
-                                             ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 
-                                             
-                                             ITM_VERTICAL_BAR,         ITM_ARG,                  ITM_RE,                   ITM_IM,                   ITM_EQ_LEFT,              ITM_EQ_RIGHT,             
-                                             ITM_FLOOR,                ITM_CEIL,                 ITM_MAX,                  ITM_MIN,                  ITM_NULL,                 ITM_XSWAP,                
-                                             ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 
-                                             
-                                             ITM_LOGXY,                ITM_LOG10,                ITM_LOG2,                 ITM_poly_SIGN,            ITM_EQ_LEFT,              ITM_EQ_RIGHT,             
-                                             ITM_FIB,                  ITM_COMB,                 ITM_PERM,                 ITM_EXCLAMATION_MARK,     ITM_sinc,                 ITM_sincpi,               
-                                             ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 
-                                             
-                                             ITM_sinh,                 ITM_cosh,                 ITM_tanh,                 ITM_IDIV,                 ITM_EQ_LEFT,              ITM_EQ_RIGHT,             
-                                             ITM_arsinh,               ITM_arcosh,               ITM_artanh,               ITM_MOD,                  ITM_RMD,                  ITM_XSWAP,                
-                                             ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 
-                                             
-                                             ITM_GAMMAX,               ITM_HN,                   ITM_Lm,                   ITM_Pn,                   ITM_EQ_LEFT,              ITM_EQ_RIGHT,             
-                                             ITM_LNGAMMA,              ITM_HNP,                  ITM_Un,                   ITM_Tn,                   ITM_NULL,                 ITM_XSWAP,                
-                                             ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 
-                                             
-                                             ITM_BN,                   ITM_ERF,                  ITM_WM,                   ITM_zetaX,                ITM_EQ_LEFT,              ITM_EQ_RIGHT,             
-                                             ITM_BNS,                  ITM_ERFC,                 ITM_WM1,                  -MNU_CONST,               -MNU_CHARS,               ITM_XSWAP,                
-                                             ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 
+                                             ITM_sin,                   ITM_cos,                   ITM_tan,                   ITM_pi,                    ITM_EQ_LEFT,               ITM_EQ_RIGHT,              
+                                             ITM_arcsin,                ITM_arccos,                ITM_arctan,                ITM_op_j_SIGN,             ITM_atan2,                 ITM_XSWAP,                 
+                                             ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  
 
-//
-//                                            ITM_EQ_LEFT,              ITM_LEFT_PARENTHESIS,     ITM_RIGHT_PARENTHESIS,    CHR_num,                  CHR_case,                 ITM_EQ_RIGHT,             
-//                                            ITM_ALOG_SYMBOL,          ITM_LN_SIGN,              ITM_CIRCUMFLEX,           ITM_ROOT_SIGN,            ITM_EQUAL,                ITM_COLON,                
-//                                            ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 
-//                                            
-//                                            ITM_EQ_LEFT,              ITM_pi,                   ITM_sin,                  ITM_cos,                  ITM_tan,                  ITM_EQ_RIGHT,             
-//                                            ITM_LOG10,                ITM_op_j_SIGN,            ITM_arcsin,               ITM_arccos,               ITM_arctan,               ITM_atan2,                
-//                                            ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 
-//                                            
-//                                            ITM_EQ_LEFT,              ITM_VERTICAL_BAR,         ITM_ARG,                  ITM_RE,                   ITM_IM,                   ITM_EQ_RIGHT,             
-//                                            ITM_NULL,                 ITM_FLOOR,                ITM_CEIL,                 ITM_MAX,                  ITM_MIN,                  ITM_NULL,                 
-//                                            ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 
-//                                            
-//                                            ITM_EQ_LEFT,              ITM_LOGXY,                ITM_LOG10,                ITM_LOG2,                 ITM_poly_SIGN,            ITM_EQ_RIGHT,             
-//                                            ITM_FIB,                  ITM_COMB,                 ITM_PERM,                 ITM_EXCLAMATION_MARK,     ITM_sinc,                 ITM_sincpi,               
-//                                            ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 
-//                                            
-//                                            ITM_EQ_LEFT,              ITM_IDIV,                 ITM_sinh,                 ITM_cosh,                 ITM_tanh,                 ITM_EQ_RIGHT,             
-//                                            ITM_MOD,                  ITM_RMD,                  ITM_arsinh,               ITM_arcosh,               ITM_artanh,               ITM_NULL,                 
-//                                            ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 
-//                                            
-//                                            ITM_EQ_LEFT,              ITM_HN,                   ITM_Lm,                   ITM_GAMMAX,               ITM_Pn,                   ITM_EQ_RIGHT,             
-//                                            ITM_NULL,                 ITM_HNP,                  ITM_NULL,                 ITM_LNGAMMA,              ITM_Tn,                   ITM_Un,                   
-//                                            ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 
-//                                            
-//                                            ITM_EQ_LEFT,              ITM_BN,                   ITM_ERF,                  ITM_WM,                   ITM_WM1,                  ITM_EQ_RIGHT,             
-//                                            ITM_zetaX,                ITM_BNS,                  ITM_ERFC,                -MNU_CONST,               -MNU_CHARS,                ITM_XSWAP,                
-//                                            ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 
+                                             ITM_VERTICAL_BAR,          ITM_ARG,                   ITM_RE,                    ITM_IM,                    ITM_EQ_LEFT,               ITM_EQ_RIGHT,              
+                                             ITM_FLOOR,                 ITM_CEIL,                  ITM_MAX,                   ITM_MIN,                   -MNU_CONST,                ITM_XSWAP,                 
+                                             ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  
+
+                                             ITM_LOGXY,                 ITM_LOG10,                 ITM_LOG2,                  ITM_poly_SIGN,             ITM_EQ_LEFT,               ITM_EQ_RIGHT,              
+                                             ITM_FIB,                   ITM_COMB,                  ITM_PERM,                  ITM_EXCLAMATION_MARK,      ITM_sinc,                  ITM_sincpi,                
+                                             ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  
+
+                                             ITM_sinh,                  ITM_cosh,                  ITM_tanh,                  ITM_IDIV,                  ITM_EQ_LEFT,               ITM_EQ_RIGHT,              
+                                             ITM_arsinh,                ITM_arcosh,                ITM_artanh,                ITM_MOD,                   ITM_RMD,                   ITM_XSWAP,                 
+                                             ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  
+
+                                             ITM_GAMMAX,                ITM_HN,                    ITM_Lm,                    ITM_Pn,                    ITM_EQ_LEFT,               ITM_EQ_RIGHT,              
+                                             ITM_LNGAMMA,               ITM_HNP,                   ITM_Un,                    ITM_Tn,                    ITM_NULL,                  ITM_XSWAP,                 
+                                             ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  
+
+                                             ITM_BN,                    ITM_ERF,                   ITM_WP,                    ITM_zetaX,                 ITM_EQ_LEFT,               ITM_EQ_RIGHT,              
+                                             ITM_BNS,                   ITM_ERFC,                  ITM_WM1,                   ITM_WM,                    -MNU_CHARS,                ITM_XSWAP,                 
+                                             ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL                  
 };
 
 
