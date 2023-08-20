@@ -56,7 +56,7 @@ void     execFnTimeout       (uint16_t key                    );                
 void     shiftCutoff         (uint16_t unusedButMandatoryParameter);     //dr - press shift three times within one second to call HOME timer
 void     Check_MultiPresses  (int16_t  * result, int8_t key_no);
 void     Setup_MultiPresses  (int16_t  result                 );
-int16_t  nameFunction        (int16_t  fn, int16_t itemShift  );   //JM LONGPRESS FN
+int16_t  nameFunction        (int16_t fn, bool_t shiftF, bool_t shiftG);   //JM LONGPRESS FN
 void     resetKeytimers      (void);
 #endif // !TESTSUITE_BUILD
 
@@ -68,9 +68,6 @@ void     btnFnPressed_StateMachine (GtkWidget *unused, gpointer data);
 void     btnFnReleased_StateMachine(GtkWidget *unused, gpointer data);
 #endif // PC_BUILD
 
-#if !defined(TESTSUITE_BUILD)
-  int16_t determineFunctionKeyItem_C43(const char *data, bool_t ShiftF, bool_t ShiftG);
-#endif // !TESTSUITE_BUILD
 
 #if defined(DMCP_BUILD)
 #define BUFFER_FAIL     0                                   //vv dr - internal keyBuffer POC
