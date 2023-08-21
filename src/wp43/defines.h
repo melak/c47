@@ -26,7 +26,7 @@
 
 #define VERSION1 "0.109.00.00S"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
-//2023-08-19-0.108.12.00-RC4-Snapshot
+//2023-08-19-0.108.12.00-RC5-Snapshot
 
   #undef SAVE_SPACE_DM42
   #undef SAVE_SPACE_DM42_0
@@ -1360,8 +1360,25 @@ typedef enum {
 #define GROUPRIGHT_DISABLED                  (GROUPWIDTH_RIGHT == 0 || gapItemRight == 0)
 #define SEPARATOR_LEFT                       (gapChar1Left)
 #define SEPARATOR_RIGHT                      (gapChar1Right)
-#define checkHP                              (significantDigits <= 16 && displayStack == 1 && exponentLimit == 99 && Input_Default == ID_DP)
-#define DOUBLING                             6u  // 8=is double; 7 is 1.75*; 6=1.5*; 5=1.25*
+
+#define checkHP                              (significantDigits <= 16 && displayStack == 1 && exponentLimit == 99 && Input_Default == ID_DP && (calcMode == CM_NORMAL || calcMode == CM_NIM))
+#define REPLACEFONT
+#ifdef REPLACEFONT
+  #define DOUBLING                             15u  //factor 2 more!// 8=is double; 7 is 1.75*; 6=1.5*; 5=1.25* (4 is the per unit norm horizontal factor)
+  #define DOUBLINGBASEX                        8u    
+  #define REDUCT_A                             4   // Reduction vertical ratio A/B
+  #define REDUCT_B                             4
+  #define REDUCT_OFF                           0   // Reduction vertical offset
+  #define HPFONT                               true
+#else
+  #define DOUBLING                            14u  // 7u  factor 2 more!// 8=is double; 7 is 1.75*; 6=1.5*; 5=1.25* (4 is the per unit norm horizontal factor)
+  #define DOUBLINGBASEX                        8u  // 4u     
+  #define REDUCT_A                             3   // Reduction ratio A/B
+  #define REDUCT_B                             4
+  #define REDUCT_OFF                           3   // Reduction offset
+  #define HPFONT                               false
+#endif
+
 #define GROUPWIDTH_LEFT                      (grpGroupingLeft)
 #define GROUPWIDTH_LEFT1                     ((grpGroupingGr1Left        == 0 ? (uint16_t)grpGroupingLeft : (uint16_t)grpGroupingGr1Left))
 #define GROUPWIDTH_LEFT1X                    (grpGroupingGr1LeftOverflow)

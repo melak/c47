@@ -26,7 +26,7 @@
 
 TO_QSPI const font_t numericFont = {
   .id             = 0,
-  .numberOfGlyphs = 316,
+  .numberOfGlyphs = 329,
   .glyphs = {
 
     // uni001D
@@ -685,6 +685,10 @@ TO_QSPI const font_t numericFont = {
     {.charCode=0xa019, .colsBeforeGlyph= 2, .colsGlyph= 4, .colsAfterGlyph= 2, .rowsAboveGlyph= 0, .rowsGlyph=10, .rowsBelowGlyph=22, .rank1=  0, .rank2=  0,
      .data="\xe0\xf0\xf0\xf0\x70\x70\x70\xf0\xe0\xc0"},
 
+    // onedotenleader
+    {.charCode=0xa024, .colsBeforeGlyph= 3, .colsGlyph= 3, .colsAfterGlyph= 7, .rowsAboveGlyph=21, .rowsGlyph= 4, .rowsBelowGlyph= 7, .rank1=  0, .rank2=  0,
+     .data="\xe0\xe0\xe0\xe0"},
+
     // uni2072
     {.charCode=0xa072, .colsBeforeGlyph= 0, .colsGlyph=16, .colsAfterGlyph= 0, .rowsAboveGlyph= 0, .rowsGlyph=19, .rowsBelowGlyph=13, .rank1=  0, .rank2=  0,
      .data="\x00\x03\x00\x07\x00\x0f\x00\x1f\x00\x1f\x00\x17\x00\x07\x00\x07\xff\xc7\xff\xc7\xff\xc7\x00\x07\x00\x07\x00\x07\x00\x07\x00\x07\x00\x07\x00\x07\x00\x07"},
@@ -1280,6 +1284,54 @@ TO_QSPI const font_t numericFont = {
     // uni24E9
     {.charCode=0xa4e9, .colsBeforeGlyph= 0, .colsGlyph= 7, .colsAfterGlyph= 1, .rowsAboveGlyph=19, .rowsGlyph=12, .rowsBelowGlyph= 1, .rank1=  0, .rank2=  0,
      .data="\xfe\xfe\x0c\x1c\x18\x38\x30\x70\x60\xe0\xfe\xfe"},
+
+    // uni24EA
+    {.charCode=0xa4ea, .colsBeforeGlyph= 0, .colsGlyph= 8, .colsAfterGlyph= 5, .rowsAboveGlyph=13, .rowsGlyph=14, .rowsBelowGlyph= 5, .rank1=  0, .rank2=  0,
+     .data="\xff\xff\xc3\xc3\xc3\xc3\xc3\xc3\xc3\xc3\xc3\xc3\xff\xff"},
+
+    // uni24F5
+    {.charCode=0xa4f5, .colsBeforeGlyph= 6, .colsGlyph= 2, .colsAfterGlyph= 5, .rowsAboveGlyph=13, .rowsGlyph=14, .rowsBelowGlyph= 5, .rank1=  0, .rank2=  0,
+     .data="\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0"},
+
+    // uni24F6
+    {.charCode=0xa4f6, .colsBeforeGlyph= 0, .colsGlyph= 8, .colsAfterGlyph= 5, .rowsAboveGlyph=13, .rowsGlyph=14, .rowsBelowGlyph= 5, .rank1=  0, .rank2=  0,
+     .data="\xff\xff\x03\x03\x03\x03\xff\xff\xc0\xc0\xc0\xc0\xff\xff"},
+
+    // uni24F7
+    {.charCode=0xa4f7, .colsBeforeGlyph= 0, .colsGlyph= 8, .colsAfterGlyph= 5, .rowsAboveGlyph=13, .rowsGlyph=14, .rowsBelowGlyph= 5, .rank1=  0, .rank2=  0,
+     .data="\xff\xff\x03\x03\x03\x03\xff\xff\x03\x03\x03\x03\xff\xff"},
+
+    // uni24F8
+    {.charCode=0xa4f8, .colsBeforeGlyph= 0, .colsGlyph= 8, .colsAfterGlyph= 5, .rowsAboveGlyph=13, .rowsGlyph=14, .rowsBelowGlyph= 5, .rank1=  0, .rank2=  0,
+     .data="\xc3\xc3\xc3\xc3\xc3\xc3\xff\xff\x03\x03\x03\x03\x03\x03"},
+
+    // uni24F9
+    {.charCode=0xa4f9, .colsBeforeGlyph= 0, .colsGlyph= 8, .colsAfterGlyph= 5, .rowsAboveGlyph=13, .rowsGlyph=14, .rowsBelowGlyph= 5, .rank1=  0, .rank2=  0,
+     .data="\xff\xff\xc0\xc0\xc0\xc0\xff\xff\x03\x03\x03\x03\xff\xff"},
+
+    // uni24FA
+    {.charCode=0xa4fa, .colsBeforeGlyph= 0, .colsGlyph= 8, .colsAfterGlyph= 5, .rowsAboveGlyph=13, .rowsGlyph=14, .rowsBelowGlyph= 5, .rank1=  0, .rank2=  0,
+     .data="\xff\xff\xc0\xc0\xc0\xc0\xff\xff\xc3\xc3\xc3\xc3\xff\xff"},
+
+    // uni24FB
+    {.charCode=0xa4fb, .colsBeforeGlyph= 0, .colsGlyph= 8, .colsAfterGlyph= 5, .rowsAboveGlyph=13, .rowsGlyph=14, .rowsBelowGlyph= 5, .rank1=  0, .rank2=  0,
+     .data="\xff\xff\x03\x03\x03\x03\x03\x03\x03\x03\x03\x03\x03\x03"},
+
+    // uni24FC
+    {.charCode=0xa4fc, .colsBeforeGlyph= 0, .colsGlyph= 8, .colsAfterGlyph= 5, .rowsAboveGlyph=13, .rowsGlyph=14, .rowsBelowGlyph= 5, .rank1=  0, .rank2=  0,
+     .data="\xff\xff\xc3\xc3\xc3\xc3\xff\xff\xc3\xc3\xc3\xc3\xff\xff"},
+
+    // uni24FD
+    {.charCode=0xa4fd, .colsBeforeGlyph= 0, .colsGlyph= 8, .colsAfterGlyph= 5, .rowsAboveGlyph=13, .rowsGlyph=14, .rowsBelowGlyph= 5, .rank1=  0, .rank2=  0,
+     .data="\xff\xff\xc3\xc3\xc3\xc3\xff\xff\x03\x03\x03\x03\xff\xff"},
+
+    // uni24FE
+    {.charCode=0xa4fe, .colsBeforeGlyph= 0, .colsGlyph= 8, .colsAfterGlyph= 5, .rowsAboveGlyph=19, .rowsGlyph= 2, .rowsBelowGlyph=11, .rank1=  0, .rank2=  0,
+     .data="\xff\xff"},
+
+    // uni24FF
+    {.charCode=0xa4ff, .colsBeforeGlyph= 0, .colsGlyph= 8, .colsAfterGlyph= 5, .rowsAboveGlyph=16, .rowsGlyph= 8, .rowsBelowGlyph= 8, .rank1=  0, .rank2=  0,
+     .data="\x18\x18\x18\xff\xff\x18\x18\x18"},
 
     // uni267A
     {.charCode=0xa67a, .colsBeforeGlyph= 0, .colsGlyph=14, .colsAfterGlyph= 0, .rowsAboveGlyph= 4, .rowsGlyph=28, .rowsBelowGlyph= 0, .rank1=  0, .rank2=  0,
