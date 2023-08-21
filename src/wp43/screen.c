@@ -59,9 +59,6 @@
 
 #include "wp43.h"
 
-#if !defined(TESTSUITE_BUILD)
-  static uint16_t charCodeFromString(const char *ch, uint16_t *offset);
-#endif // !TESTSUITE_BUILD
 
 //#define DEBUGCLEARS
 
@@ -1003,6 +1000,12 @@ void execTimerApp(uint16_t timerType) {
       }                                                       //JM ENLARGE ^^
     }
 
+    #if !defined(GENERATE_CATALOGS)
+      if(checkHP && font == &numericFont && HPFONT) {
+        charCodeHPReplacement(&charCode);
+      }
+    #endif //GENERATE_CATALOGS
+
     glyphId = findGlyph(font, charCode);
     if(glyphId >= 0) {
       glyph = (font->glyphs) + glyphId;
@@ -1030,16 +1033,13 @@ void execTimerApp(uint16_t timerType) {
     xGlyph      = showLeadingCols ? glyph->colsBeforeGlyph : 0;
     endingCols  = showEndingCols ? glyph->colsAfterGlyph : 0;
 
-    #define REDUCT_A 3
-    #define REDUCT_B 4
-    #define REDUCT_OFF 3
     bool_t numDouble = font == &numericFont && checkHP && temporaryInformation == TI_NO_INFO; //&& charCodeFromString(STD_MODE_G, 0)!=charCode && charCodeFromString(STD_MODE_G, 0)!=charCode; //this also triggers the vertical doubling
-    uint8_t doubling = numDouble ? DOUBLING : 4u;      //this is the horizontal factor
+    uint16_t doubling = numDouble ? DOUBLING : DOUBLINGBASEX;      //this is the horizontal factor, 8 is normal, so 16 is double
 
     // Clearing the space needed by the glyph
     bool_t rep_enlarge = numDouble || (enlarge && combinationFonts != 0);                //JM ENLARGE
     if(!noShow) {
-      lcd_fill_rect(x, y, (uint32_t)(doubling * ((xGlyph + glyph->colsGlyph + endingCols) >> miniC)) >> 2, (rep_enlarge ? 2 : 1) * (((glyph->rowsAboveGlyph + glyph->rowsGlyph + glyph->rowsBelowGlyph) >> miniC) - (rep_enlarge ? 4 : 0)), (videoMode == vmNormal ? LCD_SET_VALUE : LCD_EMPTY_VALUE));  //JMmini
+      lcd_fill_rect(x, y, (uint32_t)(doubling * ((xGlyph + glyph->colsGlyph + endingCols) >> miniC)) >> 3, (rep_enlarge ? 2 : 1) * (((glyph->rowsAboveGlyph + glyph->rowsGlyph + glyph->rowsBelowGlyph) >> miniC) - (rep_enlarge ? 4 : 0)), (videoMode == vmNormal ? LCD_SET_VALUE : LCD_EMPTY_VALUE));  //JMmini
     }
     if(displaymode == numHalf) {
       y += (uint32_t)(glyph->rowsAboveGlyph*REDUCT_A/REDUCT_B*(rep_enlarge ? 2 : 1));
@@ -1067,7 +1067,7 @@ void execTimerApp(uint16_t timerType) {
         }
 
         if(byte & 0x80 && !noShow) { // MSB set
-          uint32_t x1 = x+((((doubling * (xGlyph+col)) >> miniC)) >> 2);
+          uint32_t x1 = x+((((doubling * (xGlyph+col)) >> miniC)) >> 3);
           uint32_t x2 = x1;
           uint32_t y1 = y0+((y-y0) >> miniC);
           uint32_t y2 = y1;
@@ -1113,28 +1113,7 @@ void execTimerApp(uint16_t timerType) {
         y++; //JM ENLARGE vv do not advance the row counter for four rows, to match the row height of the enlarge font
       }
     }
-    return x + (((doubling * (xGlyph + glyph->colsGlyph + endingCols)) >> miniC) >> 2);        //JMmini
-  }
-
-
-  /* Returns the character code from the first glyph of a string.
-   *
-   * \param[in]     ch     String whose first glyph is to extract
-   * \param[in,out] offset Offset which is updated, or null if zero and no update
-   * \return Character code for that glyph
-   */
-  static uint16_t charCodeFromString(const char *ch, uint16_t *offset) {
-    uint16_t charCode;
-    uint16_t loffset = (offset != 0) ? *offset : 0;
-
-    charCode = (uint8_t)ch[loffset++];
-    if(charCode &0x0080) {
-      charCode = (charCode << 8) | (uint8_t)ch[loffset++];
-    }
-    if(offset != 0) {
-      *offset = loffset;
-    }
-    return charCode;
+    return x + (((doubling * (xGlyph + glyph->colsGlyph + endingCols)) >> miniC) >> 3);        //JMmini
   }
 
 

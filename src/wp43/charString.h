@@ -76,6 +76,8 @@ int32_t  stringGlyphLength(const char *str);
  * \return int16_t                        Width in pixel of the string
  ***********************************************/
 int16_t  stringWidth      (const char *str, const font_t *font, bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows);
+uint16_t charCodeFromString(const char *ch, uint16_t *offset);
+void     charCodeHPReplacement(uint16_t * charCode);
 
 /********************************************//**
  * \brief Calculates the first character which does not fit to specified width using a certain font
