@@ -882,7 +882,7 @@ stopProgram:
   if(!getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
     showHideHourGlass();
     if(screenUpdatingMode == SCRUPD_AUTO) {
-      refreshScreen();
+      refreshScreen(4);
     }
     #if defined(DMCP_BUILD)
       lcd_refresh();

@@ -1723,7 +1723,7 @@ void execTimerApp(uint16_t timerType) {
   void showFunctionName(int16_t itm, int16_t delayInMs, const char *arg) {
     int16_t item = (int16_t)itm;
     //printf("---Function par:%4u %4u-- converted %4u--arg:|%s|-=-", itm, (int16_t)itm, item, arg );
-    uint32_t fcol, frow, gcol, grow;
+    //uint32_t fcol, frow, gcol, grow;
     char functionName[64];
     char padding[20];                                          //JM
     functionName[0] = 0;
