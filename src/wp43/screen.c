@@ -566,7 +566,7 @@
     if(cursorEnabled) {
       if(++cursorBlinkCounter > cursorCycle) {         //JM cursor vv
         cursorBlinkCounter = 0;
-        if(cursorBlink) {
+        if(cursorBlink && !checkHP) {
           showGlyph(STD_CURSOR, cursorFont, xCursor, yCursor - checkHPoffset, vmNormal, true, false);
         }                                              //JM cursor ^^
         else {
