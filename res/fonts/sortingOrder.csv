@@ -632,5 +632,20 @@
 `U+2147`,121,121,`Double-Struck Italic Small E`,`eEuler`,`ⅇ`,`e`,`U+0045`
 `U+2148`,169,169,`Double-Struck Italic Small I`,`op-i`,`ⅈ`,`j`,`U+0049`
 `U+2149`,191,191,`Double-Struck Italic Small J`,`op-j`,`ⅉ`,`j`,`U+004a`
+`U+1E9D`,146,146,`longshighstroke`,`long f`,`ẝ`,`f`,`U+0046`
+`U+1E9F`,152,152,`delta`,`long g`,`ẟ`,`g`,`U+0047`
+`U+2024`,485,485,`Double Circled Digit 1`,`Full HP stop`,`․`,`.`,`U+002e`
+`U+24EA`,10,10,`Circled Digit ZERO`,`Digit HP 0`,`⓪`,`0`,`U+0030`
+`U+24F5`,15,15,`Double Circled Digit ONE`,`Digit HP 1`,`⓵`,`1`,`U+0031`
+`U+24F6`,22,22,`Double Circled Digit TWO`,`Digit HP 2`,`⓶`,`2`,`U+0032`
+`U+24F7`,26,26,`Double Circled Digit THREE`,`Digit HP 3`,`⓷`,`3`,`U+0033`
+`U+24F8`,31,31,`Double Circled Digit FOUR`,`Digit HP 4`,`⓸`,`4`,`U+0034`
+`U+24F9`,35,35,`Double Circled Digit FIVE`,`Digit HP 5`,`⓹`,`5`,`U+0035`
+`U+24FA`,39,39,`Double Circled Digit SIX`,`Digit HP 6`,`⓺`,`6`,`U+0036`
+`U+24FB`,43,43,`Double Circled Digit SEVEN`,`Digit HP 7`,`⓻`,`7`,`U+0037`
+`U+24FC`,47,47,`Double Circled Digit EIGHT`,`Digit HP 8`,`⓼`,`8`,`U+0038`
+`U+24FD`,51,51,`Double Circled Digit NINE`,`Digit HP 9`,`⓽`,`9`,`U+0039`
+`U+24FE`,51,51,`Double Circled Digit TEN`,`HP MINUS`,`-`,`-`,`U+002d`
+`U+24FF`,51,51,`Negative Circled Digit Zero`,`HP PLUS`,`+`,`+`,`U+002b`
 `U+001D`,1,9,`INFORMATION SEPARATOR THREE`,,,,`U+0020`
 ,,,,,,,

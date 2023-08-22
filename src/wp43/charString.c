@@ -28,16 +28,74 @@
 #include "wp43.h"
 
 
+  #if !defined(TESTSUITE_BUILD)
+  /* Returns the character code from the first glyph of a string.
+   *
+   * \param[in]     ch     String whose first glyph is to extract
+   * \param[in,out] offset Offset which is updated, or null if zero and no update
+   * \return Character code for that glyph
+   */
+  uint16_t charCodeFromString(const char *ch, uint16_t *offset) {
+    uint16_t charCode;
+    uint16_t loffset = (offset != 0) ? *offset : 0;
+
+    charCode = (uint8_t)ch[loffset++];
+    if(charCode &0x0080) {
+      charCode = (charCode << 8) | (uint8_t)ch[loffset++];
+    }
+    if(offset != 0) {
+      *offset = loffset;
+    }
+    return charCode;
+  }
+  #endif //TESTSUITE_BUILD
+
+  #if !defined(GENERATE_CATALOGS)
+  void charCodeHPReplacement(uint16_t *charCode) {
+    #if !defined(TESTSUITE_BUILD)
+      if(*charCode == charCodeFromString(STD_SUP_MINUS, 0)) {
+        *charCode = charCodeFromString(STD_HP_MINUS, 0);
+      } else
+      if(*charCode == charCodeFromString(STD_MINUS, 0)) {
+        *charCode = charCodeFromString(STD_HP_MINUS, 0);
+      } else
+      if(*charCode == charCodeFromString(STD_WDOT, 0)) {
+        *charCode = charCodeFromString(STD_HP_PERIOD, 0);
+      } else
+      if(*charCode == charCodeFromString(PRODUCT_SIGN, 0)) {
+        *charCode = charCodeFromString(STD_SPACE_PUNCTUATION, 0);
+      } else
+      if(*charCode == charCodeFromString(STD_SUB_10, 0)) {
+        *charCode = charCodeFromString(STD_SPACE_4_PER_EM, 0);
+      } else
+      if(*charCode == charCodeFromString(STD_0, 0)) {
+        *charCode = charCodeFromString(STD_HP_0, 0);
+      } else
+      if(*charCode >= charCodeFromString(STD_1, 0) &&  *charCode <= charCodeFromString(STD_9, 0)) {
+        *charCode = *charCode - charCodeFromString(STD_1, 0) + charCodeFromString(STD_HP_1, 0);
+      } else
+      if(*charCode == charCodeFromString(STD_SUP_0, 0)) {
+        *charCode = charCodeFromString(STD_HP_0, 0);
+      } else
+      if(*charCode >= charCodeFromString(STD_SUP_1, 0) &&  *charCode <= charCodeFromString(STD_SUP_9, 0)) {
+        *charCode = *charCode - charCodeFromString(STD_SUP_1, 0) + charCodeFromString(STD_HP_1, 0);
+      }
+    #endif //TESTSUITE_BUILD
+  }
+  #endif //GENERATE_CATALOGS
+
+
 
 
 static void _calculateStringWidth(const char *str, const font_t *font, bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows, int16_t *width, const char **resultStr) {
-  int16_t ch, numPixels, charCode, glyphId;
+  uint16_t charCode;
+  int16_t ch, numPixels, glyphId;
   const glyph_t *glyph;
   bool_t  firstChar;
   #if defined(GENERATE_CATALOGS)
-    uint8_t doubling = false;
+    uint16_t doubling = false;
   #else //GENERATE_CATALOGS
-    uint8_t doubling = (font == &numericFont && temporaryInformation == TI_NO_INFO && checkHP) ? DOUBLING : 4u;
+    uint16_t doubling = (font == &numericFont && temporaryInformation == TI_NO_INFO && checkHP) ? DOUBLING : DOUBLINGBASEX;
   #endif //GENERATE_CATALOGS
 
 //  const font_t  *font;  //JM
@@ -51,6 +109,12 @@ static void _calculateStringWidth(const char *str, const font_t *font, bool_t wi
     if(charCode & 0x80) { // MSB set
       charCode = (charCode<<8) | (uint8_t)str[ch++];
     }
+
+  #if !defined(GENERATE_CATALOGS)
+    if(checkHP && font == &numericFont && HPFONT) {
+      charCodeHPReplacement(&charCode);
+    }
+  #endif //GENERATE_CATALOGS
 
 /*
     font = font1;                             //JM auto font change for enlarged alpha fonts vv
@@ -97,15 +161,15 @@ static void _calculateStringWidth(const char *str, const font_t *font, bool_t wi
       return;
     }
 
-      numPixels += (doubling*(glyph->colsGlyph + glyph->colsAfterGlyph)) >> 2;
+      numPixels += (doubling*(glyph->colsGlyph + glyph->colsAfterGlyph)) >> 3;
       if(firstChar) {
         firstChar = false;
         if(withLeadingEmptyRows) {
-          numPixels += (doubling*(glyph->colsBeforeGlyph)) >> 2;
+          numPixels += (doubling*(glyph->colsBeforeGlyph)) >> 3;
         }
       }
       else {
-        numPixels += (doubling*(glyph->colsBeforeGlyph)) >> 2;
+        numPixels += (doubling*(glyph->colsBeforeGlyph)) >> 3;
       }
 
       if(resultStr != NULL) { // for stringAfterPixels
@@ -120,7 +184,7 @@ static void _calculateStringWidth(const char *str, const font_t *font, bool_t wi
   }
 
   if(glyph != NULL && withEndingEmptyRows == false) {
-    numPixels -= doubling*(glyph->colsAfterGlyph);
+    numPixels -= (doubling*(glyph->colsAfterGlyph)) >> 3;
     if(resultStr != NULL && numPixels <= *width) { // for stringAfterPixels
       if((**resultStr) & 0x80) {
         *resultStr += 2;

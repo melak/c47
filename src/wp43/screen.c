@@ -50,6 +50,7 @@
 #include "registerValueConversions.h"
 #include "softmenus.h"
 #include "stack.h"
+#include "sort.h"
 #include "statusBar.h"
 #include "timer.h"
 #include "ui/matrixEditor.h"
@@ -58,9 +59,6 @@
 
 #include "wp43.h"
 
-#if !defined(TESTSUITE_BUILD)
-  static uint16_t charCodeFromString(const char *ch, uint16_t *offset);
-#endif // !TESTSUITE_BUILD
 
 //#define DEBUGCLEARS
 
@@ -737,14 +735,15 @@ void execTimerApp(uint16_t timerType) {
 
   void FN_handler_StepToF(uint32_t time) {
     shiftF = true;        //S_shF();                  //   New shift state
+    shiftG = false;
     showShiftState();
     refreshRegisterLine(REGISTER_T); //clearRegisterLine(Y_POSITION_OF_REGISTER_T_LINE - 4, REGISTER_LINE_HEIGHT); //JM FN clear the previous shift function name
-    char *varCatalogItem = "";
-    int16_t Dyn = nameFunction(FN_key_pressed-37, 6);
-    if(dynamicMenuItem > -1) {
+    char *varCatalogItem = "SF:F";
+    int16_t Dyn = nameFunction(FN_key_pressed-37, shiftF, shiftG);
+    if(dynamicMenuItem > -1 && !DEBUGSFN) {
       varCatalogItem = dynmenuGetLabel(dynamicMenuItem);
     }
-    showFunctionName(Dyn,0,varCatalogItem); //"SF:F");
+    showFunctionName(Dyn,0, varCatalogItem);
     FN_timed_out_to_RELEASE_EXEC = true;
     underline_softkey(FN_key_pressed-38, 1, false);
     fnTimerStart(TO_FN_LONG, TO_FN_LONG, time);          //dr
@@ -752,16 +751,16 @@ void execTimerApp(uint16_t timerType) {
 
 
   void FN_handler_StepToG(uint32_t time) {
-    shiftG = true;
     shiftF = false;
+    shiftG = true;
     showShiftState();
     refreshRegisterLine(REGISTER_T); //clearRegisterLine(Y_POSITION_OF_REGISTER_T_LINE - 4, REGISTER_LINE_HEIGHT); //JM FN clear the previous shift function name
-    char *varCatalogItem = "";
-    int16_t Dyn = nameFunction(FN_key_pressed-37,12);
-    if(dynamicMenuItem > -1) {
+    char *varCatalogItem = "SF:G";
+    int16_t Dyn = nameFunction(FN_key_pressed-37, shiftF, shiftG);
+    if(dynamicMenuItem > -1 && !DEBUGSFN) {
       varCatalogItem = dynmenuGetLabel(dynamicMenuItem);
     }
-    showFunctionName(Dyn,0,varCatalogItem); //"SF:G");
+    showFunctionName(Dyn,0, varCatalogItem);
     FN_timed_out_to_RELEASE_EXEC = true;
     underline_softkey(FN_key_pressed-38, 2, false);
     fnTimerStart(TO_FN_LONG, TO_FN_LONG, time);          //dr
@@ -795,7 +794,7 @@ void execTimerApp(uint16_t timerType) {
           }
 
           #if defined(FN_TIME_DEBUG1)
-            printf("Handler 1, KEY=%d =%i\n",FN_key_pressed,nameFunction(FN_key_pressed-37,6));
+            printf("Handler 1, KEY=%d =%i\n",FN_key_pressed,nameFunction(FN_key_pressed-37, shiftF, shiftG));
           #endif // FN_TIME_DEBUG1
         }
         else if(shiftF && !shiftG) {                          //From F State 2
@@ -806,13 +805,13 @@ void execTimerApp(uint16_t timerType) {
             FN_handler_StepToNOP();                           //To NOP State 4
           }
           #if defined(FN_TIME_DEBUG1)
-            printf("Handler 2, KEY=%d =%i\n",FN_key_pressed,nameFunction(FN_key_pressed-37,12));
+            printf("Handler 2, KEY=%d =%i\n",FN_key_pressed,nameFunction(FN_key_pressed-37, shiftF, shiftG));
           #endif // FN_TIME_DEBUG1
         }
         else if((!shiftF && shiftG) || (shiftF && shiftG)) {  //From G: 3 (or illegal state FG)
           FN_handler_StepToNOP();                             //To NOP State 4
           #if defined(FN_TIME_DEBUG1)
-            printf("Handler 3, KEY=%d \n", FN_key_pressed);
+            printf("Handler 3, KEY=%d =%i\n",FN_key_pressed,nameFunction(FN_key_pressed-37, shiftF, shiftG));
           #endif // FN_TIME_DEBUG1
         }
       }
@@ -1001,6 +1000,12 @@ void execTimerApp(uint16_t timerType) {
       }                                                       //JM ENLARGE ^^
     }
 
+    #if !defined(GENERATE_CATALOGS)
+      if(checkHP && font == &numericFont && HPFONT) {
+        charCodeHPReplacement(&charCode);
+      }
+    #endif //GENERATE_CATALOGS
+
     glyphId = findGlyph(font, charCode);
     if(glyphId >= 0) {
       glyph = (font->glyphs) + glyphId;
@@ -1028,16 +1033,13 @@ void execTimerApp(uint16_t timerType) {
     xGlyph      = showLeadingCols ? glyph->colsBeforeGlyph : 0;
     endingCols  = showEndingCols ? glyph->colsAfterGlyph : 0;
 
-    #define REDUCT_A 3
-    #define REDUCT_B 4
-    #define REDUCT_OFF 3
-    bool_t numDouble = font == &numericFont && checkHP && temporaryInformation == TI_NO_INFO && charCodeFromString(STD_SUP_f, 0)!=charCode && charCodeFromString(STD_SUP_g, 0)!=charCode; //this also triggers the vertical doubling
-    uint8_t doubling = numDouble ? DOUBLING : 4u;      //this is the horizontal factor
+    bool_t numDouble = font == &numericFont && checkHP && temporaryInformation == TI_NO_INFO; //&& charCodeFromString(STD_MODE_G, 0)!=charCode && charCodeFromString(STD_MODE_G, 0)!=charCode; //this also triggers the vertical doubling
+    uint16_t doubling = numDouble ? DOUBLING : DOUBLINGBASEX;      //this is the horizontal factor, 8 is normal, so 16 is double
 
     // Clearing the space needed by the glyph
     bool_t rep_enlarge = numDouble || (enlarge && combinationFonts != 0);                //JM ENLARGE
     if(!noShow) {
-      lcd_fill_rect(x, y, (uint32_t)(doubling * ((xGlyph + glyph->colsGlyph + endingCols) >> miniC)) >> 2, (rep_enlarge ? 2 : 1) * (((glyph->rowsAboveGlyph + glyph->rowsGlyph + glyph->rowsBelowGlyph) >> miniC) - (rep_enlarge ? 4 : 0)), (videoMode == vmNormal ? LCD_SET_VALUE : LCD_EMPTY_VALUE));  //JMmini
+      lcd_fill_rect(x, y, (uint32_t)(doubling * ((xGlyph + glyph->colsGlyph + endingCols) >> miniC)) >> 3, (rep_enlarge ? 2 : 1) * (((glyph->rowsAboveGlyph + glyph->rowsGlyph + glyph->rowsBelowGlyph) >> miniC) - (rep_enlarge ? 4 : 0)), (videoMode == vmNormal ? LCD_SET_VALUE : LCD_EMPTY_VALUE));  //JMmini
     }
     if(displaymode == numHalf) {
       y += (uint32_t)(glyph->rowsAboveGlyph*REDUCT_A/REDUCT_B*(rep_enlarge ? 2 : 1));
@@ -1065,7 +1067,7 @@ void execTimerApp(uint16_t timerType) {
         }
 
         if(byte & 0x80 && !noShow) { // MSB set
-          uint32_t x1 = x+((((doubling * (xGlyph+col)) >> miniC)) >> 2);
+          uint32_t x1 = x+((((doubling * (xGlyph+col)) >> miniC)) >> 3);
           uint32_t x2 = x1;
           uint32_t y1 = y0+((y-y0) >> miniC);
           uint32_t y2 = y1;
@@ -1111,28 +1113,7 @@ void execTimerApp(uint16_t timerType) {
         y++; //JM ENLARGE vv do not advance the row counter for four rows, to match the row height of the enlarge font
       }
     }
-    return x + (((doubling * (xGlyph + glyph->colsGlyph + endingCols)) >> miniC) >> 2);        //JMmini
-  }
-
-
-  /* Returns the character code from the first glyph of a string.
-   *
-   * \param[in]     ch     String whose first glyph is to extract
-   * \param[in,out] offset Offset which is updated, or null if zero and no update
-   * \return Character code for that glyph
-   */
-  static uint16_t charCodeFromString(const char *ch, uint16_t *offset) {
-    uint16_t charCode;
-    uint16_t loffset = (offset != 0) ? *offset : 0;
-
-    charCode = (uint8_t)ch[loffset++];
-    if(charCode &0x0080) {
-      charCode = (charCode << 8) | (uint8_t)ch[loffset++];
-    }
-    if(offset != 0) {
-      *offset = loffset;
-    }
-    return charCode;
+    return x + (((doubling * (xGlyph + glyph->colsGlyph + endingCols)) >> miniC) >> 3);        //JMmini
   }
 
 
@@ -1744,7 +1725,7 @@ void execTimerApp(uint16_t timerType) {
     int16_t item = (int16_t)itm;
     //printf("---Function par:%4u %4u-- converted %4u--arg:|%s|-=-", itm, (int16_t)itm, item, arg );
     uint32_t fcol, frow, gcol, grow;
-    char functionName[16];
+    char functionName[64];
     char padding[20];                                          //JM
     functionName[0] = 0;
 
@@ -1754,31 +1735,54 @@ void execTimerApp(uint16_t timerType) {
     //}
     //else
 
-    if(item == ITM_XEQ) {
-      stringAppend(functionName,arg);
-      if(functionName[0]==0) {
+    #if defined(DEBUG_SHOWNAME)
+      if(item < LAST_ITEM && (item == ITM_XEQ || item != ITM_RCL)) {
+        stringAppend(functionName + stringByteLength(functionName), indexOfItems[abs(item)].itemCatalogName);
+        stringAppend(functionName + stringByteLength(functionName), ":");
+      }
+      if(item < LAST_ITEM && (item == ITM_RCL || item != ITM_XEQ)) {
+        stringAppend(functionName + stringByteLength(functionName), indexOfItems[abs(item)].itemSoftmenuName);
+        stringAppend(functionName + stringByteLength(functionName), ":");
+      }
+      if(arg != NULL) {
+        stringAppend(functionName + stringByteLength(functionName), arg);
+        stringAppend(functionName + stringByteLength(functionName), ":");
+      }
+      if(item >= ITM_X_P1 && item <= ITM_X_g6) {
+        stringAppend(functionName, indexOfItemsXEQM + 8*(item-fnXEQMENUpos));
+        stringAppend(functionName + stringByteLength(functionName), ":");
+      }
+      if(dynamicMenuItem > -1) {
+        stringAppend(functionName + stringByteLength(functionName),dynmenuGetLabel(dynamicMenuItem));
+      }
+
+    #else //DEBUG_SHOWNAME
+      if(item == ITM_XEQ) {
+        if(arg != NULL) stringAppend(functionName,arg);
+        if(functionName[0]==0) {
+          stringAppend(functionName,indexOfItems[abs(item)].itemCatalogName);
+        }
+      }
+      else if(item == ITM_RCL) {
+        if(arg != NULL) stringAppend(functionName,arg);
+        if(functionName[0]==0) {
+          stringAppend(functionName,indexOfItems[abs(item)].itemCatalogName);
+        }
+      }
+      else if(item >= ITM_X_P1 && item <= ITM_X_g6) {
+        stringAppend(functionName, indexOfItemsXEQM + 8*(item-fnXEQMENUpos));
+      }
+      else if(item >= CST_01 && item <= CST_79) {
+        stringAppend(functionName,indexOfItems[abs(item)].itemSoftmenuName);
+      }
+      else if(item < LAST_ITEM && item != MNU_DYNAMIC) {
         stringAppend(functionName,indexOfItems[abs(item)].itemCatalogName);
       }
-    }
-    else if(item == ITM_RCL) {
-      stringAppend(functionName,arg);
-      if(functionName[0]==0) {
-        stringAppend(functionName,indexOfItems[abs(item)].itemCatalogName);
+      else {
+        if(dynamicMenuItem > -1) stringAppend(functionName,dynmenuGetLabel(dynamicMenuItem));
       }
-    }
-    else if(item >= ITM_X_P1 && item <= ITM_X_g6) {
-      stringAppend(functionName, indexOfItemsXEQM + 8*(item-fnXEQMENUpos));
-    }
-    else if(item >= CST_01 && item <= CST_79) {
-      stringAppend(functionName,indexOfItems[abs(item)].itemSoftmenuName);
-    }
-    else if(item != MNU_DYNAMIC) {
-      stringAppend(functionName,indexOfItems[abs(item)].itemCatalogName);
-    }
-    else {
-      stringAppend(functionName,dynmenuGetLabel(dynamicMenuItem));
-    }
-    //printf("---|%s|---\n", functionName);
+    #endif //DEBUG_SHOWNAME
+      //printf("---|%s|---\n", functionName);
 
     showFunctionNameItem = item;
     if(running_program_jm) {
@@ -1792,8 +1796,8 @@ void execTimerApp(uint16_t timerType) {
     }
 
     // Draw over SHIFT f and SHIFT g in case they were present (otherwise they will be obscured by the function name)
-    getGlyphBounds(STD_SUP_f, 0, &numericFont, &fcol, &frow);
-    getGlyphBounds(STD_SUP_g, 0, &numericFont, &gcol, &grow);
+    getGlyphBounds(STD_MODE_F, 0, &standardFont, &fcol, &frow);
+    getGlyphBounds(STD_MODE_G, 0, &standardFont, &gcol, &grow);
     lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, (fcol > gcol ? fcol : gcol), (frow > grow ? frow : grow), LCD_SET_VALUE);
 
     showString(padding, &standardFont, 18, Y_POSITION_OF_REGISTER_T_LINE + 6, vmNormal, true, true);      //JM
@@ -3328,13 +3332,24 @@ void execTimerApp(uint16_t timerType) {
             }
           }
 
-          else if(temporaryInformation == TI_LAST_CONST_CATNAME) {
+          else if(temporaryInformation == TI_LAST_CONST_CATNAME || temporaryInformation == TI_SCATTER_SMI) {
             if(regist == REGISTER_X) {
               strcpy(prefix, lastFuncSoftmenuName());
-              strcat(prefix,  " ");
-              strcat(prefix, lastFuncCatalogName());
-              strcat(prefix,  " = ");
-              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              if(prefix[0] != 0) {
+                strcat(prefix,  " ");
+                if(compareString(lastFuncSoftmenuName(), lastFuncCatalogName(), CMP_BINARY) != 0) {
+                  char prefix_[16];
+                  prefix_[0]=0;
+                  strcat(prefix_, lastFuncCatalogName());
+                  if(prefix_[0] != 0) {
+                    strcat(prefix,prefix_);
+                  }
+                }
+                if(prefix[0] != 0) {
+                  strcat(prefix,  " = ");
+                }
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              }
             }
           }
 
@@ -3899,10 +3914,10 @@ void execTimerApp(uint16_t timerType) {
 
     if(calcMode != CM_ASSIGN || itemToBeAssigned == 0 || tam.alpha) {
       if(shiftF) {
-        showGlyph(STD_SUP_f, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // f is pixel 4+8+3 wide
+        showGlyph(STD_MODE_F, &standardFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // f is pixel 4+8+3 wide
       }
       else if(shiftG) {
-        showGlyph(STD_SUP_g, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // g is pixel 4+10+1 wide
+        showGlyph(STD_MODE_G, &standardFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // g is pixel 4+10+1 wide
       }
     }
 

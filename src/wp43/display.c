@@ -735,7 +735,8 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
   if(displayFormat == DF_FIX || displayFormat == DF_SF) {
     if(noFix || exponent >= displayHasNDigits || 
          exponent < -(int32_t)displayFormatDigits ||
-         ( displayFormat == DF_SF && exponent -(int32_t)displayFormatDigits < -(checkHP ? 10+1 : displayHasNDigits))
+         ( displayFormat == DF_SF && exponent -(int32_t)displayFormatDigits < -(checkHP ? 10+1 : displayHasNDigits)) ||
+         ( displayFormat == DF_SF && !checkHP && exponent -(int32_t)displayFormatDigits > GROUPWIDTH_LEFT1)
       ) { // Display in SCI or ENG format
       digitsToDisplay = displayFormatDigits;
       digitToRound    = min(firstDigit + digitsToDisplay, lastDigit);

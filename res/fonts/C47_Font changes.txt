@@ -224,5 +224,26 @@ Added the following:
 2023-07-30 Add e glyph to both fonts
     $2147 e
 
+2023-08-19 Standard font: Add dedicated HP-25 f & g glyphs
+    $1E9D f                                         STD_MODE_F                    "\x9E\x9D"  //1E9D
+    $1E9F g                                         STD_MODE_G                    "\x9E\x9F"  //1E9F
 
- 
+2023-08-19 Numeric font: Add long cursive f & g glyphs
+    $1E9D f                                         STD_MODE_F                    "\x9E\x9D"  //1E9D
+    $1E9F g                                         STD_MODE_G                    "\x9E\x9F"  //1E9F
+
+2023-08-21 Numeric font: Add HP35 seven segment font
+    $2024 PERIOD                    "\xa0\x24"     // 
+    $24ea 0                         "\xa4\xea"     // 
+    $24f5 1                         "\xa4\xf5"     // 
+2                         "\xa4\xf6"
+3                         "\xa4\xf7"
+4                         "\xa4\xf8"
+5                         "\xa4\xf9"
+6                         "\xa4\xfa"
+7                         "\xa4\xfb"
+8                         "\xa4\xfc"
+9                         "\xa4\xfd"
+MINUS                     "\xa4\xfe"
+PLUS                      "\xa4\xff"
+
