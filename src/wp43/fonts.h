@@ -388,6 +388,25 @@
 #define STD_num                       "\xa6\x7e"  //JM
 #define STD_RIGHT_TACK                "\xa2\xa2"  //JM
 
+#define STD_MODE_F                    "\x9E\x9D"  //1E9D
+#define STD_MODE_G                    "\x9E\x9F"  //1E9F
+
+
+#define STD_HP_PERIOD                    "\xa0\x24"     // 2024
+#define STD_HP_0                         "\xa4\xea"     // 24ea
+#define STD_HP_1                         "\xa4\xf5"     // 24f5
+#define STD_HP_2                         "\xa4\xf6"
+#define STD_HP_3                         "\xa4\xf7"
+#define STD_HP_4                         "\xa4\xf8"
+#define STD_HP_5                         "\xa4\xf9"
+#define STD_HP_6                         "\xa4\xfa"
+#define STD_HP_7                         "\xa4\xfb"
+#define STD_HP_8                         "\xa4\xfc"
+#define STD_HP_9                         "\xa4\xfd"
+#define STD_HP_MINUS                     "\xa4\xfe"
+#define STD_HP_PLUS                      "\xa4\xff"
+
+
 #define STD_LEFT_DASHARROW            "\xa1\xe0"
 #define STD_UP_DASHARROW              "\xa1\xe1" 
 #define STD_RIGHT_DASHARROW           "\xa1\xe2" 

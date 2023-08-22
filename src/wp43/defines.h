@@ -24,9 +24,9 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
-#define VERSION1 "0.108.11.19"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
+#define VERSION1 "0.108.12.00"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
-//2023-07-30-0.108.11.10
+//2023-08-21-0.108.12.00
 
   #undef SAVE_SPACE_DM42
   #undef SAVE_SPACE_DM42_0
@@ -81,18 +81,29 @@
 //    #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
 //    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
     #define SAVE_SPACE_DM42_15       //           without all distributions, i.e. binomial, cauchy, chi
-//    #define SAVE_SPACE_DM42_16       //           without Norml
+    #define SAVE_SPACE_DM42_16       //           without Norml
   #endif // TWO_FILE_PGM
 #endif // DMCP_BUILD || SCREEN_800X480 == 1
 
 
 
 #define TEXT_MULTILINE_EDIT         // 5 line buffer
-#define MAXLINES 2                  // two lines at small font maximum allowed in entry
+#define MAXLINES 5                  // numner of equavalent lines in small font maximum that is allowed in entry. Entry is hardlocked to multiline 3 lines bif font, but this is still the limit. WP has 2 lines fixed small font.
 
 
 //Testing and debugging
 //#define DM42_KEYCLICK              //Add a 1 ms click after key presses and releases, for scope syncing
+
+
+//Debud showFunctionName
+#define DEBUG_SHOWNAME
+#undef DEBUG_SHOWNAME
+#if defined(DEBUG_SHOWNAME)
+  #define DEBUGSFN true
+#else
+  #define DEBUGSFN false
+#endif
+
 
 
 //Verbose options
@@ -278,14 +289,9 @@
 #define NUMBER_OF_NUMERIC_FONT_LINES_PER_SCREEN    5 // Used in the font browser application
 #define NUMBER_OF_STANDARD_FONT_LINES_PER_SCREEN   8 // Used in the font browser application
 
-#define AIM_BUFFER_LENGTH                        400 // 199 double byte glyphs + trailing 0 + 1 byte to round up to a 4 byte boundary
+#define AIM_BUFFER_LENGTH                       1024 // WP=199 double byte glyphs + trailing 0 + 1 byte to round up to a 4 byte boundary; JM increase from WP43 to 512*2 so as to exceed the 508*2+extras;
 #define TAM_BUFFER_LENGTH                         32 // TODO: find the exact maximum needed
-#if defined(BUFFER_CLICK_DETECTION)
-#define NIM_BUFFER_LENGTH                        200 //JM(100-24-10) TEMP POC CHANGE FROM 100//JMMAX changed from 200 // TODO: find the exact maximum needed
-#else // !BUFFER_CLICK_DETECTION
-#define NIM_BUFFER_LENGTH                        200 //JM(100-24) TEMP POC CHANGE FROM 100//JMMAX changed from 200 // TODO: find the exact maximum needed
-#endif // BUFFER_CLICK_DETECTION
-
+#define NIM_BUFFER_LENGTH                        200 // TODO: find the exact maximum needed
 
 #define DEBUG_LINES                               68 // Used in for the debug panel
 
@@ -617,18 +623,65 @@ typedef enum {
 #define NUMBER_OF_DYNAMIC_SOFTMENUS               18
 #define SOFTMENU_HEIGHT                           23
 
+
+// Status bar updating mode
+#define SBARUPD_Date                            0x00000001
+#define SBARUPD_Time                            0x00000002
+#define SBARUPD_ComplexResult                   0x00000004
+#define SBARUPD_ComplexMode                     0x00000008
+#define SBARUPD_AngularModeBasic                0x00000010
+#define SBARUPD_AngularMode                     0x00000020
+#define SBARUPD_FractionModeAndBaseMode         0x00000040
+#define SBARUPD_IntegerMode                     0x00000080
+#define SBARUPD_MatrixMode                      0x00000100
+#define SBARUPD_TVMMode                         0x00000200
+#define SBARUPD_OCCarryMode                     0x00000400
+#define SBARUPD_AlphaMode                       0x00000800
+#define SBARUPD_HourGlass                       0x00001000
+#define SBARUPD_StackSize                       0x00002000
+#define SBARUPD_Watch                           0x00004000
+#define SBARUPD_SerialIO                        0x00008000
+#define SBARUPD_Printer                         0x00010000
+#define SBARUPD_UserMode                        0x00020000
+#define SBARUPD_Battery                         0x00040000
+
+#define statusBarMask                           (uint32_t)( \
+                                                (    SBARUPD_Date                    ) | \
+                                                (    SBARUPD_Time                    ) | \
+                                                (0 & SBARUPD_ComplexResult           ) | \
+                                                (    SBARUPD_ComplexMode             ) | \
+                                                (0 & SBARUPD_AngularModeBasic        ) | \
+                                                (    SBARUPD_AngularMode             ) | \
+                                                (    SBARUPD_FractionModeAndBaseMode ) | \
+                                                (    SBARUPD_IntegerMode             ) | \
+                                                (    SBARUPD_MatrixMode              ) | \
+                                                (    SBARUPD_TVMMode                 ) | \
+                                                (    SBARUPD_OCCarryMode             ) | \
+                                                (    SBARUPD_AlphaMode               ) | \
+                                                (    SBARUPD_HourGlass               ) | \
+                                                (0 & SBARUPD_StackSize               ) | \
+                                                (    SBARUPD_Watch                   ) | \
+                                                (    SBARUPD_SerialIO                ) | \
+                                                (    SBARUPD_Printer                 ) | \
+                                                (    SBARUPD_UserMode                ) | \
+                                                (    SBARUPD_Battery                 ) )
+
+
 // Horizontal offsets in the status bar
 #define X_DATE                                     1
-#define X_REAL_COMPLEX                           133
-#define X_COMPLEX_MODE                           143
-#define X_ANGULAR_MODE                           157
-#define X_FRAC_MODE                              185
-#define X_INTEGER_MODE                           260
+#define X_TIME                                    45  //note, this is used only if DATE is not displayed
+#define X_REAL_COMPLEX                    136//       133
+#define X_COMPLEX_MODE                    146//       143
+#define X_COMPLEX_MODE_ADJ                        -8  //note, auto moved left if REAL_COMPLEX is not present
+#define X_ANGULAR_MODE                    160//       157
+#define X_FRAC_MODE                       187//       185
+#define X_INTEGER_MODE                    262//       260
 #define X_OVERFLOW_CARRY                         292
 #define X_ALPHA_MODE                             300
-#define X_HOURGLASS                              311
-#define X_PROGRAM_BEGIN                          324
-#define X_WATCH                                  336
+#define X_SSIZE_BEGIN                            315  //If this needs to be used, the positioning will clash. Needs to be re-balanced
+#define X_HOURGLASS                              315  //311
+#define X_HOURGLASS_GRAPHS                       140
+#define X_WATCH                           335//       336
 #define X_SERIAL_IO                              351
 #define X_PRINTER                                361
 #define X_USER_MODE                              375
@@ -896,6 +949,7 @@ typedef enum {
 #define TI_SETTINGS_RESTORED                      87    //DL
 #define TI_SUMS_RESTORED                          88    //DL
 #define TI_VARIABLES_RESTORED                     89    //DL
+#define TI_SCATTER_SMI                            90
 
 
 // Register browser mode
@@ -1046,8 +1100,8 @@ typedef enum {
 #define SIGMA_YMIN   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_YMIN  )) // could be a real34
 #define SIGMA_YMAX   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_YMAX  )) // could be a real34
 
-#define MAX_NUMBER_OF_GLYPHS_IN_STRING           196
-#define NUMBER_OF_GLYPH_ROWS                     202 // Used in the font browser application
+#define MAX_NUMBER_OF_GLYPHS_IN_STRING           508 //WP=196: Change to 512 less 3, Also change error message 33, and AIM_BUFFER_LENGTH, and MAXLINES
+#define NUMBER_OF_GLYPH_ROWS                     250  //Used in the font browser application
 
 #define MAX_DENMAX                              9999 // Biggest denominator in fraction display mode
 
@@ -1262,8 +1316,25 @@ typedef enum {
 #define GROUPRIGHT_DISABLED                  (GROUPWIDTH_RIGHT == 0 || gapItemRight == 0)
 #define SEPARATOR_LEFT                       (gapChar1Left)
 #define SEPARATOR_RIGHT                      (gapChar1Right)
-#define checkHP                              (significantDigits <= 16 && displayStack == 1 && exponentLimit == 99 && Input_Default == ID_DP)
-#define DOUBLING                             6u  // 8=is double; 7 is 1.75*; 6=1.5*; 5=1.25*
+
+#define checkHP                              (significantDigits <= 16 && displayStack == 1 && exponentLimit == 99 && Input_Default == ID_DP && (calcMode == CM_NORMAL || calcMode == CM_NIM))
+#define REPLACEFONT
+#ifdef REPLACEFONT
+  #define DOUBLING                             15u  //factor 2 more!// 8=is double; 7 is 1.75*; 6=1.5*; 5=1.25* (4 is the per unit norm horizontal factor)
+  #define DOUBLINGBASEX                        8u
+  #define REDUCT_A                             4   // Reduction vertical ratio A/B
+  #define REDUCT_B                             4
+  #define REDUCT_OFF                           0   // Reduction vertical offset
+  #define HPFONT                               true
+#else
+  #define DOUBLING                            14u  // 7u  factor 2 more!// 8=is double; 7 is 1.75*; 6=1.5*; 5=1.25* (4 is the per unit norm horizontal factor)
+  #define DOUBLINGBASEX                        8u  // 4u
+  #define REDUCT_A                             3   // Reduction ratio A/B
+  #define REDUCT_B                             4
+  #define REDUCT_OFF                           3   // Reduction offset
+  #define HPFONT                               false
+#endif
+
 #define GROUPWIDTH_LEFT                      (grpGroupingLeft)
 #define GROUPWIDTH_LEFT1                     ((grpGroupingGr1Left        == 0 ? (uint16_t)grpGroupingLeft : (uint16_t)grpGroupingGr1Left))
 #define GROUPWIDTH_LEFT1X                    (grpGroupingGr1LeftOverflow)
@@ -1275,7 +1346,11 @@ typedef enum {
 #define IS_SEPARATOR_(digitCount)            (   (digitCount+1 == GROUPWIDTH_LEFT1) \
                                               || ((digitCount+1  > GROUPWIDTH_LEFT1 || digitCount < 0) \
                                                   && (modulo(digitCountNEW(digitCount), (uint16_t)GROUPWIDTH_(digitCount)) == (uint16_t)GROUPWIDTH_(digitCount) - 1)) )
-
+#define BLOCK_DOUBLEPRESS_MENU(menu, x, y)   ( \
+                                               (softmenu[menu].menuItem == -MNU_ALPHA    && y == 0) || \
+                                               (softmenu[menu].menuItem == -MNU_M_EDIT   && y == 0 && (x == 0 || x == 1 || x == 4 || x == 5)) || \
+                                               (softmenu[menu].menuItem == -MNU_EQ_EDIT  && y == 0 && (x == 4 || x == 5)) \
+                                             )
 
 #define clearScreen()                        {lcd_fill_rect(0, 0, SCREEN_WIDTH, 240, LCD_SET_VALUE); clear_ul();}
 #define currentReturnProgramNumber           (currentSubroutineLevelData[0].returnProgramNumber)

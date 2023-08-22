@@ -35,85 +35,34 @@
 
 
 #if !defined(TESTSUITE_BUILD)
+  void refreshStatusBar(void);
 
-  void refreshStatusBar(void) {
-    if(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR) {
-      switch(calcMode) {
-        case CM_PEM:
-        case CM_REGISTER_BROWSER:
-        case CM_FLAG_BROWSER:
-        case CM_ASN_BROWSER:
-        case CM_FONT_BROWSER:
-        case CM_PLOT_STAT:
-        case CM_CONFIRMATION:
-        case CM_MIM:
-        case CM_TIMER:
-        case CM_GRAPH: {
-          screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR;
-          break;
-        }
-
-        default: {
-          return;
-        }
-      }
-    }
-    #if(DEBUG_INSTEAD_STATUS_BAR == 1)
-      static char statusMessage[100];
-      sprintf(statusMessage, "%s%d %s/%s  mnu:%s fi:%d", catalog ? "asm:" : "", catalog, tam.mode ? "/tam" : "", getCalcModeName(calcMode),indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemCatalogName, softmenuStack[0].firstItem);
-      showString(statusMessage, &standardFont, X_DATE, 0, vmNormal, true, true);
-    #else // DEBUG_INSTEAD_STATUS_BAR != 1
-      if(calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) lcd_fill_rect(0, 0, 158, 20, 0);
-      showDateTime();
-      showHideHourGlass(); //TODO check if this belongs here and why JM
-      if(calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) {
-        return;    // With graph displayed, only update the time, as the other items are clashing with the graph display screen
-      }
-      showRealComplexResult();
-      showComplexMode();
-      showAngularMode();
-      showFracMode();
-      if(calcMode == CM_MIM) {
-        showMatrixMode();
-      }
-      else if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_TVM || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_FIN) { //JM added FIN
-        showTvmMode();
-      }
-      else {
-        showIntegerMode();
-        showOverflowCarry();
-      }
-      showHideAlphaMode();
-      showHideHourGlass();
-      showHideWatch();
-      showHideSerialIO();
-      showHidePrinter();
-      showHideUserMode();
-      #if defined(DMCP_BUILD)
-        showHideUsbLowBattery();
-      #else // !DMCP_BUILD
-        showHideStackLift();
-      #endif // DMCP_BUILD
-      showHideASB();                            //JM
-    #endif // DEBUG_INSTEAD_STATUS_BAR == 1
-  }
 
 
 
   void showDateTime(void) {
+    if(!((statusBarMask & SBARUPD_Date) | (statusBarMask & SBARUPD_Time))) return;
     lcd_fill_rect(0, 0, X_REAL_COMPLEX, 20, LCD_SET_VALUE);
 
-    getDateString(dateTimeString);
-    uint32_t x = showString(dateTimeString, &standardFont, X_DATE, 0, vmNormal, true, true);
-    x = showGlyph(getSystemFlag(FLAG_TDM24) ? " " : STD_SPACE_3_PER_EM, &standardFont, x, 0, vmNormal, true, true); // is 0+0+8 pixel wide
+    uint32_t x = X_DATE;
+    if(statusBarMask & SBARUPD_Date) {
+      getDateString(dateTimeString);
+      x = showString(dateTimeString, &standardFont, x, 0, vmNormal, true, true);
+      x = showGlyph(getSystemFlag(FLAG_TDM24) ? " " : STD_SPACE_3_PER_EM, &standardFont, x, 0, vmNormal, true, true); // is 0+0+8 pixel wide
+    } else {
+      x = X_TIME;
+    }
 
-    getTimeString(dateTimeString);
-    showString(dateTimeString, &standardFont, x, 0, vmNormal, true, false);
+    if(statusBarMask & SBARUPD_Time) {
+      getTimeString(dateTimeString);
+      showString(dateTimeString, &standardFont, x, 0, vmNormal, true, false);
+    }
   }
 
 
 
   void showRealComplexResult(void) {
+    if(!(statusBarMask & SBARUPD_ComplexResult)) return;
     if(getSystemFlag(FLAG_CPXRES)) {
       showGlyph(STD_COMPLEX_C, &standardFont, X_REAL_COMPLEX, 0, vmNormal, true, false); // Complex C is 0+8+3 pixel wide
     }
@@ -125,20 +74,27 @@
 
 
   void showComplexMode(void) {
+    if(!(statusBarMask & SBARUPD_ComplexMode)) return;
+    uint32_t X_COMPLEX_MODE1 =  statusBarMask & SBARUPD_ComplexResult ? X_COMPLEX_MODE : X_COMPLEX_MODE + X_COMPLEX_MODE_ADJ;
+
     if(getSystemFlag(FLAG_POLAR)) { // polar mode
-     showGlyph(STD_SUN,           &standardFont, X_COMPLEX_MODE, 0, vmNormal, true, true); // Sun         is 0+12+2 pixel wide
+     showGlyph(STD_SUN,           &standardFont, X_COMPLEX_MODE1, 0, vmNormal, true, true); // Sun         is 0+12+2 pixel wide
     }
     else { // rectangular mode
-     showGlyph(STD_RIGHT_ANGLE,   &standardFont, X_COMPLEX_MODE, 0, vmNormal, true, true); // Right angle is 0+12+2 pixel wide
+     showGlyph(STD_RIGHT_ANGLE,   &standardFont, X_COMPLEX_MODE1, 0, vmNormal, true, true); // Right angle is 0+12+2 pixel wide
     }
   }
 
 
 
   void showAngularMode(void) {
-    uint32_t x = 0;
+    if(!((statusBarMask & SBARUPD_AngularModeBasic) | (statusBarMask & SBARUPD_AngularMode))) return;
 
-    x = showGlyph(STD_MEASURED_ANGLE, &standardFont, X_ANGULAR_MODE, 0, vmNormal, true, true); // Angle is 0+9 pixel wide
+    uint32_t x = X_ANGULAR_MODE;
+
+    if(statusBarMask & SBARUPD_AngularModeBasic) {
+      x = showGlyph(STD_MEASURED_ANGLE, &standardFont, x, 0, vmNormal, true, true); // Angle is 0+9 pixel wide
+    }
 
     switch(currentAngularMode) {
       case amRadian: {
@@ -199,6 +155,7 @@
 
 
 void showFracMode(void) {
+    if(!(statusBarMask & SBARUPD_FractionModeAndBaseMode)) return;
     static char statusMessage[20];
     char str20[20];                                   //JM vv KEYS
     char str40[40];
@@ -281,6 +238,7 @@ void showFracMode(void) {
 
 
   void showIntegerMode(void) {
+    if(!(statusBarMask & SBARUPD_IntegerMode)) return;
     static char statusMessage[10];
     if(shortIntegerWordSize <= 9) {
       sprintf(statusMessage, " %" PRIu8 ":%c", shortIntegerWordSize, shortIntegerMode==SIM_1COMPL?'1':(shortIntegerMode==SIM_2COMPL?'2':(shortIntegerMode==SIM_UNSIGN?'u':(shortIntegerMode==SIM_SIGNMT?'s':'?'))));
@@ -295,6 +253,7 @@ void showFracMode(void) {
 
 
   void showMatrixMode(void) {
+    if(!(statusBarMask & SBARUPD_MatrixMode)) return;
     static char statusMessage[5];
     if(getSystemFlag(FLAG_GROW)) {
       sprintf(statusMessage, "grow");
@@ -309,6 +268,7 @@ void showFracMode(void) {
 
 
   void showTvmMode(void) {
+    if(!(statusBarMask & SBARUPD_TVMMode)) return;
     static char statusMessage[5];
     if(getSystemFlag(FLAG_ENDPMT)) {
       sprintf(statusMessage, "END");
@@ -323,6 +283,7 @@ void showFracMode(void) {
 
 
   void showOverflowCarry(void) {
+    if(!(statusBarMask & SBARUPD_OCCarryMode)) return;
     showGlyph(STD_OVERFLOW_CARRY, &standardFont, X_OVERFLOW_CARRY, 0, vmNormal, true, false); // STD_OVERFLOW_CARRY is 0+6+3 pixel wide
 
     if(!getSystemFlag(FLAG_OVERFLOW)) { // Overflow flag is cleared
@@ -338,29 +299,31 @@ void showFracMode(void) {
 
   void showHideAlphaMode(void) {
     int status=0;
+    uint8_t nChar;
+    if(scrLock == NC_NORMAL) { nChar = nextChar; } else { nChar = scrLock; }
     if(calcMode == CM_AIM || calcMode == CM_EIM || (catalog && catalog != CATALOG_MVAR) || (tam.mode != 0 && tam.alpha) || ((calcMode == CM_PEM || calcMode == CM_ASSIGN) && getSystemFlag(FLAG_ALPHA))) {
       if(numLock && !shiftF && !shiftG) {
-          if(alphaCase == AC_UPPER)                  { status = 3 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); } else
-          if(alphaCase == AC_LOWER)                  { status = 6 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); }
+          if(alphaCase == AC_UPPER)                  { status = 3 - (nChar == NC_SUBSCRIPT ? 2 : nChar == NC_SUPERSCRIPT ? 1:0); } else
+          if(alphaCase == AC_LOWER)                  { status = 6 - (nChar == NC_SUBSCRIPT ? 2 : nChar == NC_SUPERSCRIPT ? 1:0); }
         } else
           if(alphaCase == AC_LOWER && shiftF){
-            setSystemFlag(FLAG_alphaCAP);              status = 12 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); //A
+            setSystemFlag(FLAG_alphaCAP);              status = 12 - (nChar == NC_SUBSCRIPT ? 2 : nChar == NC_SUPERSCRIPT ? 1:0); //A
           } else
             if(alphaCase == AC_UPPER && shiftF){
-              clearSystemFlag(FLAG_alphaCAP);          status = 18 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0);   //a
+              clearSystemFlag(FLAG_alphaCAP);          status = 18 - (nChar == NC_SUBSCRIPT ? 2 : nChar == NC_SUPERSCRIPT ? 1:0);   //a
             } else //at this point shiftF is false
               if(alphaCase == AC_UPPER)  { //UPPER
                 setSystemFlag(FLAG_alphaCAP);
-                if(shiftG)                           { status =  3 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); } else
-                if(!shiftG && !shiftF && !numLock)   { status = 12 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); }
+                if(shiftG)                           { status =  3 - (nChar == NC_SUBSCRIPT ? 2 : nChar == NC_SUPERSCRIPT ? 1:0); } else
+                if(!shiftG && !shiftF && !numLock)   { status = 12 - (nChar == NC_SUBSCRIPT ? 2 : nChar == NC_SUPERSCRIPT ? 1:0); }
               } else
                 if(alphaCase == AC_LOWER)  { //LOWER
                   clearSystemFlag(FLAG_alphaCAP);
-                  if(shiftG)                         { status =  3 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); } else
-                  if(!shiftG && !shiftF && !numLock) { status = 18 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); }
+                  if(shiftG)                         { status =  3 - (nChar == NC_SUBSCRIPT ? 2 : nChar == NC_SUPERSCRIPT ? 1:0); } else
+                  if(!shiftG && !shiftF && !numLock) { status = 18 - (nChar == NC_SUBSCRIPT ? 2 : nChar == NC_SUPERSCRIPT ? 1:0); }
                 }
 
-      if(status >0 && status <=18) {
+      if((statusBarMask & SBARUPD_AlphaMode) && status >0 && status <=18) {
         lcd_fill_rect(X_ALPHA_MODE,0,11,18,0);
         switch(status) {
           case  1: showString(STD_SUB_N, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub    // STD_ALPHA is 0+9+2 pixel wide
@@ -389,6 +352,7 @@ void showFracMode(void) {
           default:;
         }
       }
+
     }
     else {
       clearSystemFlag(FLAG_alphaCAP);
@@ -398,6 +362,8 @@ void showFracMode(void) {
 
 
   void showHideHourGlass(void) {
+    if(!(statusBarMask & SBARUPD_HourGlass)) return;
+
     if(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR) {
       switch(calcMode) {
         case CM_PEM:
@@ -421,18 +387,18 @@ void showFracMode(void) {
     }
     switch(programRunStop) {
       case PGM_WAITING: {
-        showGlyph(STD_NEG_EXCLAMATION_MARK, &standardFont, (calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH  ? 160-20 : X_HOURGLASS) - 1, 0, vmNormal, true, false);
+        showGlyph(STD_NEG_EXCLAMATION_MARK, &standardFont, (calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH  ? X_HOURGLASS_GRAPHS : X_HOURGLASS) - 1, 0, vmNormal, true, false);
         break;
       }
       case PGM_RUNNING: {
-        lcd_fill_rect((calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH ? 160-20 : X_HOURGLASS) - 1, 0, stringWidth(STD_NEG_EXCLAMATION_MARK, &standardFont, true, false), 20, LCD_SET_VALUE);
-        showGlyph(STD_P, &standardFont, (calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH ? 160-20 : X_HOURGLASS) + 1, 0, vmNormal, true, false);
+        lcd_fill_rect((calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH ? X_HOURGLASS_GRAPHS : X_HOURGLASS) - 1, 0, stringWidth(STD_NEG_EXCLAMATION_MARK, &standardFont, true, false), 20, LCD_SET_VALUE);
+        showGlyph(STD_P, &standardFont, (calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH ? X_HOURGLASS_GRAPHS : X_HOURGLASS) + 1, 0, vmNormal, true, false);
         break;
       }
       default: {
-        lcd_fill_rect((calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH ? 160-20 : X_HOURGLASS) - 1, 0, stringWidth(STD_NEG_EXCLAMATION_MARK, &standardFont, true, false), 20, LCD_SET_VALUE);
+        lcd_fill_rect((calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH ? X_HOURGLASS_GRAPHS : X_HOURGLASS) - 1, 0, stringWidth(STD_NEG_EXCLAMATION_MARK, &standardFont, true, false), 20, LCD_SET_VALUE);
         if(hourGlassIconEnabled) {
-          showGlyph(STD_HOURGLASS, &standardFont, calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH ? 160-20 : X_HOURGLASS, 0, vmNormal, true, false); // is 0+11+3 pixel wide //Shift the hourglass to a visible part of the status bar
+          showGlyph(STD_HOURGLASS, &standardFont, calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH ? X_HOURGLASS_GRAPHS : X_HOURGLASS, 0, vmNormal, true, false); // is 0+11+3 pixel wide //Shift the hourglass to a visible part of the status bar
         }
       }
     }
@@ -442,6 +408,7 @@ void showFracMode(void) {
 
 
   void light_ASB_icon(void) {
+    if(!(statusBarMask & SBARUPD_AlphaMode)) return;
     lcd_fill_rect(X_ALPHA_MODE,18,9,2,0xFF);
     showString(asmBuffer, &standardFont, X_ALPHA_MODE+30, 0, vmNormal, true, false);
     force_refresh(force);
@@ -449,14 +416,21 @@ void showFracMode(void) {
 
 
   void kill_ASB_icon(void) {
+    if(!(statusBarMask & SBARUPD_AlphaMode)) return;
     lcd_fill_rect(X_ALPHA_MODE,18,9,2,0);
     showString("    ", &standardFont, X_ALPHA_MODE+30, 0, vmNormal, true, false);
     force_refresh(force);
   }
 
 
+  void showStackSize(void) {
+    if(!(statusBarMask & SBARUPD_StackSize)) return;
+    showGlyph(getSystemFlag(FLAG_SSIZE8) ? STD_8 : STD_4, &standardFont, X_SSIZE_BEGIN, 0, vmNormal, true, false); // is 0+6+2 pixel wide
+  }
+
 
   void showHideWatch(void) {
+    if(!(statusBarMask & SBARUPD_Watch)) return;
     if(watchIconEnabled) {
       showGlyph(STD_TIMER, &standardFont, X_WATCH, 0, vmNormal, true, false); // is 0+13+1 pixel wide
     }
@@ -465,6 +439,7 @@ void showFracMode(void) {
 
 
   void showHideSerialIO(void) {
+    if(!(statusBarMask & SBARUPD_SerialIO)) return;
     if(serialIOIconEnabled) {
       showGlyph(STD_SERIAL_IO, &standardFont, X_SERIAL_IO, 0, vmNormal, true, false); // is 0+8+3 pixel wide
     }
@@ -473,6 +448,7 @@ void showFracMode(void) {
 
 
   void showHidePrinter(void) {
+    if(!(statusBarMask & SBARUPD_Printer)) return;
     if(printerIconEnabled) {
       showGlyph(STD_PRINTER,   &standardFont, X_PRINTER, 0, vmNormal, true, false); // is 0+12+3 pixel wide
     }
@@ -482,6 +458,7 @@ void showFracMode(void) {
 
 
 void showHideASB(void) {                     //JMvv
+  if(!(statusBarMask & SBARUPD_AlphaMode)) return;
   if(fnTimerGetStatus(TO_ASM_ACTIVE) == TMR_RUNNING) {
     light_ASB_icon();
   }
@@ -494,6 +471,7 @@ void showHideASB(void) {                     //JMvv
 
 
 void showHideUserMode(void) {
+  if(!(statusBarMask & SBARUPD_UserMode)) return;
   if(getSystemFlag(FLAG_USER)) {
     showGlyph(STD_USER_MODE, &standardFont, X_USER_MODE, 0, vmNormal, false, false); // STD_USER_MODE is 0+12+2 pixel wide
   }
@@ -504,6 +482,7 @@ void showHideUserMode(void) {
 
   #if defined(DMCP_BUILD)
     void showHideUsbLowBattery(void) {
+      if(!(statusBarMask & SBARUPD_Battery)) return;
       if(getSystemFlag(FLAG_USB)) {
         showGlyph(STD_USB, &standardFont, X_BATTERY, 0, vmNormal, true, false); // is 0+9+2 pixel wide
       }
@@ -511,9 +490,79 @@ void showHideUserMode(void) {
         if(getSystemFlag(FLAG_LOWBAT)) {
           showGlyph(STD_BATTERY, &standardFont, X_BATTERY, 0, vmNormal, true, false); // is 0+10+1 pixel wide
         }
+	  else {
+		// Clear the space used by the USB / LOWBAT glyph
+		lcd_fill_rect(X_BATTERY, 0, 11, 20, LCD_SET_VALUE);
+	  }
+
       }
     }
   #endif // DMCP_BUILD
+
+
+  void refreshStatusBar(void) {
+    if(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR) {
+      switch(calcMode) {
+        case CM_PEM:
+        case CM_REGISTER_BROWSER:
+        case CM_FLAG_BROWSER:
+        case CM_ASN_BROWSER:
+        case CM_FONT_BROWSER:
+        case CM_PLOT_STAT:
+        case CM_CONFIRMATION:
+        case CM_MIM:
+        case CM_TIMER:
+        case CM_GRAPH: {
+          screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR;
+          break;
+        }
+
+        default: {
+          return;
+        }
+      }
+    }
+    #if(DEBUG_INSTEAD_STATUS_BAR == 1)
+      static char statusMessage[100];
+      sprintf(statusMessage, "%s%d %s/%s  mnu:%s fi:%d", catalog ? "asm:" : "", catalog, tam.mode ? "/tam" : "", getCalcModeName(calcMode),indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemCatalogName, softmenuStack[0].firstItem);
+      showString(statusMessage, &standardFont, X_DATE, 0, vmNormal, true, true);
+    #else // DEBUG_INSTEAD_STATUS_BAR != 1
+      if(calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) lcd_fill_rect(0, 0, 158, 20, 0);
+      showDateTime();
+      showHideHourGlass(); //TODO check if this belongs here and why JM
+      if(calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) {
+        return;    // With graph displayed, only update the time, as the other items are clashing with the graph display screen
+      }
+      showRealComplexResult();
+      showComplexMode();
+      showAngularMode();
+      showFracMode();
+      if(calcMode == CM_MIM) {
+        showMatrixMode();
+      }
+      else if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_TVM || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_FIN) { //JM added FIN
+        showTvmMode();
+      }
+      else {
+        showIntegerMode();
+        showOverflowCarry();
+      }
+      showHideAlphaMode();
+      showHideHourGlass();
+      showStackSize();
+      showHideWatch();
+      showHideSerialIO();
+      showHidePrinter();
+      showHideUserMode();
+      #if defined(DMCP_BUILD)
+        showHideUsbLowBattery();
+      #else // !DMCP_BUILD
+        showHideStackLift();
+      #endif // DMCP_BUILD
+      showHideASB();                            //JM
+    #endif // DEBUG_INSTEAD_STATUS_BAR == 1
+  }
+
 
 
 

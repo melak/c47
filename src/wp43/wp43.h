@@ -222,6 +222,7 @@
   extern uint8_t                displayStack;
   extern uint8_t                cachedDisplayStack;
   extern uint8_t                displayStackSHOIDISP;         //JM SHOIDISP
+  extern uint8_t                scrLock;
   extern bool_t                 numLock;                      //JM
   extern uint8_t                alphaCase;
   extern uint8_t                numLinesNumericFont;

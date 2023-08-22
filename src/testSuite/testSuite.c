@@ -62,7 +62,7 @@ extern const int16_t menu_alpha_INTL[];
 extern const int16_t menu_alpha_intl[];
 extern const int16_t menu_REGIST[];
 extern const softmenu_t softmenu[];
-char line[100000], lastInParameters[10000], fileName[1000], *filePath, filePathName[2000], registerExpectedAndValue[1000], realString[1000];
+char line[100000], lastInParameters[10000], fileName[1000], *filePath, filePathName[2000], registerExpectedAndValue[2400], realString[2400];
 int32_t lineNumber, numTestsFile, numTestsTotal, failedTests;
 int32_t functionIndex, funcType, correctSignificantDigits;
 void (*funcNoParam)(uint16_t);
@@ -588,7 +588,7 @@ void getString(char *str) {
 
 
 void setParameter(char *p) {
-  char l[200], r[400], real[200], imag[200], angMod[200]; //, letter;
+  char l[200], r[1400], real[200], imag[200], angMod[200]; //, letter;
   int32_t i;
   angularMode_t am = amDegree;
 
@@ -2242,7 +2242,7 @@ void checkExpectedOutParameter(char *p) {
 
       char *expected, *is;
       if(stringByteLength(r + 1) != stringByteLength(REGISTER_STRING_DATA(regist))) {
-        char stringUtf8[200];
+        char stringUtf8[1200];
         stringToUtf8(REGISTER_STRING_DATA(regist), (uint8_t *)stringUtf8);
         printf("\nThe 2 strings are not of the same size.\nRegister string: %s\n", stringUtf8);
         for(i=0, is=REGISTER_STRING_DATA(regist); i<=stringByteLength(REGISTER_STRING_DATA(regist)); i++, is++) {

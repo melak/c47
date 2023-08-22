@@ -137,11 +137,15 @@ void stackregister_csv_out(int16_t reg_b, int16_t reg_e) {
         tmp_b[0] = reg_Name(ix);
         strcat(tmp_b, CSV_TAB);
         }
+
       else if(ix >= 0 && ix <= 99) {
         sprintf(tmp_b, "%sR%02d%s%s", CSV_STR, ix, CSV_STR, CSV_TAB);
       }
-      else if(ix >= 112 && ix <= 112+100) {
-        sprintf(tmp_b, "%sU%02d%s%s", CSV_STR, ix-100, CSV_STR, CSV_TAB);
+      else if(ix >= FIRST_LOCAL_REGISTER && ix <= LAST_LOCAL_REGISTER) {
+        sprintf(tmp_b, "%sR.%03d%s%s", CSV_STR, ix-100, CSV_STR, CSV_TAB);
+      }
+      else if(ix >= FIRST_NAMED_VARIABLE && ix <= LAST_NAMED_VARIABLE) {
+        sprintf(tmp_b, "%sN%03d%s%s%s%s%s%s", CSV_STR, ix-100, CSV_STR, CSV_TAB, CSV_STR, (char *)allNamedVariables[ix - FIRST_NAMED_VARIABLE].variableName + 1, CSV_STR, CSV_TAB);
       }
 
       #if(VERBOSE_LEVEL >= 1)

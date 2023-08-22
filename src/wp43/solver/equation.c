@@ -200,6 +200,7 @@ void fnEqEdit(uint16_t unusedButMandatoryParameter) {
     alphaCase = AC_LOWER;
     nextChar = NC_NORMAL;//JM C43
     numLock = false;     //JM C43
+    scrLock = NC_NORMAL;
     setSystemFlag(FLAG_ALPHA);
     yCursor = 0;
     xCursor = equationString ? stringGlyphLength(equationString) : 0;
@@ -873,7 +874,6 @@ static void _runEqFunction(char *mvarBuffer, uint16_t item) {
     case ITM_HN:
     case ITM_HNP:
     case ITM_Lm:
-    case ITM_LmALPHA:
     case ITM_Pn:
     case ITM_Tn:
     case ITM_Un:
@@ -1118,7 +1118,7 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
         else {
           displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
           #if(EXTRA_INFO_ON_CALC_ERROR == 1)
-            moreInfoOnError("In function parseEquation:", strPtr, "is not a valid name!", NULL);
+            moreInfoOnError("In function parseEquation 1:", strPtr, "is not a valid name!", NULL);
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         }
       }
@@ -1161,7 +1161,7 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
         else {
           displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
           #if(EXTRA_INFO_ON_CALC_ERROR == 1)
-            moreInfoOnError("In function parseEquation:", strPtr, "is not a valid name!", NULL);
+            moreInfoOnError("In function parseEquation 2:", strPtr, "is not a valid name!", NULL);
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         }
       }

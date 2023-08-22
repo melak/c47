@@ -193,6 +193,8 @@ void fnRCL          (int16_t inp);
 #define JC_SI_All              69
 #define JC_CPXMULT             70
 
+#define JC_SS                  71
+
 #if defined(PC_BUILD)
 //keyboard.c
 void JM_DOT(int16_t xx, int16_t yy);

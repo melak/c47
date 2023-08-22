@@ -2010,7 +2010,7 @@
 #define ITM_T_LLEFT_ARROW           1954
 #define ITM_T_RRIGHT_ARROW          1955
 #define ITM_XNEW                    1956
-#define ITM_XEDIT                   1957
+#define ITM_XSWAP                   1957
 #define ITM_OCT                     1958
 #define ITM_USER_C47                1959
 #define ITM_USER_V47                1960
@@ -2215,9 +2215,9 @@
 #define ITM_GAP_L                   2159
 #define ITM_GAP_RX                  2160
 #define ITM_GAP_R                   2161
-#define ITM_ASIN_SIGN               2162
-#define ITM_ACOS_SIGN               2163
-#define ITM_ATAN_SIGN               2164
+#define ITM_2162                    2162
+#define ITM_2163                    2163
+#define ITM_2164                    2164
 #define ITM_op_j_SIGN               2165
 #define ITM_poly_SIGN               2166
 #define ITM_NMItoMI                 2167
@@ -2244,8 +2244,12 @@
 #define ITM_KMHtoFPS                2188
 #define ITM_FTPtoMPS                2189
 #define ITM_MPStoFPS                2190
+#define ITM_SCR                     2191
+#define ITM_SCRNRM                  2192
+#define ITM_SCRSUP                  2193
+#define ITM_SCRSUB                  2194
 
-#define LAST_ITEM                   2191
+#define LAST_ITEM                   2195
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
