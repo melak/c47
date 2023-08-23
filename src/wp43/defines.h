@@ -1318,22 +1318,29 @@ typedef enum {
 #define SEPARATOR_RIGHT                      (gapChar1Right)
 
 #define checkHP                              (significantDigits <= 16 && displayStack == 1 && exponentLimit == 99 && Input_Default == ID_DP && (calcMode == CM_NORMAL || calcMode == CM_NIM))
-#define REPLACEFONT
+#define REPLACEFONT                          // Use HP 7-segment font
 #ifdef REPLACEFONT
-  #define DOUBLING                             15u  //factor 2 more!// 8=is double; 7 is 1.75*; 6=1.5*; 5=1.25* (4 is the per unit norm horizontal factor)
-  #define DOUBLINGBASEX                        8u    
-  #define REDUCT_A                             4   // Reduction vertical ratio A/B
-  #define REDUCT_B                             4
-  #define REDUCT_OFF                           0   // Reduction vertical offset
-  #define HPFONT                               true
+  #define DOUBLING_A                         15u // 16=is double; 14 is 1.75*; 12=1.5*; 10=1.25* (8 is the per unit norm horizontal factor, A/B)
+  #define DOUBLINGBASE_B                     8u
+  #define REDUCT_A1                          4   // Reduction vertical ratio A/B
+  #define REDUCT_B1                          4
+  #define REDUCT_OFFSET1                     0   // Reduction vertical offset
+  #define HPFONT1                            true
 #else
-  #define DOUBLING                            14u  // 7u  factor 2 more!// 8=is double; 7 is 1.75*; 6=1.5*; 5=1.25* (4 is the per unit norm horizontal factor)
-  #define DOUBLINGBASEX                        8u  // 4u     
-  #define REDUCT_A                             3   // Reduction ratio A/B
-  #define REDUCT_B                             4
-  #define REDUCT_OFF                           3   // Reduction offset
-  #define HPFONT                               false
+  #define DOUBLING_A                         14u // 16=is double; 14 is 1.75*; 12=1.5*; 10=1.25* (8 is the per unit norm horizontal factor, A/B)
+  #define DOUBLINGBASE_B                     8u
+  #define REDUCT_A1                          3   // Reduction ratio A/B
+  #define REDUCT_B1                          4
+  #define REDUCT_OFFSET1                     3   // Reduction offset
+  #define HPFONT1                            false
 #endif
+#define DOUBLING                             (checkHP ? DOUBLING_A     : 6u)
+#define DOUBLINGBASEX                        (checkHP ? DOUBLINGBASE_B : 8u)
+#define REDUCT_A                             (checkHP ? REDUCT_A1      : 3)
+#define REDUCT_B                             (checkHP ? REDUCT_B1      : 4)
+#define REDUCT_OFF                           (checkHP ? REDUCT_OFFSET1 : 3)
+#define HPFONT                               (checkHP ? HPFONT1        : false)
+
 
 #define GROUPWIDTH_LEFT                      (grpGroupingLeft)
 #define GROUPWIDTH_LEFT1                     ((grpGroupingGr1Left        == 0 ? (uint16_t)grpGroupingLeft : (uint16_t)grpGroupingGr1Left))
