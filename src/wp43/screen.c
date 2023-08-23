@@ -511,7 +511,7 @@
     if(cursorEnabled) {
       if(++cursorBlinkCounter > cursorCycle) {         //JM cursor vv
         cursorBlinkCounter = 0;
-        if(cursorBlink) {
+        if(cursorBlink && !checkHP) {
           showGlyph(STD_CURSOR, cursorFont, xCursor, yCursor - checkHPoffset, vmNormal, true, false);
         }                                              //JM cursor ^^
         else {
@@ -566,7 +566,7 @@
     if(cursorEnabled) {
       if(++cursorBlinkCounter > cursorCycle) {         //JM cursor vv
         cursorBlinkCounter = 0;
-        if(cursorBlink) {
+        if(cursorBlink && !checkHP) {
           showGlyph(STD_CURSOR, cursorFont, xCursor, yCursor - checkHPoffset, vmNormal, true, false);
         }                                              //JM cursor ^^
         else {
@@ -3904,6 +3904,9 @@ void execTimerApp(uint16_t timerType) {
 
   void clearShiftState(void) {
     lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, 15, NUMERIC_FONT_HEIGHT, LCD_SET_VALUE);
+    if(calcMode == CM_PEM) {
+        fnPem(NOPARAM);
+    }
   }
 
 

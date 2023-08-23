@@ -610,7 +610,7 @@ TO_QSPI const int16_t menu_Timer[]       = { ITM_TIMER_ADD,                 ITM_
 
 
 TO_QSPI const int16_t menu_BASE[]        = { ITM_2HEX,                      ITM_2DEC,                   ITM_2OCT,                 ITM_2BIN,              -MNU_BITS,                   -MNU_INTS,                                    //JM BASE MENU ADDED
-                                             ITM_LOGICALAND,                ITM_LOGICALOR,              ITM_LOGICALXOR,           ITM_LOGICALNOT,        ITM_HASH_JM,                 ITM_IP,
+                                             ITM_LOGICALAND,                ITM_LOGICALOR,              ITM_LOGICALXOR,           ITM_LOGICALNOT,        ITM_HASH_JM,                 ITM_LINT,
                                              ITM_WS64,                      ITM_WS32,                   ITM_WS16,                 ITM_WS8,               ITM_BCD,                     ITM_CB_LEADING_ZERO,
 
                                              ITM_SL1,                       ITM_SR1,                    ITM_RL1,                  ITM_RR1,               ITM_RL,                      ITM_RR,
@@ -659,15 +659,19 @@ TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_
   #define CC_USER_SHIFTS  ITM_NULL
 #else // !SAVE_SPACE_DM42_7
   #define CC_DM42  ITM_USER_DM42
-  #define CC_USER_SHIFTSA ITM_USER_C43ALTA
-  #define CC_USER_SHIFTSB ITM_USER_C43ALTB
-  #define CC_USER_SHIFTS  ITM_USER_C43ALT
+  #define CC_USER_SHIFTSA ITM_NULL //ITM_USER_C43ALTA
+  #define CC_USER_SHIFTSB ITM_NULL //ITM_USER_C43ALTB
+  #define CC_USER_SHIFTS  ITM_NULL //ITM_USER_C43ALT
 #endif // SAVE_SPACE_DM42_7
 
 
-TO_QSPI const int16_t menu_ASN[]         = { ITM_USER_C43,                  CC_USER_SHIFTSA,            CC_USER_SHIFTS,           ITM_USER_WP43S,        CC_DM42,                    ITM_ASSIGN,
-                                             ITM_USER_C47,                  CC_D47,                     CC_E47,                   CC_N47,                CC_V47,                     ITM_USERMODE,
-                                            -MNU_ASN_N,                     CC_USER_SHIFTSB,            ITM_ASNVIEWER,            ITM_USER_ARESET,       ITM_USER_MRESET,            ITM_USER_KRESET    };
+TO_QSPI const int16_t menu_ASN[]         = { ITM_USER_C47,                  ITM_USER_C43,               ITM_USER_WP43S,           CC_DM42,               ITM_ASSIGN,                 ITM_USERMODE,
+                                             ITM_ASNVIEWER,                 CC_D47,                     CC_E47,                   CC_N47,                CC_V47,                    -MNU_ASN_N,
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_USER_ARESET,       ITM_USER_MRESET,            ITM_USER_KRESET    };
+
+//TO_QSPI const int16_t menu_ASN[]         = { ITM_USER_C43,                  CC_USER_SHIFTSA,            CC_USER_SHIFTS,           ITM_USER_WP43S,        CC_DM42,                    ITM_ASSIGN,
+//                                             ITM_USER_C47,                  CC_D47,                     CC_E47,                   CC_N47,                CC_V47,                     ITM_USERMODE,
+//                                            -MNU_ASN_N,                     CC_USER_SHIFTSB,            ITM_ASNVIEWER,            ITM_USER_ARESET,       ITM_USER_MRESET,            ITM_USER_KRESET    };
 
 TO_QSPI const int16_t menu_XEQ[]         = { ITM_X_P1,                      ITM_X_P2,                   ITM_X_P3,                 ITM_X_P4,              ITM_X_P5,                    ITM_X_P6,
                                              ITM_X_f1,                      ITM_X_f2,                   ITM_X_f3,                 ITM_X_f4,              ITM_X_f5,                    ITM_X_f6,

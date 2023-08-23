@@ -97,6 +97,8 @@
   extern const calcKey_t                 kbd_std_C43AltA[37];
   #if !defined(SAVE_SPACE_DM42)
     extern const calcKey_t                 kbd_std_D47[37];
+    extern const calcKey_t                 kbd_std_V47[37];
+    extern const calcKey_t                 kbd_std_E47[37];
     extern const calcKey_t                 kbd_std_N47[37];
   #endif // !SAVE_SPACE_DM42
   extern const font_t                    standardFont, numericFont, tinyFont;

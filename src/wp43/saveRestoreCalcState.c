@@ -1240,70 +1240,70 @@ flushBufferCnt = 0;
   }
 
   // Other configuration stuff
-  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n42\n"); //JM 16+11+14+1
+  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n48\n"); //JM 23+10+15
   save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "firstGregorianDay\n%" PRIu32 "\n", firstGregorianDay);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "denMax\n%" PRIu32 "\n", denMax);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "lastDenominator\n%" PRIu32 "\n", lastDenominator);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "displayFormat\n%" PRIu8 "\n", displayFormat);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "displayFormatDigits\n%" PRIu8 "\n", displayFormatDigits);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "timeDisplayFormatDigits\n%" PRIu8 "\n", timeDisplayFormatDigits);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "shortIntegerWordSize\n%" PRIu8 "\n", shortIntegerWordSize);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "shortIntegerMode\n%" PRIu8 "\n", shortIntegerMode);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "significantDigits\n%" PRIu8 "\n", significantDigits);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "currentAngularMode\n%" PRIu8 "\n", (uint8_t)currentAngularMode);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, " gapItemLeft\n%" PRIu16 "\n", gapItemLeft);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, " gapItemRight\n%" PRIu16 "\n", gapItemRight);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, " gapItemRadix\n%" PRIu16 "\n", gapItemRadix);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, " grpGroupingLeft\n%" PRIu8 "\n", grpGroupingLeft);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, " grpGroupingGr1LeftOverflow\n%" PRIu8 "\n", grpGroupingGr1LeftOverflow);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, " grpGroupingGr1Left\n%" PRIu8 "\n", grpGroupingGr1Left);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, " grpGroupingRight\n%" PRIu8 "\n", grpGroupingRight);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "roundingMode\n%" PRIu8 "\n", roundingMode);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "displayStack\n%" PRIu8 "\n", displayStack);
-  save(tmpString, strlen(tmpString));
-  UI64toString(pcg32_global.state, yy1);
-  UI64toString(pcg32_global.inc, yy2);
-  sprintf(tmpString, "rngState\n%s %s\n", yy1, yy2);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "exponentLimit\n%" PRId16 "\n", exponentLimit);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "exponentHideLimit\n%" PRId16 "\n", exponentHideLimit);
-  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "notBestF\n%" PRIu16 "\n", lrSelection);
-  save(tmpString, strlen(tmpString));
-//Number 16: digit
 
-//11
-  sprintf(tmpString, "fgLN\n%"                PRIu8 "\n",       (uint8_t)fgLN);                save(tmpString, strlen(tmpString));      //keep save file format by keeping the old setting
-  sprintf(tmpString, "eRPN\n%"                PRIu8 "\n",       (uint8_t)eRPN);                save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "HOME3\n%"               PRIu8 "\n",       (uint8_t)HOME3);               save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "ShiftTimoutMode\n%"     PRIu8 "\n",       (uint8_t)ShiftTimoutMode);     save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "CPXMult\n%"             PRIu8 "\n",       (uint8_t)CPXMULT);             save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "SH_BASE_HOME\n%"        PRIu8 "\n",       (uint8_t)SH_BASE_HOME);        save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "Norm_Key_00_VAR\n%"     PRId16 "\n",      Norm_Key_00_VAR);              save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "Input_Default\n%"       PRIu8 "\n",       Input_Default);                save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "jm_BASE_SCREEN\n%"      PRIu8 "\n",       (uint8_t)jm_BASE_SCREEN);      save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "jm_G_DOUBLETAP\n%"      PRIu8 "\n",       (uint8_t)jm_G_DOUBLETAP);      save(tmpString, strlen(tmpString));
+//23
+/*  */  sprintf(tmpString, "firstGregorianDay\n%" PRIu32 "\n", firstGregorianDay);
+/*01*/  save(tmpString, strlen(tmpString));
+/*  */  sprintf(tmpString, "denMax\n%" PRIu32 "\n", denMax);
+/*02*/  save(tmpString, strlen(tmpString));
+/*  */  sprintf(tmpString, "lastDenominator\n%" PRIu32 "\n", lastDenominator);
+/*03*/  save(tmpString, strlen(tmpString));
+/*  */  sprintf(tmpString, "displayFormat\n%" PRIu8 "\n", displayFormat);
+/*04*/  save(tmpString, strlen(tmpString));
+/*  */  sprintf(tmpString, "displayFormatDigits\n%" PRIu8 "\n", displayFormatDigits);
+/*05*/  save(tmpString, strlen(tmpString));
+/*  */  sprintf(tmpString, "timeDisplayFormatDigits\n%" PRIu8 "\n", timeDisplayFormatDigits);
+/*06*/  save(tmpString, strlen(tmpString));
+/*  */  sprintf(tmpString, "shortIntegerWordSize\n%" PRIu8 "\n", shortIntegerWordSize);
+/*07*/  save(tmpString, strlen(tmpString));
+/*  */  sprintf(tmpString, "shortIntegerMode\n%" PRIu8 "\n", shortIntegerMode);
+/*08*/  save(tmpString, strlen(tmpString));
+/*  */  sprintf(tmpString, "significantDigits\n%" PRIu8 "\n", significantDigits);
+/*09*/  save(tmpString, strlen(tmpString));
+/*  */  sprintf(tmpString, "currentAngularMode\n%" PRIu8 "\n", (uint8_t)currentAngularMode);
+/*10*/  save(tmpString, strlen(tmpString));
+/*  */  sprintf(tmpString, " gapItemLeft\n%" PRIu16 "\n", gapItemLeft);
+/*11*/  save(tmpString, strlen(tmpString));
+/*  */  sprintf(tmpString, " gapItemRight\n%" PRIu16 "\n", gapItemRight);
+/*12*/  save(tmpString, strlen(tmpString));
+/*  */  sprintf(tmpString, " gapItemRadix\n%" PRIu16 "\n", gapItemRadix);
+/*13*/  save(tmpString, strlen(tmpString));
+/*  */  sprintf(tmpString, " grpGroupingLeft\n%" PRIu8 "\n", grpGroupingLeft);
+/*14*/  save(tmpString, strlen(tmpString));
+/*  */  sprintf(tmpString, " grpGroupingGr1LeftOverflow\n%" PRIu8 "\n", grpGroupingGr1LeftOverflow);
+/*15*/  save(tmpString, strlen(tmpString));
+/*  */  sprintf(tmpString, " grpGroupingGr1Left\n%" PRIu8 "\n", grpGroupingGr1Left);
+/*16*/  save(tmpString, strlen(tmpString));
+/*  */  sprintf(tmpString, " grpGroupingRight\n%" PRIu8 "\n", grpGroupingRight);
+/*17*/  save(tmpString, strlen(tmpString));
+/*  */  sprintf(tmpString, "roundingMode\n%" PRIu8 "\n", roundingMode);
+/*18*/  save(tmpString, strlen(tmpString));
+/*  */  sprintf(tmpString, "displayStack\n%" PRIu8 "\n", displayStack);
+/*19*/  save(tmpString, strlen(tmpString));
+/*  */  UI64toString(pcg32_global.state, yy1);
+/*  */  UI64toString(pcg32_global.inc, yy2);
+/*20*/  sprintf(tmpString, "rngState\n%s %s\n", yy1, yy2);
+/*  */  save(tmpString, strlen(tmpString));
+/*21*/  sprintf(tmpString, "exponentLimit\n%" PRId16 "\n", exponentLimit);
+/*  */  save(tmpString, strlen(tmpString));
+/*22*/  sprintf(tmpString, "exponentHideLimit\n%" PRId16 "\n", exponentHideLimit);
+/*  */  save(tmpString, strlen(tmpString));
+/*23*/  sprintf(tmpString, "notBestF\n%" PRIu16 "\n", lrSelection);
+/*  */  save(tmpString, strlen(tmpString));
 
+//10
+/*01*/  sprintf(tmpString, "fgLN\n%"                PRIu8 "\n",       (uint8_t)fgLN);                save(tmpString, strlen(tmpString));      //keep save file format by keeping the old setting
+/*02*/  sprintf(tmpString, "eRPN\n%"                PRIu8 "\n",       (uint8_t)eRPN);                save(tmpString, strlen(tmpString));
+/*03*/  sprintf(tmpString, "HOME3\n%"               PRIu8 "\n",       (uint8_t)HOME3);               save(tmpString, strlen(tmpString));
+/*04*/  sprintf(tmpString, "ShiftTimoutMode\n%"     PRIu8 "\n",       (uint8_t)ShiftTimoutMode);     save(tmpString, strlen(tmpString));
+/*05*/  sprintf(tmpString, "CPXMult\n%"             PRIu8 "\n",       (uint8_t)CPXMULT);             save(tmpString, strlen(tmpString));
+/*06*/  sprintf(tmpString, "SH_BASE_HOME\n%"        PRIu8 "\n",       (uint8_t)SH_BASE_HOME);        save(tmpString, strlen(tmpString));
+/*07*/  sprintf(tmpString, "Norm_Key_00_VAR\n%"     PRId16 "\n",      Norm_Key_00_VAR);              save(tmpString, strlen(tmpString));
+/*08*/  sprintf(tmpString, "Input_Default\n%"       PRIu8 "\n",       Input_Default);                save(tmpString, strlen(tmpString));
+/*09*/  sprintf(tmpString, "jm_BASE_SCREEN\n%"      PRIu8 "\n",       (uint8_t)jm_BASE_SCREEN);      save(tmpString, strlen(tmpString));
+/*10*/  sprintf(tmpString, "jm_G_DOUBLETAP\n%"      PRIu8 "\n",       (uint8_t)jm_G_DOUBLETAP);      save(tmpString, strlen(tmpString));
 
 /*
   float  graph_xmin;
@@ -1355,23 +1355,23 @@ flushBufferCnt = 0;
   sprintf(tmpString, "PLOT_ZMY\n%"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString));
 */
 
-//12
-  sprintf(tmpString, "jm_temporary\n%"          PRIu8 "\n",     (uint8_t)jm_temporary);        save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "jm_LARGELI\n%"            PRIu8 "\n",     (uint8_t)jm_LARGELI);          save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "constantFractions\n%"     PRIu8 "\n",     (uint8_t)constantFractions);   save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "constantFractionsMode\n%" PRIu8 "\n",     constantFractionsMode);        save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "constantFractionsOn\n%"   PRIu8 "\n",     (uint8_t)constantFractionsOn); save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "displayStackSHOIDISP\n%"  PRIu8 "\n",     displayStackSHOIDISP);         save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "bcdDisplay\n%"            PRIu8 "\n",     (uint8_t)bcdDisplay);          save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "topHex\n%"                PRIu8 "\n",     (uint8_t)topHex);              save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "bcdDisplaySign\n%"        PRIu8 "\n",     bcdDisplaySign);               save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "DRG_Cycling\n%"           PRIu8 "\n",     DRG_Cycling);                  save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "DM_Cycling\n%"            PRIu8 "\n",     DM_Cycling);                   save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "SI_All\n%"                PRIu8 "\n",     (uint8_t)SI_All);              save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "LongPressM\n%"            PRIu8 "\n",     (uint8_t)LongPressM);          save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "LongPressF\n%"            PRIu8 "\n",     (uint8_t)LongPressF);          save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "lastIntegerBase\n%"       PRIu8 "\n",     (uint8_t)lastIntegerBase);     save(tmpString, strlen(tmpString));
-//42
+/*  *///15
+/*01*/  sprintf(tmpString, "jm_temporary\n%"          PRIu8 "\n",     (uint8_t)jm_temporary);        save(tmpString, strlen(tmpString));
+/*02*/  sprintf(tmpString, "jm_LARGELI\n%"            PRIu8 "\n",     (uint8_t)jm_LARGELI);          save(tmpString, strlen(tmpString));
+/*03*/  sprintf(tmpString, "constantFractions\n%"     PRIu8 "\n",     (uint8_t)constantFractions);   save(tmpString, strlen(tmpString));
+/*04*/  sprintf(tmpString, "constantFractionsMode\n%" PRIu8 "\n",     constantFractionsMode);        save(tmpString, strlen(tmpString));
+/*05*/  sprintf(tmpString, "constantFractionsOn\n%"   PRIu8 "\n",     (uint8_t)constantFractionsOn); save(tmpString, strlen(tmpString));
+/*06*/  sprintf(tmpString, "displayStackSHOIDISP\n%"  PRIu8 "\n",     displayStackSHOIDISP);         save(tmpString, strlen(tmpString));
+/*07*/  sprintf(tmpString, "bcdDisplay\n%"            PRIu8 "\n",     (uint8_t)bcdDisplay);          save(tmpString, strlen(tmpString));
+/*08*/  sprintf(tmpString, "topHex\n%"                PRIu8 "\n",     (uint8_t)topHex);              save(tmpString, strlen(tmpString));
+/*09*/  sprintf(tmpString, "bcdDisplaySign\n%"        PRIu8 "\n",     bcdDisplaySign);               save(tmpString, strlen(tmpString));
+/*10*/  sprintf(tmpString, "DRG_Cycling\n%"           PRIu8 "\n",     DRG_Cycling);                  save(tmpString, strlen(tmpString));
+/*11*/  sprintf(tmpString, "DM_Cycling\n%"            PRIu8 "\n",     DM_Cycling);                   save(tmpString, strlen(tmpString));
+/*12*/  sprintf(tmpString, "SI_All\n%"                PRIu8 "\n",     (uint8_t)SI_All);              save(tmpString, strlen(tmpString));
+/*13*/  sprintf(tmpString, "LongPressM\n%"            PRIu8 "\n",     (uint8_t)LongPressM);          save(tmpString, strlen(tmpString));
+/*14*/  sprintf(tmpString, "LongPressF\n%"            PRIu8 "\n",     (uint8_t)LongPressF);          save(tmpString, strlen(tmpString));
+/*15*/  sprintf(tmpString, "lastIntegerBase\n%"       PRIu8 "\n",     (uint8_t)lastIntegerBase);     save(tmpString, strlen(tmpString));
+
 
   ioFileClose();
 
@@ -2468,7 +2468,7 @@ int32_t stringToInt32(const char *str) {
           else if(strcmp(aimBuffer, "displayStackSHOIDISP"        ) == 0) { displayStackSHOIDISP = stringToUint8(tmpString); }
           else if(strcmp(aimBuffer, "bcdDisplay"                  ) == 0) { bcdDisplay           = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "topHex"                      ) == 0) { topHex               = (bool_t)stringToUint8(tmpString) != 0; }
-          else if(strcmp(aimBuffer, "bcdDisplaySign"              ) == 0) { bcdDisplaySign       = stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "bcdDisplaySign"              ) == 0) { bcdDisplaySign       = stringToUint8(tmpString); }
           else if(strcmp(aimBuffer, "DRG_Cycling"                 ) == 0) { DRG_Cycling          = stringToUint8(tmpString); }
           else if(strcmp(aimBuffer, "DM_Cycling"                  ) == 0) { DM_Cycling           = stringToUint8(tmpString); }
           else if(strcmp(aimBuffer, "SI_All"                      ) == 0) { SI_All               = (bool_t)stringToUint8(tmpString) != 0; }

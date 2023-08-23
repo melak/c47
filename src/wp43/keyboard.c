@@ -285,7 +285,7 @@ printf(">>>>Z 0093c determineFunctionKeyItem  item = %i:   name:=%s\n",item, ind
     }
 
   #if defined(VERBOSEKEYS)
-  printf(">>>>Z 0094B if(calcMode == CM_ASSIGN       data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",data,data[0],item,itemShift, FN_key_pressed);
+  printf(">>>>Z 0094B    calcMode == %u  data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",calcMode, data,data[0],item,itemShift, FN_key_pressed);
   printf(">>>>  0095     dynamicMenuItem=%d\n",dynamicMenuItem);
   printf(">>>>  0096     firstItem=%d itemShift=%d fn=%d\n",firstItem, itemShift, fn);
   #endif //VERBOSEKEYS
@@ -909,7 +909,7 @@ int16_t lastItem = 0;
     int16_t item = ITM_NOP;
 
       #if defined(VERBOSEKEYS)
-        printf("keyboard.c: executeFunction %i (beginning of executeFunction): %i, %s tam.mode=%i\n", item, softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName, tam.mode);
+        printf("keyboard.c: executeFunction %i (beginning of executeFunction): %i, %s tam.mode=%i calcMode=%u aimBuffer=%s\n", item, softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName, tam.mode, calcMode, aimBuffer);
       #endif //VERBOSEKEYS
 
 
@@ -1036,9 +1036,9 @@ int16_t lastItem = 0;
             return;
           }
 
-#if defined(VERBOSEKEYS)
-printf(">>>> R000D                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
-#endif //VERBOSEKEYS
+          #if defined(VERBOSEKEYS)
+          printf(">>>> R000D                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
+          #endif //VERBOSEKEYS
 
           // If we are in the catalog then a normal key press should affect the Alpha Selection Buffer to choose
           // an item from the catalog, but a function key press should put the item in the AIM (or TAM) buffer
@@ -1085,6 +1085,11 @@ printf(">>>> R000D                                %d |%s| shiftF=%d, shiftG=%d t
             addItemToBuffer(item);
           }
           else if(item > 0) { // function
+            if(calcMode == CM_NORMAL && lastIntegerBase != 0 && (item == ITM_2BIN || item == ITM_2OCT || item == ITM_2DEC || item == ITM_2HEX)) {
+              lastIntegerBase = 0;
+              screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+              goto noMoreToDo;
+            }
             if(calcMode == CM_NIM && (item != ITM_CC && item != ITM_op_j) && item!=ITM_HASH_JM && item!=ITM_toHMS && item!=ITM_ms) {  //JMNIM Allow NIM not closed, so that JMNIM can change the bases without ierrors thrown
               closeNim();
               if(calcMode != CM_NIM) {
@@ -1103,9 +1108,9 @@ printf(">>>> R000D                                %d |%s| shiftF=%d, shiftG=%d t
               tamLeaveMode();
             }
 
-#if defined(VERBOSEKEYS)
-printf(">>>> R000E                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
-#endif //VERBOSEKEYS
+            #if defined(VERBOSEKEYS)
+            printf(">>>> R000E                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
+            #endif //VERBOSEKEYS
 
             if(lastErrorCode == 0) {
               if(temporaryInformation == TI_VIEW) {
@@ -1188,18 +1193,20 @@ printf(">>>> R000E                                %d |%s| shiftF=%d, shiftG=%d t
             }
           }
 
-#if defined(VERBOSEKEYS)
-printf(">>>> R000F                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
-#endif //VERBOSEKEYS
+          noMoreToDo:
+
+          #if defined(VERBOSEKEYS)
+          printf(">>>> R000F                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
+          #endif //VERBOSEKEYS
 
           _closeCatalog();
           fnKeyInCatalog = 0;
         }
       }
     }
-  #if defined(PC_BUILD)
-    printf(">>>  refreshScreen3 from keyboard.c executeFunction\n");
-  #endif
+    #if defined(PC_BUILD)
+      printf(">>>  refreshScreen3 from keyboard.c executeFunction\n");
+    #endif
     refreshScreen();
 //TODO 2023-04-15 check here. It needs to be changed not to always refresh the screen.
 
