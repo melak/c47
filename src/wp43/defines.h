@@ -26,7 +26,7 @@
 
 #define VERSION1 "0.109.00.SNP"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
-//2023-08-21-0.109.00.00-Snapshot
+//2023-08-21-0.108.12.00
 
   #undef SAVE_SPACE_DM42
   #undef SAVE_SPACE_DM42_0
@@ -81,7 +81,7 @@
 //    #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
 //    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
     #define SAVE_SPACE_DM42_15       //           without all distributions, i.e. binomial, cauchy, chi
-    #define SAVE_SPACE_DM42_16       //           without Norml
+//    #define SAVE_SPACE_DM42_16       //           without Norml
   #endif // TWO_FILE_PGM
 #endif // DMCP_BUILD || SCREEN_800X480 == 1
 

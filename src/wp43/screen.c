@@ -509,7 +509,7 @@ uint16_t current_cursor_y = 0;
     if(cursorEnabled) {
       if(++cursorBlinkCounter > cursorCycle) {         //JM cursor vv
         cursorBlinkCounter = 0;
-        if(cursorBlink) {
+        if(cursorBlink && !checkHP) {
           showGlyph(STD_CURSOR, cursorFont, xCursor, yCursor - checkHPoffset, vmNormal, true, false);
         }                                              //JM cursor ^^
         else {
@@ -564,7 +564,7 @@ uint16_t current_cursor_y = 0;
     if(cursorEnabled) {
       if(++cursorBlinkCounter > cursorCycle) {         //JM cursor vv
         cursorBlinkCounter = 0;
-        if(cursorBlink) {
+        if(cursorBlink && !checkHP) {
           showGlyph(STD_CURSOR, cursorFont, xCursor, yCursor - checkHPoffset, vmNormal, true, false);
         }                                              //JM cursor ^^
         else {
@@ -3883,6 +3883,11 @@ void execTimerApp(uint16_t timerType) {
 
     //lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, 15, NUMERIC_FONT_HEIGHT, LCD_SET_VALUE);
     //lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE-2, 12, 32, LCD_SET_VALUE);
+
+    if(calcMode == CM_PEM) {
+        fnPem(NOPARAM);
+    }
+
   }
   void showShiftStateF(void) {
     //showGlyph(STD_SUP_f, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // f is pixel 4+8+3 wide
@@ -3893,6 +3898,8 @@ void execTimerApp(uint16_t timerType) {
     //showGlyph(STD_SUP_g, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // g is pixel 4+10+1 wide
     //showStringC43(STD_g, numHalf, nocompress, 0, Y_POSITION_OF_REGISTER_T_LINE-2-4, vmNormal, false, false);    
     showGlyph(STD_MODE_G, &standardFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // f is pixel 4+8+3 wide
+
+
   }
 
 
