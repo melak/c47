@@ -315,7 +315,7 @@ gboolean keyPressed(GtkWidget *w, GdkEventKey *event, gpointer data) {
   }
   //printf("#######%d\n",event_keyval);
 //JM ALPHA SECTION FOR ALPHAMODE - TAKE OVER ALPHA KEYBOARD
-if(calcMode == CM_AIM || calcMode == CM_EIM || tam.mode) {
+if(calcMode == CM_AIM || calcMode == CM_EIM || calcMode == CM_MIM || tam.mode) {
   printf(">>>>> Keyboard Key Code = %d\n", event_keyval);
   switch(event_keyval) {
     case 65507: // left Ctrl
@@ -344,7 +344,7 @@ if(calcMode == CM_AIM || calcMode == CM_EIM || tam.mode) {
         shiftF = false;
           int16_t jj = softmenuStack[0].firstItem;
           softmenuStack[0].firstItem = 0;
-          btnFnClicked(w, "2");  //F2
+          btnFnClicked(w, "1");  //F1
           softmenuStack[0].firstItem = jj;
           showSoftmenuCurrentPart();
       }
@@ -354,7 +354,7 @@ if(calcMode == CM_AIM || calcMode == CM_EIM || tam.mode) {
         shiftF = false;
           int16_t jj = softmenuStack[0].firstItem;
           softmenuStack[0].firstItem = 0;
-          btnFnClicked(w, "3");  //F3
+          btnFnClicked(w, "2");  //F2
           softmenuStack[0].firstItem = jj;
           showSoftmenuCurrentPart();
       }
@@ -362,7 +362,11 @@ if(calcMode == CM_AIM || calcMode == CM_EIM || tam.mode) {
     case 61:
       if(calcMode == CM_EIM) {
         shiftF = true;
-        btnFnClicked(w, "5");  //= F5
+          int16_t jj = softmenuStack[0].firstItem;
+          softmenuStack[0].firstItem = 0;
+          btnFnClicked(w, "5");  //= F5
+          softmenuStack[0].firstItem = jj;
+          showSoftmenuCurrentPart();
       }
       break;
 
@@ -394,7 +398,7 @@ if(calcMode == CM_AIM || calcMode == CM_EIM || tam.mode) {
 
           int16_t jj = softmenuStack[0].firstItem;
           softmenuStack[0].firstItem = 0;
-          btnFnClicked(w, "1");  //F1
+          btnFnClicked(w, "5");  //F1
           softmenuStack[0].firstItem = jj;
           showSoftmenuCurrentPart();
       }
