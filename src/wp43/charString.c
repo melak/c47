@@ -59,6 +59,21 @@
       if(*charCode == charCodeFromString(STD_MINUS, 0)) {
         *charCode = charCodeFromString(STD_HP_MINUS, 0);
       } else
+      if(*charCode == charCodeFromString(STD_SUP_PLUS, 0)) {
+        *charCode = charCodeFromString(STD_HP_PLUS, 0);
+      } else
+      if(*charCode == charCodeFromString(STD_PLUS, 0)) {
+        *charCode = charCodeFromString(STD_HP_PLUS, 0);
+      } else
+      if(*charCode == charCodeFromString(STD_EulerE, 0)) {
+        *charCode = charCodeFromString(STD_e, 0);
+      } else
+      if(*charCode == charCodeFromString(STD_op_i, 0)) {
+        *charCode = charCodeFromString(STD_i, 0);
+      } else
+      if(*charCode == charCodeFromString(STD_op_j, 0)) {
+        *charCode = charCodeFromString(STD_j, 0);
+      } else
       if(*charCode == charCodeFromString(STD_WDOT, 0)) {
         *charCode = charCodeFromString(STD_HP_PERIOD, 0);
       } else
