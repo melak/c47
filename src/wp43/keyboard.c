@@ -272,7 +272,7 @@ printf(">>>>Z 0093c determineFunctionKeyItem  item = %i:   name:=%s\n",item, ind
     }
 
   #if defined(VERBOSEKEYS)
-  printf(">>>>Z 0094B if(calcMode == CM_ASSIGN       data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",data,data[0],item,itemShift, FN_key_pressed);
+  printf(">>>>Z 0094B    calcMode == %u  data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",calcMode, data,data[0],item,itemShift, FN_key_pressed);
   printf(">>>>  0095     dynamicMenuItem=%d\n",dynamicMenuItem);
   printf(">>>>  0096     firstItem=%d itemShift=%d fn=%d\n",firstItem, itemShift, fn);
   #endif //VERBOSEKEYS
@@ -717,12 +717,12 @@ printf(">>>>Z 0010 btnFnPressed SET FN_key_pressed            ; data=|%s| data[0
             (determineFunctionKeyItem_C47((char *)data, true, false) != ITM_NOP && determineFunctionKeyItem_C47((char *)data, true, false) != ITM_NULL) ||
             (determineFunctionKeyItem_C47((char *)data, false, true) != ITM_NOP && determineFunctionKeyItem_C47((char *)data, false, true) != ITM_NULL)
            ) {
-#if defined(VERBOSEKEYS)
-printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
-#endif //VERBOSEKEYS
+        
+        #if defined(VERBOSEKEYS)
+        printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
+        #endif //VERBOSEKEYS
 
           lastErrorCode = 0;
-
           btnFnPressed_StateMachine(NULL, data);    //JM This calls original state analysing btnFnPressed routing, which is now renamed to "statemachine" in keyboardtweaks
                                                     // JM never allow a function key to directly enter into a buffer - always via the key detection btnFnPressed_StateMachine
 /*
@@ -908,7 +908,7 @@ int16_t lastItem = 0;
     int16_t item = ITM_NOP;
 
       #if defined(VERBOSEKEYS)
-        printf("keyboard.c: executeFunction calcmode=%u %i (beginning of executeFunction): %i, %s tam.mode=%i\n", calcMode, item, softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName, tam.mode);
+        printf("keyboard.c: executeFunction %i (beginning of executeFunction): %i, %s tam.mode=%i calcMode=%u aimBuffer=%s\n", item, softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName, tam.mode, calcMode, aimBuffer);
       #endif //VERBOSEKEYS
 
 
@@ -925,9 +925,9 @@ int16_t lastItem = 0;
 
         item = determineFunctionKeyItem_C47((char *)data, shiftF, shiftG); }
 
-#if defined(VERBOSEKEYS)
-printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
-#endif //VERBOSEKEYS
+        #if defined(VERBOSEKEYS)
+        printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
+        #endif //VERBOSEKEYS
 
         #if defined(PC_BUILD)
           printf(">>>Function selected: executeFunction data=|%s| f=%d g=%d tam.mode=%i\n",(char *)data, shiftF, shiftG, tam.mode);
@@ -935,11 +935,11 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d t
           if(item>=0) printf("    item=%d=%s f=%d g=%d\n",item,indexOfItems[item].itemCatalogName, shiftF, shiftG);
         #endif //PC_BUILD
 
-      resetShiftState();                               //shift cancelling delayed to this point after state machine
+        resetShiftState();                               //shift cancelling delayed to this point after state machine
 
-#if defined(VERBOSEKEYS)
-printf(">>>> R000C                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
-#endif //VERBOSEKEYS
+        #if defined(VERBOSEKEYS)
+        printf(">>>> R000C                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
+        #endif //VERBOSEKEYS
 
 
 //TOCHECK: JM Changed showFunctionNameItem to item below, due to something 43S did to the showfunction sequencing
@@ -1084,6 +1084,15 @@ printf(">>>> R000D                                %d |%s| shiftF=%d, shiftG=%d t
             addItemToBuffer(item);
           }
           else if(item > 0) { // function
+            if(calcMode == CM_NORMAL && (
+                (lastIntegerBase ==  2 && item == ITM_2BIN) ||
+                (lastIntegerBase ==  8 && item == ITM_2OCT) ||
+                (lastIntegerBase == 10 && item == ITM_2DEC) ||
+                (lastIntegerBase == 16 && item == ITM_2HEX)    )) {
+              lastIntegerBase = 0;
+              screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+              goto noMoreToDo;
+            }
             if(calcMode == CM_NIM && (item != ITM_CC && item != ITM_op_j) && item!=ITM_HASH_JM && item!=ITM_toHMS && item!=ITM_ms) {  //JMNIM Allow NIM not closed, so that JMNIM can change the bases without ierrors thrown
               closeNim();
               if(calcMode != CM_NIM) {
@@ -1187,9 +1196,11 @@ printf(">>>> R000E                                %d |%s| shiftF=%d, shiftG=%d t
             }
           }
 
-#if defined(VERBOSEKEYS)
-printf(">>>> R000F                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
-#endif //VERBOSEKEYS
+          noMoreToDo:
+
+          #if defined(VERBOSEKEYS)
+          printf(">>>> R000F                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
+          #endif //VERBOSEKEYS
 
           _closeCatalog();
           fnKeyInCatalog = 0;
@@ -1666,7 +1677,6 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         #endif //PC_BUILD_TELLTALE
 
         if(!keyActionProcessed) {
-
           showFunctionName(item, 1000, funcParam);// "SF:B"); // 1000ms = 1s
         }
       }

@@ -597,7 +597,7 @@ TO_QSPI const int16_t menu_Timer[]       = { ITM_TIMER_ADD,                 ITM_
 
 
 TO_QSPI const int16_t menu_BASE[]        = { ITM_2HEX,                      ITM_2DEC,                   ITM_2OCT,                 ITM_2BIN,              -MNU_BITS,                   -MNU_INTS,                                    //JM BASE MENU ADDED
-                                             ITM_LOGICALAND,                ITM_LOGICALOR,              ITM_LOGICALXOR,           ITM_LOGICALNOT,        ITM_HASH_JM,                 ITM_IP,
+                                             ITM_LOGICALAND,                ITM_LOGICALOR,              ITM_LOGICALXOR,           ITM_LOGICALNOT,        ITM_HASH_JM,                 ITM_LINT,
                                              ITM_WS64,                      ITM_WS32,                   ITM_WS16,                 ITM_WS8,               ITM_BCD,                     ITM_CB_LEADING_ZERO,
 
                                              ITM_SL1,                       ITM_SR1,                    ITM_RL1,                  ITM_RR1,               ITM_RL,                      ITM_RR,
@@ -2137,7 +2137,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
       softmenuStack[0].softmenuId = mm_MNU_ALPHA;
     }
                                                               //JM ^^
-    if(softmenuStack[0].softmenuId != mm_MNU_HOME) {          //JM reset menu base point only if not HOME menu
+    if(softmenuStack[0].softmenuId != mm_MNU_HOME && softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_MODE && softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_DISP) {          //JM reset menu base point only if not HOME menu
       softmenuStack[0].firstItem = 0;
     }
 

@@ -117,6 +117,11 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void reallyRunFunction(int16_t func, uint16_t param) {
     lastFunc = func;
     lastParam = param;
+    if(func != ITM_SOLVE_VAR && (calcMode == CM_NORMAL || calcMode == CM_NIM) && 
+        (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_MVAR) && 
+        (currentSolverStatus == 258 || currentSolverStatus == 259)) {  //allow interactive functions to clear the SolverReady flag
+      currentSolverStatus &= ~SOLVER_STATUS_READY_TO_EXECUTE;
+    }
     if(temporaryInformation == TI_LAST_CONST_CATNAME && (currentSolverStatus & 0x000F) != 0) {
       temporaryInformation = TI_NO_INFO;
     } else

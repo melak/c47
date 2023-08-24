@@ -781,19 +781,10 @@ void shrinkNimBuffer(void) {                      //JMNIM vv
 
 
 void fnChangeBaseJM(uint16_t BASE) {
-  //printf(">>> §§§ fnChangeBaseJMa Calmode:%d, nimbuffer:%s, lastbase:%d, nimnumberpart:%d\n", calcMode, nimBuffer, lastIntegerBase, nimNumberPart);
-  shrinkNimBuffer();
-  //printf(">>> §§§ fnChangeBaseJMb Calmode:%d, nimbuffer:%s, lastbase:%d, nimnumberpart:%d\n", calcMode, nimBuffer, lastIntegerBase, nimNumberPart);
-
-  if(BASE == lastIntegerBase) {
-    lastIntegerBase = 0;
-    fnRefreshState();
-  }
-  else {
-    fnChangeBase(BASE);
-  }
-
   #if !defined(TESTSUITE_BUILD)
+    //printf(">>> §§§ fnChangeBaseJMa Calmode:%d, nimbuffer:%s, lastbase:%d, nimnumberpart:%d\n", calcMode, nimBuffer, lastIntegerBase, nimNumberPart);
+    shrinkNimBuffer();
+    fnChangeBase(BASE);
     nimBufferToDisplayBuffer(aimBuffer, nimBufferDisplay + 2);
   #endif // !TESTSUITE_BUILD
 }
