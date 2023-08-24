@@ -3476,7 +3476,7 @@ void execTimerApp(uint16_t timerType) {
           #if defined(STACK_X_STR_LRG_FONT)
             //This is for X
             w = stringWidthWithLimitC43(REGISTER_STRING_DATA(regist), stdnumEnlarge, nocompress, SCREEN_WIDTH, false, true);
-            if(regist == REGISTER_X && w<SCREEN_WIDTH) {
+            if(temporaryInformation != TI_VIEW && regist == REGISTER_X && w<SCREEN_WIDTH) {
               lineWidth = w; //slighly incorrect if special characters are there as well.
               showStringC43(REGISTER_STRING_DATA(regist), stdnumEnlarge, nocompress, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6 - checkHPoffset, vmNormal, false, true);
             }
@@ -3485,7 +3485,7 @@ void execTimerApp(uint16_t timerType) {
 
           #if defined(STACK_X_STR_MED_FONT)
             //This is for X
-            if(regist == REGISTER_X && (w = stringWidthWithLimitC43(REGISTER_STRING_DATA(regist), numHalf, nocompress, SCREEN_WIDTH, false, true)) < SCREEN_WIDTH) {
+            if(temporaryInformation != TI_VIEW && regist == REGISTER_X && (w = stringWidthWithLimitC43(REGISTER_STRING_DATA(regist), numHalf, nocompress, SCREEN_WIDTH, false, true)) < SCREEN_WIDTH) {
               lineWidth = w;
               showStringC43(REGISTER_STRING_DATA(regist), numHalf, nocompress, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6 - checkHPoffset, vmNormal, false, true);
             }
@@ -3496,7 +3496,7 @@ void execTimerApp(uint16_t timerType) {
             //This is for Y, Z & T
             if(regist >= REGISTER_Y && regist <= REGISTER_T && (w = stringWidthWithLimitC43(REGISTER_STRING_DATA(regist), numHalf, nocompress, SCREEN_WIDTH, false, true)) < SCREEN_WIDTH) {
               lineWidth = w;
-              showStringC43(REGISTER_STRING_DATA(regist), numHalf, nocompress, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6 - checkHPoffset, vmNormal, false, true);
+              showStringC43(REGISTER_STRING_DATA(regist), numHalf, nocompress, SCREEN_WIDTH - w, baseY + 6 - checkHPoffset, vmNormal, false, true);
             }
             else                                                                   //JM
           #endif // STACK_STR_MED_FONT

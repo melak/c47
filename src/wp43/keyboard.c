@@ -1085,7 +1085,11 @@ int16_t lastItem = 0;
             addItemToBuffer(item);
           }
           else if(item > 0) { // function
-            if(calcMode == CM_NORMAL && lastIntegerBase != 0 && (item == ITM_2BIN || item == ITM_2OCT || item == ITM_2DEC || item == ITM_2HEX)) {
+            if(calcMode == CM_NORMAL && (
+                (lastIntegerBase ==  2 && item == ITM_2BIN) ||
+                (lastIntegerBase ==  8 && item == ITM_2OCT) ||
+                (lastIntegerBase == 10 && item == ITM_2DEC) ||
+                (lastIntegerBase == 16 && item == ITM_2HEX)    )) {
               lastIntegerBase = 0;
               screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
               goto noMoreToDo;
