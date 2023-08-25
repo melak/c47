@@ -209,6 +209,27 @@ void systemFlagAction(uint16_t systemFlag, uint16_t action) {
     case FLAG_ALLENG: fnRefreshState(); break;
     case FLAG_ENDPMT: fnRefreshState(); break;
     case FLAG_HPRP:   fnRefreshState(); break;
+
+
+
+    case FLAG_SBdate: fnRefreshState(); screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR; break;
+    case FLAG_SBtime: fnRefreshState(); screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR; break;
+    case FLAG_SBcr  : fnRefreshState(); screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR; break;
+    case FLAG_SBpr  : fnRefreshState(); screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR; break;
+    case FLAG_SBang : fnRefreshState(); screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR; break;
+    case FLAG_SBfrac: fnRefreshState(); screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR; break;
+    case FLAG_SBint : fnRefreshState(); screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR; break;
+    case FLAG_SBmatx: fnRefreshState(); screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR; break;
+    case FLAG_SBtvm : fnRefreshState(); screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR; break;
+    case FLAG_SBcary: fnRefreshState(); screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR; break;
+    case FLAG_SBss  : fnRefreshState(); screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR; break;
+    case FLAG_SBclk : fnRefreshState(); screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR; break;
+    case FLAG_SBser : fnRefreshState(); screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR; break;
+    case FLAG_SBprn : fnRefreshState(); screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR; break;
+    case FLAG_SBbatV: fnRefreshState(); screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR; break;
+    case FLAG_SBshfR: fnRefreshState(); screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR; break;
+
+
     default: ;
   }
 }

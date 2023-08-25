@@ -59,9 +59,9 @@
 #endif
 
 #include "wp43.h"
-#define BACKUP_VERSION                     784  // add scrLock
+#define BACKUP_VERSION                     785  // add StatusBarSetup
 #define OLDEST_COMPATIBLE_BACKUP_VERSION   779  // save running app
-#define configFileVersion                  10000005 // arbitrary starting point version 10 000 001. Allowable values are 10000000 to 20000000
+#define configFileVersion                  10000006 // arbitrary starting point version 10 000 001. Allowable values are 10000000 to 20000000
 #define VersionAllowed                     10000005 // This code will not autoload versions earlier than this
 
 /*
@@ -578,6 +578,9 @@ static uint32_t restore(void *buffer, uint32_t size) {
       restore(&keyActionProcessed,                 sizeof(keyActionProcessed));
       restore(&systemFlags,                        sizeof(systemFlags));
       restore(&savedSystemFlags,                   sizeof(savedSystemFlags));
+      if(backupVersion < 785) {
+        defaultStatusBar();
+      }
       restore(&thereIsSomethingToUndo,             sizeof(thereIsSomethingToUndo));
       restore(&ramPtr,                             sizeof(ramPtr)); // beginOfProgramMemory pointer to block
       beginOfProgramMemory = TO_PCMEMPTR(ramPtr);
@@ -1940,6 +1943,9 @@ int32_t stringToInt32(const char *str) {
           debugPrintf(7, "-", tmpString);
         #endif //LOADDEBUG
         systemFlags = stringToUint64(tmpString);
+        if (loadedVersion < 10000006) {
+          defaultStatusBar(); //clear systemflags for early version config files
+        }
       }
     }
 

@@ -918,13 +918,33 @@ void fnShowVersion(uint8_t option) {  //KEYS VERSION LOADED
 
 
 
+
+void defaultStatusBar(void) {
+    setSystemFlag(FLAG_SBdate );
+  clearSystemFlag(FLAG_SBtime );
+  clearSystemFlag(FLAG_SBcr   );
+    setSystemFlag(FLAG_SBpr   );
+  clearSystemFlag(FLAG_SBang  );
+    setSystemFlag(FLAG_SBfrac );
+    setSystemFlag(FLAG_SBint  );
+    setSystemFlag(FLAG_SBmatx );
+    setSystemFlag(FLAG_SBtvm  );
+    setSystemFlag(FLAG_SBcary );
+  clearSystemFlag(FLAG_SBss   );
+    setSystemFlag(FLAG_SBclk  );
+    setSystemFlag(FLAG_SBser  );
+    setSystemFlag(FLAG_SBprn  );
+    setSystemFlag(FLAG_SBbatV );
+  clearSystemFlag(FLAG_SBshfR );
+}
+
 void resetOtherConfigurationStuff(void) {
+
   firstGregorianDay = 2361222 /* 14 Sept 1752 */;
   denMax = 64;                                               //JM changed default from MAX_DENMAX default
   displayFormat = DF_ALL;
   displayFormatDigits = 3;
   timeDisplayFormatDigits = 0;
-  clearSystemFlag(FLAG_FRACT);                                //Not saved in file, but restored here:  fnDisplayFormatAll(3);
 
   shortIntegerMode = SIM_2COMPL;                              //64:2
   fnSetWordSize(64);
@@ -1196,8 +1216,12 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
 
     systemFlags = 0;
 
+    //Statusbar default setup   DATE noTIME noCR noANGLE [ADM] FRAC INT MATX TVM CARRY noSS WATCH SERIAL PRN BATVOLT noSHIFTR 
+    defaultStatusBar();
+
     configCommon(CFG_DFLT);
 
+    clearSystemFlag(FLAG_FRACT);                                //Not saved in file, but restored here:  fnDisplayFormatAll(3);
     setSystemFlag(FLAG_DENANY);
     setSystemFlag(FLAG_MULTx);
     setSystemFlag(FLAG_AUTOFF);

@@ -301,6 +301,23 @@
       oneSystemFlag(FLAG_TRACE,   "TRACE",   &line, &firstFlag);
       oneSystemFlag(FLAG_USB,     "USB",     &line, &firstFlag);
       oneSystemFlag(FLAG_VMDISP,  "VMDISP",  &line, &firstFlag);
+
+      oneSystemFlag(FLAG_SBdate,  "SBdate",  &line, &firstFlag);
+      oneSystemFlag(FLAG_SBtime,  "SBtime",  &line, &firstFlag);
+      oneSystemFlag(FLAG_SBcr  ,  "SBcr",    &line, &firstFlag);
+      oneSystemFlag(FLAG_SBpr  ,  "SBpr",    &line, &firstFlag);
+      oneSystemFlag(FLAG_SBang ,  "SBang",   &line, &firstFlag);
+      oneSystemFlag(FLAG_SBfrac,  "SBfrac",  &line, &firstFlag);
+      oneSystemFlag(FLAG_SBint ,  "SBint",   &line, &firstFlag);
+      oneSystemFlag(FLAG_SBmatx,  "SBmatx",  &line, &firstFlag);
+      oneSystemFlag(FLAG_SBtvm ,  "SBtvm",   &line, &firstFlag);
+      oneSystemFlag(FLAG_SBcary,  "SBcary",  &line, &firstFlag);
+      oneSystemFlag(FLAG_SBss  ,  "SBss",    &line, &firstFlag);
+      oneSystemFlag(FLAG_SBclk ,  "SBclk",   &line, &firstFlag);
+      oneSystemFlag(FLAG_SBser ,  "SBser",   &line, &firstFlag);
+      oneSystemFlag(FLAG_SBprn ,  "SBprn",   &line, &firstFlag);
+      oneSystemFlag(FLAG_SBbatV,  "SBbatV",  &line, &firstFlag);
+      oneSystemFlag(FLAG_SBshfR,  "SBshfR",  &line, &firstFlag);
       line++;
     }
 

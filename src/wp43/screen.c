@@ -1798,7 +1798,7 @@ void execTimerApp(uint16_t timerType) {
     // Draw over SHIFT f and SHIFT g in case they were present (otherwise they will be obscured by the function name)
     getGlyphBounds(STD_MODE_F, 0, &standardFont, &fcol, &frow);
     getGlyphBounds(STD_MODE_G, 0, &standardFont, &gcol, &grow);
-    lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, (fcol > gcol ? fcol : gcol), (frow > grow ? frow : grow), LCD_SET_VALUE);
+    lcd_fill_rect(X_SHIFT, Y_SHIFT, (fcol > gcol ? fcol : gcol), (frow > grow ? frow : grow), LCD_SET_VALUE);
 
     showString(padding, &standardFont, 18, Y_POSITION_OF_REGISTER_T_LINE + 6, vmNormal, true, true);      //JM
   }
@@ -3903,7 +3903,10 @@ void execTimerApp(uint16_t timerType) {
 
 
   void clearShiftState(void) {
-    lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, 15, NUMERIC_FONT_HEIGHT, LCD_SET_VALUE);
+    uint32_t fcol, frow, gcol, grow;
+    getGlyphBounds(STD_MODE_F, 0, &standardFont, &fcol, &frow);
+    getGlyphBounds(STD_MODE_G, 0, &standardFont, &gcol, &grow);
+    lcd_fill_rect(X_SHIFT, Y_SHIFT, (fcol > gcol ? fcol : gcol), (frow > grow ? frow : grow), LCD_SET_VALUE);
     if(calcMode == CM_PEM) {
         fnPem(NOPARAM);
     }
@@ -3917,10 +3920,10 @@ void execTimerApp(uint16_t timerType) {
 
     if(calcMode != CM_ASSIGN || itemToBeAssigned == 0 || tam.alpha) {
       if(shiftF) {
-        showGlyph(STD_MODE_F, &standardFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // f is pixel 4+8+3 wide
+        showGlyph(STD_MODE_F, &standardFont, X_SHIFT, Y_SHIFT, vmNormal, true, true); // f is pixel 4+8+3 wide
       }
       else if(shiftG) {
-        showGlyph(STD_MODE_G, &standardFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // g is pixel 4+10+1 wide
+        showGlyph(STD_MODE_G, &standardFont, X_SHIFT, Y_SHIFT, vmNormal, true, true); // g is pixel 4+10+1 wide
       }
     }
 
