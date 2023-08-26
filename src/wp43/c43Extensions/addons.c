@@ -1811,14 +1811,28 @@ void fnSafeReset (uint16_t unusedButMandatoryParameter) {
 #endif // !TESTSUITE_BUILD
 
 
-void fnRESET_MyM(void) {
+void fnRESET_MyM(uint8_t param) {
   //Pre-assign the MyMenu                   //JM
   #if !defined(TESTSUITE_BUILD)
     jm_BASE_SCREEN = false;                                           //JM prevent slow updating of 6 menu items
     for(int8_t fn = 1; fn <= 6; fn++) {
-      itemToBeAssigned = menu_HOME[fn -1];                            //Function key follows if the yellow key: Copy the default f-shofted to the primaries of MyMenu
+      if(param == USER_MENG) {
+        itemToBeAssigned = menu_HOME[fn -1];                            //Function key follows if the yellow key: Copy the default f-shofted to the primaries of MyMenu
+      } else
+      if(param == USER_MFIN) {
+        switch(fn) {
+          case 1: itemToBeAssigned = ITM_PC;      break;
+          case 2: itemToBeAssigned = ITM_DELTAPC; break;
+          case 3: itemToBeAssigned = ITM_YX;      break;    
+          case 4: itemToBeAssigned = ITM_SQUARE;  break;
+          case 5: itemToBeAssigned = ITM_10x;     break;
+          case 6: itemToBeAssigned = -MNU_FIN;    break;
+          default:break;          
+        }
+      } else {
+        itemToBeAssigned = ASSIGN_CLEAR;
+      }
       assignToMyMenu_(fn - 1);
-
       itemToBeAssigned = ASSIGN_CLEAR;
       assignToMyMenu_(6 + fn - 1);
       itemToBeAssigned = ASSIGN_CLEAR;

@@ -652,26 +652,11 @@ TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_
   #define CC_N47  ITM_USER_N47
 #endif // SAVE_SPACE_DM42
 
-#if defined(SAVE_SPACE_DM42_7)
-  #define CC_DM42  ITM_NULL
-  #define CC_USER_SHIFTSA ITM_NULL
-  #define CC_USER_SHIFTSB ITM_NULL
-  #define CC_USER_SHIFTS  ITM_NULL
-#else // !SAVE_SPACE_DM42_7
-  #define CC_DM42  ITM_USER_DM42
-  #define CC_USER_SHIFTSA ITM_NULL //ITM_USER_C43ALTA
-  #define CC_USER_SHIFTSB ITM_NULL //ITM_USER_C43ALTB
-  #define CC_USER_SHIFTS  ITM_NULL //ITM_USER_C43ALT
-#endif // SAVE_SPACE_DM42_7
 
+TO_QSPI const int16_t menu_ASN[]       =  { ITM_USER_C47  ,                 ITM_USER_C43  ,             ITM_USER_WP43S  ,         ITM_USER_DM42   ,      ITM_ASSIGN      ,            ITM_USERMODE   ,
+                                            ITM_ASNVIEWER ,                 ITM_BASE_ENG  ,             ITM_BASE_FIN    ,         ITM_USER_MRESET ,      ITM_USER_ARESET ,            ITM_USER_KRESET ,
+                                            ITM_NULL      ,                 ITM_USER_D47  ,             ITM_USER_E47    ,         ITM_USER_N47    ,      ITM_USER_V47    ,            -MNU_ASN_N                       };
 
-TO_QSPI const int16_t menu_ASN[]         = { ITM_USER_C47,                  ITM_USER_C43,               ITM_USER_WP43S,           CC_DM42,               ITM_ASSIGN,                 ITM_USERMODE,
-                                             ITM_ASNVIEWER,                 CC_D47,                     CC_E47,                   CC_N47,                CC_V47,                    -MNU_ASN_N,
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_USER_ARESET,       ITM_USER_MRESET,            ITM_USER_KRESET    };
-
-//TO_QSPI const int16_t menu_ASN[]         = { ITM_USER_C43,                  CC_USER_SHIFTSA,            CC_USER_SHIFTS,           ITM_USER_WP43S,        CC_DM42,                    ITM_ASSIGN,
-//                                             ITM_USER_C47,                  CC_D47,                     CC_E47,                   CC_N47,                CC_V47,                     ITM_USERMODE,
-//                                            -MNU_ASN_N,                     CC_USER_SHIFTSB,            ITM_ASNVIEWER,            ITM_USER_ARESET,       ITM_USER_MRESET,            ITM_USER_KRESET    };
 
 TO_QSPI const int16_t menu_XEQ[]         = { ITM_X_P1,                      ITM_X_P2,                   ITM_X_P3,                 ITM_X_P4,              ITM_X_P5,                    ITM_X_P6,
                                              ITM_X_f1,                      ITM_X_f2,                   ITM_X_f3,                 ITM_X_f4,              ITM_X_f5,                    ITM_X_f6,
@@ -1819,8 +1804,8 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
       }
     }
 
-    char itemName[16];
-    char showText[16];
+    char itemName[16]; itemName[0]=0;
+    char showText[16]; showText[0]=0;
     showText[0]=0;
     videoMode_t vm = vmNormal;
     int8_t showCb = NOVAL;
