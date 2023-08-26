@@ -10,7 +10,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have receved a copy of the GNU General Public License
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
@@ -23,6 +23,8 @@
 #include "typeDefinitions.h"
 #include <stdint.h>
 #include "realType.h"
+
+  extern bool_t delayCloseNim;
 
   #if !defined(TESTSUITE_BUILD)
   void     fnAim                    (uint16_t unusedButMandatoryParameter);
