@@ -429,13 +429,13 @@
 #define FLAG_SBdate                           0x802C
 #define FLAG_SBtime                           0x802D
 #define FLAG_SBcr                             0x802E
-#define FLAG_SBpr                             0x802F
+#define FLAG_SBcpx                            0x802F
 #define FLAG_SBang                            0x8030
 #define FLAG_SBfrac                           0x8031
 #define FLAG_SBint                            0x8032
-#define FLAG_SBmatx                           0x8033
+#define FLAG_SBmx                             0x8033
 #define FLAG_SBtvm                            0x8034
-#define FLAG_SBcary                           0x8035
+#define FLAG_SBoc                             0x8035
 #define FLAG_SBss                             0x8036
 #define FLAG_SBclk                            0x8037
 #define FLAG_SBser                            0x8038
@@ -645,14 +645,14 @@ typedef enum {
 #define SBARUPD_Date                            (getSystemFlag(FLAG_SBdate ))
 #define SBARUPD_Time                            (getSystemFlag(FLAG_SBtime ))
 #define SBARUPD_ComplexResult                   (getSystemFlag(FLAG_SBcr   ))
-#define SBARUPD_ComplexMode                     (getSystemFlag(FLAG_SBpr   ))
+#define SBARUPD_ComplexMode                     (getSystemFlag(FLAG_SBcpx   ))
 #define SBARUPD_AngularModeBasic                (getSystemFlag(FLAG_SBang  ))
 #define SBARUPD_AngularMode                     ( 1                         )
 #define SBARUPD_FractionModeAndBaseMode         (getSystemFlag(FLAG_SBfrac ))
 #define SBARUPD_IntegerMode                     (getSystemFlag(FLAG_SBint  ))
-#define SBARUPD_MatrixMode                      (getSystemFlag(FLAG_SBmatx ))
+#define SBARUPD_MatrixMode                      (getSystemFlag(FLAG_SBmx   ))
 #define SBARUPD_TVMMode                         (getSystemFlag(FLAG_SBtvm  ))
-#define SBARUPD_OCCarryMode                     (getSystemFlag(FLAG_SBcary ))
+#define SBARUPD_OCCarryMode                     (getSystemFlag(FLAG_SBoc   ))
 #define SBARUPD_AlphaMode                       ( 1                         )
 #define SBARUPD_HourGlass                       ( 1                         )
 #define SBARUPD_StackSize                       (getSystemFlag(FLAG_SBss   ))
@@ -669,23 +669,26 @@ typedef enum {
 
 // Horizontal offsets in the status bar
 #define X_DATE                                   (SBARUPD_Time ? 1 : 25)
-#define X_TIME                                    45  //note, this is used only if DATE is not displayed
+#define X_TIME                                    45  // note: this is used only if DATE is not displayed, otherwise it is printed directly next to date's end
 #define X_REAL_COMPLEX                    136//  133
 #define X_COMPLEX_MODE                    146//  143
-#define X_COMPLEX_MODE_ADJ                        -8  //note, auto moved left if REAL_COMPLEX is not present
+#define X_COMPLEX_MODE_ADJ                        -8  // note: auto moved left if REAL_COMPLEX is not present
 #define X_ANGULAR_MODE                    160//  157
 #define X_FRAC_MODE                       187//  185
 #define X_INTEGER_MODE                    262//  260
 #define X_OVERFLOW_CARRY                         292
 #define X_ALPHA_MODE                             300
-#define X_SSIZE_BEGIN                            315  //If this needs to be used, the positioning will clash. Needs to be re-balanced
-#define X_HOURGLASS                              315  //311
+#define X_SSIZE_BEGIN                            315  // If this needs to be used, the positioning will clash. Needs to be re-balanced
+#define X_HOURGLASS                              315  // 311
 #define X_HOURGLASS_GRAPHS                       140
 #define X_WATCH                           335//  336
 #define X_SERIAL_IO                              351
 #define X_PRINTER                                361
 #define X_USER_MODE                              375
 #define X_BATTERY                                389
+#define DX_BATTERY                                 8  // <=2.054 V - minimum bar (one fine line)
+#define DY_BATTERY                                20  // >=3.045 V - maximum bars (tip of battery against the edge)
+                                                      // f/g icon either in T-line left; or if date or time is removed, it moves up top left; or if SBAR_SHIFT is active, it goes top right, next to U
 #define X_SHIFT                                  (getSystemFlag(FLAG_SBshfR) ? X_USER_MODE - 15 : 0)
 #define Y_SHIFT                                  (((!SBARUPD_Date || !SBARUPD_Time) & !SBAR_SHIFT) ? 0 : (SBAR_SHIFT ? 0 : Y_POSITION_OF_REGISTER_T_LINE ) )
 
