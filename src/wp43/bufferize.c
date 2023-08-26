@@ -52,6 +52,8 @@
 
 #include "wp43.h"
 
+bool_t delayCloseNim = false;
+
 #if !defined(TESTSUITE_BUILD)
 
 TO_QSPI static const char bugScreenNoParam[] = "In function addItemToBuffer:item should not be NOPARAM=7654!";
@@ -1828,15 +1830,17 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     }
 
     else {
-      switch(item) {          //JMCLOSE remove auto closenim for these functions only.
-        case ITM_SQUAREROOTX: //closeNim moved to keyboard.c / btnkeyrelease, as .ms is on longpress underneath sqrt
-        case ITM_HASH_JM:     //closeNim simply not needed because we need to type the base while NIM remains open
-          break;
-        default:
-          if(item != -MNU_INTS && item != -MNU_BITS) {
+      if(!delayCloseNim) {      //delayCloseNim can only be activaed by ITM.ms in bufferize
+        switch(item) {          //JMCLOSE remove auto closenim directly after KEY PRESSED for these functions only.
+          case ITM_HASH_JM:     //closeNim simply not needed because we need to type the base while NIM remains open
+          case -MNU_INTS:
+          case -MNU_BITS: {
+            break;
+          }
+          default:
             screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
             closeNim();
-          }
+        }
       }
       if(calcMode != CM_NIM) {
         if(item == ITM_CONSTpi || (item >= 0 && indexOfItems[item].func == fnConstant)) {
