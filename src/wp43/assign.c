@@ -193,6 +193,7 @@ TO_QSPI const calcKey_t kbd_std[37] = { //C47 Layout, in the default position wi
 };
 
 
+#if !defined(SAVE_SPACE_DM42)
 //This variable is to store in flash memory
 TO_QSPI const calcKey_t kbd_std_C43AltA[37] = {
   //keyID,   primary,           fShifted,          gShifted,          keyLblAim,         primaryAim,        fShiftedAim,       gShiftedAim,       primaryTam
@@ -241,6 +242,7 @@ TO_QSPI const calcKey_t kbd_std_C43AltA[37] = {
   {85,   ITM_ADD,           -MNU_CATALOG,      -MNU_IO,           ITM_PLUS,          ITM_SPACE,         ITM_PLUS,          ITM_PLUS,           ITM_ADD            }
   //keyID,   primary,           fShifted,          gShifted,          keyLblAim,         primaryAim,        fShiftedAim,       gShiftedAim,       primaryTam
 };
+#endif // !SAVE_SPACE_DM42
 
 
 //This variable is to store in flash memory
