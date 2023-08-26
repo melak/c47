@@ -50,47 +50,53 @@
   }
   #endif //TESTSUITE_BUILD
 
+
+
+typedef struct {
+  uint16_t Nr;              ///<
+  char     *inStr;          ///<
+  char     *outStr;         ///<
+} replaceTable_t;
+
+
+  TO_QSPI const replaceTable_t replacementTable[] = {
+    //        Nr    InStr          OutStr
+              {0,   STD_SUP_MINUS, STD_HP_MINUS},
+              {0,   STD_MINUS    , STD_HP_MINUS},
+              {0,   STD_SUP_PLUS , STD_HP_PLUS},
+              {0,   STD_PLUS     , STD_HP_PLUS},
+              {0,   STD_EulerE   , STD_e},
+              {0,   STD_op_i     , STD_i},
+              {0,   STD_op_j     , STD_j},
+              {0,   STD_WDOT     , STD_HP_PERIOD},
+              {0,   STD_CROSS    , STD_SPACE_PUNCTUATION},
+              {0,   STD_DOT      , STD_SPACE_PUNCTUATION},
+              {0,   STD_SUB_10   , STD_SPACE_4_PER_EM},
+              {0,   STD_0        , STD_HP_0},
+              {0,   STD_SUP_0    , STD_HP_0}
+            };
+
+  #if !defined(TESTSUITE_BUILD)
+  bool_t replace(uint16_t *charCode) {
+    uint_fast16_t n = nbrOfElements(replacementTable);
+    for(uint_fast16_t i=0; i<n; i++) {
+      if(*charCode == charCodeFromString(replacementTable[i].inStr, 0)) {
+        *charCode = charCodeFromString(replacementTable[i].outStr, 0);
+        return true;
+      }
+    }
+    return false;
+  }
+  #endif //TESTSUITE_BUILD
+
+
   #if !defined(GENERATE_CATALOGS)
   void charCodeHPReplacement(uint16_t *charCode) {
     #if !defined(TESTSUITE_BUILD)
-      if(*charCode == charCodeFromString(STD_SUP_MINUS, 0)) {
-        *charCode = charCodeFromString(STD_HP_MINUS, 0);
-      } else
-      if(*charCode == charCodeFromString(STD_MINUS, 0)) {
-        *charCode = charCodeFromString(STD_HP_MINUS, 0);
-      } else
-      if(*charCode == charCodeFromString(STD_SUP_PLUS, 0)) {
-        *charCode = charCodeFromString(STD_HP_PLUS, 0);
-      } else
-      if(*charCode == charCodeFromString(STD_PLUS, 0)) {
-        *charCode = charCodeFromString(STD_HP_PLUS, 0);
-      } else
-      if(*charCode == charCodeFromString(STD_EulerE, 0)) {
-        *charCode = charCodeFromString(STD_e, 0);
-      } else
-      if(*charCode == charCodeFromString(STD_op_i, 0)) {
-        *charCode = charCodeFromString(STD_i, 0);
-      } else
-      if(*charCode == charCodeFromString(STD_op_j, 0)) {
-        *charCode = charCodeFromString(STD_j, 0);
-      } else
-      if(*charCode == charCodeFromString(STD_WDOT, 0)) {
-        *charCode = charCodeFromString(STD_HP_PERIOD, 0);
-      } else
-      if(*charCode == charCodeFromString(PRODUCT_SIGN, 0)) {
-        *charCode = charCodeFromString(STD_SPACE_PUNCTUATION, 0);
-      } else
-      if(*charCode == charCodeFromString(STD_SUB_10, 0)) {
-        *charCode = charCodeFromString(STD_SPACE_4_PER_EM, 0);
-      } else
-      if(*charCode == charCodeFromString(STD_0, 0)) {
-        *charCode = charCodeFromString(STD_HP_0, 0);
+      if (replace(charCode)) {
       } else
       if(*charCode >= charCodeFromString(STD_1, 0) &&  *charCode <= charCodeFromString(STD_9, 0)) {
         *charCode = *charCode - charCodeFromString(STD_1, 0) + charCodeFromString(STD_HP_1, 0);
-      } else
-      if(*charCode == charCodeFromString(STD_SUP_0, 0)) {
-        *charCode = charCodeFromString(STD_HP_0, 0);
       } else
       if(*charCode >= charCodeFromString(STD_SUP_1, 0) &&  *charCode <= charCodeFromString(STD_SUP_9, 0)) {
         *charCode = *charCode - charCodeFromString(STD_SUP_1, 0) + charCodeFromString(STD_HP_1, 0);
@@ -98,7 +104,6 @@
     #endif //TESTSUITE_BUILD
   }
   #endif //GENERATE_CATALOGS
-
 
 
 
