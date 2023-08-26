@@ -24,9 +24,9 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
-#define VERSION1 "0.108.13.00"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
+#define VERSION1 "0.108.13.01"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
-//2023-08-22-0.108.13.00 bugfix release
+//2023-08-22-0.108.13.01 test status bar
 
   #undef SAVE_SPACE_DM42
   #undef SAVE_SPACE_DM42_0
@@ -426,7 +426,24 @@
 #define FLAG_ENDPMT                           0xc029
 #define FLAG_FRCSRN                           0x802a
 #define FLAG_HPRP                             0x802b
-#define NUMBER_OF_SYSTEM_FLAGS                    44
+#define FLAG_SBdate                           0x802C
+#define FLAG_SBtime                           0x802D
+#define FLAG_SBcr                             0x802E
+#define FLAG_SBcpx                            0x802F
+#define FLAG_SBang                            0x8030
+#define FLAG_SBfrac                           0x8031
+#define FLAG_SBint                            0x8032
+#define FLAG_SBmx                             0x8033
+#define FLAG_SBtvm                            0x8034
+#define FLAG_SBoc                             0x8035
+#define FLAG_SBss                             0x8036
+#define FLAG_SBclk                            0x8037
+#define FLAG_SBser                            0x8038
+#define FLAG_SBprn                            0x8039
+#define FLAG_SBbatV                           0x803A
+#define FLAG_SBshfR                           0x803B
+
+#define NUMBER_OF_SYSTEM_FLAGS                    60
 
 typedef enum {
   LI_ZERO     = 0, // Long integer sign 0
@@ -625,67 +642,57 @@ typedef enum {
 
 
 // Status bar updating mode
-#define SBARUPD_Date                            0x00000001
-#define SBARUPD_Time                            0x00000002
-#define SBARUPD_ComplexResult                   0x00000004
-#define SBARUPD_ComplexMode                     0x00000008
-#define SBARUPD_AngularModeBasic                0x00000010
-#define SBARUPD_AngularMode                     0x00000020
-#define SBARUPD_FractionModeAndBaseMode         0x00000040
-#define SBARUPD_IntegerMode                     0x00000080
-#define SBARUPD_MatrixMode                      0x00000100
-#define SBARUPD_TVMMode                         0x00000200
-#define SBARUPD_OCCarryMode                     0x00000400
-#define SBARUPD_AlphaMode                       0x00000800
-#define SBARUPD_HourGlass                       0x00001000
-#define SBARUPD_StackSize                       0x00002000
-#define SBARUPD_Watch                           0x00004000
-#define SBARUPD_SerialIO                        0x00008000
-#define SBARUPD_Printer                         0x00010000
-#define SBARUPD_UserMode                        0x00020000
-#define SBARUPD_Battery                         0x00040000
+#define SBARUPD_Date                            (getSystemFlag(FLAG_SBdate ))
+#define SBARUPD_Time                            (getSystemFlag(FLAG_SBtime ))
+#define SBARUPD_ComplexResult                   (getSystemFlag(FLAG_SBcr   ))
+#define SBARUPD_ComplexMode                     (getSystemFlag(FLAG_SBcpx   ))
+#define SBARUPD_AngularModeBasic                (getSystemFlag(FLAG_SBang  ))
+#define SBARUPD_AngularMode                     ( 1                         )
+#define SBARUPD_FractionModeAndBaseMode         (getSystemFlag(FLAG_SBfrac ))
+#define SBARUPD_IntegerMode                     (getSystemFlag(FLAG_SBint  ))
+#define SBARUPD_MatrixMode                      (getSystemFlag(FLAG_SBmx   ))
+#define SBARUPD_TVMMode                         (getSystemFlag(FLAG_SBtvm  ))
+#define SBARUPD_OCCarryMode                     (getSystemFlag(FLAG_SBoc   ))
+#define SBARUPD_AlphaMode                       ( 1                         )
+#define SBARUPD_HourGlass                       ( 1                         )
+#define SBARUPD_StackSize                       (getSystemFlag(FLAG_SBss   ))
+#define SBARUPD_Watch                           (getSystemFlag(FLAG_SBclk  ))
+#define SBARUPD_SerialIO                        (getSystemFlag(FLAG_SBser  ))
+#define SBARUPD_Printer                         (getSystemFlag(FLAG_SBprn  ))
+#define SBARUPD_UserMode                        ( 1                         )
+#define SBARUPD_Battery                         ( 1                         )
+#define SBARUPD_BatVoltage                      (getSystemFlag(FLAG_SBbatV ))
+#define SBAR_SHIFT                              (getSystemFlag(FLAG_SBshfR ))
 
-#define statusBarMask                           (uint32_t)( \
-                                                (    SBARUPD_Date                    ) | \
-                                                (    SBARUPD_Time                    ) | \
-                                                (0 & SBARUPD_ComplexResult           ) | \
-                                                (    SBARUPD_ComplexMode             ) | \
-                                                (0 & SBARUPD_AngularModeBasic        ) | \
-                                                (    SBARUPD_AngularMode             ) | \
-                                                (    SBARUPD_FractionModeAndBaseMode ) | \
-                                                (    SBARUPD_IntegerMode             ) | \
-                                                (    SBARUPD_MatrixMode              ) | \
-                                                (    SBARUPD_TVMMode                 ) | \
-                                                (    SBARUPD_OCCarryMode             ) | \
-                                                (    SBARUPD_AlphaMode               ) | \
-                                                (    SBARUPD_HourGlass               ) | \
-                                                (0 & SBARUPD_StackSize               ) | \
-                                                (    SBARUPD_Watch                   ) | \
-                                                (    SBARUPD_SerialIO                ) | \
-                                                (    SBARUPD_Printer                 ) | \
-                                                (    SBARUPD_UserMode                ) | \
-                                                (    SBARUPD_Battery                 ) )
+
 
 
 // Horizontal offsets in the status bar
-#define X_DATE                                     1
-#define X_TIME                                    45  //note, this is used only if DATE is not displayed
-#define X_REAL_COMPLEX                    136//       133
-#define X_COMPLEX_MODE                    146//       143
-#define X_COMPLEX_MODE_ADJ                        -8  //note, auto moved left if REAL_COMPLEX is not present
-#define X_ANGULAR_MODE                    160//       157
-#define X_FRAC_MODE                       187//       185
-#define X_INTEGER_MODE                    262//       260
+#define X_DATE                                   (SBARUPD_Time ? 1 : 25)
+#define X_TIME                                    45  // note: this is used only if DATE is not displayed, otherwise it is printed directly next to date's end
+#define X_REAL_COMPLEX                    136//  133
+#define X_COMPLEX_MODE                    146//  143
+#define X_COMPLEX_MODE_ADJ                        -8  // note: auto moved left if REAL_COMPLEX is not present
+#define X_ANGULAR_MODE                    160//  157
+#define X_FRAC_MODE                       187//  185
+#define X_INTEGER_MODE                    262//  260
 #define X_OVERFLOW_CARRY                         292
 #define X_ALPHA_MODE                             300
-#define X_SSIZE_BEGIN                            315  //If this needs to be used, the positioning will clash. Needs to be re-balanced
-#define X_HOURGLASS                              315  //311
+#define X_SSIZE_BEGIN                            315  // If this needs to be used, the positioning will clash. Needs to be re-balanced
+#define X_HOURGLASS                              315  // 311
 #define X_HOURGLASS_GRAPHS                       140
-#define X_WATCH                           335//       336
+#define X_WATCH                           335//  336
 #define X_SERIAL_IO                              351
 #define X_PRINTER                                361
 #define X_USER_MODE                              375
 #define X_BATTERY                                389
+#define DX_BATTERY                                 8  // <=2.054 V - minimum bar (one fine line)
+#define DY_BATTERY                                20  // >=3.045 V - maximum bars (tip of battery against the edge)
+                                                      // f/g icon either in T-line left; or if date or time is removed, it moves up top left; or if SBAR_SHIFT is active, it goes top right, next to U
+#define X_SHIFT                                  (getSystemFlag(FLAG_SBshfR) ? X_USER_MODE - 15 : 0)
+#define Y_SHIFT                                  (((!SBARUPD_Date || !SBARUPD_Time) & !SBAR_SHIFT) ? 0 : (SBAR_SHIFT ? 0 : Y_POSITION_OF_REGISTER_T_LINE ) )
+
+
 
 #define TIMER_IDX_REFRESH_SLEEP                    0 // use timer 0 to wake up for screen refresh
 //#define TIMER_IDX_AUTO_REPEAT                    1 // use timer 1 to wake up for key auto-repeat

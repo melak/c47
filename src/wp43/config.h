@@ -226,6 +226,7 @@ void     fnFractionType        (uint16_t unusedButMandatoryParameter);
 
 #define  loadAutoSav           true
 #define  doNotLoadAutoSav      false
+void     defaultStatusBar      (void);
 void     resetOtherConfigurationStuff(void);
 void     fnReset               (uint16_t confirmation);
 void     doFnReset             (uint16_t confirmation, bool_t autoSav);

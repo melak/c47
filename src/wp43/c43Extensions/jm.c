@@ -649,6 +649,7 @@ void fnUserJM(uint16_t jmUser) {
 
     //---KEYS PROFILE: C43-ALTA
     //-------------------------
+    #if !defined(SAVE_SPACE_DM42)
     case USER_C43ALTA:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
       fnUserJM(USER_KRESET);
       fnShowVersion(USER_C43ALTA);
@@ -657,9 +658,11 @@ void fnUserJM(uint16_t jmUser) {
       fnRefreshState();
       fnSetFlag(FLAG_USER);
       break;
+    #endif //SAVE_SPACE_DM42
 
     //---KEYS PROFILE: C43-ALTB
     //-------------------------
+    #if !defined(SAVE_SPACE_DM42)
     case USER_C43ALTB:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
       #if !defined(SAVE_SPACE_DM42_7)
         fnUserJM(USER_C43);
@@ -674,9 +677,11 @@ void fnUserJM(uint16_t jmUser) {
         fnSetFlag(FLAG_USER);
       #endif // !SAVE_SPACE_DM42_7
       break;
+    #endif //SAVE_SPACE_DM42
 
     //---KEYS PROFILE: C43-ALT
     //-------------------------
+    #if !defined(SAVE_SPACE_DM42)
     case USER_C43ALT:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
       fnUserJM(USER_C43ALTA);
       fnShowVersion(USER_C43ALT);
@@ -691,6 +696,7 @@ void fnUserJM(uint16_t jmUser) {
       fnRefreshState();
       fnSetFlag(FLAG_USER);
       break;
+    #endif //SAVE_SPACE_DM42
 
     case USER_MRESET:                                              //USER_KRESET 26
       fnRESET_MyM();
