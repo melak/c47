@@ -540,13 +540,13 @@
 #define SFL_SBdate                   507
 #define SFL_SBtime                   508
 #define SFL_SBcr                     509
-#define SFL_SBpr                     510
+#define SFL_SBcpx                    510
 #define SFL_SBang                    511
 #define SFL_SBfrac                   512
 #define SFL_SBint                    513
-#define SFL_SBmatx                   514
+#define SFL_SBmx                     514
 #define SFL_SBtvm                    515
-#define SFL_SBcary                   516
+#define SFL_SBoc                     516
 #define SFL_SBss                     517
 #define SFL_SBclk                    518
 #define SFL_SBser                    519

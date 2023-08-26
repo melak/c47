@@ -158,16 +158,17 @@ void configCommon(uint16_t idx) {
 
 
   void fnHP35JM(uint16_t unusedButMandatoryParameter){
-    fnSetHP35(0);
+    //fnSetHP35(0);
     jm_BASE_SCREEN = true;
-    fneRPN(1);                               //eRPN
-    setFGLSettings(RB_FGLNFUL);              //fgLine FULL
-    clearSystemFlag(FLAG_HPRP);              //Clear HP Rect/Polar
-    SetSetting(SS_8);                        //SSTACK 8
-    SetSetting(ITM_CPXRES1);                 //Set CPXRES
-    SetSetting(ITM_SPCRES1);                 //Set SPCRES
-    setSystemFlag(FLAG_CPXj);
-  }
+    fneRPN(1);                               //eRPN                revert HP35 defaults
+    setFGLSettings(RB_FGLNFUL);              //fgLine FULL         revert HP35 defaults
+    clearSystemFlag(FLAG_HPRP);              //Clear HP Rect/Polar revert HP35 defaults
+    SetSetting(SS_8);                        //SSTACK 8            revert HP35 defaults
+    SetSetting(ITM_CPXRES1);                 //Set CPXRES          revert HP35 defaults
+    SetSetting(ITM_SPCRES1);                 //Set SPCRES          revert HP35 defaults
+    setSystemFlag(FLAG_CPXj);                //Set j               revert HP35 defaults
+    setSystemFlag(FLAG_SBbatV);              //Set battery voltage indicator
+    }
 
 
   void fnSetC47(uint16_t unusedButMandatoryParameter) {
@@ -206,6 +207,7 @@ void configCommon(uint16_t idx) {
     fnDrop(0);
     fnDrop(0);
     runFunction(ITM_SQUARE);
+    screenUpdatingMode = SCRUPD_AUTO;
     refreshScreen();
   }
 #endif // !TESTSUITE_BUILD
@@ -923,18 +925,18 @@ void defaultStatusBar(void) {
     setSystemFlag(FLAG_SBdate );
   clearSystemFlag(FLAG_SBtime );
   clearSystemFlag(FLAG_SBcr   );
-    setSystemFlag(FLAG_SBpr   );
+    setSystemFlag(FLAG_SBcpx  );
   clearSystemFlag(FLAG_SBang  );
     setSystemFlag(FLAG_SBfrac );
     setSystemFlag(FLAG_SBint  );
-    setSystemFlag(FLAG_SBmatx );
+  clearSystemFlag(FLAG_SBmx   );
     setSystemFlag(FLAG_SBtvm  );
-    setSystemFlag(FLAG_SBcary );
+    setSystemFlag(FLAG_SBoc   );
   clearSystemFlag(FLAG_SBss   );
     setSystemFlag(FLAG_SBclk  );
     setSystemFlag(FLAG_SBser  );
     setSystemFlag(FLAG_SBprn  );
-    setSystemFlag(FLAG_SBbatV );
+  clearSystemFlag(FLAG_SBbatV );
   clearSystemFlag(FLAG_SBshfR );
 }
 

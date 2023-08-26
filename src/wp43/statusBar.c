@@ -478,6 +478,17 @@ void showHideUserMode(void) {
 }
 
 
+void drawBattery(uint16_t voltage) {
+  uint16_t vv = (uint16_t)(min(max(voltage - 2000,0),3100) / (float)(((float)3100 - 2000.0f)/(float)(DY_BATTERY))); //draw a battery, full at 3.1V empty at 2V
+  for(uint16_t ii = 0; ii <= min(vv,DY_BATTERY-1); ii++) {
+    for(uint16_t jj = 0; jj <= DX_BATTERY; jj++) {
+      if(min(vv,DY_BATTERY)-ii > (voltage > 2750 ? 2 : 1) || (jj>1 && jj<DX_BATTERY-1)) {
+        setBlackPixel(X_BATTERY + jj, (DY_BATTERY-1)-ii);
+      }
+    }
+  }
+}
+
 
   #if defined(DMCP_BUILD)
     void showHideUsbLowBattery(void) {
@@ -487,14 +498,7 @@ void showHideUserMode(void) {
       }
       else {
         if(SBARUPD_BatVoltage) {
-          uint16_t vv = (uint16_t)(min(max(get_vbat() - 2000,0),3100) / (float)(((float)3100 - 2000.0f)/19.0f)); //draw a battery, full at 3.1V empty at 2V
-          for(uint16_t ii = 0; ii <= min(vv,18); ii++) {
-            for(uint16_t jj = 0; jj <= 6; jj++) {
-              if(min(vv,18)-ii > 2 || (jj>1 && jj<5)) {
-                setBlackPixel(X_BATTERY + jj, 18-ii);
-              }
-            }
-          }
+          drawBattery(get_vbat());
         } 
         else if(getSystemFlag(FLAG_LOWBAT)) {
           showGlyph(STD_BATTERY, &standardFont, X_BATTERY, 0, vmNormal, true, false); // is 0+10+1 pixel wide
@@ -576,6 +580,9 @@ void showHideUserMode(void) {
 
   #if !defined(DMCP_BUILD)
     void showHideStackLift(void) {
+      //drawBattery(exponentLimit); //test battery indicator
+      //return;                     //test battery indicator
+
       if(getSystemFlag(FLAG_ASLIFT)) {
         // Draw S
         setBlackPixel(392,  1);
