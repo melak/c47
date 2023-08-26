@@ -359,6 +359,9 @@ void resetKeytimers(void) {
             break;
         default:;
       }
+      if(*result == ITM_ms || longpressDelayedkey1 == ITM_ms || longpressDelayedkey2 == ITM_ms || longpressDelayedkey3 == ITM_ms) { //.ms needs NIM mode to be open if the user intends it to be open. 
+        delayCloseNim = true;
+      }
     }
     else if(calcMode == CM_AIM) {
       switch(*result) {
