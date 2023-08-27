@@ -1365,6 +1365,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
 
     fnUserJM(USER_ARESET);                                      //JM USER
     fnUserJM(USER_MRESET);                                      //JM USER
+    fnUserJM(USER_MENG);                                        //JM USER    
     #if !defined(TESTSUITE_BUILD)
       showSoftmenu(-MNU_MyMenu);                                   //this removes the false start on MyMenu error
     #endif // !TESTSUITE_BUILD
