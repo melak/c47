@@ -429,6 +429,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
     }
 
     restore(&backupVersion,                      sizeof(backupVersion));
+    cachedDynamicMenu = 0;
     if(backupVersion < 781) {
       configCommon(CFG_DFLT);
     }
@@ -2651,6 +2652,7 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
     else if(loadMode == LM_NAMED_VARIABLES) {
       temporaryInformation = TI_VARIABLES_RESTORED;
     }
+    cachedDynamicMenu = 0;
   #endif // !TESTSUITE_BUILD
 #endif // !TESTSUITE_BUILD
 }

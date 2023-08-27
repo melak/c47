@@ -647,73 +647,38 @@ void fnUserJM(uint16_t jmUser) {
       fnSetFlag(FLAG_USER);
       break;
 
-    //---KEYS PROFILE: C43-ALTA
-    //-------------------------
-    #if !defined(SAVE_SPACE_DM42)
-    case USER_C43ALTA:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
-      fnUserJM(USER_KRESET);
-      fnShowVersion(USER_C43ALTA);
-      xcopy(kbd_usr, kbd_std_C43AltA, sizeof(kbd_std_C43AltA));
-      Norm_Key_00_VAR           = ITM_USERMODE;
-      fnRefreshState();
-      fnSetFlag(FLAG_USER);
-      break;
-    #endif //SAVE_SPACE_DM42
-
-    //---KEYS PROFILE: C43-ALTB
-    //-------------------------
-    #if !defined(SAVE_SPACE_DM42)
-    case USER_C43ALTB:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
-      #if !defined(SAVE_SPACE_DM42_7)
-        fnUserJM(USER_C43);
-        fnShowVersion(USER_C43ALTB);
-        kbd_usr[0].primary     = ITM_DRG;
-        kbd_usr[7].gShifted    = ITM_XTHROOT;
-        kbd_usr[8].gShifted    = ITM_Rup;
-        kbd_usr[13].gShifted   = -MNU_STK;
-        kbd_usr[14].gShifted   = -MNU_TRI;
-        Norm_Key_00_VAR        = ITM_DRG;
-        fnRefreshState();                                 //drJM
-        fnSetFlag(FLAG_USER);
-      #endif // !SAVE_SPACE_DM42_7
-      break;
-    #endif //SAVE_SPACE_DM42
-
-    //---KEYS PROFILE: C43-ALT
-    //-------------------------
-    #if !defined(SAVE_SPACE_DM42)
-    case USER_C43ALT:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
-      fnUserJM(USER_C43ALTA);
-      fnShowVersion(USER_C43ALT);
-      kbd_usr[ 0].primary       = ITM_SIGMAPLUS;
-      kbd_usr[ 9].gShifted      = ITM_GTO;
-      kbd_usr[ 9].fShifted      = ITM_SNAP;
-      kbd_usr[10].primary       = ITM_SHIFTf;
-      kbd_usr[27].primary       = KEY_fg;
-      kbd_usr[27].fShifted      = ITM_NULL;
-      kbd_usr[27].gShifted      = ITM_NULL;
-      Norm_Key_00_VAR           = ITM_SIGMAPLUS;
-      fnRefreshState();
-      fnSetFlag(FLAG_USER);
-      break;
-    #endif //SAVE_SPACE_DM42
-
-    case USER_MRESET:                                              //USER_KRESET 26
-      fnRESET_MyM();
+    case USER_MRESET:
+      fnRESET_MyM(0);
       fnShowVersion(USER_MRESET);
       break;
 
-    case USER_ARESET:                                              //USER_KRESET 26
+    case USER_MENG:
+      fnRESET_MyM(USER_MENG);
+      fnShowVersion(USER_MENG);
+      #if !defined(TESTSUITE_BUILD)
+        showSoftmenu(-MNU_MyMenu);
+      #endif // !TESTSUITE_BUILD
+      break;
+
+    case USER_MFIN:
+      fnRESET_MyM(USER_MFIN);
+      fnShowVersion(USER_MFIN);
+      #if !defined(TESTSUITE_BUILD)
+        showSoftmenu(-MNU_MyMenu);
+      #endif // !TESTSUITE_BUILD
+      break;
+
+    case USER_ARESET:
       fnRESET_Mya();
       fnShowVersion(USER_ARESET);
       break;
 
-    case USER_KRESET:                                              //USER_KRESET 26
+    case USER_KRESET:
       fnShowVersion(USER_KRESET);
       xcopy(kbd_usr, kbd_std, sizeof(kbd_std));
-      Norm_Key_00_VAR        = ITM_SIGMAPLUS;
-      fnRefreshState();                                 //drJM
-      fnClearFlag(FLAG_USER); //userModeEnabled = false;
+      Norm_Key_00_VAR = ITM_SIGMAPLUS;
+      fnRefreshState();
+      fnClearFlag(FLAG_USER);
       break;
 
     default:

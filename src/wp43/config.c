@@ -887,14 +887,13 @@ void restoreStats(void){
       {0,USER_N47,     "N47: Exp 2 shft L (32 mould) /x-+ R " STD_UP_ARROW STD_DOWN_ARROW " top"  },
       {0,USER_V47,     "V47: Exp Vintage 2 shifts TopR -+x/ L"           },
       {0,USER_C43,     "C43: Org. classic 1-shift (DM42 mould, discon)"  },
-      {0,USER_C43ALTA, "C43AltA: 2-shft (43S mould, discon) Allschwil"   },
-      {0,USER_C43ALTB, "C43AltB: 1-shft (DM42 mould, discon) Allschwil"  },
-      {0,USER_C43ALT,  "C43 ALT: 2-shft (43S mould, discon) Altern've"   },
       {0,USER_DM42,    "DM42: Final Compatibility layout"                },
       {0,USER_43S,     "WP 43S Pilot: Final Compatibility layout"        },
       {0,USER_KRESET,  "C47 All USER keys cleaned"                       },
       {0,USER_MRESET,  "MyMenu menu cleaned"                             },
       {0,USER_ARESET,  "My" STD_alpha " menu cleaned"                    },
+      {0,USER_MENG,    "MyMenu primary F-key engineering layout"         },
+      {0,USER_MFIN,    "MyMenu primary F-key financial layout"           },
       {0,100,"Error List"}
     };
 
