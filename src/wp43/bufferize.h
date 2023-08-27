@@ -24,6 +24,8 @@
 #include <stdint.h>
 #include "realType.h"
 
+  extern bool_t delayCloseNim;
+
   #if !defined(TESTSUITE_BUILD)
   void     fnAim                    (uint16_t unusedButMandatoryParameter);
   void     resetAlphaSelectionBuffer(void);
