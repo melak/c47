@@ -635,10 +635,9 @@ TO_QSPI const int16_t menu_Inl_Tst[]     = { ITM_TEST,                      ITM_
 //#endif // INLINE_TEST
 
 
-TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_N_KEY_CC,               ITM_N_KEY_GSH,            ITM_N_KEY_MM,          ITM_N_KEY_DRG,               ITM_NULL,       //JM USER NAORMAL MODE
-                                             ITM_N_KEY_PRGM,                ITM_N_KEY_USER,             ITM_N_KEY_HOME,           ITM_N_KEY_SIGMA,       ITM_N_KEY_SNAP,              ITM_NULL,       //JM USER NAORMAL MODE
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_USER_COPY,         ITM_SH_NORM_E,               ITM_GET_NORM_E                };    //JM USER NAORMAL MODE
-
+TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,           ITM_N_KEY_CC,              ITM_N_KEY_GSH,             ITM_N_KEY_MM,              ITM_N_KEY_DRG,             ITM_USER_COPY,             
+                                             ITM_N_KEY_PRGM,            ITM_N_KEY_USER,            ITM_N_KEY_HOME,            ITM_N_KEY_SIGMA,           ITM_N_KEY_SNAP,            ITM_SH_NORM_E,             
+                                             ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_GET_NORM_E                 };
 
 #if defined(SAVE_SPACE_DM42)
   #define CC_V47  ITM_NULL
