@@ -96,6 +96,9 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   {ITM_DENANY,           DM_ANY,                 CB_JC},  //  --fnDenMode
   {ITM_DENFIX,           DM_FIX,                 CB_JC},  //  --fnDenMode
 
+  {ITM_M_GROW,           ITM_M_GROW,               CB_JC},  // SFL_PRTACT
+  {ITM_M_WRAP,           ITM_M_WRAP,               CB_JC},  // SFL_PRTACT
+
   {ITM_PRTACT,           PRTACT,                 CB_JC},  // SFL_PRTACT
   {ITM_PRTACT0,          PRTACT0,                RB_PRN},  // SFL_PRTACT
   {ITM_PRTACT1,          PRTACT1,                RB_PRN},  // SFL_PRTACT
@@ -319,6 +322,8 @@ int8_t fnCbIsSet(int16_t item) {
             case DM_ANY:                 cb_param = getSystemFlag(FLAG_DENANY);                                       break;
             case DM_FIX:                 cb_param = getSystemFlag(FLAG_DENFIX);                                       break;
             case PRTACT:                 cb_param = getSystemFlag(FLAG_PRTACT);                                       break;
+            case ITM_M_GROW:             cb_param = getSystemFlag(FLAG_GROW);                                         break;
+            case ITM_M_WRAP:             cb_param = !getSystemFlag(FLAG_GROW);                                        break;
             case JC_ERPN:                cb_param = eRPN;                                                             break;
             case JC_BASE_SCREEN:         cb_param = jm_BASE_SCREEN;                                                   break;
             case JC_G_DOUBLETAP:         cb_param = jm_G_DOUBLETAP;                                                   break;

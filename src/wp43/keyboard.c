@@ -1225,42 +1225,39 @@ bool_t allowShiftsToClearError = false;
 #define stringToKeyNumber(data)         ((*((char *)data) - '0')*10 + *(((char *)data)+1) - '0')
 
   int16_t determineItem(const char *data) {
+    delayCloseNim = false;
     int16_t result;
     const calcKey_t *key;
 
     dynamicMenuItem = -1;
-//.    key = getSystemFlag(FLAG_USER) ? (kbd_usr + (*data - '0')*10 + *(data+1) - '0') : (kbd_std + (*data - '0')*10 + *(data+1) - '0');  //Latest one, remove and replace below
-//.    key = getSystemFlag(FLAG_USER) && ((calcMode == CM_NORMAL) || (calcMode == CM_NIM)) ? (kbd_usr + stringToKeyNumber(data)) : (kbd_std + stringToKeyNumber(data));    //JM Added (calcMode == CM_NORMAL) to prevent user substitution in AIM and TAM
 
     int8_t key_no = stringToKeyNumber(data);
 
-  #if defined(PC_BUILD)
-    char tmp[200]; sprintf(tmp,"^^^^^^^keyboard.c: determineitem: key_no: %d:",key_no); jm_show_comment(tmp);
-  #endif //PC_BUILD
+    #if defined(PC_BUILD)
+      char tmp[200]; sprintf(tmp,"^^^^^^^keyboard.c: determineitem: key_no: %d:",key_no); jm_show_comment(tmp);
+    #endif //PC_BUILD
 
-//.    if(kbd_usr[36].primaryTam == ITM_EXIT1) //opposite keyboard V43 LT, 43S, V43 RT
-      key = getSystemFlag(FLAG_USER) ? (kbd_usr + key_no) : (kbd_std + key_no);
-//.    else
-//.      key = getSystemFlag(FLAG_USER) && ((calcMode == CM_NORMAL) || (calcMode == CM_AIM) || (calcMode == CM_NIM) || (calcMode == CM_EIM) || (calcMode == CM_PLOT_STAT) || (calcMode == CM_GRAPH) || (calcMode == CM_LISTXY)) ? (kbd_usr + key_no) : (kbd_std + key_no);    //JM Added (calcMode == CM_NORMAL) to prevent user substitution in AIM and TAM
+    //.    if(kbd_usr[36].primaryTam == ITM_EXIT1) //opposite keyboard V43 LT, 43S, V43 RT
+    key = getSystemFlag(FLAG_USER) ? (kbd_usr + key_no) : (kbd_std + key_no);
+    //.    else
+    //.      key = getSystemFlag(FLAG_USER) && ((calcMode == CM_NORMAL) || (calcMode == CM_AIM) || (calcMode == CM_NIM) || (calcMode == CM_EIM) || (calcMode == CM_PLOT_STAT) || (calcMode == CM_GRAPH) || (calcMode == CM_LISTXY)) ? (kbd_usr + key_no) : (kbd_std + key_no);    //JM Added (calcMode == CM_NORMAL) to prevent user substitution in AIM and TAM
 
     fnTimerExec(TO_FN_EXEC);                                  //dr execute queued fn
 
-  #if defined(PC_BUILD)
-    sprintf(tmp,"^^^^^^^keyboard.c: determineitem: key->primary1: %d:",key->primary); jm_show_comment(tmp);
-  #endif //PC_BUILD
+    #if defined(PC_BUILD)
+      sprintf(tmp,"^^^^^^^keyboard.c: determineitem: key->primary1: %d:",key->primary); jm_show_comment(tmp);
+    #endif //PC_BUILD
 
     switch(key->primary) {                              //JMSHOW vv
       case      ITM_UP1:
       case      ITM_DOWN1: break;                       //JM SHOWregis unchanged
       default:  SHOWregis = 9999; break;
     }                                                   //JMSHOW ^^
-    //printf("###\n"); //JMEXEC
-
     Setup_MultiPresses( key->primary );
 
-  #if defined(PC_BUILD)
-    sprintf(tmp,"^^^^^^^keyboard.c: determineitem: key->primary2: %d:",key->primary); jm_show_comment(tmp);
-  #endif //PC_BUILD
+    #if defined(PC_BUILD)
+      sprintf(tmp,"^^^^^^^keyboard.c: determineitem: key->primary2: %d:",key->primary); jm_show_comment(tmp);
+    #endif //PC_BUILD
 
     // Shift f pressed and JM REMOVED shift g not active
     if(key->primary == ITM_SHIFTf && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
@@ -1352,10 +1349,9 @@ bool_t allowShiftsToClearError = false;
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;
     }
-
-  #if defined(PC_BUILD)
-    sprintf(tmp,"^^^^^^^keyboard.c: determineitem: key->primary3: %d:",key->primary); jm_show_comment(tmp);
-  #endif //PC_BUILD
+    #if defined(PC_BUILD)
+      sprintf(tmp,"^^^^^^^keyboard.c: determineitem: key->primary3: %d:",key->primary); jm_show_comment(tmp);
+    #endif //PC_BUILD
 
                                                                                                                          //JM shifts
     if( !tam.mode && (calcMode == CM_NIM || calcMode == CM_NORMAL) && (lastIntegerBase >= 2 && topHex) && (key_no >= 0 && key_no <= 5 )) {               //JMNIM vv Added direct A-F for hex entry
@@ -1393,21 +1389,21 @@ bool_t allowShiftsToClearError = false;
       result = 0;
     }
 
-  #if defined(PC_BUILD)
-    sprintf(tmp,"^^^^^^^keyboard.c: determineitem: result1: %d:",result); jm_show_comment(tmp);
-  #endif //PC_BUILD
+    #if defined(PC_BUILD)
+      sprintf(tmp,"^^^^^^^keyboard.c: determineitem: result1: %d:",result); jm_show_comment(tmp);
+    #endif //PC_BUILD
 
     Check_SigmaPlus_Assigned(&result, key_no);  //JM
 
-  #if defined(PC_BUILD)
-    sprintf(tmp,"^^^^^^^keyboard.c: determineitem: result2: %d:",result); jm_show_comment(tmp);
-  #endif //PC_BUILD
+    #if defined(PC_BUILD)
+      sprintf(tmp,"^^^^^^^keyboard.c: determineitem: result2: %d:",result); jm_show_comment(tmp);
+    #endif //PC_BUILD
 
     Check_MultiPresses(&result, key_no);        //JM
 
-  #if defined(PC_BUILD)
-    sprintf(tmp,"^^^^^^^keyboard.c: determineitem: result3: %d:",result); jm_show_comment(tmp);
-  #endif //PC_BUILD
+    #if defined(PC_BUILD)
+      sprintf(tmp,"^^^^^^^keyboard.c: determineitem: result3: %d:",result); jm_show_comment(tmp);
+    #endif //PC_BUILD
 
     if(result == ITM_PROD_SIGN) {
       result = (getSystemFlag(FLAG_MULTx) ? ITM_CROSS : ITM_DOT);
@@ -1591,6 +1587,10 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       lastshiftF = shiftF;
       lastshiftG = shiftG;
       int16_t item = determineItem((char *)data);
+
+      #if defined(VERBOSEKEYS)
+        printf(">>>>Z 1001 btnPressed       data=|%s| data[0]=%u item=%d \n", (char *)data, ((char *)data)[0], item);
+      #endif // VERBOSEKEYS
       if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
         if((item == ITM_RS || item == ITM_EXIT1) && !getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
           programRunStop = PGM_WAITING;
@@ -1828,7 +1828,11 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           char tmp[200]; sprintf(tmp,"^^^^btnReleased %d:\'%s\'",item,(char *)data); jm_show_comment(tmp);
         #endif //PC_BUILD
 
-        if(calcMode == CM_NIM && (item == ITM_SQUAREROOTX || item == ITM_SQUARE)) closeNim();      //JM moved here, from bufferize see JMCLOSE, because SQRUAREROOT is not close due to .ms underneath it
+        if(calcMode == CM_NIM && delayCloseNim && item != ITM_ms) {
+          delayCloseNim = false;
+          closeNim();                 //JM moved here, from bufferize see JMCLOSE, to retain NIM if needed for .ms. Only a problem due to longpress.
+          screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+        }
 
         fnTimerStop(TO_3S_CTFF);      //dr
 

@@ -158,16 +158,17 @@ void configCommon(uint16_t idx) {
 
 
   void fnHP35JM(uint16_t unusedButMandatoryParameter){
-    fnSetHP35(0);
+    //fnSetHP35(0);
     jm_BASE_SCREEN = true;
-    fneRPN(1);                               //eRPN
-    setFGLSettings(RB_FGLNFUL);              //fgLine FULL
-    clearSystemFlag(FLAG_HPRP);              //Clear HP Rect/Polar
-    SetSetting(SS_8);                        //SSTACK 8
-    SetSetting(ITM_CPXRES1);                 //Set CPXRES
-    SetSetting(ITM_SPCRES1);                 //Set SPCRES
-    setSystemFlag(FLAG_CPXj);
-  }
+    fneRPN(1);                               //eRPN                revert HP35 defaults
+    setFGLSettings(RB_FGLNFUL);              //fgLine FULL         revert HP35 defaults
+    clearSystemFlag(FLAG_HPRP);              //Clear HP Rect/Polar revert HP35 defaults
+    SetSetting(SS_8);                        //SSTACK 8            revert HP35 defaults
+    SetSetting(ITM_CPXRES1);                 //Set CPXRES          revert HP35 defaults
+    SetSetting(ITM_SPCRES1);                 //Set SPCRES          revert HP35 defaults
+    setSystemFlag(FLAG_CPXj);                //Set j               revert HP35 defaults
+    setSystemFlag(FLAG_SBbatV);              //Set battery voltage indicator
+    }
 
 
   void fnSetC47(uint16_t unusedButMandatoryParameter) {
@@ -206,6 +207,7 @@ void configCommon(uint16_t idx) {
     fnDrop(0);
     fnDrop(0);
     runFunction(ITM_SQUARE);
+    screenUpdatingMode = SCRUPD_AUTO;
     refreshScreen();
   }
 #endif // !TESTSUITE_BUILD
@@ -885,14 +887,13 @@ void restoreStats(void){
       {0,USER_N47,     "N47: Exp 2 shft L (32 mould) /x-+ R " STD_UP_ARROW STD_DOWN_ARROW " top"  },
       {0,USER_V47,     "V47: Exp Vintage 2 shifts TopR -+x/ L"           },
       {0,USER_C43,     "C43: Org. classic 1-shift (DM42 mould, discon)"  },
-      {0,USER_C43ALTA, "C43AltA: 2-shft (43S mould, discon) Allschwil"   },
-      {0,USER_C43ALTB, "C43AltB: 1-shft (DM42 mould, discon) Allschwil"  },
-      {0,USER_C43ALT,  "C43 ALT: 2-shft (43S mould, discon) Altern've"   },
       {0,USER_DM42,    "DM42: Final Compatibility layout"                },
       {0,USER_43S,     "WP 43S Pilot: Final Compatibility layout"        },
       {0,USER_KRESET,  "C47 All USER keys cleaned"                       },
       {0,USER_MRESET,  "MyMenu menu cleaned"                             },
       {0,USER_ARESET,  "My" STD_alpha " menu cleaned"                    },
+      {0,USER_MENG,    "MyMenu primary F-key engineering layout"         },
+      {0,USER_MFIN,    "MyMenu primary F-key financial layout"           },
       {0,100,"Error List"}
     };
 
@@ -918,13 +919,33 @@ void fnShowVersion(uint8_t option) {  //KEYS VERSION LOADED
 
 
 
+
+void defaultStatusBar(void) {
+    setSystemFlag(FLAG_SBdate );
+  clearSystemFlag(FLAG_SBtime );
+  clearSystemFlag(FLAG_SBcr   );
+    setSystemFlag(FLAG_SBcpx  );
+  clearSystemFlag(FLAG_SBang  );
+    setSystemFlag(FLAG_SBfrac );
+    setSystemFlag(FLAG_SBint  );
+  clearSystemFlag(FLAG_SBmx   );
+    setSystemFlag(FLAG_SBtvm  );
+    setSystemFlag(FLAG_SBoc   );
+  clearSystemFlag(FLAG_SBss   );
+    setSystemFlag(FLAG_SBclk  );
+    setSystemFlag(FLAG_SBser  );
+    setSystemFlag(FLAG_SBprn  );
+  clearSystemFlag(FLAG_SBbatV );
+  clearSystemFlag(FLAG_SBshfR );
+}
+
 void resetOtherConfigurationStuff(void) {
+
   firstGregorianDay = 2361222 /* 14 Sept 1752 */;
   denMax = 64;                                               //JM changed default from MAX_DENMAX default
   displayFormat = DF_ALL;
   displayFormatDigits = 3;
   timeDisplayFormatDigits = 0;
-  clearSystemFlag(FLAG_FRACT);                                //Not saved in file, but restored here:  fnDisplayFormatAll(3);
 
   shortIntegerMode = SIM_2COMPL;                              //64:2
   fnSetWordSize(64);
@@ -1196,8 +1217,12 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
 
     systemFlags = 0;
 
+    //Statusbar default setup   DATE noTIME noCR noANGLE [ADM] FRAC INT MATX TVM CARRY noSS WATCH SERIAL PRN BATVOLT noSHIFTR 
+    defaultStatusBar();
+
     configCommon(CFG_DFLT);
 
+    clearSystemFlag(FLAG_FRACT);                                //Not saved in file, but restored here:  fnDisplayFormatAll(3);
     setSystemFlag(FLAG_DENANY);
     setSystemFlag(FLAG_MULTx);
     setSystemFlag(FLAG_AUTOFF);
@@ -1340,6 +1365,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
 
     fnUserJM(USER_ARESET);                                      //JM USER
     fnUserJM(USER_MRESET);                                      //JM USER
+    fnUserJM(USER_MENG);                                        //JM USER    
     #if !defined(TESTSUITE_BUILD)
       showSoftmenu(-MNU_MyMenu);                                   //this removes the false start on MyMenu error
     #endif // !TESTSUITE_BUILD

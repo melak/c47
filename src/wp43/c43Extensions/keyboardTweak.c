@@ -94,22 +94,16 @@ void showShiftState(void) {
 
     if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER && temporaryInformation != TI_SHOW_REGISTER_BIG && temporaryInformation != TI_SHOW_REGISTER_SMALL && temporaryInformation != TI_SHOW_REGISTER) {
       if(shiftF) {                        //SEE screen.c:refreshScreen
-        showGlyph(STD_MODE_F, &standardFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true);   // f is pixel 4+8+3 wide
+        showGlyph(STD_MODE_F, &standardFont, X_SHIFT, Y_SHIFT, vmNormal, true, true);   // f is pixel 4+8+3 wide
         show_f_jm();
         showHideAlphaMode();
       }
       else if(shiftG) {                   //SEE screen.c:refreshScreen
-        showGlyph(STD_MODE_G, &standardFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true);   // g is pixel 4+10+1 wide
+        showGlyph(STD_MODE_G, &standardFont, X_SHIFT, Y_SHIFT, vmNormal, true, true);   // g is pixel 4+10+1 wide
         show_g_jm();
         showHideAlphaMode();
       }
       else {
-        //showGlyph(" ", &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true);         // space clears the f and g
-        //#if defined(DMCP_BUILD)
-        //  start_buzzer_freq(100000); //Click when shifts are cleared for TESTING
-        //  sys_delay(5);
-        //  stop_buzzer();
-        //#endif // DMCP_BUILD
         clearShiftState();
         clear_fg_jm();
         showHideAlphaMode();
@@ -358,6 +352,9 @@ void resetKeytimers(void) {
             longpressDelayedkey1 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
             break;
         default:;
+      }
+      if(*result == ITM_ms || longpressDelayedkey1 == ITM_ms || longpressDelayedkey2 == ITM_ms || longpressDelayedkey3 == ITM_ms) { //.ms needs NIM mode to be open if the user intends it to be open. 
+        delayCloseNim = true;
       }
     }
     else if(calcMode == CM_AIM) {

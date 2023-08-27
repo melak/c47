@@ -193,22 +193,43 @@ void systemFlagAction(uint16_t systemFlag, uint16_t action) {
   }
 
   switch(systemFlag) {
-    case FLAG_YMD:    fnRefreshState(); break;
-    case FLAG_DMY:    fnRefreshState(); break;
-    case FLAG_MDY:    fnRefreshState(); break;
-    case FLAG_TDM24:  fnRefreshState(); break;
-    case FLAG_CPXRES: fnRefreshState(); break;
-    case FLAG_SPCRES: fnRefreshState(); break;
-    case FLAG_CPXj:   fnRefreshState(); break;
-    case FLAG_POLAR:  fnRefreshState(); break;
-    case FLAG_LEAD0:  fnRefreshState(); break;
-    case FLAG_DENANY: fnRefreshState(); break;
-    case FLAG_DENFIX: fnRefreshState(); break;
-    case FLAG_SSIZE8: fnRefreshState(); break;
-    case FLAG_MULTx:  fnRefreshState(); break;
-    case FLAG_ALLENG: fnRefreshState(); break;
-    case FLAG_ENDPMT: fnRefreshState(); break;
+    case FLAG_YMD:    
+    case FLAG_DMY:    
+    case FLAG_MDY:    
+    case FLAG_TDM24:  
+    case FLAG_CPXRES: 
+    case FLAG_SPCRES: 
+    case FLAG_CPXj:   
+    case FLAG_POLAR:  
+    case FLAG_LEAD0:  
+    case FLAG_DENANY: 
+    case FLAG_DENFIX: 
+    case FLAG_SSIZE8: 
+    case FLAG_MULTx:  
+    case FLAG_ALLENG: 
+    case FLAG_ENDPMT: 
     case FLAG_HPRP:   fnRefreshState(); break;
+
+
+
+    case FLAG_SBdate: 
+    case FLAG_SBtime: 
+    case FLAG_SBcr  : 
+    case FLAG_SBcpx : 
+    case FLAG_SBang : 
+    case FLAG_SBfrac: 
+    case FLAG_SBint : 
+    case FLAG_SBmx  :
+    case FLAG_SBtvm : 
+    case FLAG_SBoc  : 
+    case FLAG_SBss  : 
+    case FLAG_SBclk : 
+    case FLAG_SBser : 
+    case FLAG_SBprn : 
+    case FLAG_SBbatV: 
+    case FLAG_SBshfR: fnRefreshState(); screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR; break;
+
+
     default: ;
   }
 }

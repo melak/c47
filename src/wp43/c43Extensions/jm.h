@@ -104,9 +104,6 @@ void fnUserJM(uint16_t jmUser);
 
 
 //fnUserJM
-#define USER_C43ALTA     25
-#define USER_C43ALTB     225
-#define USER_C43ALT      26
 #define JM_ASSIGN        28
 #define USER_COPY        29
 #define USER_V47         40
@@ -121,6 +118,8 @@ void fnUserJM(uint16_t jmUser);
 #define USER_KRESET      50
 #define USER_N47         51
 #define USER_C43         52
+#define USER_MENG        53
+#define USER_MFIN        54
  //last number
 
 
