@@ -74,6 +74,11 @@ void itemToBeCoded(uint16_t unusedButMandatoryParameter) {
   funcOK = false;
 }
 
+  void fnOldItemError(uint16_t unusedButMandatoryParameter) {
+    #if !defined(TESTSUITE_BUILD) && !defined(GENERATE_CATALOGS)
+      displayCalcErrorMessage(ERROR_OLD_ITEM_TO_REPLACE, ERR_REGISTER_LINE, REGISTER_X);
+    #endif // !TESTSUITE_BUILD
+  }
 
 
 //#if !defined(GENERATE_CATALOGS)
@@ -128,12 +133,6 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   }
 
 
-  void fnOldItemError(uint16_t unusedButMandatoryParameter) {
-    displayCalcErrorMessage(ERROR_OLD_ITEM_TO_REPLACE, ERR_REGISTER_LINE, REGISTER_X);
-    #if defined(PC_BUILD)
-      moreInfoOnError("Function no more supported in programs : ", indexOfItems[lastFunc].itemCatalogName, NULL, NULL);
-    #endif // PC_BUILD 
-  }
   void reallyRunFunction(int16_t func, uint16_t param) {
     lastFunc = func;
     lastParam = param;
@@ -1117,7 +1116,6 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnSetC47                   (uint16_t unusedButMandatoryParameter) {}
   void fnDiskInfo                 (uint16_t unusedButMandatoryParameter) {}
   void fnLint                     (uint16_t unusedButMandatoryParameter) {}
-  void fnOldItemError             (uint16_t unusedButMandatoryParameter) {}
 
 
                                                                               //JM ^^
