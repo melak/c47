@@ -1806,7 +1806,7 @@
 #define ITM_iPIn                    1754
 #define ITM_iSIGMAn                 1755
 #define ITM_PLOT_CENTRL             1756
-#define ITM_HIDE                    1757
+#define ITM_HIDE_OLD                1757
 #define ITM_SMI                     1758
 #define ITM_PLOT_LR                 1759
 #define ITM_PLOT_NXT                1760
@@ -2069,8 +2069,8 @@
 #define ITM_NVECT                   2013
 #define ITM_EXTX                    2014
 #define ITM_EXTY                    2015
-#define ITM_DENMAX2                 2016
-#define ITM_SETSIG2                 2017
+#define ITM_DENMAX2_OLD             2016
+#define ITM_SETSIG2_OLD             2017
 #define MNU_2018                    2018
 #define ITM_RMODEQ                  2019
 #define ITM_SI_All                  2020
@@ -2249,7 +2249,11 @@
 #define ITM_SCRSUP                  2193
 #define ITM_SCRSUB                  2194
 
-#define LAST_ITEM                   2195
+#define ITM_HIDE                    2195
+#define ITM_DENMAX2                 2196
+#define ITM_SETSIG2                 2197
+
+#define LAST_ITEM                   2198
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
