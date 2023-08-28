@@ -654,7 +654,7 @@ TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,           ITM_N_KE
 
 TO_QSPI const int16_t menu_ASN[]       =  { ITM_USER_C47  ,                 ITM_USER_C43  ,             ITM_USER_WP43S  ,         ITM_USER_DM42   ,      ITM_ASSIGN      ,            ITM_USERMODE   ,
                                             ITM_ASNVIEWER ,                 ITM_BASE_ENG  ,             ITM_BASE_FIN    ,         ITM_USER_MRESET ,      ITM_USER_ARESET ,            ITM_USER_KRESET ,
-                                            ITM_NULL      ,                 ITM_USER_D47  ,             ITM_USER_E47    ,         ITM_USER_N47    ,      ITM_USER_V47    ,            -MNU_ASN_N                       };
+                                            ITM_NULL,                       CC_D47,                     CC_E47,                   CC_N47,                CC_V47,                     -MNU_ASN_N                       };
 
 
 TO_QSPI const int16_t menu_XEQ[]         = { ITM_X_P1,                      ITM_X_P2,                   ITM_X_P3,                 ITM_X_P4,              ITM_X_P5,                    ITM_X_P6,

@@ -23,6 +23,7 @@
 #include "items.h"
 #include "flags.h"
 #include "c43Extensions/radioButtonCatalog.h"
+#include "charString.h"
 #include "screen.h"
 #include "softmenus.h"
 #include <string.h>
@@ -71,7 +72,12 @@
       }
       else {
         switch(page) {
-          case 1: kk = kbd_std[key].primary;  break;
+          case 1: if(key != 0) {
+              kk = kbd_std[key].primary;
+            } else {
+              kk = Norm_Key_00_VAR;
+            }
+            break;
           case 3: kk = kbd_std[key].fShifted; break;
           case 2: kk = kbd_std[key].gShifted; break;
           default: ;
@@ -82,7 +88,19 @@
       if(strcmp(Name, "0000") == 0) {
         Name[0]=0;
       }
-      showKey(Name, xx*pixelsPerSoftKey, xx*pixelsPerSoftKey+pixelsPerSoftKey, YOFF+yy*SOFTMENU_HEIGHT, YOFF+(yy+1)*SOFTMENU_HEIGHT, xx == 5, (kk > 0 || Name[0] == 0) ? vmNormal : vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
+
+      
+      char tmp3[20];
+      tmp3[0]=0;
+      if(!fnAsnDisplayUSER && (page == 1) && (key == 0) && (kbd_std[key].primary != Norm_Key_00_VAR)) {
+        stringAppend(tmp3 + stringByteLength(tmp3), "[");
+        stringAppend(tmp3 + stringByteLength(tmp3), Name);
+        stringAppend(tmp3 + stringByteLength(tmp3), "]");
+        Name[0]=0;
+        stringAppend(Name + stringByteLength(Name), tmp3);
+      }
+
+      showKey(Name, xx*pixelsPerSoftKey, xx*pixelsPerSoftKey+pixelsPerSoftKey, YOFF+yy*SOFTMENU_HEIGHT, YOFF+(yy+1)*SOFTMENU_HEIGHT, xx == 5, ((kk > 0 || Name[0] == 0) && tmp3[0]==0) ? vmNormal : vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
 
       if(fnAsnDisplayUSER &&
           ( ((page == 1) && (kbd_std[key].primary == kbd_usr[key].primary)  ) ||

@@ -1253,7 +1253,14 @@ bool_t allowShiftsToClearError = false;
       case      ITM_DOWN1: break;                       //JM SHOWregis unchanged
       default:  SHOWregis = 9999; break;
     }                                                   //JMSHOW ^^
-    Setup_MultiPresses( key->primary );
+
+    bool_t gShiftOverride = false;
+    result = ITM_SIGMAPLUS;
+    if(Check_SigmaPlus_Assigned(&result, key_no)) gShiftOverride = true;
+
+    if (!gShiftOverride) {
+      Setup_MultiPresses( key->primary );
+    }
 
     #if defined(PC_BUILD)
       sprintf(tmp,"^^^^^^^keyboard.c: determineitem: key->primary2: %d:",key->primary); jm_show_comment(tmp);
@@ -1288,9 +1295,8 @@ bool_t allowShiftsToClearError = false;
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;
     }
-
     // Shift g pressed and JM REMOVED shift f not active
-    else if(key->primary == ITM_SHIFTg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
+    else if((key->primary == ITM_SHIFTg || gShiftOverride) && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) allowShiftsToClearError = true; //JM
       if(temporaryInformation == TI_VIEW) {
         temporaryInformation = TI_NO_INFO;
@@ -1320,7 +1326,7 @@ bool_t allowShiftsToClearError = false;
       return ITM_NOP;
     }
 
-    // JM Shift f pressed  //JM shifts change f/g to a single function key toggle to match DM42 keyboard
+    // JM Shift fg pressed  //JM shifts change f/g to a single function key toggle to match DM42 keyboard
     // JM Inserted new section and removed old f and g key processing sections
     else if(key->primary == KEY_fg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       Shft_timeouts = true;                         //JM SHIFT NEW
@@ -1393,13 +1399,9 @@ bool_t allowShiftsToClearError = false;
       sprintf(tmp,"^^^^^^^keyboard.c: determineitem: result1: %d:",result); jm_show_comment(tmp);
     #endif //PC_BUILD
 
-    Check_SigmaPlus_Assigned(&result, key_no);  //JM
-
-    #if defined(PC_BUILD)
-      sprintf(tmp,"^^^^^^^keyboard.c: determineitem: result2: %d:",result); jm_show_comment(tmp);
-    #endif //PC_BUILD
-
-    Check_MultiPresses(&result, key_no);        //JM
+    if(!Check_SigmaPlus_Assigned(&result, key_no)) {
+      Check_MultiPresses(&result, key_no);        //JM
+    }
 
     #if defined(PC_BUILD)
       sprintf(tmp,"^^^^^^^keyboard.c: determineitem: result3: %d:",result); jm_show_comment(tmp);
