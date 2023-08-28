@@ -2565,7 +2565,7 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
   // Allow older versions for autoloaded sav file
   //  while doing no check on manual loading. This may allow manual loading of older files at risk
   loadedVersion = 0;
-  if(loadType == autoLoad && loadMode == LM_ALL) {
+  {
     readLine(tmpString);
     if(strcmp(tmpString, "SAVE_FILE_REVISION") == 0) {
       readLine(aimBuffer); // internal rev number (ignore now)
