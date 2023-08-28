@@ -351,10 +351,10 @@
 #define ERROR_INVALID_DATA_TYPE_FOR_POLAR_RECT    52
 #define ERROR_BAD_INPUT                           53 // This error is not in ReM and cannot occur (theoretically).
 #define ERROR_NO_PROGRAM_SPECIFIED                54
-
 #define ERROR_CANNOT_WRITE_FILE                   55
+#define ERROR_OLD_ITEM_TO_REPLACE                 56
 
-#define NUMBER_OF_ERROR_CODES                     56
+#define NUMBER_OF_ERROR_CODES                     57
 #define SIZE_OF_EACH_ERROR_MESSAGE                48
 
 #define NUMBER_OF_BUG_SCREEN_MESSAGES             10
