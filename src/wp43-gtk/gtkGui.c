@@ -364,7 +364,7 @@ if(calcMode == CM_AIM || calcMode == CM_EIM || calcMode == CM_MIM || tam.mode) {
         shiftF = true;
           int16_t jj = softmenuStack[0].firstItem;
           softmenuStack[0].firstItem = 0;
-          btnFnClicked(w, "5");  //= F5
+          btnFnClicked(w, "2");  //= F2
           softmenuStack[0].firstItem = jj;
           showSoftmenuCurrentPart();
       }
