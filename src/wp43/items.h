@@ -2248,7 +2248,6 @@
 #define ITM_SCRNRM                  2192
 #define ITM_SCRSUP                  2193
 #define ITM_SCRSUB                  2194
-
 #define ITM_HIDE                    2195
 #define ITM_DENMAX2                 2196
 #define ITM_SETSIG2                 2197
