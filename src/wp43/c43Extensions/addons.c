@@ -144,43 +144,6 @@ void fnCFGsettings(uint16_t unusedButMandatoryParameter) {
 }
 
 
-void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
-  #if defined(PC_BUILD)
-    jm_show_comment("^^^^fnClrModa");
-  #endif // PC_BUILD
-
-  #if !defined(TESTSUITE_BUILD)
-    resetKeytimers();  //JM
-    clearSystemFlag(FLAG_FRACT);
-
-    temporaryInformation = TI_NO_INFO;
-    if(calcMode == CM_NIM) {
-      strcpy(aimBuffer, "+");
-      fnKeyBackspace(0);
-      //printf("|%s|\n", aimBuffer);
-    }
-    lastIntegerBase = 0;
-
-    uint_fast8_t ix = 0;
-    while(ix < SOFTMENU_STACK_SIZE && softmenuStack[0].softmenuId != 0) {
-    #if defined(PC_BUILD)
-      jm_show_comment("^^^^fnClrModb");
-    #endif // PC_BUILD
-      popSoftmenu();
-      ix++;
-    }
-
-    if(!checkHP) {
-      fnDisplayStack(4);    //Restore to default DSTACK 4
-    }
-
-    calcModeNormal();
-    refreshScreen();
-    fnKeyExit(0);           //Call fnkeyExit to ensure the correct home screen is brought up, if HOME is selected.
-    popSoftmenu();
-  #endif // !TESTSUITE_BUILD
-}
-
 
 //fnArg for real and longints in addition to the standard complex. Simply returns 0 angle
 void fnArg_all(uint16_t unusedButMandatoryParameter) {

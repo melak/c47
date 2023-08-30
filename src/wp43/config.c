@@ -157,7 +157,7 @@ void configCommon(uint16_t idx) {
   }
 
 
-  void fnHP35JM(uint16_t unusedButMandatoryParameter){
+  void fnSetJM(uint16_t unusedButMandatoryParameter){
     //fnSetHP35(0);
     jm_BASE_SCREEN = true;
     fneRPN(1);                               //eRPN                revert HP35 defaults
@@ -168,12 +168,28 @@ void configCommon(uint16_t idx) {
     SetSetting(ITM_SPCRES1);                 //Set SPCRES          revert HP35 defaults
     setSystemFlag(FLAG_CPXj);                //Set j               revert HP35 defaults
     setSystemFlag(FLAG_SBbatV);              //Set battery voltage indicator
+    fnRefreshState();
+    refreshScreen();
+    }
+
+  void fnSetRJ(uint16_t unusedButMandatoryParameter){
+    //fnSetHP35(0);
+    jm_BASE_SCREEN = true;
+    fneRPN(1);                               //eRPN                revert HP35 defaults
+    setFGLSettings(RB_FGLNFUL);              //fgLine FULL         revert HP35 defaults
+    clearSystemFlag(FLAG_HPRP);              //Clear HP Rect/Polar revert HP35 defaults
+    SetSetting(SS_8);                        //SSTACK 8            revert HP35 defaults
+    SetSetting(ITM_CPXRES1);                 //Set CPXRES          revert HP35 defaults
+    SetSetting(ITM_SPCRES1);                 //Set SPCRES          revert HP35 defaults
+    setSystemFlag(FLAG_CPXj);                //Set j               revert HP35 defaults
+    setSystemFlag(FLAG_SBbatV);              //Set battery voltage indicator
+    fnRefreshState();
+    refreshScreen();
     }
 
 
-  void fnSetC47(uint16_t unusedButMandatoryParameter) {
+  void _fnSetC47(uint16_t unusedButMandatoryParameter) {
     fnKeyExit(0);
-    fnClrMod(0);
     addItemToBuffer(ITM_EXIT1);
 
     fnInDefault(ID_43S);                     //!ID
@@ -210,7 +226,52 @@ void configCommon(uint16_t idx) {
     screenUpdatingMode = SCRUPD_AUTO;
     refreshScreen();
   }
+
+void fnSetC47(uint16_t unusedButMandatoryParameter) {
+    fnKeyExit(0);
+    fnClrMod(0);
+    _fnSetC47(0);
+  }
 #endif // !TESTSUITE_BUILD
+
+
+
+void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
+  #if defined(PC_BUILD)
+    jm_show_comment("^^^^fnClrModa");
+  #endif // PC_BUILD
+
+  #if !defined(TESTSUITE_BUILD)
+    resetKeytimers();  //JM
+    clearSystemFlag(FLAG_FRACT);
+    temporaryInformation = TI_NO_INFO;
+    if(calcMode == CM_NIM) {
+      strcpy(aimBuffer, "+");
+      fnKeyBackspace(0);
+      //printf("|%s|\n", aimBuffer);
+    }
+    lastIntegerBase = 0;
+
+    uint_fast8_t ix = 0;
+    while(ix < SOFTMENU_STACK_SIZE && softmenuStack[0].softmenuId != 0) {
+    #if defined(PC_BUILD)
+      jm_show_comment("^^^^fnClrModb");
+    #endif // PC_BUILD
+      popSoftmenu();
+      ix++;
+    }
+    if(!checkHP) {
+      fnDisplayStack(4);    //Restore to default DSTACK 4
+    } else {
+      _fnSetC47(0);          //Snap out of HP35 mode, and reset all setting needed for that
+    }
+    calcModeNormal();
+    refreshScreen();
+    fnKeyExit(0);           //Call fnkeyExit to ensure the correct home screen is brought up, if HOME is selected.
+    popSoftmenu();
+  #endif // !TESTSUITE_BUILD
+}
+
 
 
 
