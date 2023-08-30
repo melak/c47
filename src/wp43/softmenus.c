@@ -288,12 +288,21 @@ TO_QSPI const int16_t menu_PFN_MORE[]    = { ITM_AGRAPH,                    ITM_
                                              ITM_CLMENU,                    ITM_R_COPY,                 ITM_R_SORT,               ITM_R_SWAP,            ITM_R_CLR,                   ITM_EXITALL,
                                              ITM_MENU,                      ITM_KEYG,                   ITM_KEYX,                 ITM_VARMNU,            ITM_MVAR,                    ITM_PUTK                      };
 
-TO_QSPI const int16_t menu_STAT[]        = { ITM_SIGMAPLUS,                 ITM_XBAR,                   ITM_STDDEVWEIGHTED,       ITM_STDDEV,            ITM_SM,                      ITM_NSIGMA,
+TO_QSPI const int16_t menu_STAT[]        = { ITM_SIGMAPLUS,                 ITM_XBAR,                   ITM_STDDEVWEIGHTED,       ITM_STDDEV,            ITM_SM,                      ITM_XRMS,
                                              ITM_SIGMAMINUS,                ITM_XW,                     ITM_SW,                   ITM_STDDEVPOP,         ITM_SMW,                     ITM_XH,
-                                             ITM_CLSIGMA,                   ITM_XG,                     ITM_SCATTFACT,            ITM_SCATTFACTp,        ITM_SCATTFACTm,              ITM_XRMS,
+                                             ITM_NSIGMA,                    ITM_XG,                     ITM_SCATTFACT,            ITM_SCATTFACTp,        ITM_SCATTFACTm,              ITM_CLSIGMA,
 
                                              ITM_XMIN,                      ITM_LOWER_QUARTILE,         ITM_MEDIAN,               ITM_UPPER_QUARTILE,    ITM_XMAX,                    ITM_SUM,
-                                             ITM_NULL,                      ITM_PERCENTILE,             ITM_MAD,                  ITM_IQR,               ITM_NULL,                    ITM_SIGMARANGE                };
+                                             ITM_NULL,                      ITM_PERCENTILE,             ITM_MAD,                  ITM_IQR,               ITM_NULL,                    ITM_SIGMARANGE,
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
+
+//TO_QSPI const int16_t menu_STAT[]        = { ITM_SIGMAPLUS,                 ITM_XBAR,                   ITM_STDDEVWEIGHTED,       ITM_STDDEV,            ITM_SM,                      ITM_NSIGMA,
+//                                             ITM_SIGMAMINUS,                ITM_XW,                     ITM_SW,                   ITM_STDDEVPOP,         ITM_SMW,                     ITM_XH,
+//                                             ITM_CLSIGMA,                   ITM_XG,                     ITM_SCATTFACT,            ITM_SCATTFACTp,        ITM_SCATTFACTm,              ITM_XRMS,
+//
+//                                             ITM_XMIN,                      ITM_LOWER_QUARTILE,         ITM_MEDIAN,               ITM_UPPER_QUARTILE,    ITM_XMAX,                    ITM_SUM,
+//                                             ITM_NULL,                      ITM_PERCENTILE,             ITM_MAD,                  ITM_IQR,               ITM_NULL,                    ITM_SIGMARANGE                };
+
 
 
 TO_QSPI const int16_t menu_REGR[]        = { ITM_LR,                        ITM_CORR,                   ITM_SXY,                  ITM_COV,               ITM_XCIRC,                   ITM_YCIRC,
@@ -314,13 +323,21 @@ TO_QSPI const int16_t menu_SUMS_C43[]    = { ITM_SIGMAPLUS,                 ITM_
                                              ITM_SIGMAx2y,                  ITM_SIGMAxlny,              ITM_SIGMAx2lny,           ITM_SIGMAlnyonx,       ITM_NULL,                    ITM_SIGMAylnx,
                                              ITM_SIGMAx2ony,                ITM_SIGMA1onx,              ITM_SIGMA1onx2,           ITM_SIGMAxony,         ITM_SIGMA1ony2,              ITM_SIGMA1ony                 };
 
-TO_QSPI const int16_t menu_PLOTTING[]    = { ITM_SIGMAPLUS,                 ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NSIGMA,
-                                             ITM_SIGMAMINUS,                ITM_SIGMAx,                 ITM_SIGMAx2,              ITM_SIGMAxy,           ITM_SIGMAy2,                 ITM_SIGMAy,
-                                             ITM_CLSIGMA,                   ITM_SIGMAx3,                ITM_SIGMAx4,             -MNU_REGR,              ITM_PLOT_STAT,              -MNU_HIST,
+TO_QSPI const int16_t menu_PLOTTING[]    = { ITM_SIGMAPLUS,                 ITM_SIGMAx,                ITM_SIGMAx2,               ITM_SIGMAy,            ITM_SIGMAy2,                 ITM_SIGMAxy,               
+                                             ITM_SIGMAMINUS,                ITM_SIGMA1onx,             ITM_SIGMA1onx2,            ITM_SIGMA1ony,         ITM_SIGMA1ony2,              ITM_SIGMAxony,             
+                                             ITM_NSIGMA,                    ITM_SIGMAx3,               ITM_SIGMAx4,               -MNU_REGR,             ITM_PLOT_STAT,               -MNU_HIST,                 
+    
+                                             ITM_SIGMAPLUS,                 ITM_SIGMAlnx,              ITM_SIGMAln2x,             ITM_SIGMAlny,          ITM_SIGMAln2y,               ITM_SIGMAx2y,              
+                                             ITM_SIGMAMINUS,                ITM_SIGMAylnx,             ITM_SIGMAlnxy,             ITM_SIGMAxlny,         ITM_SIGMAx2lny,              ITM_SIGMAx2ony,            
+                                             ITM_NSIGMA,                    ITM_NULL,                  ITM_NULL,                  ITM_SIGMAlnyonx,       ITM_NULL,                    ITM_CLSIGMA                     };
 
-                                             ITM_SIGMAlnx,                  ITM_SIGMAln2x,              ITM_SIGMAlnxy,            ITM_SIGMAln2y,         ITM_SIGMAlny,                ITM_NSIGMA,
-                                             ITM_SIGMAx2y,                  ITM_SIGMAxlny,              ITM_SIGMAx2lny,           ITM_SIGMAlnyonx,       ITM_NULL,                    ITM_SIGMAylnx,
-                                             ITM_SIGMAx2ony,                ITM_SIGMA1onx,              ITM_SIGMA1onx2,           ITM_SIGMAxony,         ITM_SIGMA1ony2,              ITM_SIGMA1ony                 };
+//TO_QSPI const int16_t menu_PLOTTING[]    = { ITM_SIGMAPLUS,                 ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NSIGMA,
+//                                             ITM_SIGMAMINUS,                ITM_SIGMAx,                 ITM_SIGMAx2,              ITM_SIGMAxy,           ITM_SIGMAy2,                 ITM_SIGMAy,
+//                                             ITM_CLSIGMA,                   ITM_SIGMAx3,                ITM_SIGMAx4,             -MNU_REGR,              ITM_PLOT_STAT,              -MNU_HIST,
+//
+//                                             ITM_SIGMAlnx,                  ITM_SIGMAln2x,              ITM_SIGMAlnxy,            ITM_SIGMAln2y,         ITM_SIGMAlny,                ITM_NSIGMA,
+//                                             ITM_SIGMAx2y,                  ITM_SIGMAxlny,              ITM_SIGMAx2lny,           ITM_SIGMAlnyonx,       ITM_NULL,                    ITM_SIGMAylnx,
+//                                             ITM_SIGMAx2ony,                ITM_SIGMA1onx,              ITM_SIGMA1onx2,           ITM_SIGMAxony,         ITM_SIGMA1ony2,              ITM_SIGMA1ony                 };
 //^^^^^^^^^^^^
 
 
