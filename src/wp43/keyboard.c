@@ -2005,42 +2005,50 @@ RELEASE_END:
       }
 
       case ITM_UP1: {
-        keyActionProcessed = true;   //JM swapped to before fnKeyUp to be able to check if key was processed below. Chose to process it here, as fnKeyUp does not have access to item.
-        fnKeyUp(NOPARAM);
-        if(!keyActionProcessed) {    //JMvv
-          addItemToBuffer(ITM_UP_ARROW);    //Let the arrows produce arrow up and arrow down in ALPHA mode
-        }                            //JM^^
-        if(currentSoftmenuScrolls() || calcMode != CM_NORMAL) {
-          refreshScreen();
-        }
-        keyActionProcessed = true;
-        #if(REAL34_WIDTH_TEST == 1)
-          if(++largeur > SCREEN_WIDTH) {
-            largeur--;
+        if(calcMode != CM_CONFIRMATION) {
+          keyActionProcessed = true;   //JM swapped to before fnKeyUp to be able to check if key was processed below. Chose to process it here, as fnKeyUp does not have access to item.
+          fnKeyUp(NOPARAM);
+          if(!keyActionProcessed) {    //JMvv
+            addItemToBuffer(ITM_UP_ARROW);    //Let the arrows produce arrow up and arrow down in ALPHA mode
+          }                            //JM^^
+          if(currentSoftmenuScrolls() || calcMode != CM_NORMAL) {
+            refreshScreen();
           }
-          uIntToLongInteger(largeur, lgInt);
-          convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_Z);
-        #endif // (REAL34_WIDTH_TEST == 1)
+          keyActionProcessed = true;
+          #if(REAL34_WIDTH_TEST == 1)
+            if(++largeur > SCREEN_WIDTH) {
+              largeur--;
+            }
+            uIntToLongInteger(largeur, lgInt);
+            convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_Z);
+          #endif // (REAL34_WIDTH_TEST == 1)
+        } else {
+          keyActionProcessed = true;
+        }
         break;
       }
 
       case ITM_DOWN1: {
-        keyActionProcessed = true;   //swapped to before fnKeyUp to be able to check if key was processed below. Chose to process it here, as fnKeyUp does not have access to item.
-        fnKeyDown(NOPARAM);
-        if(!keyActionProcessed){     //JM
-           addItemToBuffer(ITM_DOWN_ARROW);    //Let the arrows produce arrow up and arrow down in ALPHA mode
-        }                            //JM^^
-        if(currentSoftmenuScrolls() || calcMode != CM_NORMAL) {
-          refreshScreen();
-        }
-        keyActionProcessed = true;
-        #if(REAL34_WIDTH_TEST == 1)
-          if(--largeur < 20) {
-            largeur++;
+        if(calcMode != CM_CONFIRMATION) {
+          keyActionProcessed = true;   //swapped to before fnKeyUp to be able to check if key was processed below. Chose to process it here, as fnKeyUp does not have access to item.
+          fnKeyDown(NOPARAM);
+          if(!keyActionProcessed){     //JM
+             addItemToBuffer(ITM_DOWN_ARROW);    //Let the arrows produce arrow up and arrow down in ALPHA mode
+          }                            //JM^^
+          if(currentSoftmenuScrolls() || calcMode != CM_NORMAL) {
+            refreshScreen();
           }
-          uIntToLongInteger(largeur, lgInt);
-          convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_Z);
-        #endif // (REAL34_WIDTH_TEST == 1)
+          keyActionProcessed = true;
+          #if(REAL34_WIDTH_TEST == 1)
+            if(--largeur < 20) {
+              largeur++;
+            }
+            uIntToLongInteger(largeur, lgInt);
+            convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_Z);
+          #endif // (REAL34_WIDTH_TEST == 1)
+        } else {
+          keyActionProcessed = true;
+        }
         break;
       }
 
@@ -2434,7 +2442,7 @@ RELEASE_END:
               break;
             }
 
-            case CM_CONFIRMATION: {
+            case CM_CONFIRMATION: { //ITM_ENTER & ITM_EXIT1 do not reach here, it goes to fnKeyEnter and fnKeyExit
               if(item == ITEM_CONF_Y || item == ITM_XEQ || item == ITM_ENTER) { // Yes or XEQ or ENTER
                 calcMode = previousCalcMode;
                 confirmedFunction(CONFIRMED);
