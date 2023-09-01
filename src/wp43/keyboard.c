@@ -901,6 +901,11 @@ int16_t lastItem = 0;
     fnTimerStop(TO_CL_LONG);      //dr
   }
 
+
+
+
+
+
   /********************************************//**
    * \brief Executes one function from a softmenu
    * \return void
@@ -1223,6 +1228,10 @@ int16_t lastItem = 0;
 
 bool_t allowShiftsToClearError = false;
 #define stringToKeyNumber(data)         ((*((char *)data) - '0')*10 + *(((char *)data)+1) - '0')
+
+
+
+
 
   int16_t determineItem(const char *data) {
     delayCloseNim = false;
