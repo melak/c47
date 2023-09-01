@@ -537,6 +537,9 @@
       strcpy(oldTime, dateTimeString);
       #if(DEBUG_INSTEAD_STATUS_BAR != 1)
         showDateTime();
+        if (Y_SHIFT == 0 && X_SHIFT < 200) {
+          showShiftState();
+        }
       #endif // (DEBUG_INSTEAD_STATUS_BAR != 1)
     }
 
@@ -592,6 +595,9 @@
       strcpy(oldTime, dateTimeString);
       #if(DEBUG_INSTEAD_STATUS_BAR != 1)
         showDateTime();
+        if (Y_SHIFT == 0 && X_SHIFT < 200) {
+          showShiftState();
+        }
       #endif // (DEBUG_INSTEAD_STATUS_BAR != 1)
 
       if(!getSystemFlag(FLAG_AUTOFF) || getSystemFlag(FLAG_RUNTIM) || programRunStop == PGM_RUNNING || (nextTimerRefresh != 0)) {

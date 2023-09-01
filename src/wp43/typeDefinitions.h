@@ -232,7 +232,7 @@ typedef struct {
   bool_t constantFractions;
   uint8_t constantFractionsMode;
   bool_t constantFractionsOn;
-  uint8_t displayStackSHOIDISP;                                             //JMCFG^^
+  uint8_t displayStackSHOIDISP;
   bool_t bcdDisplay;
   bool_t topHex;
   uint8_t bcdDisplaySign;
@@ -241,6 +241,8 @@ typedef struct {
   bool_t SI_All;
   bool_t LongPressM;
   bool_t LongPressF;
+//  int16_t exponentLimit;     //todo
+//  uint8_t significantDigits; //todo
 
 } dtConfigDescriptor_t;
 
