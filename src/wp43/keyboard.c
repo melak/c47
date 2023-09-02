@@ -1265,9 +1265,9 @@ bool_t allowShiftsToClearError = false;
 
     bool_t gShiftOverride = false;
     result = ITM_SIGMAPLUS;
-    if(Check_SigmaPlus_Assigned(&result, key_no)) gShiftOverride = true;
+    gShiftOverride = Check_SigmaPlus_Assigned(&result, key_no);
 
-    if (!gShiftOverride) {
+    if (!gShiftOverride) {                              //disable long and double press if Sigma+ is shift g
       Setup_MultiPresses( key->primary );
     }
 
@@ -1278,6 +1278,10 @@ bool_t allowShiftsToClearError = false;
     // Shift f pressed and JM REMOVED shift g not active
     if(key->primary == ITM_SHIFTf && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) allowShiftsToClearError = true; //JM
+      Shft_timeouts = true;
+      if(ShiftTimoutMode) {
+        fnTimerStart(TO_FG_TIMR, TO_FG_TIMR, JM_SHIFT_TIMER); //^^
+      }
       if(temporaryInformation == TI_VIEW) {
         temporaryInformation = TI_NO_INFO;
         updateMatrixHeightCache();
@@ -1292,7 +1296,6 @@ bool_t allowShiftsToClearError = false;
       lastErrorCode = 0;
 
       fnTimerStop(TO_FG_LONG);                                //dr
-      fnTimerStop(TO_FG_TIMR);                                //dr
 
       shiftF = !shiftF;
       shiftG = false;                                         //JM no shifted menu on g-shift-key as in WP43S
@@ -1307,6 +1310,10 @@ bool_t allowShiftsToClearError = false;
     // Shift g pressed and JM REMOVED shift f not active
     else if((key->primary == ITM_SHIFTg || gShiftOverride) && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) allowShiftsToClearError = true; //JM
+      Shft_timeouts = true;
+      if(ShiftTimoutMode) {
+        fnTimerStart(TO_FG_TIMR, TO_FG_TIMR, JM_SHIFT_TIMER); //^^
+      }
       if(temporaryInformation == TI_VIEW) {
         temporaryInformation = TI_NO_INFO;
         updateMatrixHeightCache();
@@ -1321,7 +1328,6 @@ bool_t allowShiftsToClearError = false;
       lastErrorCode = 0;
 
       fnTimerStop(TO_FG_LONG);                                //dr
-      fnTimerStop(TO_FG_TIMR);                                //dr
 
       shiftG = !shiftG;
       shiftF = false;                                         //JM no shifted menu on g-shift-key as in WP43S
@@ -1336,9 +1342,8 @@ bool_t allowShiftsToClearError = false;
     }
 
     // JM Shift fg pressed  //JM shifts change f/g to a single function key toggle to match DM42 keyboard
-    // JM Inserted new section and removed old f and g key processing sections
     else if(key->primary == KEY_fg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
-      Shft_timeouts = true;                         //JM SHIFT NEW
+      Shft_timeouts = true;
       fnTimerStart(TO_FG_LONG, TO_FG_LONG, JM_TO_FG_LONG);    //vv dr
       if(ShiftTimoutMode) {
         fnTimerStart(TO_FG_TIMR, TO_FG_TIMR, JM_SHIFT_TIMER); //^^
@@ -1351,15 +1356,18 @@ bool_t allowShiftsToClearError = false;
       else {
         temporaryInformation = TI_NO_INFO;
       }
-      if(lastErrorCode != 0) allowShiftsToClearError = true;                                                                                         //JM shifts
-      lastErrorCode = 0;                                                                                                      //JM shifts
+      if(lastErrorCode != 0) allowShiftsToClearError = true;
+      if(programRunStop == PGM_WAITING) {
+        programRunStop = PGM_STOPPED;
+      }
+      lastErrorCode = 0;
 
       fg_processing_jm();
 
       lastshiftF = shiftF;
       lastshiftG = shiftG;
-      showShiftState();                                                                                                         //JM shifts
-      refreshModeGui();                                                                                                         //JM refreshModeGui
+      showShiftState();
+      refreshModeGui();
 
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;

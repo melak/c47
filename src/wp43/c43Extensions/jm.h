@@ -71,7 +71,8 @@ Modes available in the mode menu:
 #define RB_F124                 1
 #define RB_F1234                2
 #define RB_M14                  10
-#define RB_M1234                11
+#define RB_M124                 11
+#define RB_M1234                12
 //fgLine options
 #define RB_FGLNOFF              0
 #define RB_FGLNFUL              1

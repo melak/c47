@@ -549,9 +549,11 @@ void fnUserJM(uint16_t jmUser) {
     //---KEYS SIGMA+ ALLOCATIONS: COPY SIGMA+ USER MODE primary to -> ALLMODE
     //-----------------------------------------------------------------------
     case USER_COPY:
-      kbd_usr[0].primary        = Norm_Key_00_VAR;
-      fnRefreshState();
-      fnSetFlag(FLAG_USER);
+      if(Norm_Key_00_VAR != ITM_SHIFTf && Norm_Key_00_VAR != ITM_SHIFTg) {
+        kbd_usr[0].primary        = Norm_Key_00_VAR;
+        fnRefreshState();
+        fnSetFlag(FLAG_USER);
+      }
       break;
 
     #if !defined(SAVE_SPACE_DM42)
