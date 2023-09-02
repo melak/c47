@@ -141,7 +141,6 @@ TO_QSPI const calcKey_t kbd_std[37] = { //C47 Layout, in the default position wi
   //keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
 };
 
-NOT GENERATED (YET)
 //SOURCE: WP43 code
 //This variable is to store in flash memory       //JM Copy of WP43S For KEYS menu
 TO_QSPI const calcKey_t kbd_std_WP43[37] = {
