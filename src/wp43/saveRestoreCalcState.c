@@ -1,18 +1,6 @@
-/* This file is part of 43S.
- *
- * 43S is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * 43S is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
- */
+// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
+
 
 #include "saveRestoreCalcState.h"
 
@@ -26,6 +14,7 @@
 #include "hal/io.h"
 #include "items.h"
 #include "c43Extensions/addons.h"
+#include "c43Extensions/graphText.h"
 #include "c43Extensions/xeqm.h"
 #include "c43Extensions/jm.h"
 #include "c43Extensions/radioButtonCatalog.h"
@@ -119,7 +108,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
 
     if(calcMode == CM_CONFIRMATION) {
       calcMode = previousCalcMode;
-      refreshScreen();
+      refreshScreen(90);
     }
 
     printf("Begin of calc's backup\n");
@@ -374,7 +363,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
     save(&fnXEQMENUpos,                       sizeof(fnXEQMENUpos));
     save(&indexOfItemsXEQM,                   sizeof(indexOfItemsXEQM));
     save(&T_cursorPos,                        sizeof(T_cursorPos));               //JM ^^
-    save(&SHOWregis,                          sizeof(SHOWregis));                 //JM ^^
+    save(&showRegis,                          sizeof(showRegis));                 //JM ^^
     save(&mm_MNU_HOME,                        sizeof(mm_MNU_HOME));               //JM ^^
     save(&mm_MNU_ALPHA,                       sizeof(mm_MNU_ALPHA));              //JM ^^
     save(&displayStackSHOIDISP,               sizeof(displayStackSHOIDISP));      //JM ^^
@@ -400,6 +389,10 @@ static uint32_t restore(void *buffer, uint32_t size) {
     save(&grpGroupingGr1Left,                 sizeof(grpGroupingGr1Left));        //JM
     save(&grpGroupingRight,                   sizeof(grpGroupingRight));          //JM
 
+    save(&regStatsXY,                         sizeof(regStatsXY));                //JM
+
+
+
     ioFileClose();
     printf("End of calc's backup\n");
   }
@@ -423,7 +416,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
       }
       else {
         printf("Cannot restore calc's memory from file backup.bin! Performing RESET\n");
-        refreshScreen();
+        refreshScreen(91);
         return;
       }
     }
@@ -436,7 +429,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
     restore(&ramSize,                            sizeof(ramSize));
     if(backupVersion > BACKUP_VERSION || backupVersion < OLDEST_COMPATIBLE_BACKUP_VERSION || ramSize != RAM_SIZE) {
       ioFileClose();
-      refreshScreen();
+      refreshScreen(92);
 
       printf("Cannot restore calc's memory from file backup.bin! File backup.bin is from incompatible backup version.\n");
       printf("               Backup file      Program\n");
@@ -710,7 +703,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
       restore(&fnXEQMENUpos,                       sizeof(fnXEQMENUpos));
       restore(&indexOfItemsXEQM,                   sizeof(indexOfItemsXEQM));
       restore(&T_cursorPos,                        sizeof(T_cursorPos));              //JM ^^
-      restore(&SHOWregis,                          sizeof(SHOWregis));                //JM ^^
+      restore(&showRegis,                          sizeof(showRegis));                //JM ^^
       restore(&mm_MNU_HOME,                        sizeof(mm_MNU_HOME));              //JM ^^
       restore(&mm_MNU_ALPHA,                       sizeof(mm_MNU_ALPHA));             //JM ^^
       restore(&displayStackSHOIDISP,               sizeof(displayStackSHOIDISP));     //JM ^^
@@ -738,13 +731,20 @@ static uint32_t restore(void *buffer, uint32_t size) {
         restore(&grpGroupingRight,                   sizeof(grpGroupingRight));          //JM
       }
 
+      if(backupVersion >= 783) {
+        restore(&regStatsXY,                         sizeof(regStatsXY));               //JM
+      } else {
+        regStatsXY = INVALID_VARIABLE;
+      }
+
+
       ioFileClose();
       printf("End of calc's restoration\n");
 
       MY_ALPHA_MENU = mm_MNU_ALPHA;
       setFGLSettings(fgLN);
 
-      if(temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL)
+      if(SHOWMODE)                             //clear SHOW to normal mode as it is not reasonable to switch calculator on on SHOW mode
         temporaryInformation = TI_NO_INFO;
 
       scanLabelsAndPrograms();
@@ -833,7 +833,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
         }
 
       updateMatrixHeightCache();
-      refreshScreen();
+      refreshScreen(93);
     }
   }
 #endif // PC_BUILD
@@ -1009,6 +1009,7 @@ void fnSave(uint16_t saveMode) {
 void doSave(uint16_t saveType) {
 flushBufferCnt = 0;
 #if !defined(TESTSUITE_BUILD)
+  printStatus(0, errorMessages[SAVING_STATE_FILE],force);
   ioFilePath_t path;
   char tmpString[3000];           //The concurrent use of the global tmpString
                                   //as target does not work while the source is at
@@ -2677,6 +2678,7 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
 
 
 void fnLoad(uint16_t loadMode) {
+  printStatus(0, errorMessages[LOADING_STATE_FILE],force);
   if(loadMode == LM_STATE_LOAD) {
     doLoad(LM_ALL, 0, 0, 0, stateLoad);
   }
@@ -2685,14 +2687,14 @@ void fnLoad(uint16_t loadMode) {
   }
   fnClearFlag(FLAG_USER);
   doRefreshSoftMenu = true;
-  refreshScreen();
+  refreshScreen(94);
 }
 
 void fnLoadAuto(void) {
   doLoad(LM_ALL, 0, 0, 0, autoLoad);
   fnClearFlag(FLAG_USER);
   doRefreshSoftMenu = true;
-  refreshScreen();
+  refreshScreen(95);
 }
 
 #undef BACKUP

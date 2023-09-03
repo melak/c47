@@ -1,20 +1,5 @@
-/* This file is part of WP43.
- *
- * WP43 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * WP43 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with WP43.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-/* ADDITIONAL C43 functions and routines */
+// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
 
 
 /********************************************//**
@@ -378,7 +363,7 @@ int8_t fnCbIsSet(int16_t item) {
 }
 
 
-void fnRefreshState(void) {
+void fnRefreshState(void) {                      // 2023-07-18 This seems antiquated. If it has no effect, all calls to fnRefreshState can be removed. Leaving commented for a while.
   #if !defined(TESTSUITE_BUILD)
     doRefreshSoftMenu = true;
   #endif //!TESTSUITE_BUILD

@@ -1448,7 +1448,8 @@
 #define MNU_TIMERF                  1400
 #define MNU_HIST                    1401
 #define MNU_HPLOT                   1402
-#define ITM_1403                    1403
+#define MNU_SHOW                    1403
+
 
 
 #define ITM_1COMPL                  1404

@@ -20,6 +20,7 @@
 
 #include "solver/graph.h"
 
+#include "c43Extensions/addons.h"
 #include "defines.h"
 #include "mathematics/comparisonReals.h"
 #include "charString.h"
@@ -27,6 +28,7 @@
 #include "error.h"
 #include "flags.h"
 #include "c43Extensions/graphs.h"
+#include "c43Extensions/graphText.h"
 #include "items.h"
 #include "mathematics/invert.h"
 #include "mathematics/matrix.h"
@@ -71,34 +73,19 @@
 #if !defined(TESTSUITE_BUILD)
 static void fnPlot(uint16_t unusedButMandatoryParameter) {
     lastPlotMode = PLOT_NOTHING;
-    //    fnPlotStat(PLOT_GRAPH);
-    //  C43 advanced plot vv
     strcpy(plotStatMx, "DrwMX");
     PLOT_LINE = true;
     PLOT_SHADE = true;
     fnPlotSQ(0);
-    //  C43 advanced plot ^^
 }
 
 
-
-static void fnRCL(int16_t inp) { //DONE
-    setSystemFlag(FLAG_ASLIFT);
-    if(inp == TEMP_REGISTER_1) {
-      liftStack();
-      copySourceRegisterToDestRegister(inp, REGISTER_X);
-    }
-    else {
-      fnRecall(inp);
-    }
-  }
-
-  static void convertDoubleToReal34RegisterPush(double x, calcRegister_t destination) {
-    setSystemFlag(FLAG_ASLIFT);
-    liftStack();
-    convertDoubleToReal34Register(x, destination);
-    setSystemFlag(FLAG_ASLIFT);
-  }
+static void convertDoubleToReal34RegisterPush(double x, calcRegister_t destination) {
+  setSystemFlag(FLAG_ASLIFT);
+  liftStack();
+  convertDoubleToReal34Register(x, destination);
+  setSystemFlag(FLAG_ASLIFT);
+}
 
 
 #if !defined(SAVE_SPACE_DM42_13GRF)
@@ -126,38 +113,53 @@ static void fnRCL(int16_t inp) { //DONE
 #endif // !SAVE_SPACE_DM42_13GRF
 
 
-  static void execute_rpn_function(void){
-    if(graphVariable <= 0 || graphVariable > 65535) {
-      return;
-    }
+static void execute_rpn_function(void){
+  if(graphVariable <= 0 || graphVariable > 65535) {
+    #if defined(PC_BUILD) //PC_BUILD
+      printf("Error: No graph variable %u\n",graphVariable);
+    #endif //PC_BUILD
+    return;
+  }
 
-    calcRegister_t regStats = graphVariable;
-    if(regStats != INVALID_VARIABLE) {
-      fnStore(regStats);                  //place X register into x
-      fnEqCalc(0);
-      #if defined(PC_BUILD)
-        if(lastErrorCode != 0) {
-          #if defined(VERBOSE_SOLVER00)
-          printf("ERROR CODE in execute_rpn_function/fnEqCalc: %u\n",lastErrorCode);
-          #endif // VERBOSE_SOLVER00
-          lastErrorCode = 0;
-        }
-      #endif // PC_BUILD
-      fnRCL(regStats);
-      #if defined(VERBOSE_SOLVER0) && defined(PC_BUILD)
-        printRegisterToConsole(REGISTER_X,">>> Calc x=","");
-        printRegisterToConsole(REGISTER_Y," y=","");
-      #endif // VERBOSE_SOLVER0 && PC_BUILD
-    }
-    else {
-      #if defined(PC_BUILD)
+  calcRegister_t regStats = graphVariable;
+  if(regStats != INVALID_VARIABLE) {
+    fnStore(regStats);                  //place X register into x
+
+    #if defined(PC_BUILD) //PC_BUILD
+      printf("Graph variable x=%u: ",graphVariable);
+      printRegisterToConsole(graphVariable, " = ","\n");
+    #endif //PC_BUILD
+
+    fnEqCalc(0);
+
+    #if defined(PC_BUILD) //PC_BUILD
+      printf("Graph variable y ");
+      printRegisterToConsole(REGISTER_X, " = ","\n");
+    #endif //PC_BUILD
+
+    #if defined(PC_BUILD)
+      if(lastErrorCode != 0) {
         #if defined(VERBOSE_SOLVER00)
-        printf("ERROR in execute_rpn_function; invalid variable: %u\n",lastErrorCode);
+        printf("ERROR CODE in execute_rpn_function/fnEqCalc: %u\n",lastErrorCode);
         #endif // VERBOSE_SOLVER00
         lastErrorCode = 0;
-      #endif
-    }
+      }
+    #endif // PC_BUILD
+    fnRCL(regStats);
+    #if defined(VERBOSE_SOLVER0) && defined(PC_BUILD)
+      printRegisterToConsole(REGISTER_X,">>> Calc x=","");
+      printRegisterToConsole(REGISTER_Y," y=","");
+    #endif // VERBOSE_SOLVER0 && PC_BUILD
   }
+  else {
+    #if defined(PC_BUILD)
+      #if defined(VERBOSE_SOLVER00)
+      printf("ERROR in execute_rpn_function; invalid variable: %u\n",lastErrorCode);
+      #endif // VERBOSE_SOLVER00
+      lastErrorCode = 0;
+    #endif
+  }
+}
 
 #if !defined(SAVE_SPACE_DM42_13GRF)
   static bool_t regIsLowerThanTol(calcRegister_t REG, calcRegister_t TOL) {
@@ -258,22 +260,10 @@ uint8_t DXR = 0, DYR = 0, DXI = 0, DYI = 0;
 
   void fnClDrawMx(void) {
     PLOT_ZOOM = 0;
-    if(plotStatMx[0]!='D') {
-      strcpy(plotStatMx,"DrwMX");
-    }
-    calcRegister_t regStats = findNamedVariable(plotStatMx);
-    if(regStats == INVALID_VARIABLE) {
-      allocateNamedVariable(plotStatMx, dtReal34, REAL34_SIZE);
-      regStats = findNamedVariable(plotStatMx);
-    }
-    fnDeleteVariable(regStats);
-    if(regStats == INVALID_VARIABLE) {
-      displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-      #if(EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "DrwMX matrix not created");
-        moreInfoOnError("In function fnClPlotData:", errorMessage, NULL, NULL);
-      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    }
+    calcRegister_t regStats = findNamedVariable("DrwMX");
+    if(regStats != INVALID_VARIABLE) {
+      fnDeleteVariable(regStats);
+    };
   }
 
 
@@ -281,9 +271,10 @@ uint8_t DXR = 0, DYR = 0, DXI = 0, DYI = 0;
   static void AddtoDrawMx() {
     real_t x, y;
     uint16_t rows = 0, cols;
-    calcRegister_t regStats = findNamedVariable(plotStatMx);
-    if(!isStatsMatrix(&rows,plotStatMx)) {
+    calcRegister_t regStats = regStatsXY;
+    if(!isStatsMatrixN(&rows,regStats)) {
       regStats = allocateNamedMatrix(plotStatMx, 1, 2);
+      regStatsXY = regStats;
       real34Matrix_t stats;
       linkToRealMatrixRegister(regStats, &stats);
       realMatrixInit(&stats,1,2);
@@ -321,6 +312,7 @@ uint8_t DXR = 0, DYR = 0, DXI = 0, DYI = 0;
 
 void graph_eqn(uint16_t mode) {
   #if !defined(TESTSUITE_BUILD)
+    regStatsXY = findNamedVariable(plotStatMx);
     double x;
     double x01 = x_min;
     double y01 = 0;
@@ -343,19 +335,42 @@ void graph_eqn(uint16_t mode) {
     uint8_t discontinuityDetected = 0;
     bool_t  grad2IncreaseDetected = false;
     double yAvg = 0.1;
+    int loop = 0;
+
 
     if(graphVariable <= 0 || graphVariable > 65535) {
+      regStatsXY = INVALID_VARIABLE;
       return;
     }
+
+    #if defined (LOW_GRAPH_ACC)
+      //Change to SDIGS digit operation for graphs;
+      if(significantDigitsForEqnGraphs <= 6) {
+        ctxtReal34.digits = significantDigitsForEqnGraphs;
+        ctxtReal39.digits = significantDigitsForEqnGraphs+3;
+        ctxtReal51.digits = significantDigitsForEqnGraphs+6;
+        ctxtReal75.digits = significantDigitsForEqnGraphs+9;
+      }
+    #endif
+
+    if(!GRAPHMODE) { //Change over hourglass to the left side
+      clearScreenOld(clrStatusBar, !clrRegisterLines, !clrSoftkeys);
+    }
     calcMode = CM_GRAPH;
+    hourGlassIconEnabled = true;       //clear the current portion of statusbar
+    showHideHourGlass();
+    refreshStatusBar();
+
+
     fnClearStack(0);
 
     convertDoubleToReal34RegisterPush(x_max, REGISTER_X);
     execute_rpn_function();
     yAvg += 2 * fabs(convertRegisterToDouble(REGISTER_Y));
 
-    if(mode == 1) {
+    if(mode == initDrwMx) {
       fnClDrawMx();
+      strcpy(plotStatMx,"DrwMX");
     }
     #if defined(DEBUG_GR)
       printf("dx0=%f discontinuityDetected:%u grad2IncreaseDetected:%u\n",dx0, discontinuityDetected, grad2IncreaseDetected);
@@ -473,10 +488,44 @@ void graph_eqn(uint16_t mode) {
       #if defined(DEBUG_GR)
         printf("dx0=%f dx=%f yAvg=%f count=%i discontinuityDetected:%u grad2IncreaseDetected:%u\n",dx0, dx, yAvg, count, discontinuityDetected, grad2IncreaseDetected);
       #endif // DEBUG_GR
+
+      printHalfSecUpdate_Integer(timed, "Iter: ",loop++); //timed
+      #if defined(DMCP_BUILD)
+        if(keyWaiting()) {
+          printHalfSecUpdate_Integer(force+1, "Interrupted Iter:",loop);
+          fnClearStack(0);
+          calcMode = CM_NORMAL;
+          screenUpdatingMode = SCRUPD_AUTO;
+          break;
+        }
+      #endif //DMCP_BUILD
+
     }
 
+    #if defined (LOW_GRAPH_ACC)
+      //Change to SDIGS digit operation for fresh stack;
+      ctxtReal34.digits = 34; //Change back to normal operation for stack;
+      ctxtReal39.digits = 39; //Change back to 39 digit operation for stack;
+    #endif //LOW_GRAPH_ACC
+
     fnClearStack(0);
+
+    #if defined (LOW_GRAPH_ACC)
+      //Change to SDIGS digit operation for screen graphs;
+      ctxtReal34.digits = significantDigitsForScreen;
+      ctxtReal39.digits = significantDigitsForScreen+3;
+    #endif //LOW_GRAPH_ACC
+
     fnPlot(0);
+
+    #if defined (LOW_GRAPH_ACC)
+      //Change to normal operation for graphs;
+      ctxtReal34.digits = 34;
+      ctxtReal39.digits = 39;
+      ctxtReal51.digits = 51;
+      ctxtReal75.digits = 75;
+    #endif //LOW_GRAPH_ACC    
+
   #endif // !TESTSUITE_BUILD
 }
 
@@ -484,6 +533,7 @@ void graph_eqn(uint16_t mode) {
 void graph_stat(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
     calcMode = CM_GRAPH;
+    reDraw = true;
 
     lastPlotMode = PLOT_NOTHING;
     strcpy(plotStatMx,"STATS");
@@ -522,7 +572,7 @@ void graph_stat(uint16_t unusedButMandatoryParameter) {
 
 #if !defined(SAVE_SPACE_DM42_13GRF)
 #if !defined(TESTSUITE_BUILD)
-  static void graph_solver() {         //Input parameters in registers SREG_STARTX0, SREG_STARTX1
+  static void complexSolver() {         //Input parameters in registers SREG_STARTX0, SREG_STARTX1
     if(graphVariable <= 0 || graphVariable > 65535) {
       return;
     }
@@ -560,6 +610,8 @@ void graph_stat(uint16_t unusedButMandatoryParameter) {
     DXR = 0, DYR = 0, DXI = 0, DYI = 0;
     ix = 0; ixd = 0;
     int16_t kicker = 0;
+    int loop = 0;
+
 
     // Initialize all temporary registers
     // Registers are being used in the DEMO data programs
@@ -1135,6 +1187,16 @@ void graph_stat(uint16_t unusedButMandatoryParameter) {
         refreshLcd(NULL);
       #endif // DMCP_BUILD
 
+      printHalfSecUpdate_Integer(timed, "Iter: ",loop++); //timed
+      #if defined(DMCP_BUILD)
+        if(keyWaiting()) {
+          printHalfSecUpdate_Integer(force+1, "Interrupted Iter:",loop);
+          fnClearStack(0);
+          calcMode = CM_NORMAL;
+          screenUpdatingMode = SCRUPD_AUTO;
+          break;
+        }
+      #endif //DMCP_BUILD
     }
 
 
@@ -1230,7 +1292,9 @@ void fnEqSolvGraph (uint16_t func) {
 
   switch(func) {
     case EQ_SOLVE: {
+      printStatus(1,errorMessages[COMPLEX_SOLVER],force);
       fnClDrawMx();
+      strcpy(plotStatMx,"DrwMX");
       statGraphReset();
 
       double ix1 = convertRegisterToDouble(REGISTER_X);
@@ -1251,10 +1315,11 @@ void fnEqSolvGraph (uint16_t func) {
         printf("xmin:%f, xmax:%f\n",x_min,x_max);
       #endif // (VERBOSE_SOLVER00 || VERBOSE_SOLVER0) && PC_BUILD
       initialize_function();
-      graph_solver();
+      complexSolver();
       break;
     }
     case EQ_PLOT: {
+      printStatus(1,errorMessages[GRAPHING],force);
       double ix1 = convertRegisterToDouble(REGISTER_X);
       double ix0 = convertRegisterToDouble(REGISTER_Y);
       #if(defined(VERBOSE_SOLVER00) || defined(VERBOSE_SOLVER0)) && defined(PC_BUILD)
@@ -1263,6 +1328,7 @@ void fnEqSolvGraph (uint16_t func) {
       #endif // (VERBOSE_SOLVER00 || VERBOSE_SOLVER0) && PC_BUILD
 
       fnClDrawMx();
+      strcpy(plotStatMx,"DrwMX");
       //statGraphReset();    //C43 removed to allow changing of graph params
 
       fnDrop(0);
@@ -1289,7 +1355,7 @@ void fnEqSolvGraph (uint16_t func) {
       #endif // (VERBOSE_SOLVER00 || VERBOSE_SOLVER0) && PC_BUILD
 
       initialize_function();
-      graph_eqn(0);
+      graph_eqn(noInitDrwMx);
       break;
     }
     default: ;

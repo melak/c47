@@ -1,20 +1,6 @@
-/* This file is part of WP WP43.
- *
- * WP43 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * WP WP43 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with WP43.  If not, see <http://www.gnu.org/licenses/>.
- */
+// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
 
-/* ADDITIONAL C43 functions and routines */
 
 
 /********************************************//** //JM
@@ -893,60 +879,92 @@ bool_t   cancelFilename = false;
 #endif // DMCP_BUILD
 
 
-//################################################################################################
-/*Both*/ int16_t g_line_x, g_line_y;
-/*Both*/ 
-/*Both*/ void print_linestr(const char *line1, bool_t line_init) {
-/*Both*/   #if !defined(TESTSUITE_BUILD)
-/*Both*/     char l1[200];
-/*Both*/     l1[0] = 0;
-/*Both*/     int16_t ix = 0;
-/*Both*/     int16_t ixx;
-/*Both*/ 
-/*Both*/     if(line_init) {
-/*Both*/       g_line_y = 20;
-/*Both*/       g_line_x = 0;
-/*Both*/     }
-/*Both*/     strcat(l1, "-");
-/*Both*/     ixx = stringByteLength(line1);
-/*Both*/     while(ix < ixx && ix < 98 && stringWidth(l1, &standardFont, true, true) < SCREEN_WIDTH-12-g_line_x) {
-/*Both*/       xcopy(l1, line1, ix+1);
-/*Both*/       l1[ix+1+1] = 0;
-/*Both*/       ix = stringNextGlyph(line1, ix);
-/*Both*/     }
-/*Both*/     while(stringByteLength(l1) < 200 && stringWidth(l1, &standardFont, true, true) < SCREEN_WIDTH-12-g_line_x) {
-/*Both*/       strcat(l1, ".");
-/*Both*/     }
-/*Both*/ 
-/*Both*/     if(g_line_y < SCREEN_HEIGHT) {
-/*Both*/       ixx = showString(l1, &standardFont, (uint32_t) g_line_x, (uint32_t) g_line_y, vmNormal, true, true);
-/*Both*/     }
-/*Both*/     g_line_y += 20;
-/*Both*/     if(g_line_y > SCREEN_HEIGHT - 20) {
-/*Both*/       g_line_y = 40;
-/*Both*/       g_line_x += 4;
-/*Both*/     }
-/*Both*/     force_refresh(timed);
-/*Both*/   #endif // !TESTSUITE_BUILD
-/*Both*/ }
-/*Both*/ 
-/*Both*/ void print_numberstr(const char *line1, bool_t line_init) {     //ONLY N=ASCII NUMBERS AND E AND . //FIXED FONT
-/*Both*/   #if !defined(TESTSUITE_BUILD)
-/*Both*/     if(line_init) {
-/*Both*/       g_line_y = 20;
-/*Both*/     }
-/*Both*/     if(g_line_y < SCREEN_HEIGHT) {
-/*Both*/         int16_t cnt = 0;
-/*Both*/         char tt[2];
-/*Both*/         while(line1[cnt] != 0 && g_line_x < SCREEN_WIDTH-8 +1) {
-/*Both*/           tt[0]=line1[cnt]; tt[1]=0;
-/*Both*/           g_line_x = showString(tt, &standardFont, (uint32_t)cnt * 8, (uint32_t) g_line_y, vmNormal, true, true);
-/*Both*/           cnt++;
-/*Both*/         }
-/*Both*/     }
-/*Both*/     g_line_y += 20;
-/*Both*/     g_line_x = 0;
-/*Both*/     force_refresh(timed);
-/*Both*/   #endif // !TESTSUITE_BUILD
-/*Both*/ }
+// BOTH vvv *** ################################################################################################
 
+uint32_t ttt = 0;
+void printStatus(uint8_t row, const char *line1, uint8_t forced) {
+  #if defined (PC_BUILD)
+    if(ttt==0) ttt = (uint32_t)(g_get_monotonic_time());
+    printf("Status: %10u, %s\n", (uint32_t)(g_get_monotonic_time())-ttt, line1);
+  #endif //PC_BUILD
+  #if !defined(TESTSUITE_BUILD)
+    int16_t g_line_x, g_line_y;
+    g_line_y = Y_POSITION_OF_REGISTER_T_LINE; //20
+    g_line_x = 20 * row;
+
+    refreshRegisterLine(REGISTER_T);
+
+    //g_line_x = showStringEnhanced(line1, &standardFont, g_line_x, g_line_y, vmNormal, false, false, NO_compress, NO_raise, DO_Show, NO_LF);
+    g_line_x = showString(line1, &standardFont, (uint32_t) g_line_x, (uint32_t) g_line_y, vmNormal, true, true);
+
+    while((uint32_t)g_line_x < SCREEN_WIDTH - 20) { //pad
+      //g_line_x = showStringEnhanced(" ", &standardFont, g_line_x, g_line_y, vmNormal, false, false, NO_compress, NO_raise, DO_Show, NO_LF);
+      g_line_x = showString(" ", &standardFont, (uint32_t) g_line_x, (uint32_t) g_line_y, vmNormal, true, true);
+    }
+
+    if(forced == force) {
+      force_refresh(force);
+    } else {
+      force_refresh(timed);
+    }
+  #endif // !TESTSUITE_BUILD
+}
+
+
+
+
+int16_t g_line_x, g_line_y;
+
+void print_linestr(const char *line1, bool_t line_init) {
+  #if !defined(TESTSUITE_BUILD)
+    char l1[200];
+    l1[0] = 0;
+    int16_t ix = 0;
+    int16_t ixx;
+
+    if(line_init) {
+      g_line_y = 20;
+      g_line_x = 0;
+    }
+    strcat(l1, "-");
+    ixx = stringByteLength(line1);
+    while(ix < ixx && ix < 98 && stringWidth(l1, &standardFont, true, true) < SCREEN_WIDTH-12-g_line_x) {
+      xcopy(l1, line1, ix+1);
+      l1[ix+1+1] = 0;
+      ix = stringNextGlyph(line1, ix);
+    }
+    while(stringByteLength(l1) < 200 && stringWidth(l1, &standardFont, true, true) < SCREEN_WIDTH-12-g_line_x) {
+      strcat(l1, ".");
+    }
+
+    if(g_line_y < SCREEN_HEIGHT) {
+      ixx = showString(l1, &standardFont, (uint32_t) g_line_x, (uint32_t) g_line_y, vmNormal, true, true);
+    }
+    g_line_y += 20;
+    if(g_line_y > SCREEN_HEIGHT - 20) {
+      g_line_y = 40;
+      g_line_x += 4;
+    }
+    force_refresh(timed);
+  #endif // !TESTSUITE_BUILD
+}
+
+void print_numberstr(const char *line1, bool_t line_init) {     //ONLY N=ASCII NUMBERS AND E AND . //FIXED FONT
+  #if !defined(TESTSUITE_BUILD)
+    if(line_init) {
+      g_line_y = 20;
+    }
+    if(g_line_y < SCREEN_HEIGHT) {
+        int16_t cnt = 0;
+        char tt[2];
+        while(line1[cnt] != 0 && g_line_x < SCREEN_WIDTH-8 +1) {
+          tt[0]=line1[cnt]; tt[1]=0;
+          g_line_x = showString(tt, &standardFont, (uint32_t)cnt * 8, (uint32_t) g_line_y, vmNormal, true, true);
+          cnt++;
+        }
+    }
+    g_line_y += 20;
+    g_line_x = 0;
+    force_refresh(timed);
+  #endif // !TESTSUITE_BUILD
+}

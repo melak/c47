@@ -1,18 +1,6 @@
-  /* This file is part of 43S.
- *
- * 43S is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * 43S is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
- */
+// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
+
 
 #include "items.h"
 
@@ -144,7 +132,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
     if(temporaryInformation == TI_LAST_CONST_CATNAME && (currentSolverStatus & 0x000F) != 0) {
       temporaryInformation = TI_NO_INFO;
     } else
-    if(func >= CST_01 && func <= CST_79) {
+    if(func >= CST_01 && func <= CST_79 && calcMode == CM_NORMAL) {
       temporaryInformation = TI_LAST_CONST_CATNAME;
     }
     //else {                                                 //Removed code for TI of any last command
@@ -161,7 +149,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
     }
 
     if((indexOfItems[func].status & US_STATUS) == US_ENABLED || (indexOfItems[func].status & US_STATUS) == US_ENABL_XEQ) {
-      if((programRunStop != PGM_RUNNING || getSystemFlag(FLAG_IGN1ER)) && calcMode != CM_GRAPH && calcMode != CM_NO_UNDO && !getSystemFlag(FLAG_SOLVING)) {
+      if((programRunStop != PGM_RUNNING || getSystemFlag(FLAG_IGN1ER)) && !GRAPHMODE && calcMode != CM_NO_UNDO && !getSystemFlag(FLAG_SOLVING)) {
         #if defined(DEBUGUNDO)
           printf(">>> saveForUndo from reallyRunFunction: %s, calcMode = %i ",indexOfItems[func].itemCatalogName, calcMode);
         #endif // DEBUGUNDO
@@ -184,7 +172,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
         }
       }
     }
-    else if(((indexOfItems[func].status & US_STATUS) == US_CANCEL) && calcMode != CM_NO_UNDO && calcMode !=CM_GRAPH){
+    else if(((indexOfItems[func].status & US_STATUS) == US_CANCEL) && calcMode != CM_NO_UNDO && !GRAPHMODE){
       thereIsSomethingToUndo = false;
     }
 
@@ -226,6 +214,44 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 
     indexOfItems[func].func(param);
 
+    switch(func) {
+      case ITM_DRAW:       //EQN Draw
+
+      case ITM_PLOT_STAT:  //Plot menu
+      case ITM_PLINE:                     
+      case ITM_DIFF:                      
+      case ITM_RMS:                       
+      case ITM_PCROS:                     
+      case ITM_NVECT:                     
+      case ITM_EXTY:                      
+      case ITM_PZOOMX:                    
+      case ITM_SNAP:                      
+      case ITM_NULL:                      
+      case ITM_SCALE:                 
+      case ITM_INTG:                  
+      case ITM_SHADE:                 
+      case ITM_PBOX:                  
+      case ITM_VECT:                  
+      case ITM_EXTX:                  
+      case ITM_PZOOMY:                
+      case ITM_LISTXY:                
+      case ITM_PLOTRST:               
+
+
+      case ITM_PLOT_LR:      //Assess
+      case ITM_PLOT_NXT:
+      case ITM_PLOT_REV:
+
+      case ITM_PLOT:         //Scatter
+      case ITM_PLOT_CENTRL:
+      case ITM_SMI: 
+
+      case ITM_HPLOT:        //HPLOT
+      case ITM_HNORM:
+      case ITM_PLOTZOOM:
+
+        reDraw = true;
+    }
 
     if(lastErrorCode == ERROR_NONE && temporaryInformation == TI_NO_INFO) {
       switch(softmenu[softmenuStack[0].softmenuId].menuItem) {
@@ -2570,7 +2596,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1400 */  { itemToBeCoded,                NOPARAM,                     "STOPW",                                       "STOPW",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1401 */  { itemToBeCoded,                NOPARAM,                     "HIST",                                        "HIST",                                        (0 << TAM_MAX_BITS) |     0, CAT_MENU | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1402 */  { itemToBeCoded,                NOPARAM,                     "HPLOT",                                       "HPLOT",                                       (0 << TAM_MAX_BITS) |     0, CAT_MENU | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 1403 */  { itemToBeCoded,                NOPARAM,                     "1403",                                        "1403",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1403 */  { itemToBeCoded,                NOPARAM,                     "SHOW",                                        "SHOW",                                        (0 << TAM_MAX_BITS) |     0, CAT_MENU | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 
 
 /* 1404 */  { fnIntegerMode,                SIM_1COMPL,                  "1COMPL",                                      "1COMPL",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
@@ -2955,7 +2981,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1781 */  { fnEqSolvGraph,                EQ_SOLVE,                    "cpxSlv",                                      "cpxSlv",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
 /* 1782 */  { fnEqSolvGraph,                EQ_PLOT,                     "Draw",                                        "Draw",                                        (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
 /* 1783 */  { itemToBeCoded,                NOPARAM,                     "GRAPH",                                       "GRAPH",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 1784 */  { graph_eqn,                    1,                           "reDraw",                                      "reDraw",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1784 */  { graph_eqn,                    initDrwMx,                   "reDraw",                                      "reDraw",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1785 */  { fn1stDerivEq,                 NOPARAM,                     "f'here",                                      "f'here",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1786 */  { fn2ndDerivEq,                 NOPARAM,                     "f\"here",                                     "f\"here",                                     (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1787 */  { fnSetNBins,                   NOPARAM,                     "nBINS",                                       "nBINS",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },

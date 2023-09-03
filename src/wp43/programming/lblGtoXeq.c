@@ -1,18 +1,6 @@
-/* This file is part of 43S.
- *
- * 43S is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * 43S is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
- */
+// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
+
 
 /********************************************//**
  * \file lblGtoXeq.c
@@ -230,7 +218,7 @@ void fnExecute(uint16_t label) {
       #if !defined(TESTSUITE_BUILD)
         if(tam.mode) {
           tamLeaveMode();
-          refreshScreen();
+          refreshScreen(2);
         }
       #endif // TESTSUITE_BUILD
       runProgram(false, INVALID_VARIABLE);
@@ -247,7 +235,7 @@ void fnReturn(uint16_t skip) {
   /* Cancel INPUT */
   if(currentInputVariable != INVALID_VARIABLE) {
     currentInputVariable = INVALID_VARIABLE;
-    refreshScreen();
+    refreshScreen(3);
     #if defined(DMCP_BUILD)
       lcd_refresh();
     #else // !DMCP_BUILD
@@ -849,7 +837,7 @@ void runProgram(bool_t singleStep, uint16_t menuLabel) {
         key = convertKeyCode(key);
         if(key == 36 || key == 33) {  //JM
           programRunStop = PGM_WAITING;
-          refreshScreen();
+          refreshScreen(1);
           lcd_refresh();
           fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, PROGRAM_KB_ACTV);
           wait_for_key_release(0);
@@ -882,7 +870,7 @@ stopProgram:
   if(!getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
     showHideHourGlass();
     if(screenUpdatingMode == SCRUPD_AUTO) {
-      refreshScreen();
+      refreshScreen(4);
     }
     #if defined(DMCP_BUILD)
       lcd_refresh();

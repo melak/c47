@@ -1,20 +1,5 @@
-/* This file is part of WP43.
- *
- * WP43 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * WP43 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with WP43.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-/* ADDITIONAL C43 functions and routines */
+// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
 
 /********************************************//**
  * \file keyboardTweak.c
@@ -35,6 +20,7 @@
 #include "stack.h"
 #include "statusBar.h"
 #include "softmenus.h"
+#include "solver/equation.h"
 #include "timer.h"
 
 #include "wp43.h"
@@ -86,20 +72,18 @@ void showAlphaModeonGui(void) {
 
 void showShiftState(void) {
   #if !defined(TESTSUITE_BUILD)
-    //showAlphaModeonGui();
-
     #if defined(PC_BUILD_TELLTALE)
       printf("    >>> showShiftState: calcMode=%d\n", calcMode);
     #endif // PC_BUILD_TELLTALE
 
-    if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER && temporaryInformation != TI_SHOW_REGISTER_BIG && temporaryInformation != TI_SHOW_REGISTER_SMALL && temporaryInformation != TI_SHOW_REGISTER) {
+    if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER && !SHOWMODE && temporaryInformation != TI_SHOW_REGISTER) {
       if(shiftF) {                        //SEE screen.c:refreshScreen
-        showGlyph(STD_MODE_F, &standardFont, X_SHIFT, Y_SHIFT, vmNormal, true, true);   // f is pixel 4+8+3 wide
+        showShiftStateF();
         show_f_jm();
         showHideAlphaMode();
       }
       else if(shiftG) {                   //SEE screen.c:refreshScreen
-        showGlyph(STD_MODE_G, &standardFont, X_SHIFT, Y_SHIFT, vmNormal, true, true);   // g is pixel 4+10+1 wide
+        showShiftStateG();
         show_g_jm();
         showHideAlphaMode();
       }
@@ -133,7 +117,7 @@ void resetShiftState(void) {
     shiftG = false;
     screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
     showShiftState();
-    refreshScreen();
+    refreshScreen(100);
   }                                                                             //^^
   refreshModeGui();                                                             //JM refreshModeGui
 }
@@ -160,8 +144,6 @@ void resetKeytimers(void) {
   * \return void
   ***********************************************/
   void show_f_jm(void) {
-    //showSoftmenuCurrentPart();                                                    //JM - Redraw boxes etc after shift is shown
-    //JMTOCHECK2        if(softmenuStackPointer >= 0) {                             //JM - Display dot in the f - line
     if(!FN_timeouts_in_progress && calcMode != CM_ASN_BROWSER) {
       if(!ULFL) {
         underline(1);
@@ -179,8 +161,6 @@ void resetKeytimers(void) {
 
 
   void show_g_jm(void) {
-    //showSoftmenuCurrentPart();                                                    //JM - Redraw boxes etc after shift is shown
-    //JMTOCHECK2        if(softmenuStackPointer >= 0) {                             //JM - Display dot in the g - line
     if(!FN_timeouts_in_progress && calcMode != CM_ASN_BROWSER) {
       if(ULFL) {
         underline(1);
@@ -198,7 +178,6 @@ void resetKeytimers(void) {
 
 
   void clear_fg_jm(void) {
-    //showSoftmenuCurrentPart();            //JM TO REMOVE STILL !!                 //JM - Redraw boxes etc after shift is shown
     if(!FN_timeouts_in_progress) {        //Cancel lines
       if(ULFL) {
         underline(1);
@@ -714,7 +693,7 @@ void resetKeytimers(void) {
         btnFnClicked(unused, charKey);                                             //Execute
       }
 
-      if(!(calcMode == CM_REGISTER_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_ASN_BROWSER || calcMode == CM_FONT_BROWSER || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH  || calcMode == CM_LISTXY)) {
+      if(!(calcMode == CM_REGISTER_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_ASN_BROWSER || calcMode == CM_FONT_BROWSER || GRAPHMODE || calcMode == CM_LISTXY)) {
         if(FN_timed_out_to_NOP) { //Clear any possible underline residues
           showSoftmenuCurrentPart();
         }
@@ -1255,7 +1234,7 @@ void fnT_ARROW(uint16_t command) {
           fnT_ARROW(ITM_T_RIGHT_ARROW);
           while(ixx < 75 && (current_cursor_x >= current_cursor_x_old+5 || current_cursor_y == current_cursor_y_old)) {
             fnT_ARROW(ITM_T_LEFT_ARROW);
-            showStringEdC43(lines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, -100, vmNormal, true, true, true);  //display up to the cursor
+            showStringEdC43(multiEdLines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, -100, vmNormal, true, true, true);  //display up to the cursor
             ixx++;
           }
           break;
@@ -1267,7 +1246,7 @@ void fnT_ARROW(uint16_t command) {
           fnT_ARROW(ITM_T_LEFT_ARROW);
           while(ixx < 75 && (current_cursor_x+5 <= current_cursor_x_old || current_cursor_y == current_cursor_y_old)) {
             fnT_ARROW(ITM_T_RIGHT_ARROW);
-            showStringEdC43(lines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, -100, vmNormal, true, true, true);  //display up to the cursor
+            showStringEdC43(multiEdLines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, -100, vmNormal, true, true, true);  //display up to the cursor
             ixx++;
 
             //printf("###^^^ %d %d %d %d %d\n",ixx,current_cursor_x, current_cursor_x_old, current_cursor_y, current_cursor_y_old);
@@ -1321,9 +1300,7 @@ void fnCla(uint16_t unusedButMandatoryParameter) {
     last_CM=253;
   }
   else if(calcMode == CM_EIM) {
-    while(xCursor > 0) {
-      fnKeyBackspace(0);
-    }
+    fnEqCla();
     refreshRegisterLine(NIM_REGISTER_LINE);
   }
 }
