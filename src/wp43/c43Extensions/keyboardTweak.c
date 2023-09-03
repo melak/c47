@@ -286,7 +286,6 @@ void resetKeytimers(void) {
     int16_t tmp = 0;
     if(calcMode == CM_NORMAL && result == ITM_BACKSPACE && tam.mode == 0) {             //Set up backspace double click to DROP
       tmp = ITM_DROP;
-      temporaryInformation = TI_NO_INFO;
     }
 
     if(tmp != 0) {
