@@ -541,6 +541,7 @@ void drawBattery(uint16_t voltage) {
     #else // DEBUG_INSTEAD_STATUS_BAR != 1
       if(calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) lcd_fill_rect(0, 0, 158, 20, 0);
       showDateTime();
+      if(Y_SHIFT==0 && X_SHIFT<200) showShiftState();
       showHideHourGlass(); //TODO check if this belongs here and why JM
       if(calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) {
         return;    // With graph displayed, only update the time, as the other items are clashing with the graph display screen
@@ -565,6 +566,7 @@ void drawBattery(uint16_t voltage) {
       showHideWatch();
       showHideSerialIO();
       showHidePrinter();
+      if(Y_SHIFT==0 && X_SHIFT >300) showShiftState();
       showHideUserMode();
       #if defined(DMCP_BUILD)
         showHideUsbLowBattery();

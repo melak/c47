@@ -24,9 +24,9 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
-#define VERSION1 "0.108.13.01"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
+#define VERSION1 "0.108.13.04"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
-//2023-08-22-0.108.13.01 test status bar
+//2023-08-22-0.108.13.04 DENE47 update
 
   #undef SAVE_SPACE_DM42
   #undef SAVE_SPACE_DM42_0
@@ -351,10 +351,10 @@
 #define ERROR_INVALID_DATA_TYPE_FOR_POLAR_RECT    52
 #define ERROR_BAD_INPUT                           53 // This error is not in ReM and cannot occur (theoretically).
 #define ERROR_NO_PROGRAM_SPECIFIED                54
-
 #define ERROR_CANNOT_WRITE_FILE                   55
+#define ERROR_OLD_ITEM_TO_REPLACE                 56
 
-#define NUMBER_OF_ERROR_CODES                     56
+#define NUMBER_OF_ERROR_CODES                     57
 #define SIZE_OF_EACH_ERROR_MESSAGE                48
 
 #define NUMBER_OF_BUG_SCREEN_MESSAGES             10

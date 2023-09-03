@@ -1850,9 +1850,11 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         }
 
         if(lastErrorCode == 0) {
-          // showFunctionName(item, 1000, "SF:Q"); // 1000ms = 1s //Next function while NIM is not closed.
-          //removed the local action, just let it go back unprocessed, and the showFunctionName is called after this in keyboard.c, with the correct parameters.
-          keyActionProcessed = false;
+          showFunctionName(item, 1000, NULL); // 1000ms = 1s
+          // Fix: removed "showFunctionName(item, 1000, "SF:Q"); // 1000ms = 1s" and replaced with "keyActionProcessed = false;"
+          //      removed the local action, just let it go back unprocessed, 
+          //      and the showFunctionName is called after this in keyboard.c, with the correct parameters.          
+          // ReFix: Removed previous fix "keyActionProcessed = false;" and restored "showFunctionName" but with NULL parameter.
         }
       }
     }

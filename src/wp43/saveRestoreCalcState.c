@@ -61,7 +61,7 @@
 #include "wp43.h"
 #define BACKUP_VERSION                     785  // add StatusBarSetup
 #define OLDEST_COMPATIBLE_BACKUP_VERSION   779  // save running app
-#define configFileVersion                  10000006 // arbitrary starting point version 10 000 001. Allowable values are 10000000 to 20000000
+#define configFileVersion                  10000007 // 10000007 corrects the gapItemLeft bug in the file format; arbitrary starting point version 10 000 001. Allowable values are 10000000 to 20000000
 #define VersionAllowed                     10000005 // This code will not autoload versions earlier than this
 
 /*
@@ -1264,19 +1264,19 @@ flushBufferCnt = 0;
 /*09*/  save(tmpString, strlen(tmpString));
 /*  */  sprintf(tmpString, "currentAngularMode\n%" PRIu8 "\n", (uint8_t)currentAngularMode);
 /*10*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, " gapItemLeft\n%" PRIu16 "\n", gapItemLeft);
+/*  */  sprintf(tmpString, "gapItemLeft\n%" PRIu16 "\n", gapItemLeft);
 /*11*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, " gapItemRight\n%" PRIu16 "\n", gapItemRight);
+/*  */  sprintf(tmpString, "gapItemRight\n%" PRIu16 "\n", gapItemRight);
 /*12*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, " gapItemRadix\n%" PRIu16 "\n", gapItemRadix);
+/*  */  sprintf(tmpString, "gapItemRadix\n%" PRIu16 "\n", gapItemRadix);
 /*13*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, " grpGroupingLeft\n%" PRIu8 "\n", grpGroupingLeft);
+/*  */  sprintf(tmpString, "grpGroupingLeft\n%" PRIu8 "\n", grpGroupingLeft);
 /*14*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, " grpGroupingGr1LeftOverflow\n%" PRIu8 "\n", grpGroupingGr1LeftOverflow);
+/*  */  sprintf(tmpString, "grpGroupingGr1LeftOverflow\n%" PRIu8 "\n", grpGroupingGr1LeftOverflow);
 /*15*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, " grpGroupingGr1Left\n%" PRIu8 "\n", grpGroupingGr1Left);
+/*  */  sprintf(tmpString, "grpGroupingGr1Left\n%" PRIu8 "\n", grpGroupingGr1Left);
 /*16*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, " grpGroupingRight\n%" PRIu8 "\n", grpGroupingRight);
+/*  */  sprintf(tmpString, "grpGroupingRight\n%" PRIu8 "\n", grpGroupingRight);
 /*17*/  save(tmpString, strlen(tmpString));
 /*  */  sprintf(tmpString, "roundingMode\n%" PRIu8 "\n", roundingMode);
 /*18*/  save(tmpString, strlen(tmpString));
@@ -1720,6 +1720,23 @@ int32_t stringToInt32(const char *str) {
   }
 #endif //LOADDEBUG
 
+
+  uint16_t strcmp2(char* inStr, char* in2Str) {       //special comparison, only to accommodate incorrect separator saves in versions 10000005-6.
+    if(strcmp(inStr, in2Str) == 0) {
+      return 0;
+    }
+    if(stringByteLength(inStr) != stringByteLength(in2Str)+1 || stringByteLength(inStr) > 50) {     //if length mismatch;
+      return 1;
+    }
+    char tmps[60];
+    tmps[0]=32;
+    tmps[1]=0;
+    strcat(tmps, in2Str);
+    if(strcmp(inStr, tmps) == 0) {
+      return 0;
+    }
+    return 1;
+  }
 
 
   static bool_t restoreOneSection(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
@@ -2374,26 +2391,26 @@ int32_t stringToInt32(const char *str) {
             grpGroupingLeft = stringToUint8(tmpString);                //Changed from groupingGap to remain compatible
             grpGroupingRight = grpGroupingLeft;
           }
-          else if(strcmp(aimBuffer, "gapItemLeft") == 0) {
-            roundingMode = stringToUint16(tmpString);
+          else if(strcmp2(aimBuffer, "gapItemLeft") == 0) {            //This is to correct a bug in version 00000005-6, to be compatible to the old files
+            gapItemLeft = stringToUint16(tmpString);
           }
-          else if(strcmp(aimBuffer, "gapItemRight") == 0) {
-            roundingMode = stringToUint16(tmpString);
+          else if(strcmp2(aimBuffer, "gapItemRight") == 0) {            //This is to correct a bug in version 00000005-6, to be compatible to the old files
+            gapItemRight = stringToUint16(tmpString);
           }
-          else if(strcmp(aimBuffer, "gapItemRadix") == 0) {
-            roundingMode = stringToUint16(tmpString);
+          else if(strcmp2(aimBuffer, "gapItemRadix") == 0) {            //This is to correct a bug in version 00000005-6, to be compatible to the old files
+            gapItemRadix = stringToUint16(tmpString);
           }
-          else if(strcmp(aimBuffer, "grpGroupingLeft") == 0) {
-            roundingMode = stringToUint8(tmpString);
+          else if(strcmp2(aimBuffer, "grpGroupingLeft") == 0) {            //This is to correct a bug in version 00000005-6, to be compatible to the old files
+            grpGroupingLeft = stringToUint8(tmpString);
           }
-          else if(strcmp(aimBuffer, "grpGroupingGr1LeftOverflow") == 0) {
-            roundingMode = stringToUint8(tmpString);
+          else if(strcmp2(aimBuffer, "grpGroupingGr1LeftOverflow") == 0) {            //This is to correct a bug in version 00000005-6, to be compatible to the old files
+            grpGroupingGr1LeftOverflow = stringToUint8(tmpString);
           }
-          else if(strcmp(aimBuffer, "grpGroupingGr1Left") == 0) {
-            roundingMode = stringToUint8(tmpString);
+          else if(strcmp2(aimBuffer, "grpGroupingGr1Left") == 0) {            //This is to correct a bug in version 00000005-6, to be compatible to the old files
+            grpGroupingGr1Left = stringToUint8(tmpString);
           }
-          else if(strcmp(aimBuffer, "grpGroupingRight") == 0) {
-            roundingMode = stringToUint8(tmpString);
+          else if(strcmp2(aimBuffer, "grpGroupingRight") == 0) {            //This is to correct a bug in version 00000005-6, to be compatible to the old files
+            grpGroupingRight = stringToUint8(tmpString);
           }
           else if(strcmp(aimBuffer, "roundingMode") == 0) {
             roundingMode = stringToUint8(tmpString);
@@ -2548,7 +2565,7 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
   // Allow older versions for autoloaded sav file
   //  while doing no check on manual loading. This may allow manual loading of older files at risk
   loadedVersion = 0;
-  if(loadType == autoLoad && loadMode == LM_ALL) {
+  {
     readLine(tmpString);
     if(strcmp(tmpString, "SAVE_FILE_REVISION") == 0) {
       readLine(aimBuffer); // internal rev number (ignore now)
