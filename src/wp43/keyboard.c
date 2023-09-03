@@ -901,6 +901,11 @@ int16_t lastItem = 0;
     fnTimerStop(TO_CL_LONG);      //dr
   }
 
+
+
+
+
+
   /********************************************//**
    * \brief Executes one function from a softmenu
    * \return void
@@ -1224,6 +1229,10 @@ int16_t lastItem = 0;
 bool_t allowShiftsToClearError = false;
 #define stringToKeyNumber(data)         ((*((char *)data) - '0')*10 + *(((char *)data)+1) - '0')
 
+
+
+
+
   int16_t determineItem(const char *data) {
     delayCloseNim = false;
     int16_t result;
@@ -1253,7 +1262,14 @@ bool_t allowShiftsToClearError = false;
       case      ITM_DOWN1: break;                       //JM SHOWregis unchanged
       default:  SHOWregis = 9999; break;
     }                                                   //JMSHOW ^^
-    Setup_MultiPresses( key->primary );
+
+    bool_t gShiftOverride = false;
+    result = ITM_SIGMAPLUS;
+    if(Check_SigmaPlus_Assigned(&result, key_no)) gShiftOverride = true;
+
+    if (!gShiftOverride) {
+      Setup_MultiPresses( key->primary );
+    }
 
     #if defined(PC_BUILD)
       sprintf(tmp,"^^^^^^^keyboard.c: determineitem: key->primary2: %d:",key->primary); jm_show_comment(tmp);
@@ -1288,9 +1304,8 @@ bool_t allowShiftsToClearError = false;
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;
     }
-
     // Shift g pressed and JM REMOVED shift f not active
-    else if(key->primary == ITM_SHIFTg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
+    else if((key->primary == ITM_SHIFTg || gShiftOverride) && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) allowShiftsToClearError = true; //JM
       if(temporaryInformation == TI_VIEW) {
         temporaryInformation = TI_NO_INFO;
@@ -1320,7 +1335,7 @@ bool_t allowShiftsToClearError = false;
       return ITM_NOP;
     }
 
-    // JM Shift f pressed  //JM shifts change f/g to a single function key toggle to match DM42 keyboard
+    // JM Shift fg pressed  //JM shifts change f/g to a single function key toggle to match DM42 keyboard
     // JM Inserted new section and removed old f and g key processing sections
     else if(key->primary == KEY_fg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       Shft_timeouts = true;                         //JM SHIFT NEW
@@ -1393,13 +1408,9 @@ bool_t allowShiftsToClearError = false;
       sprintf(tmp,"^^^^^^^keyboard.c: determineitem: result1: %d:",result); jm_show_comment(tmp);
     #endif //PC_BUILD
 
-    Check_SigmaPlus_Assigned(&result, key_no);  //JM
-
-    #if defined(PC_BUILD)
-      sprintf(tmp,"^^^^^^^keyboard.c: determineitem: result2: %d:",result); jm_show_comment(tmp);
-    #endif //PC_BUILD
-
-    Check_MultiPresses(&result, key_no);        //JM
+    if(!Check_SigmaPlus_Assigned(&result, key_no)) {
+      Check_MultiPresses(&result, key_no);        //JM
+    }
 
     #if defined(PC_BUILD)
       sprintf(tmp,"^^^^^^^keyboard.c: determineitem: result3: %d:",result); jm_show_comment(tmp);
@@ -1469,21 +1480,23 @@ bool_t allowShiftsToClearError = false;
       uint8_t itm;
       uint8_t itm2;
       uint8_t itm3;
+      uint8_t itm4;
     } circ_t;
     uint8_t circPtr =  0;
     uint8_t circPtr2 = 0;
     uint8_t circPtr3 = 0;
+    uint8_t circPtr4 = 0;
     TO_QSPI const circ_t circ[] = {
-                  {7 , 2 , 7 },   //0
-                  {18, 23, 18},   //1
-                  {30, 18, 30},   //2
-                  {24, 12, 24},   //3
-                  {12, 29, 9 },   //4
-                  {28, 33, 13},   //5
-                  {20, 29, 0 },   //6
-                  {18, 30, 0 },   //7
-                  {29, 0 , 0 },   //8
-                  {0 , 0 , 0 },   //9
+                  {7 , 2 , 7 , 7 },   //0
+                  {18, 23, 18, 18},   //1
+                  {30, 18, 30, 30},   //2
+                  {24, 12, 24, 24},   //3
+                  {12, 29, 9 , 20},   //4
+                  {28, 33, 13, 9 },   //5
+                  {20, 29, 0 , 0 },   //6
+                  {18, 30, 0 , 0 },   //7
+                  {29, 0 , 0 , 0 },   //8
+                  {0 , 0 , 0 , 0 },   //9
                 };
     bool_t checkNumber(uint8_t keyCode) {
       if((circPtr == 0 && keyCode==7) || circPtr > nbrOfElements(circ)) circPtr = 0;
@@ -1501,7 +1514,13 @@ bool_t allowShiftsToClearError = false;
       if((circPtr3 == 0 && keyCode==7) || circPtr3 > nbrOfElements(circ)) circPtr3 = 0;
       if(circ[circPtr3].itm3==keyCode) circPtr3++; else circPtr3 = 0;
       if(circPtr3 == 6 && keyCode==13) {
-        fnHP35JM(0);
+        fnSetJM(0);
+        return true;
+      }
+      if((circPtr4 == 0 && keyCode==7) || circPtr4 > nbrOfElements(circ)) circPtr4 = 0;
+      if(circ[circPtr4].itm4==keyCode) circPtr4++; else circPtr4 = 0;
+      if(circPtr4 == 6 && keyCode==9) {
+        fnSetRJ(0);
         return true;
       }
       //printf("RRRR %i %u %u\n", keyCode, circPtr, circPtr2);
@@ -1995,42 +2014,50 @@ RELEASE_END:
       }
 
       case ITM_UP1: {
-        keyActionProcessed = true;   //JM swapped to before fnKeyUp to be able to check if key was processed below. Chose to process it here, as fnKeyUp does not have access to item.
-        fnKeyUp(NOPARAM);
-        if(!keyActionProcessed) {    //JMvv
-          addItemToBuffer(ITM_UP_ARROW);    //Let the arrows produce arrow up and arrow down in ALPHA mode
-        }                            //JM^^
-        if(currentSoftmenuScrolls() || calcMode != CM_NORMAL) {
-          refreshScreen();
-        }
-        keyActionProcessed = true;
-        #if(REAL34_WIDTH_TEST == 1)
-          if(++largeur > SCREEN_WIDTH) {
-            largeur--;
+        if(calcMode != CM_CONFIRMATION) {
+          keyActionProcessed = true;   //JM swapped to before fnKeyUp to be able to check if key was processed below. Chose to process it here, as fnKeyUp does not have access to item.
+          fnKeyUp(NOPARAM);
+          if(!keyActionProcessed) {    //JMvv
+            addItemToBuffer(ITM_UP_ARROW);    //Let the arrows produce arrow up and arrow down in ALPHA mode
+          }                            //JM^^
+          if(currentSoftmenuScrolls() || calcMode != CM_NORMAL) {
+            refreshScreen();
           }
-          uIntToLongInteger(largeur, lgInt);
-          convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_Z);
-        #endif // (REAL34_WIDTH_TEST == 1)
+          keyActionProcessed = true;
+          #if(REAL34_WIDTH_TEST == 1)
+            if(++largeur > SCREEN_WIDTH) {
+              largeur--;
+            }
+            uIntToLongInteger(largeur, lgInt);
+            convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_Z);
+          #endif // (REAL34_WIDTH_TEST == 1)
+        } else {
+          keyActionProcessed = true;
+        }
         break;
       }
 
       case ITM_DOWN1: {
-        keyActionProcessed = true;   //swapped to before fnKeyUp to be able to check if key was processed below. Chose to process it here, as fnKeyUp does not have access to item.
-        fnKeyDown(NOPARAM);
-        if(!keyActionProcessed){     //JM
-           addItemToBuffer(ITM_DOWN_ARROW);    //Let the arrows produce arrow up and arrow down in ALPHA mode
-        }                            //JM^^
-        if(currentSoftmenuScrolls() || calcMode != CM_NORMAL) {
-          refreshScreen();
-        }
-        keyActionProcessed = true;
-        #if(REAL34_WIDTH_TEST == 1)
-          if(--largeur < 20) {
-            largeur++;
+        if(calcMode != CM_CONFIRMATION) {
+          keyActionProcessed = true;   //swapped to before fnKeyUp to be able to check if key was processed below. Chose to process it here, as fnKeyUp does not have access to item.
+          fnKeyDown(NOPARAM);
+          if(!keyActionProcessed){     //JM
+             addItemToBuffer(ITM_DOWN_ARROW);    //Let the arrows produce arrow up and arrow down in ALPHA mode
+          }                            //JM^^
+          if(currentSoftmenuScrolls() || calcMode != CM_NORMAL) {
+            refreshScreen();
           }
-          uIntToLongInteger(largeur, lgInt);
-          convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_Z);
-        #endif // (REAL34_WIDTH_TEST == 1)
+          keyActionProcessed = true;
+          #if(REAL34_WIDTH_TEST == 1)
+            if(--largeur < 20) {
+              largeur++;
+            }
+            uIntToLongInteger(largeur, lgInt);
+            convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_Z);
+          #endif // (REAL34_WIDTH_TEST == 1)
+        } else {
+          keyActionProcessed = true;
+        }
         break;
       }
 
@@ -2424,7 +2451,7 @@ RELEASE_END:
               break;
             }
 
-            case CM_CONFIRMATION: {
+            case CM_CONFIRMATION: { //ITM_ENTER & ITM_EXIT1 do not reach here, it goes to fnKeyEnter and fnKeyExit
               if(item == ITEM_CONF_Y || item == ITM_XEQ || item == ITM_ENTER) { // Yes or XEQ or ENTER
                 calcMode = previousCalcMode;
                 confirmedFunction(CONFIRMED);
