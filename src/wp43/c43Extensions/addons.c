@@ -2166,6 +2166,7 @@ void fnLongPressSwitches (uint16_t option) {
       LongPressF = option;
       break;
     case RB_M14   :
+    case RB_M124  :
     case RB_M1234 :
       LongPressM = option;
       break;

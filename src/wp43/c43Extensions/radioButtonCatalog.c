@@ -83,6 +83,7 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   {ITM_F14,              RB_F14,                 RB_F},   //
   {ITM_M14,              RB_M14,                 RB_M},   //
   {ITM_F124,             RB_F124,                RB_F},   //
+  {ITM_M124,             RB_M124,                RB_M},   //
 
   {ITM_FGLNOFF,          RB_FGLNOFF,             RB_FG},  //
   {ITM_FGLNLIM,          RB_FGLNLIM,             RB_FG},  //
