@@ -373,7 +373,7 @@ TO_QSPI const int16_t menu_Ellipt[]      = { ITM_sn,                        ITM_
 /*      Menu name                           <----------------------------------------------------------------------------- 6 functions ---------------------------------------------------------------------------->  */
 /*                                          <---------------------------------------------------------------------- 6 f shifted functions ------------------------------------------------------------------------->  */
 /*                                          <---------------------------------------------------------------------- 6 g shifted functions ------------------------------------------------------------------------->  */
-TO_QSPI const int16_t menu_CATALOG[]     = { -MNU_FCNS,                    -MNU_CONST,                   -MNU_CHARS,               -MNU_PROGS,            -MNU_VARS,                   -MNU_MENUS                    };
+TO_QSPI const int16_t menu_CATALOG[]     = { -MNU_FCNS,                    -MNU_CONST,                   -MNU_CHARS,               -MNU_PROGS,           ITM_NULL,                   -MNU_MENUS                    };
 
 TO_QSPI const int16_t menu_CHARS[]       = { -MNU_ALPHAINTL,               -MNU_ALPHA_OMEGA,            ITM_NULL,                -MNU_ALPHAMATH,        -MNU_MyAlpha,                -MNU_ALPHADOT                  };
 
