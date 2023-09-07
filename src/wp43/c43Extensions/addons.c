@@ -303,7 +303,7 @@ void fnFrom_ms(uint16_t unusedButMandatoryParameter){
 //
 
 
-// 2023-09-05
+// 2023-09-07
 // Current operation:
 //   A.    From NIM press .ms: always real/integer (no angle), converting the digits to “h” ”m” ”s”:
 //   a.    Example 1.2345 .ms -> 1:23:45, No change.
@@ -319,15 +319,12 @@ void fnFrom_ms(uint16_t unusedButMandatoryParameter){
 //   E.    Tagged angle in X: DMS, press .ms: rewrite D:M:S to H:M:S. No change.
 //   a.    Press .ms again, see (B)
 //   
-//   F.    Tagged angle in X: DEG, press .ms: convert decimal degrees to decimal hours to H:M:S. Proposed change.
-//   a.    Press .ms again, see (B)
+//   F.    Tagged angle in X: DEG, .ms: do >>DMS
+//   a.    Press again, see (E), the cyclic continue as now, no change 
 //   
 // I propose these CHANGES for Tagged angles only:  
 //   D.    Tagged angle in X: RAD GRAD MULpi in X, .ms: Change to do: >>DMS 
 //   a.    Press again, see (E), the cyclic continue as now, no change
-//   
-//   F.    Tagged angle in X: DEG, .ms: do >>DMS
-//   a.    Press again, see (E), the cyclic continue as now, no change 
 
 
 
@@ -358,14 +355,21 @@ void fnTo_ms(uint16_t unusedButMandatoryParameter) {
             fnKeyDotD(0);
             fnToHms(0);            
           } else
-          if(getRegisterAngularMode(REGISTER_X) == amDegree || 
-             getRegisterAngularMode(REGISTER_X) == amRadian || 
-             getRegisterAngularMode(REGISTER_X) == amGrad   || 
-             getRegisterAngularMode(REGISTER_X) == amMultPi    ) {
+          if(getRegisterAngularMode(REGISTER_X) == amDegree // || 
+//             getRegisterAngularMode(REGISTER_X) == amRadian || 
+//             getRegisterAngularMode(REGISTER_X) == amGrad   || 
+//             getRegisterAngularMode(REGISTER_X) == amMultPi
+            ) {
             fnAngularModeJM(amDMS);
           } else
           if(getRegisterAngularMode(REGISTER_X) == amNone) {
             fnToHms(0);
+          } else {
+            displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+            #if(EXTRA_INFO_ON_CALC_ERROR == 1)
+              sprintf(errorMessage, "cannot calculate specific type/tag");
+              moreInfoOnError("In function fnTo_ms:", errorMessage, NULL, NULL);
+            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
           }
         }
         else if(getRegisterDataType(REGISTER_X) == dtTime) {
