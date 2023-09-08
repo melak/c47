@@ -48,10 +48,6 @@ static void fnDisplayFormatReset(uint16_t displayFormatN) {
 void fnDisplayFormatFix(uint16_t displayFormatN) {
   fnDisplayFormatReset(displayFormatN);
   displayFormat = DF_FIX;
-  if(getRegisterDataType(REGISTER_X) == dtTime || getRegisterDataType(REGISTER_Y) == dtTime || getRegisterDataType(REGISTER_Z) == dtTime || getRegisterDataType(REGISTER_T) == dtTime) {     //JM let FIX operate on time as well
-    fnDisplayFormatTime(displayFormatN);
-  }
-
   fnRefreshState();                              //drJM
 }
 
