@@ -1453,7 +1453,7 @@ bool_t allowShiftsToClearError = false;
 //      clearShiftState();
 //    }
 
-    if(result != ITM_SNAP) {
+    if(result != ITM_SNAP) {    //not using the above, the timers need stopping and if the shifts are cleared from screen the flags must follow.
       resetShiftState();
     }
 
@@ -1593,11 +1593,19 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
     mouseButton.button.button = 1;
     btnReleased(w, &mouseButton, data);
   }
+#endif //PC_BUILD
 
 
 
 
+#if defined(PC_BUILD)
     void btnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
+#endif //PC_BUILD
+  #if defined(DMCP_BUILD)
+    void btnPressed(void *data) {
+  #endif //DMCP_BUILD
+
+
       reDraw = false;
       nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
 
@@ -1612,43 +1620,70 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       asnKey[2] = 0;
 
      if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
-        setLastKeyCode(keyCode + 1);
+        #if defined(PC_BUILD)
+          setLastKeyCode(keyCode + 1);
+        #elif defined(DMCP_BUILD)
+          lastKeyCode = keyCode;
+        #endif
       }
       else {
         lastKeyCode = 0;
       }
 
-      if(event->type == GDK_DOUBLE_BUTTON_PRESS || event->type == GDK_TRIPLE_BUTTON_PRESS) { // return unprocessed for double or triple click
-        return;
-      }
-      if(event->button.button == 2) { // Middle click
-        shiftF = true;
-        shiftG = false;
-      }
-      if(event->button.button == 3) { // Right click
-        shiftF = false;
-        shiftG = true;
-      }
+      #if defined(PC_BUILD)
+        if(event->type == GDK_DOUBLE_BUTTON_PRESS || event->type == GDK_TRIPLE_BUTTON_PRESS) { // return unprocessed for double or triple click
+          return;
+        }
+        if(event->button.button == 2) { // Middle click
+          shiftF = true;
+          shiftG = false;
+        }
+        if(event->button.button == 3) { // Right click
+          shiftF = false;
+          shiftG = true;
+        }
+        bool_t ff = lastshiftF;
+        bool_t gg = lastshiftG;
+      #endif //PC_BUILD
+
       bool_t f = shiftF;
       bool_t g = shiftG;
-      bool_t ff = lastshiftF;
-      bool_t gg = lastshiftG;
       lastshiftF = shiftF;
       lastshiftG = shiftG;
+
+      #if defined(DMCP_BUILD)
+        //      if(keyAutoRepeat) {            // AUTOREPEAT
+        //        //beep(880, 50);
+        //        item = previousItem;
+        //      }
+        //      else {
+      #endif //DMCP_BUILD
+
       item = determineItem((char *)data);
-      #if defined(VERBOSEKEYS)
-        printf(">>>>Z 1001 btnPressed       data=|%s| data[0]=%u item=%d \n", (char *)data, ((char *)data)[0], item);
-      #endif // VERBOSEKEYS
-      if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
-        if((item == ITM_RS || item == ITM_EXIT1) && !getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
-          programRunStop = PGM_WAITING;
-          showFunctionNameItem = 0;
+      #if defined(DMCP_BUILD)
+        //  previousItem = item;
+        //}
+      #endif //DMCP_BUILD
+      #if defined(PC_BUILD)
+        #if defined(VERBOSEKEYS)
+          printf(">>>>Z 1001 btnPressed       data=|%s| data[0]=%u item=%d calcMode=%u\n", (char *)data, ((char *)data)[0], item, calcMode);
+        #endif // VERBOSEKEYS
+        if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
+          if((item == ITM_RS || item == ITM_EXIT1) && !getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
+            programRunStop = PGM_WAITING;
+            showFunctionNameItem = 0;
+          }
+          else if(programRunStop == PGM_PAUSED) {
+            programRunStop = PGM_KEY_PRESSED_WHILE_PAUSED;
+          }
+          return;
         }
-        else if(programRunStop == PGM_PAUSED) {
-          programRunStop = PGM_KEY_PRESSED_WHILE_PAUSED;
+      #elif defined(DMCP_BUILD)
+        if(calcMode == CM_PEM && (item == ITM_SST || item == ITM_BST)) {
+          shiftF = f;
+          shiftG = g;
         }
-        return;
-      }
+      #endif //DMCP_BUILD
 
       char *funcParam = "";
 
@@ -1662,7 +1697,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       }
 
       showFunctionNameItem = 0;
-      char tmp[200]; sprintf(tmp,"^^^^btnPressed START item=%d data=\'%s\'",item,(char *)data); jm_show_comment(tmp);
+      #if defined(PC_BUILD)
+        char tmp[200]; sprintf(tmp,"^^^^btnPressed START item=%d data=\'%s\'",item,(char *)data); jm_show_comment(tmp);
+      #endif //PC_BUILD
 
       if(item != ITM_NOP && item != ITM_NULL) {
         #if defined(PC_BUILD_TELLTALE)
@@ -1672,7 +1709,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         processKeyAction(item);
 
         #if defined(PC_BUILD_TELLTALE)
-          sprintf(tmp,"keyboard.c: btnPressed 2--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
+          sprintf(tmp,"keyboard.c: btnPressed 2--> processKeyAction(%d) which is str:%s; keyActionProcessed=%u\n",item,(char *)data, keyActionProcessed); jm_show_calc_state(tmp);
         #endif //PC_BUILD_TELLTALE
 
         if(!keyActionProcessed) {
@@ -1682,15 +1719,22 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && tamBuffer[0] == 0) {
         shiftF = f;
         shiftG = g;
-        lastshiftF = ff;
-        lastshiftG = gg;
+        #if defined(PC_BUILD)
+          lastshiftF = ff;
+          lastshiftG = gg;
+        #endif //PC_BUILD
       }
       
-      if(calcMode != CM_LISTXY) {
-        refreshScreen(140);
-      }
-      sprintf(tmp,"^^^^btnPressed End item=%d:\'%s\' showFunctionNameItem=%d\n",item,(char *)data,showFunctionNameItem); jm_show_comment(tmp);
+//      if(calcMode != CM_LISTXY) {
+//        refreshScreen(140);
+//      }
+      #if defined(PC_BUILD)
+        sprintf(tmp,"^^^^btnPressed End item=%d:\'%s\' showFunctionNameItem=%d\n",item,(char *)data,showFunctionNameItem); jm_show_comment(tmp);
+      #endif //PC_BUILD
     }
+
+
+#if defined(PC_BUILD)
 
     char key[3] = {0, 0, 0};
     static void convertXYToKey(int x, int y) {
@@ -1758,73 +1802,139 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
   #endif // PC_BUILD
 
 
-  #if defined(DMCP_BUILD)
-    void btnPressed(void *data) {
-      reDraw = false;
-      nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
-      int16_t item;
-      int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
-      if(checkNumber((uint8_t)keyCode)) {
-        return;
-      }
 
-      asnKey[0] = ((uint8_t *)data)[0];
-      asnKey[1] = ((uint8_t *)data)[1];
-      asnKey[2] = 0;
+                #ifdef XXXXXXXXX
+                  #if defined(DMCP_BUILD)
+                    void btnPressed(void *data) {
+                  #endif //DMCP_BUILD
 
-      if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
-        lastKeyCode = keyCode;
-      }
-      else {
-        lastKeyCode = 0;
-      }
+                  #if defined(DMCP_BUILD)
+                      reDraw = false;
+                      nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
 
-//      if(keyAutoRepeat) {            // AUTOREPEAT
-//        //beep(880, 50);
-//        item = previousItem;
-//      }
-//      else {
+                      int16_t item;
+                      int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
+                      if(checkNumber((uint8_t)keyCode)) {
+                        return;
+                      }
 
-        bool_t f = shiftF;
-        bool_t g = shiftG;
-        lastshiftF = shiftF;
-        lastshiftG = shiftG;
-        item = determineItem((char *)data);
-      //  previousItem = item;
-      //}
-      if(calcMode == CM_PEM && (item == ITM_SST || item == ITM_BST)) {
-        shiftF = f;
-        shiftG = g;
-      }
+                      asnKey[0] = ((uint8_t *)data)[0];
+                      asnKey[1] = ((uint8_t *)data)[1];
+                      asnKey[2] = 0;
 
-      char *funcParam = "";
+                      if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
+                        #if defined(PC_BUILD)
+                          setLastKeyCode(keyCode + 1);
+                        #elif defined(DMCP_BUILD)
+                          lastKeyCode = keyCode;
+                        #endif
+                      }
+                      else {
+                        lastKeyCode = 0;
+                      }
 
-      if(getSystemFlag(FLAG_USER)) {
-        int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (g ? 2 : f ? 1 : 0);
-        funcParam = (char *)getNthString((uint8_t *)userKeyLabel, keyCode * 6 + keyStateCode);
-        xcopy(tmpString, funcParam, stringByteLength(funcParam) + 1);
-      }
-      else {
-        *tmpString = 0;
-      }
+                      #if defined(PC_BUILD)
+                        if(event->type == GDK_DOUBLE_BUTTON_PRESS || event->type == GDK_TRIPLE_BUTTON_PRESS) { // return unprocessed for double or triple click
+                          return;
+                        }
+                        if(event->button.button == 2) { // Middle click
+                          shiftF = true;
+                          shiftG = false;
+                        }
+                        if(event->button.button == 3) { // Right click
+                          shiftF = false;
+                          shiftG = true;
+                        }
+                        bool_t ff = lastshiftF;
+                        bool_t gg = lastshiftG;
+                      #endif //PC_BUILD
 
-      showFunctionNameItem = 0;
-      if(item != ITM_NOP && item != ITM_NULL) {
-        processKeyAction(item);
-        if(!keyActionProcessed) {
-          showFunctionName(item, 1000, funcParam); //"SF:C"); // 1000ms = 1s
-        }
-      }
-      if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && tamBuffer[0] == 0) {
-        shiftF = f;
-        shiftG = g;
-      }
-      if(calcMode != CM_LISTXY) {
-        refreshScreen(139);
-      }
-    }
-  #endif // DMCP_BUILD
+                        bool_t f = shiftF;
+                        bool_t g = shiftG;
+                        lastshiftF = shiftF;
+                        lastshiftG = shiftG;
 
+                      #if defined(DMCP_BUILD)
+                        //      if(keyAutoRepeat) {            // AUTOREPEAT
+                        //        //beep(880, 50);
+                        //        item = previousItem;
+                        //      }
+                        //      else {
+                      #endif //DMCP_BUILD
+
+                        item = determineItem((char *)data);
+                      #if defined(DMCP_BUILD)
+                        //  previousItem = item;
+                        //}
+                      #endif //DMCP_BUILD
+                      #if defined(PC_BUILD)
+                        #if defined(VERBOSEKEYS)
+                          printf(">>>>Z 1001 btnPressed       data=|%s| data[0]=%u item=%d \n", (char *)data, ((char *)data)[0], item);
+                        #endif // VERBOSEKEYS
+                      if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
+                        if((item == ITM_RS || item == ITM_EXIT1) && !getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
+                          programRunStop = PGM_WAITING;
+                          showFunctionNameItem = 0;
+                        }
+                        else if(programRunStop == PGM_PAUSED) {
+                          programRunStop = PGM_KEY_PRESSED_WHILE_PAUSED;
+                        }
+                        return;
+                      }
+                      #elif defined(DMCP_BUILD)
+                      if(calcMode == CM_PEM && (item == ITM_SST || item == ITM_BST)) {
+                        shiftF = f;
+                        shiftG = g;
+                      }
+                      #endif //DMCP_BUILD
+
+                      char *funcParam = "";
+
+                      if(getSystemFlag(FLAG_USER)) {
+                        int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (g ? 2 : f ? 1 : 0);
+                        funcParam = (char *)getNthString((uint8_t *)userKeyLabel, keyCode * 6 + keyStateCode);
+                        xcopy(tmpString, funcParam, stringByteLength(funcParam) + 1);
+                      }
+                      else {
+                        *tmpString = 0;
+                      }
+
+                      showFunctionNameItem = 0;
+                      #if defined(PC_BUILD)
+                        char tmp[200]; sprintf(tmp,"^^^^btnPressed START item=%d data=\'%s\'",item,(char *)data); jm_show_comment(tmp);
+                      #endif //PC_BUILD
+
+                      if(item != ITM_NOP && item != ITM_NULL) {
+                        #if defined(PC_BUILD_TELLTALE)
+                          sprintf(tmp,"keyboard.c: btnPressed 1--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
+                        #endif //PC_BUILD_TELLTALE
+
+                        processKeyAction(item);
+
+                        #if defined(PC_BUILD_TELLTALE)
+                          sprintf(tmp,"keyboard.c: btnPressed 2--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
+                        #endif //PC_BUILD_TELLTALE
+
+                        if(!keyActionProcessed) {
+                          showFunctionName(item, 1000, funcParam); //"SF:C"); // 1000ms = 1s
+                        }
+                      }
+                      if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && tamBuffer[0] == 0) {
+                        shiftF = f;
+                        shiftG = g;
+                        #if defined(PC_BUILD)
+                          lastshiftF = ff;
+                          lastshiftG = gg;
+                        #endif //PC_BUILD
+                      }
+
+                //      if(calcMode != CM_LISTXY) {
+                //        refreshScreen(139);
+                //      }
+                    }
+                  #endif // DMCP_BUILD
+
+                #endif //XXXXXXXX
 
 
   bool_t checkShifts(const char *data) {
@@ -1856,6 +1966,8 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
   #if defined(DMCP_BUILD)
     void btnReleased(void *data) {
   #endif // DMCP_BUILD
+
+      screenUpdatingMode |= SCRUPD_SKIP_STACK_ONE_TIME; //JMNEWSPEEDUP
 
       if(temporaryInformation == TI_SHOWNOTHING) return;
 
@@ -2263,8 +2375,8 @@ RELEASE_END:
 
       default:
       {
-        #if defined(PC_BUILD)
-//          printf("Switch - default: processKeyAction: calcMode=%d itemToBeAssigned=%d item=%d\n",calcMode, itemToBeAssigned, item);
+        #if defined(PC_BUILD) && ((defined VERBOSEKEYS) || (defined MONITOR_CLRSCR))
+          printf("Switch - default: processKeyAction: calcMode=%d itemToBeAssigned=%d item=%d\n",calcMode, itemToBeAssigned, item);
         #endif //PC_BUILD
         if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && item == ITM_USERMODE) {
           while(softmenuStack[0].softmenuId > 1) {
@@ -2396,7 +2508,7 @@ RELEASE_END:
                 keyActionProcessed = true;
                 if(item == ITM_toINT || item == ITM_HASH_JM) resetShiftState();
                 addItemToNimBuffer(item);
-                if( ((ITM_0 <= item && item <= ITM_9) || ((ITM_A <= item && item <= ITM_F) && (lastIntegerBase >= 2) && topHex) ) || item == ITM_CHS || item == ITM_EXPONENT || item == ITM_PERIOD) {   //JMvv Direct keypresses; //JMNIM Added direct A-F for hex entry
+                if( ((ITM_0 <= item && item <= ITM_9) || item == ITM_toINT || item == ITM_HASH_JM || item == ITM_ms || ((ITM_A <= item && item <= ITM_F) && (lastIntegerBase >= 2) && topHex) ) || item == ITM_CHS || item == ITM_EXPONENT || item == ITM_PERIOD) {   //JMvv Direct keypresses; //JMNIM Added direct A-F for hex entry
                   refreshRegisterLine(REGISTER_X);
                 }                                                                                   //JM^^
               }

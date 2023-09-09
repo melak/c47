@@ -117,6 +117,7 @@ void resetShiftState(void) {
     shiftG = false;
     screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
     showShiftState();
+    screenUpdatingMode |= (SCRUPD_SKIP_STACK_ONE_TIME | SCRUPD_SKIP_MENU_ONE_TIME); //JMNEWSPEEDUP
     refreshScreen(100);
   }                                                                             //^^
   refreshModeGui();                                                             //JM refreshModeGui
@@ -1291,16 +1292,16 @@ void fnCla(uint16_t unusedButMandatoryParameter) {
     yCursor = Y_POSITION_OF_AIM_LINE + 6;
     cursorFont = &standardFont;
     cursorEnabled = true;
-    last_CM=252;
     #if !defined(TESTSUITE_BUILD)
       clearRegisterLine(AIM_REGISTER_LINE, true, true);
       refreshRegisterLine(AIM_REGISTER_LINE);        //JM Execute here, to make sure that the 5/2 line check is done
     #endif // !TESTSUITE_BUILD
-    last_CM=253;
+    screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
   }
   else if(calcMode == CM_EIM) {
     fnEqCla();
     refreshRegisterLine(NIM_REGISTER_LINE);
+    screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
   }
 }
 

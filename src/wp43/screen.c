@@ -2059,8 +2059,10 @@ void execTimerApp(uint16_t timerType) {
     #ifdef DMCP_BUILD
       keyBuffer_pop();                                            // This causes key updates while the longer time processing register updates happen
       if( !(regist == REGISTER_X || regist == REGISTER_Y) && 
-          !getSystemFlag(FLAG_USB) && (LongPressM == RB_M1234 || LongPressM == RB_M124) &&   // This section added to automatically, when in M1234 & when on battery and low processor, change to skip long processing register printing
-          !emptyKeyBuffer()) {  
+          !getSystemFlag(FLAG_USB) && // (LongPressM == RB_M1234 || LongPressM == RB_M124) &&   // This section added to automatically, when in M1234 & when on battery and low processor, change to skip long processing register printing
+          !emptyKeyBuffer() &&
+          key_empty() == 1
+          ) {  
         return;
       }
       //if(!key_empty()) return;
@@ -4077,7 +4079,7 @@ void execTimerApp(uint16_t timerType) {
         //printf("##> AAAA screenUpdatingMode  MANUAL STACK=%u SKIP MENU ONCE=%u \n",screenUpdatingMode & SCRUPD_MANUAL_STACK, screenUpdatingMode & SCRUPD_SKIP_STACK_ONE_TIME);
 
         // The ordering of the 4 lines below is important for SHOW (temporaryInformation == TI_SHOW_REGISTER)
-        if(!(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME))) {
+        if(calcMode != CM_NIM && !(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME))) {
           if(calcMode != CM_AIM) {
             if(calcMode != CM_TIMER && temporaryInformation != TI_VIEW_REGISTER) {
               refreshRegisterLine(REGISTER_T);
@@ -4260,10 +4262,12 @@ void execTimerApp(uint16_t timerType) {
       case CM_TIMER:
 
         if(doRefreshSoftMenu) {
-          screenUpdatingMode = SCRUPD_MANUAL_MENU ;
+          screenUpdatingMode &= ~SCRUPD_MANUAL_MENU ;
         }
         if(last_CM != calcMode || calcMode == CM_CONFIRMATION) {
-          screenUpdatingMode = SCRUPD_AUTO;
+//          screenUpdatingMode = SCRUPD_AUTO;
+          screenUpdatingMode &= ~SCRUPD_MANUAL_MENU ;
+          screenUpdatingMode &= ~SCRUPD_MANUAL_STACK ;
         }
         else if(calcMode == CM_MIM) {
           screenUpdatingMode = (aimBuffer[0] == 0) ? SCRUPD_AUTO : (SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);
