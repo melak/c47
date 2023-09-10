@@ -391,6 +391,7 @@ TO_QSPI const function_t indexOfFunctions[] = {
               {ITM_F14,                       "F14"},
               {ITM_M14,                       "M14"},
               {ITM_F124,                      "F124"},
+              {ITM_M124,                      "M124"},
               {ITM_CF,                        "@"},
               {ITM_SF,                        "@"},
               {ITM_BASE_SCREEN,               "MYM"},
