@@ -272,8 +272,8 @@ void resetKeytimers(void) {
 
 
   bool_t Check_SigmaPlus_Assigned(int16_t * result, int16_t tempkey) {
-    //JM NORMKEY _ CHANGE NORMAL MODE KEY SIGMA+ TO SOMETHING ELSE vv
-    if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (!getSystemFlag(FLAG_USER) && !shiftF && !shiftG && ( tempkey == 0) && ((kbd_std + 0)->primary == *result) )) {
+    //JM NORMKEY CHANGE NORMAL MODE KEY SIGMA+ TO SOMETHING
+    if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (!shiftF && !shiftG && (tempkey == 0) && ((kbd_std + 0)->primary == *result) )) {
       *result = Norm_Key_00_VAR;
       return Norm_Key_00_VAR == ITM_SHIFTg;
     }
@@ -286,7 +286,6 @@ void resetKeytimers(void) {
     int16_t tmp = 0;
     if(calcMode == CM_NORMAL && result == ITM_BACKSPACE && tam.mode == 0) {             //Set up backspace double click to DROP
       tmp = ITM_DROP;
-      temporaryInformation = TI_NO_INFO;
     }
 
     if(tmp != 0) {
@@ -306,10 +305,12 @@ void resetKeytimers(void) {
             longpressDelayedkey3 = 0;                                   //To Store the next timed stage
 
     if((calcMode == CM_NORMAL || calcMode == CM_NIM) && tam.mode==0) {  //longpress yellow math functions on the first two rows, menus allowed provided it is within keys 00-14
-      if(key_no >= 0 && key_no < 15 && LongPressM == RB_M1234) {
+      if(key_no >= 0 && key_no < 15 && (LongPressM == RB_M1234 || LongPressM == RB_M124)) {
         if(!shiftF && !shiftG) {
           longpressDelayedkey1 = getSystemFlag(FLAG_USER) ? kbd_usr[key_no].fShifted : kbd_std[key_no].fShifted;
-          longpressDelayedkey3 = getSystemFlag(FLAG_USER) ? kbd_usr[key_no].gShifted : kbd_std[key_no].gShifted;
+          if(LongPressM == RB_M1234) {
+            longpressDelayedkey3 = getSystemFlag(FLAG_USER) ? kbd_usr[key_no].gShifted : kbd_std[key_no].gShifted;
+          }
         }
       }
     }                                                                   //yellow and blue function keys ^^

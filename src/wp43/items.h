@@ -2109,11 +2109,11 @@
 #define ITM_2053                    2053
 #define ITM_2054                    2054
 #define ITM_2055                    2055
-#define ITM_2056                    2056
+#define ITM_EXFRAC                  2056
 #define ITM_FGLNOFF                 2057
 #define ITM_FGLNLIM                 2058
 #define ITM_FGLNFUL                 2059
-#define ITM_EXFRAC                  2060
+#define ITM_M124                    2060
 #define ITM_F1234                   2061
 #define ITM_M1234                   2062
 #define ITM_F14                     2063

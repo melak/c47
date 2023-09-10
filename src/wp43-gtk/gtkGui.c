@@ -1925,9 +1925,11 @@ void labelCaptionNormal(const calcKey_t *key, GtkWidget *button, GtkWidget *lblF
     stringToUtf8(indexOfItems[max(key->primary, -key->primary)].itemSoftmenuName, lbl);
   }
 
-  if(key->primary == ITM_SIGMAPLUS && calcMode == CM_NORMAL && !getSystemFlag(FLAG_USER)) {                       //JMUSER Change the name inside the Sigma+ button
-    stringToUtf8(indexOfItems[max(Norm_Key_00_VAR, -Norm_Key_00_VAR)].itemSoftmenuName, lbl);            //JMUSER
-  }                                                                                                      //JM
+  bool_t SigmaPlusNRM = ((calcMode == CM_NORMAL || calcMode == CM_NIM) && key->keyId == 21 && Norm_Key_00_VAR != ITM_SIGMAPLUS);
+
+  if(SigmaPlusNRM /*&& calcMode == CM_NORMAL*/ /*&& Norm_Key_00_VAR != ITM_SHIFTg*/) {               //Sigma+NRM: JChange the name inside the Sigma+ button; allow USER mode, but override the USER setting for Sigma+, except for shiftg which is not overriden
+    stringToUtf8(indexOfItems[max(Norm_Key_00_VAR, -Norm_Key_00_VAR)].itemSoftmenuName, lbl);
+  }
 
   if(strcmp((char *)lbl, "CAT") == 0 && key->keyId != 85) {    //JM wqs 85  //JM Changed CATALOG to CAT
     lbl[3] = 0;
@@ -1939,13 +1941,14 @@ void labelCaptionNormal(const calcKey_t *key, GtkWidget *button, GtkWidget *lblF
 //  gtk_button_set_label(GTK_BUTTON(button), "÷");             //JM DIV
 //  }                                                          //JM
 
-  if((key->primary == ITM_AIM && getSystemFlag(FLAG_USER) && calcMode == CM_NORMAL ) || (!getSystemFlag(FLAG_USER) && key->primary == ITM_SIGMAPLUS && calcMode == CM_NORMAL && Norm_Key_00_VAR == ITM_AIM)) {
-    gtk_widget_set_name(button, "AlphaKey");                 //JMALPHA Colour the alpha key gold if assigned.
+  if((key->primary == ITM_AIM && getSystemFlag(FLAG_USER) && calcMode == CM_NORMAL && key->keyId == 21) ||                       //Sigma+NRM: Colour the alpha key gold if assigned.
+     (key->primary == ITM_SIGMAPLUS && calcMode == CM_NORMAL && Norm_Key_00_VAR == ITM_AIM && key->keyId == 21)) {
+    gtk_widget_set_name(button, "AlphaKey");
   }
   else if(key->primary == ITM_SHIFTf) {
     gtk_widget_set_name(button, "calcKeyF");
   }
-  else if(key->primary == ITM_SHIFTg  || (key->primary == ITM_SIGMAPLUS && Norm_Key_00_VAR == ITM_SHIFTg) ) {
+  else if(key->primary == ITM_SHIFTg  || (key->primary == ITM_SIGMAPLUS && Norm_Key_00_VAR == ITM_SHIFTg && key->keyId == 21) ) { //Sigma+NRM: Colour the shiftg key blue if assigned.
     gtk_widget_set_name(button, "calcKeyG");
   }
   else if(key->primary == KEY_fg) {
@@ -1979,7 +1982,7 @@ void labelCaptionNormal(const calcKey_t *key, GtkWidget *button, GtkWidget *lblF
     lbl[3] = 0;
   }
 
-  if(key->primary == ITM_SHIFTg) {
+  if(key->primary == ITM_SHIFTg && key->keyId == 71) {
     strcpy((char *)lbl,"      "); //blank the dots above the shift g key, if it is shit g specifically instead of shift f/g
   }
 
