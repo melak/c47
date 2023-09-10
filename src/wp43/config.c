@@ -145,30 +145,26 @@ void configCommon(uint16_t idx) {
 
 
   void fnSetJM(uint16_t unusedButMandatoryParameter){
-    //fnSetHP35(0);
-    jm_BASE_SCREEN = true;
-    fneRPN(1);                               //eRPN                revert HP35 defaults
-    setFGLSettings(RB_FGLNFUL);              //fgLine FULL         revert HP35 defaults
-    clearSystemFlag(FLAG_HPRP);              //Clear HP Rect/Polar revert HP35 defaults
-    SetSetting(SS_8);                        //SSTACK 8            revert HP35 defaults
-    SetSetting(ITM_CPXRES1);                 //Set CPXRES          revert HP35 defaults
-    SetSetting(ITM_SPCRES1);                 //Set SPCRES          revert HP35 defaults
-    setSystemFlag(FLAG_CPXj);                //Set j               revert HP35 defaults
-    setSystemFlag(FLAG_SBbatV);              //Set battery voltage indicator
+    fnSetC47(0);
+    //jm_BASE_SCREEN = true;
+    //currentAngularMode = amDegree;
+    //fneRPN(1);                               //eRPN
+    //setFGLSettings (RB_FGLNFUL);              //fgLine FULL
+    fnClearFlag    (FLAG_USER);              // Clear USER mode
+    clearSystemFlag(FLAG_HPRP);              // Clear HP Rect/Polar
+    clearSystemFlag(FLAG_POLAR);             // Set rectangular default
+    SetSetting     (SS_8);                   // SSTACK 8  
+    SetSetting     (ITM_CPXRES1);            // Set CPXRES
+    SetSetting     (ITM_SPCRES1);            // Set SPCRES
+    setSystemFlag  (FLAG_CPXj);              // Set j     
+    setSystemFlag  (FLAG_SBbatV);            // Set battery voltage indicator
+    fnDisplayFormatSigFig(3);                // SIG 3
     fnRefreshState();
     refreshScreen(161);
     }
 
+
   void fnSetRJ(uint16_t unusedButMandatoryParameter){
-    //fnSetHP35(0);
-    jm_BASE_SCREEN = true;
-    fneRPN(1);                               //eRPN                revert HP35 defaults
-    setFGLSettings(RB_FGLNFUL);              //fgLine FULL         revert HP35 defaults
-    clearSystemFlag(FLAG_HPRP);              //Clear HP Rect/Polar revert HP35 defaults
-    SetSetting(SS_8);                        //SSTACK 8            revert HP35 defaults
-    SetSetting(ITM_CPXRES1);                 //Set CPXRES          revert HP35 defaults
-    SetSetting(ITM_SPCRES1);                 //Set SPCRES          revert HP35 defaults
-    setSystemFlag(FLAG_CPXj);                //Set j               revert HP35 defaults
     setSystemFlag(FLAG_SBbatV);              //Set battery voltage indicator
     fnRefreshState();
     refreshScreen(165);
