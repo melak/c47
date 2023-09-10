@@ -26,6 +26,7 @@
 #include "charString.h"
 #include "curveFitting.h"
 #include "fonts.h"
+#include "hal/audio.h"
 #include "c43Extensions/inlineTest.h"
 #include "items.h"
 #include "c43Extensions/jm.h"
@@ -412,6 +413,10 @@ int16_t fnItemShowValue(int16_t item) {
     //case ITM_BESTF:     result = (~lrSelection) & 0x1FF;                            break;
     case ITM_RMODE:     result = roundingMode;                                      break;
     case ITM_HASH_JM:   if(lastIntegerBase != 0) result = (int16_t)lastIntegerBase; break;
+    case ITM_VOL:
+    case ITM_VOLPLUS:
+    case ITM_VOLMINUS:
+                        result = getBeepVolume();                                   break; // DL
     default:            if(indexOfItems[itemNr].func == itemToBeCoded) {
                          result = ITEM_NOT_CODED;
                         }

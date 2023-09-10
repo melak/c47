@@ -14,6 +14,9 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "error.h"
+#include "flags.h"
+#include "c43Extensions/radioButtonCatalog.h"
 #include "hal/audio.h"
 
 #include <stdio.h>
@@ -23,6 +26,8 @@
 #elif defined(WITH_PULSEAUDIO)
   #include <pulse/simple.h>
 #endif
+
+#include "wp43.h"
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
@@ -59,4 +64,32 @@ void audioTone(uint32_t frequency) {
       pa_simple_free(s);
     }
   #endif
+}
+
+void fnSetVolume(uint16_t volume) {
+  temporaryInformation = TI_DMCP_ONLY;
+}
+
+uint16_t getBeepVolume() {
+    return NOVAL;
+}
+
+void fnGetVolume(uint16_t unusedButMandatoryParameter) {
+  temporaryInformation = TI_DMCP_ONLY;
+}
+
+void fnVolumeUp(uint16_t unusedButMandatoryParameter) {
+  temporaryInformation = TI_DMCP_ONLY;
+}
+
+void fnVolumeDown(uint16_t unusedButMandatoryParameter) {
+  temporaryInformation = TI_DMCP_ONLY;
+}
+
+void fnBuzz(uint16_t unusedButMandatoryParameter) {
+  temporaryInformation = TI_DMCP_ONLY;
+}
+
+void fnPlay (uint16_t unusedButMandatoryParameter) {
+  temporaryInformation = TI_DMCP_ONLY;
 }
