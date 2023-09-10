@@ -21,6 +21,7 @@
 #include "flags.h"
 #include "fonts.h"
 #include "fractions.h"
+#include "hal/audio.h"
 #include "hal/io.h"
 #include "c43Extensions/graphs.h"
 #include "c43Extensions/inlineTest.h"
@@ -1142,8 +1143,12 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnSetC47                   (uint16_t unusedButMandatoryParameter) {}
   void fnDiskInfo                 (uint16_t unusedButMandatoryParameter) {}
   void fnLint                     (uint16_t unusedButMandatoryParameter) {}
-
-
+  void fnSetVolume                (uint16_t unusedButMandatoryParameter) {}
+  void fnGetVolume                (uint16_t unusedButMandatoryParameter) {}
+  void fnVolumeUp                 (uint16_t unusedButMandatoryParameter) {}
+  void fnVolumeDown               (uint16_t unusedButMandatoryParameter) {}
+  void fnBuzz                     (uint16_t unusedButMandatoryParameter) {}
+  void fnPlay                     (uint16_t unusedButMandatoryParameter) {}
                                                                               //JM ^^
 #endif // GENERATE_CATALOGS
 
@@ -3399,6 +3404,12 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2195 */  { fnHide,                       TM_VALUE,                    "HIDE",                                        "HIDE",                                        (0 << TAM_MAX_BITS) |    99, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NUMBER_8     },
 /* 2196 */  { fnDenMax,                     TM_VALUE,                    "DMX",                                         "DMX",                                         (0 << TAM_MAX_BITS) | MAX_DENMAX, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NUMBER_16    },
 /* 2197 */  { fnSetSignificantDigits,       TM_VALUE,                    "SDIGS",                                       "SDIGS",                                       (0 << TAM_MAX_BITS) |    34, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NUMBER_8     },
+/* 2198 */  { fnSetVolume,                  TM_VALUE,                    "VOL",                                         "VOL",                                         (0 << TAM_MAX_BITS) |    11, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NUMBER_8     },
+/* 2199 */  { fnGetVolume,                  NOPARAM,                     "VOL?",                                        "VOL?",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 2200 */  { fnVolumeUp,                   NOPARAM,                     "VOL" STD_UP_ARROW,                            "VOL" STD_UP_ARROW,                            (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2201 */  { fnVolumeDown,                 NOPARAM,                     "VOL" STD_DOWN_ARROW,                          "VOL" STD_DOWN_ARROW,                          (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2202 */  { fnBuzz,                       NOPARAM,                     "BUZZ",                                        "BUZZ",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
+/* 2203 */  { fnPlay,                       TM_REGISTER,                 "PLAY",                                        "PLAY",                                        (0 << TAM_MAX_BITS) |    99, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_REGISTER     },
 
-/* 2198 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
+/* 2204 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
 };
