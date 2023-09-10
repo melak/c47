@@ -2109,7 +2109,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
 
   void popSoftmenu(void) {
 //    if(running_program_jm) return;                             //JM
-    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+    screenUpdatingMode &= ~(SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME);
 
     xcopy(softmenuStack, softmenuStack + 1, (SOFTMENU_STACK_SIZE - 1) * sizeof(softmenuStack_t)); // shifting the entire stack
     memset(softmenuStack + SOFTMENU_STACK_SIZE - 1, 0, sizeof(softmenuStack_t)); // Put MyMenu in the last stack element
@@ -2165,7 +2165,7 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
       }
     #endif // !INLINE_TEST
 
-    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+    screenUpdatingMode &= ~(SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME);
 
     enterAsmModeIfMenuIsACatalog(id);
 

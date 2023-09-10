@@ -2068,11 +2068,16 @@ void execTimerApp(uint16_t timerType) {
       //if(!key_empty()) return;
     #endif //DMCP
 
+    #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+      printf(">>> refreshRegisterLine   register=%u screenUpdatingMode=%d temporaryInformation=%u baseModeActive=%u\n", regist, screenUpdatingMode, temporaryInformation, baseModeActive);
+    #endif // PC_BUILD &&MONITOR_CLRSCR
+
     baseModeActive = displayStackSHOIDISP != 0 && (lastIntegerBase != 0 || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_BASE);
-    if(baseModeActive && getRegisterDataType(REGISTER_X) == dtShortInteger) { //JMSHOI
-      if(displayStack != 4-displayStackSHOIDISP) {                            //JMSHOI
-        fnDisplayStack(4-displayStackSHOIDISP);                               //JMSHOI
-      }                                                                       //JMSHOI
+    if(regist == REGISTER_X && baseModeActive && getRegisterDataType(REGISTER_X) == dtShortInteger) { //JMSHOI
+      if(displayStack != 4-displayStackSHOIDISP) {
+        fnDisplayStack(4-displayStackSHOIDISP);
+        screenUpdatingMode = SCRUPD_AUTO;                                                    //must be full clear due to status bar A-F indication
+      }
     }
 
     #if(DEBUG_PANEL == 1)
@@ -2081,7 +2086,7 @@ void execTimerApp(uint16_t timerType) {
       }
     #endif // (DEBUG_PANEL == 1)
 
-    if((temporaryInformation == TI_SHOW_REGISTER || SHOWMODE) && regist == REGISTER_X) { //JM top frame of the SHOW window
+    if((temporaryInformation == TI_SHOW_REGISTER || SHOWMODE) && regist == REGISTER_X) {     //JM top frame of the SHOW window
       lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE-4, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
     }
 
@@ -4045,12 +4050,14 @@ void execTimerApp(uint16_t timerType) {
     refreshStatusBar();
   }
 
-
+  bool_t refreshNIMdone = false;
   static void _refreshNormalScreen(void) {
         #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
           printf(">>> BEGIN _refreshNormalScreen calcMode=%d previousCalcMode=%d screenUpdatingMode=%d\n", calcMode, previousCalcMode, screenUpdatingMode);    //JMYY
         #endif // PC_BUILD &&MONITOR_CLRSCR
 
+        if(calcMode != CM_NIM) refreshNIMdone = false;
+        
         if(calcMode == CM_NORMAL && screenUpdatingMode != SCRUPD_AUTO && temporaryInformation == TI_SHOWNOTHING) {
           goto RETURN_NORMAL;
         }
@@ -4104,7 +4111,19 @@ void execTimerApp(uint16_t timerType) {
 
         }
         else if(calcMode == CM_NIM) {
-          //printf("##> DDDD NIM line\n");
+          #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+            printf(">>>>      _refreshNormalScreen NIM: calcMode=%u  programRunStop=%d lastErrorCode=%u \n",calcMode, programRunStop, lastErrorCode);
+          #endif // PC_BUILD &&MONITOR_CLRSCR
+          if(!refreshNIMdone) {
+            #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+              printf(">>>>      _refreshNormalScreen NIM FULL\n");
+            #endif // PC_BUILD &&MONITOR_CLRSCR
+            refreshRegisterLine(REGISTER_T);
+            refreshRegisterLine(REGISTER_Z);
+            refreshRegisterLine(REGISTER_Y);
+            refreshNIMdone = true;
+          }
+
           refreshRegisterLine(NIM_REGISTER_LINE);
         }
         //printf("##><\n");

@@ -577,7 +577,7 @@ bool_t lowercaseselected;
 
     if(keyActionProcessed) {
       #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
-        printf("refreshScreen(): calcMode=%u End of rocessAimInput\n", calcMode);
+        printf("refreshScreen(): calcMode=%u End of processAimInput\n", calcMode);
       #endif //PC_BUILD
       refreshScreen(101);
     }
@@ -975,7 +975,16 @@ int16_t lastItem = 0;
               #if defined(VERBOSEKEYS)
                 printf(">>>Function: executeFunction showSoftmenu(%d)\n",item);
               #endif //VERBOSEKEYS
+              #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+                printf("BB1 screenUpdatingMode=%u temporaryInformation=%u\n", screenUpdatingMode, temporaryInformation);
+              #endif // PC_BUILD &&MONITOR_CLRSCR
+
               showSoftmenu(item);
+
+              #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+                printf("BB2 screenUpdatingMode=%u temporaryInformation=%u\n", screenUpdatingMode, temporaryInformation);
+              #endif // PC_BUILD &&MONITOR_CLRSCR
+
               if(item == -MNU_ALPHA) {
                 fnAim(0);
               }
@@ -1642,12 +1651,12 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           shiftF = false;
           shiftG = true;
         }
-        bool_t ff = lastshiftF;
-        bool_t gg = lastshiftG;
       #endif //PC_BUILD
 
       bool_t f = shiftF;
       bool_t g = shiftG;
+      bool_t ff = lastshiftF;
+      bool_t gg = lastshiftG;
       lastshiftF = shiftF;
       lastshiftG = shiftG;
 
@@ -1719,10 +1728,8 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && tamBuffer[0] == 0) {
         shiftF = f;
         shiftG = g;
-        #if defined(PC_BUILD)
-          lastshiftF = ff;
-          lastshiftG = gg;
-        #endif //PC_BUILD
+        lastshiftF = ff;
+        lastshiftG = gg;
       }
       
 //      if(calcMode != CM_LISTXY) {
@@ -1803,140 +1810,6 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
 
 
-                #ifdef XXXXXXXXX
-                  #if defined(DMCP_BUILD)
-                    void btnPressed(void *data) {
-                  #endif //DMCP_BUILD
-
-                  #if defined(DMCP_BUILD)
-                      reDraw = false;
-                      nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
-
-                      int16_t item;
-                      int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
-                      if(checkNumber((uint8_t)keyCode)) {
-                        return;
-                      }
-
-                      asnKey[0] = ((uint8_t *)data)[0];
-                      asnKey[1] = ((uint8_t *)data)[1];
-                      asnKey[2] = 0;
-
-                      if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
-                        #if defined(PC_BUILD)
-                          setLastKeyCode(keyCode + 1);
-                        #elif defined(DMCP_BUILD)
-                          lastKeyCode = keyCode;
-                        #endif
-                      }
-                      else {
-                        lastKeyCode = 0;
-                      }
-
-                      #if defined(PC_BUILD)
-                        if(event->type == GDK_DOUBLE_BUTTON_PRESS || event->type == GDK_TRIPLE_BUTTON_PRESS) { // return unprocessed for double or triple click
-                          return;
-                        }
-                        if(event->button.button == 2) { // Middle click
-                          shiftF = true;
-                          shiftG = false;
-                        }
-                        if(event->button.button == 3) { // Right click
-                          shiftF = false;
-                          shiftG = true;
-                        }
-                        bool_t ff = lastshiftF;
-                        bool_t gg = lastshiftG;
-                      #endif //PC_BUILD
-
-                        bool_t f = shiftF;
-                        bool_t g = shiftG;
-                        lastshiftF = shiftF;
-                        lastshiftG = shiftG;
-
-                      #if defined(DMCP_BUILD)
-                        //      if(keyAutoRepeat) {            // AUTOREPEAT
-                        //        //beep(880, 50);
-                        //        item = previousItem;
-                        //      }
-                        //      else {
-                      #endif //DMCP_BUILD
-
-                        item = determineItem((char *)data);
-                      #if defined(DMCP_BUILD)
-                        //  previousItem = item;
-                        //}
-                      #endif //DMCP_BUILD
-                      #if defined(PC_BUILD)
-                        #if defined(VERBOSEKEYS)
-                          printf(">>>>Z 1001 btnPressed       data=|%s| data[0]=%u item=%d \n", (char *)data, ((char *)data)[0], item);
-                        #endif // VERBOSEKEYS
-                      if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
-                        if((item == ITM_RS || item == ITM_EXIT1) && !getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
-                          programRunStop = PGM_WAITING;
-                          showFunctionNameItem = 0;
-                        }
-                        else if(programRunStop == PGM_PAUSED) {
-                          programRunStop = PGM_KEY_PRESSED_WHILE_PAUSED;
-                        }
-                        return;
-                      }
-                      #elif defined(DMCP_BUILD)
-                      if(calcMode == CM_PEM && (item == ITM_SST || item == ITM_BST)) {
-                        shiftF = f;
-                        shiftG = g;
-                      }
-                      #endif //DMCP_BUILD
-
-                      char *funcParam = "";
-
-                      if(getSystemFlag(FLAG_USER)) {
-                        int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (g ? 2 : f ? 1 : 0);
-                        funcParam = (char *)getNthString((uint8_t *)userKeyLabel, keyCode * 6 + keyStateCode);
-                        xcopy(tmpString, funcParam, stringByteLength(funcParam) + 1);
-                      }
-                      else {
-                        *tmpString = 0;
-                      }
-
-                      showFunctionNameItem = 0;
-                      #if defined(PC_BUILD)
-                        char tmp[200]; sprintf(tmp,"^^^^btnPressed START item=%d data=\'%s\'",item,(char *)data); jm_show_comment(tmp);
-                      #endif //PC_BUILD
-
-                      if(item != ITM_NOP && item != ITM_NULL) {
-                        #if defined(PC_BUILD_TELLTALE)
-                          sprintf(tmp,"keyboard.c: btnPressed 1--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
-                        #endif //PC_BUILD_TELLTALE
-
-                        processKeyAction(item);
-
-                        #if defined(PC_BUILD_TELLTALE)
-                          sprintf(tmp,"keyboard.c: btnPressed 2--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
-                        #endif //PC_BUILD_TELLTALE
-
-                        if(!keyActionProcessed) {
-                          showFunctionName(item, 1000, funcParam); //"SF:C"); // 1000ms = 1s
-                        }
-                      }
-                      if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && tamBuffer[0] == 0) {
-                        shiftF = f;
-                        shiftG = g;
-                        #if defined(PC_BUILD)
-                          lastshiftF = ff;
-                          lastshiftG = gg;
-                        #endif //PC_BUILD
-                      }
-
-                //      if(calcMode != CM_LISTXY) {
-                //        refreshScreen(139);
-                //      }
-                    }
-                  #endif // DMCP_BUILD
-
-                #endif //XXXXXXXX
-
-
   bool_t checkShifts(const char *data) {
     const calcKey_t *key;
 
@@ -1957,7 +1830,6 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
   #if defined(PC_BUILD)
     void btnReleased(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
-
     #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
       printf(">>> btnReleased showFunctionNameItem=%i screenUpdatingMode=%d temporaryInformation=%u\n", showFunctionNameItem, screenUpdatingMode, temporaryInformation);
     #endif // PC_BUILD &&MONITOR_CLRSCR
@@ -1967,7 +1839,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
     void btnReleased(void *data) {
   #endif // DMCP_BUILD
 
-      screenUpdatingMode |= SCRUPD_SKIP_STACK_ONE_TIME; //JMNEWSPEEDUP
+//      screenUpdatingMode |= SCRUPD_SKIP_STACK_ONE_TIME; //JMNEWSPEEDUP
 
       if(temporaryInformation == TI_SHOWNOTHING) return;
 
@@ -1982,7 +1854,6 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       }
     if(calcMode == CM_ASN_BROWSER && lastItem == ITM_PERIOD) {
       fnAsnDisplayUSER = true;
-//      refreshScreen();
       goto RELEASE_END;
       return;
     }
@@ -2012,9 +1883,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
         hideFunctionName();
         if(item < 0) {
-          //printf("AA1 allowShiftsToClearError=%u !checkShifts=%u screenUpdatingMode=%u temporaryInformation=%u\n",allowShiftsToClearError, !checkShifts((char *)data), screenUpdatingMode, temporaryInformation);
+            //printf("AA1 allowShiftsToClearError=%u !checkShifts=%u screenUpdatingMode=%u temporaryInformation=%u\n",allowShiftsToClearError, !checkShifts((char *)data), screenUpdatingMode, temporaryInformation);
           showSoftmenu(item);
-          //printf("AA2 allowShiftsToClearError=%u !checkShifts=%u screenUpdatingMode=%u temporaryInformation=%u\n",allowShiftsToClearError, !checkShifts((char *)data), screenUpdatingMode, temporaryInformation);
+            //printf("AA2 allowShiftsToClearError=%u !checkShifts=%u screenUpdatingMode=%u temporaryInformation=%u\n",allowShiftsToClearError, !checkShifts((char *)data), screenUpdatingMode, temporaryInformation);
         }
         else {
           int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
@@ -2134,14 +2005,16 @@ RELEASE_END:
 
 #if !defined(TESTSUITE_BUILD)
   void processKeyAction(int16_t item) {
-    #if defined(PC_BUILD)
-//      printf(">>>> processKeyAction: item=%d  programRunStop=%d\n",item,programRunStop);
-    #endif //PC_BUILD
+    #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
+      printf(">>>> processKeyAction: calcMode=%u item=%d  programRunStop=%d lastErrorCode=%u \n",calcMode, item, programRunStop, lastErrorCode);
+    #endif // PC_BUILD &&MONITOR_CLRSCR
     keyActionProcessed = false;
     lowercaseselected = ((alphaCase == AC_LOWER && !lastshiftF) || (alphaCase == AC_UPPER && lastshiftF /*&& !numLock*/)); //JM remove last !numlock if you want the shift, during numlock, to produce lower case
 
     if(lastErrorCode != 0 && item != ITM_EXIT1 && item != ITM_BACKSPACE) {
       lastErrorCode = 0;
+      screenUpdatingMode = SCRUPD_AUTO;
+      refreshScreen(136);
     }
 
     if(temporaryInformation == TI_VIEW_REGISTER) {
@@ -2151,9 +2024,13 @@ RELEASE_END:
         temporaryInformation = TI_VIEW_REGISTER;
       }
     }
-    else if(item != ITM_UP1 && item != ITM_DOWN1 && item != ITM_EXIT1 && item != ITM_BACKSPACE && 
-         !((item == ITM_RCL || (item >= ITM_0 && item <= ITM_9)) && SHOWMODE && allowShowDigits)
-         ) {
+    else if(temporaryInformation != TI_NO_INFO && item != ITM_UP1 && item != ITM_DOWN1 && item != ITM_EXIT1 && item != ITM_BACKSPACE && 
+           !(  (item == ITM_RCL || (item >= ITM_0 && item <= ITM_9)) && SHOWMODE && allowShowDigits  )) {
+      uint8_t calcModeStore = calcMode;
+      calcMode = CM_NORMAL;
+      screenUpdatingMode = SCRUPD_AUTO;
+      refreshScreen(137);
+      calcMode = calcModeStore;
       temporaryInformation = TI_NO_INFO;
     }
     if(programRunStop == PGM_WAITING) {
@@ -2476,6 +2353,7 @@ RELEASE_END:
                 keyActionProcessed = true;
               }
               else {
+                screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME);
                 processAimInput(item);
               }
               break;
@@ -2484,10 +2362,11 @@ RELEASE_END:
             case CM_EIM: {
               #if defined(PC_BUILD_VERBOSE0)
                  #if defined(PC_BUILD)
-                   printf("^"); //####
+                   printf("^^^^^ screenUpdatingMode=%u\n",screenUpdatingMode); //####
                  #endif
               #endif
               processAimInput(item);
+              screenUpdatingMode &= ~(SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME);
               refreshRegisterLine(AIM_REGISTER_LINE);   //JM  No if needed, it does nothing if not in NIM. TO DISPLAY NUMBER KEYPRESS DIRECTLY AFTER PRESS, NOT ONLY UPON RELEASE          break;
               break;
             }
@@ -2672,6 +2551,7 @@ RELEASE_END:
                 leavePem();
                 calcModeNormal();
                 keyActionProcessed = true;
+                screenUpdatingMode = SCRUPD_AUTO;
               }
               else if(item == ITM_OFF) {
                 fnOff(NOPARAM);
