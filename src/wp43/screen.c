@@ -2262,6 +2262,13 @@ void execTimerApp(uint16_t timerType) {
         displayTemporaryInformationOnX(prefix);
       }
 
+      #if defined(PC_BUILD)
+      else if(temporaryInformation == TI_DMCP_ONLY && regist == REGISTER_X) {
+        sprintf(prefix, "Not available on the simulator");
+        displayTemporaryInformationOnX(prefix);
+      }
+      #endif // PC_BUILD
+
       else if(temporaryInformation == TI_BACKUP_RESTORED && regist == REGISTER_X) {
         clearRegisterLine(REGISTER_X, true, true);
         clearRegisterLine(REGISTER_Y, true, true);

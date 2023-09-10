@@ -2252,8 +2252,14 @@
 #define ITM_HIDE                    2195
 #define ITM_DENMAX2                 2196
 #define ITM_SETSIG2                 2197
+#define ITM_VOL                     2198
+#define ITM_VOLQ                    2199
+#define ITM_VOLPLUS                 2200
+#define ITM_VOLMINUS                2201
+#define ITM_BUZZ                    2202
+#define ITM_PLAY                    2203
 
-#define LAST_ITEM                   2198
+#define LAST_ITEM                   2204
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
