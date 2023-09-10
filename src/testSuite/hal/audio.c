@@ -14,9 +14,32 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "c43Extensions/radioButtonCatalog.h"
 #include "hal/audio.h"
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
 void audioTone(uint32_t frequency) {
+}
+
+void fnSetVolume(uint16_t volume) {
+}
+
+uint16_t getBeepVolume() {
+    return NOVAL;
+}
+
+void fnGetVolume(uint16_t unusedButMandatoryParameter) {
+}
+
+void fnVolumeUp(uint16_t unusedButMandatoryParameter) {
+}
+
+void fnVolumeDown(uint16_t unusedButMandatoryParameter) {
+}
+
+void fnBuzz(uint16_t unusedButMandatoryParameter) {
+}
+
+void fnPlay(uint16_t unusedButMandatoryParameter) {
 }
