@@ -31,6 +31,21 @@
 
 //#define STATDEBUG
 
+
+typedef struct {
+  char     itemName[30];
+} nstr;
+TO_QSPI const nstr GraphMsgs[] = { 
+/*0*/  { "  y-axis x 0" },
+/*1*/  { "  x-axis y 0" },
+/*2*/  { "  axis 0.0 " },
+/*3*/  { "  Trapezoid integral" },
+/*4*/  { "  Num. differential" },
+/*5*/  { "  RMSy" },
+/*6*/  { "Stat data: N = " }
+};
+
+
 bool_t    invalid_intg = true;
 bool_t    invalid_diff = true;
 bool_t    invalid_rms  = true;
@@ -427,6 +442,7 @@ void convertDigits(char * refstr, uint16_t ii, uint16_t * oo, char * outstr) {
 }
 
 
+
 void graph_text(void) {
   #if !defined(TESTSUITE_BUILD)
     uint32_t ypos = Y_POSITION_OF_REGISTER_T_LINE -11 + 12 * 5 -45;
@@ -488,9 +504,9 @@ void graph_text(void) {
                       + (!(xzero == SCREEN_WIDTH-1        || xzero == minnx) ? 1 : 0);
     switch(axisdisp) {
       case 0: strcpy(tmpString,"            ");                    break;
-      case 1: snprintf(tmpString, TMP_STR_LENGTH, "  y-axis x 0"); break;
-      case 2: snprintf(tmpString, TMP_STR_LENGTH, "  x-axis y 0"); break;
-      case 3: snprintf(tmpString, TMP_STR_LENGTH, "  axis 0.0 ");  break;
+      case 1: snprintf(tmpString, TMP_STR_LENGTH, "%s", GraphMsgs[0].itemName); break;     //y-axis x 0
+      case 2: snprintf(tmpString, TMP_STR_LENGTH, "%s", GraphMsgs[1].itemName); break;     //x-axis y 0
+      case 3: snprintf(tmpString, TMP_STR_LENGTH, "%s", GraphMsgs[2].itemName); break;     //axis 0.0 
       default: ;
     }
 
@@ -514,7 +530,7 @@ void graph_text(void) {
     ypos += 48 + 2*19;
 
     if(PLOT_INTG && !invalid_intg) {
-      snprintf(tmpString, TMP_STR_LENGTH, "  Trapezoid integral");
+      snprintf(tmpString, TMP_STR_LENGTH, "%s", GraphMsgs[3].itemName);    //  Trapezoid integral
       showStringC43(tmpString, numSmall, nocompress, 1, ypos, vmNormal, true, true);  //JM
       plotintbig(5, ypos+4+4-2);
       plotrect(5+4-1, (ypos+4+4-2+2)-1, 5+4+2, (ypos+4+4-2+2)+2);
@@ -522,14 +538,14 @@ void graph_text(void) {
     }
 
     if(PLOT_DIFF && !invalid_diff) {
-      snprintf(tmpString, TMP_STR_LENGTH, "  Num. differential");
+      snprintf(tmpString, TMP_STR_LENGTH, "%s", GraphMsgs[4].itemName);    //  Num. differential
       showStringC43(tmpString, numSmall, nocompress, 1, ypos, vmNormal, true, true);  //JM
       plotdeltabig(6, ypos+4+4-2);
       ypos += 20;
     }
 
     if(PLOT_RMS && !invalid_rms) {
-      snprintf(tmpString, TMP_STR_LENGTH, "  RMSy");
+      snprintf(tmpString, TMP_STR_LENGTH, "%s", GraphMsgs[5].itemName);    //  RMSy
       showStringC43(tmpString, numSmall, nocompress, 1, ypos, vmNormal, true, true);  //JM
       plotrms(6, ypos+4+4-2);
       plotrect(6-1, (ypos+4+4-2)-1, 6+2, (ypos+4+4-2)+2);
@@ -1200,7 +1216,7 @@ void fnStatList() {
         statnum = drawMxN();
       }
       runFunction(ITM_NSIGMA);
-      sprintf(tmpString, "Stat data: N = %d", statnum);
+      sprintf(tmpString, "%s%d", GraphMsgs[6].itemName, statnum);
 
       runFunction(ITM_DROP);
       print_linestr(tmpString, true);
