@@ -595,19 +595,6 @@ void graph_plotmem(void) {
 
       statnum = 0;
 
-      roundedTicks = true;
-      graph_axis();                        //Draw the axis on any uncontrolled scale to start. Maybe optimize by remembering if there is an image on screen Otherwise double axis draw.
-      if(PLOT_AXIS) {
-        graph_text();
-      }
-
-      if(PLOT_VECT || PLOT_NVECT) {
-        plotmode = _VECT;
-      }
-      else {
-        plotmode = _SCAT;
-      }
-
       if((plotStatMx[0]=='S' ? statMxN() >= 2 : false) || (plotStatMx[0]=='D' ? drawMxN() >= 2:false)) {
         if(plotStatMx[0]=='S') {
           statnum = statMxN();  //          realToInt32(SIGMA_N, statnum);
@@ -622,6 +609,19 @@ void graph_plotmem(void) {
 
       if(statnum >= 2) {
         //GRAPH SETUP
+
+        roundedTicks = true;
+        graph_axis();                        //Draw the axis on any uncontrolled scale to start. Maybe optimize by remembering if there is an image on screen Otherwise double axis draw.
+        if(PLOT_AXIS) {
+          graph_text();
+        }
+
+        if(PLOT_VECT || PLOT_NVECT) {
+          plotmode = _VECT;
+        }
+        else {
+          plotmode = _SCAT;
+        }
 
         if(PLOT_INTG) {
           rmsy = fabs(grf_y(0));

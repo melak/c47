@@ -341,14 +341,6 @@ void graph_eqn(uint16_t mode) {
       }
     #endif
 
-    if(!GRAPHMODE) { //Change over hourglass to the left side
-      clearScreenOld(clrStatusBar, !clrRegisterLines, !clrSoftkeys);
-    }
-    calcMode = CM_GRAPH;
-    hourGlassIconEnabled = true;       //clear the current portion of statusbar
-    showHideHourGlass();
-    refreshStatusBar();
-
 
     fnClearStack(0);
 
@@ -503,6 +495,14 @@ void graph_eqn(uint16_t mode) {
       ctxtReal34.digits = significantDigitsForScreen;
       ctxtReal39.digits = significantDigitsForScreen+3;
     #endif //LOW_GRAPH_ACC
+
+    if(!GRAPHMODE) { //Change over hourglass to the left side
+      clearScreenOld(clrStatusBar, !clrRegisterLines, !clrSoftkeys);
+    }
+    calcMode = CM_GRAPH;
+    hourGlassIconEnabled = true;       //clear the current portion of statusbar
+    showHideHourGlass();
+    refreshStatusBar();
 
     fnPlot(0);
 
