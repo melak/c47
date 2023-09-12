@@ -1,18 +1,5 @@
-/* This file is part of 43S.
- *
- * 43S is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * 43S is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
- */
+// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
 
 /********************************************//**
  * \file config.c
@@ -153,7 +140,7 @@ void configCommon(uint16_t idx) {
     kbd_usr[8].gShifted = ITM_Rup;          //Replace x-rt-y with Rup
     fnSetFlag(FLAG_USER);                    //Set USER mode
     fnRefreshState();
-    refreshScreen();
+    refreshScreen(160);
   }
 
 
@@ -173,14 +160,14 @@ void configCommon(uint16_t idx) {
     setSystemFlag  (FLAG_SBbatV);            // Set battery voltage indicator
     fnDisplayFormatSigFig(3);                // SIG 3
     fnRefreshState();
-    refreshScreen();
+    refreshScreen(161);
     }
 
 
   void fnSetRJ(uint16_t unusedButMandatoryParameter){
     setSystemFlag(FLAG_SBbatV);              //Set battery voltage indicator
     fnRefreshState();
-    refreshScreen();
+    refreshScreen(165);
     }
 
 
@@ -220,7 +207,7 @@ void configCommon(uint16_t idx) {
     fnDrop(0);
     runFunction(ITM_SQUARE);
     screenUpdatingMode = SCRUPD_AUTO;
-    refreshScreen();
+    refreshScreen(162);
   }
 
 void fnSetC47(uint16_t unusedButMandatoryParameter) {
@@ -262,7 +249,7 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
       _fnSetC47(0);          //Snap out of HP35 mode, and reset all setting needed for that
     }
     calcModeNormal();
-    refreshScreen();
+    refreshScreen(166);
     fnKeyExit(0);           //Call fnkeyExit to ensure the correct home screen is brought up, if HOME is selected.
     popSoftmenu();
   #endif // !TESTSUITE_BUILD
@@ -1248,6 +1235,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
 
     statisticalSumsPointer = NULL;
     savedStatisticalSumsPointer = NULL;
+    statisticalSumsUpdate = true;
     lrChosen    = 0;
     lrChosenUndo = 0;
     lastPlotMode = PLOT_NOTHING;
@@ -1259,6 +1247,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
 
 //    restoreStats();
     plotStatMx[0] = 0;
+    regStatsXY = INVALID_VARIABLE;
     real34Zero(&loBinR);
     real34Zero(&nBins );
     real34Zero(&hiBinR);
@@ -1370,7 +1359,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
       if(SH_BASE_HOME) showSoftmenu(mm_MNU_HOME); //JM Reset to BASE MENU HOME;
     #endif // !TESTSUITE_BUILD
 
-    SHOWregis = 9999;                                          //JMSHOW
+    showRegis = 9999;                                          //JMSHOW
 
     //JM defaults vv: CONFIG STO/RCL
 
@@ -1428,7 +1417,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     #endif // !TESTSUITE_BUILD
     fnUserJM(USER_KRESET);                                      //JM USER
     temporaryInformation = TI_NO_INFO;
-    refreshScreen();
+    refreshScreen(163);
 
     //kbd_usr[0].primary     = ITM_CC;                         //JM CPX TEMP DEFAULT        //JM note. over-writing the content of setupdefaults
     //kbd_usr[0].gShifted    = KEY_TYPCON_UP;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
@@ -1517,7 +1506,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     #endif // !TESTSUITE_BUILD
     doRefreshSoftMenu = true;     //jm dr
     last_CM = 253;
-    refreshScreen();
+    refreshScreen(164);
 
     fnClearFlag(FLAG_USER);
     fnRefreshState();

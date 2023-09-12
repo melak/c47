@@ -1,20 +1,5 @@
-  /* This file is part of WP43.
- *
- * WP43 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * WP43 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with WP43.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-/* ADDITIONAL C43 functions and routines */
+// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
 
 /********************************************//**
  * \file xeqm.c
@@ -1094,7 +1079,7 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
       #endif // (VERBOSE_LEVEL >= 2)
 
       #if(VERBOSE_LEVEL >= 1)
-        clearScreen_old(false, true, true);
+        clearScreenOld(false, true, true);
       #endif // (VERBOSE_LEVEL >= 1)
 
       displaywords(line1);       //output  is  in  tmpString
@@ -1107,7 +1092,7 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
       #endif // (VERBOSE_LEVEL >= 2)
 
       #if(VERBOSE_LEVEL >= 1)
-        clearScreen_old(false, true, true);
+        clearScreenOld(false, true, true);
       #endif // (VERBOSE_LEVEL >= 1)
 
       execute_string(line1,exec, scanning);
@@ -1115,7 +1100,7 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
       #if(VERBOSE_LEVEL >= 2)
         #if defined(DMCP_BUILD)
           press_key();
-          clearScreen_old(false, true, true);
+          clearScreenOld(false, true, true);
         #endif // DMCP_BUILD
       #endif // (VERBOSE_LEVEL >= 2)
 
@@ -1126,7 +1111,7 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
 
 void fnXEQMENU(uint16_t XEQM_no) {
   #if !defined(TESTSUITE_BUILD)
-    clearScreen_old(false, true, true);
+    clearScreenOld(false, true, true);
     print_linestr("Loading XEQM program file:", true);
 
     char line[XEQ_STR_LENGTH_LONG];
@@ -1142,7 +1127,7 @@ void XEQMENU_loadAllfromdisk(void) {
   #if !defined(SAVE_SPACE_DM42_2)
     #if !defined(TESTSUITE_BUILD)
       //uint16_t Delay;
-      clearScreen_old(false, true, true);
+      clearScreenOld(false, true, true);
       print_inlinestr("", true);
       print_inlinestr("Loading XEQM:", false);
 
@@ -1341,7 +1326,7 @@ void fnXSWAP (uint16_t unusedButMandatoryParameter) {
           }
           refreshRegisterLine(REGISTER_X);        //make sure that the mulit line editor check is done
           last_CM = 253;
-          refreshScreen();
+          refreshScreen(64);
         }
       }
       clearRegister(TEMP_REGISTER_1);
@@ -1380,9 +1365,9 @@ void fnXSWAP (uint16_t unusedButMandatoryParameter) {
   #endif //DISALLOW_ZERO_STRING
 
   last_CM = 252;
-  refreshScreen();
+  refreshScreen(63);
   last_CM = 251;
-  refreshScreen();
+  refreshScreen(0);
 }
 
 

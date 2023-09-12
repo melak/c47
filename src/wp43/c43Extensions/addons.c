@@ -1,20 +1,6 @@
-/* This file is part of WP43.
- *
- * WP43 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * WP43 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with WP43.  If not, see <http://www.gnu.org/licenses/>.
- */
+// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
 
-/* ADDITIONAL C43 functions and routines */
 
 /********************************************//**
  * \file addons.c
@@ -1844,7 +1830,7 @@ void fnRESET_MyM(uint8_t param) {
       assignToMyMenu_(12 + fn - 1);
     }
     jm_BASE_SCREEN = true;                                           //JM Menu system default (removed from reset_jm_defaults)
-    refreshScreen();
+    refreshScreen(42);
   #endif // !TESTSUITE_BUILD
 }
 
@@ -1862,7 +1848,7 @@ void fnRESET_Mya(void){
     }
     itemToBeAssigned = -MNU_ALPHA;
     assignToMyAlpha_(5);
-    refreshScreen();
+    refreshScreen(43);
   #endif // !TESTSUITE_BUILD
 }
 

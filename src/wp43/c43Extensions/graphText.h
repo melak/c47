@@ -1,20 +1,6 @@
-/* This file is part of WP43.
- *
- * WP43 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * WP43 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with WP43.  If not, see <http://www.gnu.org/licenses/>.
- */
+// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
 
-/* ADDITIONAL C43 functions and routines */
 
 
 /********************************************//** //JM
@@ -57,6 +43,7 @@ int16_t      export_string_to_filename(const char line1[TMP_STR_LENGTH], uint8_t
 extern char         filename_csv[filenamelen]; //JMMAX                //JM_CSV
 extern uint32_t     mem__32;                                          //JM_CSV
 extern bool_t       cancelFilename;
+void         printStatus    (uint8_t row, const char *line1, uint8_t forced);
 void         print_numberstr(const char *line1, bool_t line_init);
 void         print_linestr  (const char *line1, bool_t line_init);
 int16_t      export_xy_to_file(float x, float y);

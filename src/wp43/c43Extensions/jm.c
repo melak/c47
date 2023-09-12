@@ -1,18 +1,5 @@
-/* This file is part of WP43.
- *
- * WP43 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * WP43 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with WP43.  If not, see <http://www.gnu.org/licenses/>.
- */
+// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
 
 /********************************************//** //JM
  * \file jm.c JM_TEST
@@ -83,9 +70,9 @@
   void jm_show_calc_state(char comment[]) {
     #if defined(PC_BUILD_TELLTALE)
       printf("\n%s--------------------------------------------------------------------------------\n",comment);
-      printf(".  calcMode: %s   last_CM=%s  AlphaCase=%s  doRefreshSoftMenu=%d    lastErrorCode=%d fnAsnDisplayUSER=%d TI=%u\n",getCalcModeName(calcMode), getCalcModeName(last_CM), getAlphaCaseName(alphaCase), doRefreshSoftMenu,lastErrorCode, fnAsnDisplayUSER, temporaryInformation);
+      printf(".  calcMode: %s   last_calcmode=%s  AlphaCase=%s  lastErrorCode=%d fnAsnDisplayUSER=%d screenUpdatingMode=%d temporaryInformation=%u\n",getCalcModeName(calcMode), getCalcModeName(previousCalcMode), getAlphaCaseName(alphaCase), lastErrorCode, fnAsnDisplayUSER, screenUpdatingMode, temporaryInformation);
       printf(".  softmenuStack[0].softmenuId=%d       MY_ALPHA_MENU=%d    softmenu[softmenuStack[0].softmenuId].menuItem=%d -MNU_ALPHA=%d\n",softmenuStack[0].softmenuId,MY_ALPHA_MENU,softmenu[softmenuStack[0].softmenuId].menuItem, -MNU_ALPHA);
-
+//      printf(".  tmpString: 0:%s 300:%s 600:%s\n",tmpString + 0, tmpString +300, tmpString +600);
       printf(".  ");
       int8_t ix=0;
       while(ix < SOFTMENU_STACK_SIZE) {
