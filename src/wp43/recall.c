@@ -252,14 +252,22 @@ void fnRecallMax(uint16_t regist) {
 
 
 void fnRecallConfig(uint16_t regist) {
-//    uint8_t compatibility_u8;        //defaults to use when settings are removed
-//    (void)  compatibility_u8;
-    bool_t  compatibility_bool;      //defaults to use when settings are removed
-    (void)  compatibility_bool;
+    __attribute__((unused)) bool_t compatibility_bool00;    //for use in spare slots below
+    __attribute__((unused)) bool_t compatibility_bool0 ;    //for use in spare slots below
+    __attribute__((unused)) bool_t compatibility_bool1 ;    //for use in spare slots below
+    __attribute__((unused)) bool_t compatibility_bool2 ;    //for use in spare slots below
+    __attribute__((unused)) bool_t compatibility_bool3 ;    //for use in spare slots below
+    __attribute__((unused)) bool_t compatibility_bool4 ;    //for use in spare slots below
+    __attribute__((unused)) bool_t compatibility_bool5 ;    //for use in spare slots below
+    __attribute__((unused)) float  compatibility_float1;    //for use in spare slots below
+    __attribute__((unused)) float  compatibility_float2;    //for use in spare slots below
+    __attribute__((unused)) float  compatibility_float3;    //for use in spare slots below
+    __attribute__((unused)) float  compatibility_float4;    //for use in spare slots below
+    __attribute__((unused)) float  compatibility_float5;    //for use in spare slots below
+    __attribute__((unused)) float  compatibility_float6;    //for use in spare slots below
   if(getRegisterDataType(regist) == dtConfig) {
     dtConfigDescriptor_t *configToRecall = REGISTER_CONFIG_DATA(regist);
 
-    xcopy(kbd_usr, configToRecall->kbd_usr, sizeof(kbd_usr));
     recallFromDtConfigDescriptor(shortIntegerMode);
     recallFromDtConfigDescriptor(shortIntegerWordSize);
     recallFromDtConfigDescriptor(displayFormat);
@@ -280,56 +288,62 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(roundingMode);
     recallFromDtConfigDescriptor(systemFlags);
     synchronizeLetteredFlags();
-
+    xcopy(kbd_usr, configToRecall->kbd_usr, sizeof(kbd_usr));
     recallFromDtConfigDescriptor(fgLN);
     recallFromDtConfigDescriptor(eRPN);
     recallFromDtConfigDescriptor(HOME3);
     recallFromDtConfigDescriptor(ShiftTimoutMode);
     recallFromDtConfigDescriptor(CPXMULT);
     recallFromDtConfigDescriptor(SH_BASE_HOME);
+    recallFromDtConfigDescriptor(compatibility_bool00);   //spare
     recallFromDtConfigDescriptor(Norm_Key_00_VAR);
     recallFromDtConfigDescriptor(Input_Default);
-    recallFromDtConfigDescriptor(compatibility_bool);   //removed but compat
+    recallFromDtConfigDescriptor(compatibility_bool0);    //spare
     recallFromDtConfigDescriptor(jm_BASE_SCREEN);
     recallFromDtConfigDescriptor(jm_G_DOUBLETAP);
-    recallFromDtConfigDescriptor(graph_xmin);
-    recallFromDtConfigDescriptor(graph_xmax);
-    recallFromDtConfigDescriptor(graph_ymin);
-    recallFromDtConfigDescriptor(graph_ymax);
-    recallFromDtConfigDescriptor(graph_dx);
-    recallFromDtConfigDescriptor(graph_dy);
-    recallFromDtConfigDescriptor(roundedTicks);
-    recallFromDtConfigDescriptor(extentx);
-    recallFromDtConfigDescriptor(extenty);
+    recallFromDtConfigDescriptor(compatibility_float1);   //spare
+    recallFromDtConfigDescriptor(compatibility_float2);   //spare
+    recallFromDtConfigDescriptor(compatibility_float3);   //spare
+    recallFromDtConfigDescriptor(compatibility_float4);   //spare
+    recallFromDtConfigDescriptor(compatibility_float5);   //spare
+    recallFromDtConfigDescriptor(compatibility_float6);   //spare
+    recallFromDtConfigDescriptor(compatibility_bool1);    //spare
+    recallFromDtConfigDescriptor(compatibility_bool2);    //spare
+    recallFromDtConfigDescriptor(compatibility_bool3);    //spare
     recallFromDtConfigDescriptor(PLOT_VECT);
     recallFromDtConfigDescriptor(PLOT_NVECT);
     recallFromDtConfigDescriptor(PLOT_SCALE);
-    recallFromDtConfigDescriptor(Aspect_Square);
+    recallFromDtConfigDescriptor(compatibility_bool4);    //spare
     recallFromDtConfigDescriptor(PLOT_LINE);
     recallFromDtConfigDescriptor(PLOT_CROSS);
     recallFromDtConfigDescriptor(PLOT_BOX);
     recallFromDtConfigDescriptor(PLOT_INTG);
     recallFromDtConfigDescriptor(PLOT_DIFF);
-    recallFromDtConfigDescriptor(PLOT_RMS );
-    recallFromDtConfigDescriptor(PLOT_SHADE );
-    recallFromDtConfigDescriptor(PLOT_AXIS );
-    recallFromDtConfigDescriptor(PLOT_ZMX );
-    recallFromDtConfigDescriptor(PLOT_ZMY );
-    recallFromDtConfigDescriptor(jm_temporary);
-    recallFromDtConfigDescriptor(jm_LARGELI);                                  //JMCFG^^
-    recallFromDtConfigDescriptor(constantFractions);                           //JM
+    recallFromDtConfigDescriptor(PLOT_RMS);
+    recallFromDtConfigDescriptor(PLOT_SHADE);
+    recallFromDtConfigDescriptor(PLOT_AXIS);
+    recallFromDtConfigDescriptor(PLOT_ZMX);
+    recallFromDtConfigDescriptor(PLOT_ZMY);
+    recallFromDtConfigDescriptor(compatibility_bool5);    //spare
+    recallFromDtConfigDescriptor(jm_LARGELI);
+    recallFromDtConfigDescriptor(constantFractions);
     recallFromDtConfigDescriptor(constantFractionsMode);
     recallFromDtConfigDescriptor(constantFractionsOn);
-    recallFromDtConfigDescriptor(displayStackSHOIDISP);                                  //JMCFG^^
-    recallFromDtConfigDescriptor(bcdDisplay);                                  //JMCFG^^
-    recallFromDtConfigDescriptor(topHex);                                  //JMCFG^^
-    recallFromDtConfigDescriptor(bcdDisplaySign);                                  //JMCFG^^
-    recallFromDtConfigDescriptor(DRG_Cycling);                                   //JM
-    recallFromDtConfigDescriptor(DM_Cycling);                                   //JM
-    recallFromDtConfigDescriptor(SI_All);                                  //JMCFG^^
-    recallFromDtConfigDescriptor(LongPressM);                                  //JMCFG^^
-    recallFromDtConfigDescriptor(LongPressF);                                  //JMCFG^^
-
+    recallFromDtConfigDescriptor(displayStackSHOIDISP);
+    recallFromDtConfigDescriptor(bcdDisplay);
+    recallFromDtConfigDescriptor(topHex);
+    recallFromDtConfigDescriptor(bcdDisplaySign);
+    recallFromDtConfigDescriptor(DRG_Cycling);
+    recallFromDtConfigDescriptor(DM_Cycling);
+    recallFromDtConfigDescriptor(SI_All);
+    recallFromDtConfigDescriptor(LongPressM);
+    recallFromDtConfigDescriptor(LongPressF);
+    recallFromDtConfigDescriptor(lastDenominator);
+    recallFromDtConfigDescriptor(significantDigits);
+    recallFromDtConfigDescriptor(pcg32_global);
+    recallFromDtConfigDescriptor(exponentLimit);
+    recallFromDtConfigDescriptor(exponentHideLimit);
+    recallFromDtConfigDescriptor(lastIntegerBase);
   }
 
   else {
