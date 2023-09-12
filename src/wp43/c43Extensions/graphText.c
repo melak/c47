@@ -29,6 +29,23 @@ uint32_t mem__32;                                 //JM_CSV
 bool_t   cancelFilename = false;
 
 #if defined(DMCP_BUILD)
+  /*-DMCP-*/     typedef struct {              //JM VALUES DEMO
+  /*-DMCP-*/       uint8_t  count;
+  /*-DMCP-*/       char     itemName[40];
+  /*-DMCP-*/     } nstr;
+  /*-DMCP-*/     TO_QSPI const nstr IOMsgs[] = {
+  /*-DMCP-*/       { 0,  "" },
+  /*-DMCP-*/       { 1,  "Write error ID001--> " },
+  /*-DMCP-*/       { 2,  "File open error ID002--> " },
+  /*-DMCP-*/       { 3,  "Seek error ID003--> " },
+  /*-DMCP-*/       { 4,  "Write error ID004--> " },
+  /*-DMCP-*/       { 5,  "Close error ID005--> " },
+  /*-DMCP-*/       { 6,  "Not found ID006 --> " },
+  /*-DMCP-*/       { 7,  "No path ID007 --> " },
+  /*-DMCP-*/       { 8,  ". Using fallback." },
+  /*-DMCP-*/       { 9,  "ERROR too long file using fallback" },
+  /*-DMCP-*/       {100,"Msg List"}
+  /*-DMCP-*/     };
   //###################################################################################
   /*-DMCP-*/ TCHAR *f_gets(TCHAR* buff /* Pointer to the buffer to store read string */, int len /* Size of string buffer (items) */, FIL* fp /* Pointer to the file object */) {
   /*-DMCP-*/   int nc = 0;
@@ -175,26 +192,6 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/
   /*-DMCP-*/
   //###################################################################################
-  /*-DMCP-*/
-  /*-DMCP-*/
-  /*-DMCP-*/    typedef struct {              //JM VALUES DEMO
-  /*-DMCP-*/      uint8_t  count;
-  /*-DMCP-*/      char     *itemName;
-  /*-DMCP-*/    } nstr;
-  /*-DMCP-*/
-  /*-DMCP-*/    TO_QSPI const nstr IOMsgs[] = {
-  /*-DMCP-*/      { 0,  "" },
-  /*-DMCP-*/      { 1,  "Write error ID001--> " },
-  /*-DMCP-*/      { 2,  "File open error ID002--> " },
-  /*-DMCP-*/      { 3,  "Seek error ID003--> " },
-  /*-DMCP-*/      { 4,  "Write error ID004--> " },
-  /*-DMCP-*/      { 5,  "Close error ID005--> " },
-  /*-DMCP-*/      { 6,  "Not found ID006 --> " },
-  /*-DMCP-*/      { 7,  "No path ID007 --> " },
-  /*-DMCP-*/      { 8,  ". Using fallback." },
-  /*-DMCP-*/      { 9,  "ERROR too long file using fallback" },
-  /*-DMCP-*/      {100,"Msg List"}
-  /*-DMCP-*/    };
   /*-DMCP-*/
   /*-DMCP-*/
   /*-DMCP-*/  int16_t export_append_string_to_file(const char line1[TMP_STR_LENGTH], uint8_t mode, const char filedir[40]) {
@@ -403,7 +400,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/  }
   /*-DMCP-*/
   /*-DMCP-*/
-  /*-DMCP-*/int16_t export_string_to_filename(const char line1[TMP_STR_LENGTH], uint8_t mode, char *dirname, char *filename) {
+  /*-DMCP-*/int16_t export_string_to_filename(const char line1[TMP_STR_LENGTH], uint8_t mode, const char *dirname, const char *filename) {
   /*-DMCP-*/char dirfile[40];
   /*-DMCP-*/    //Create file name
   /*-DMCP-*/    strcpy(dirfile,dirname);
@@ -578,7 +575,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/  }
   /*-DMCP-*/
   /*-DMCP-*/
-  /*-DMCP-*/  int16_t export_append_line_short(char *inputstring) {
+  /*-DMCP-*/  int16_t export_append_line_short(const char *inputstring) {
   /*-DMCP-*/    char line[200]; // Line buffer
   /*-DMCP-*/    FIL fil;        // File object
   /*-DMCP-*/    int fr;         // FatFs return code
@@ -650,7 +647,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/  }
   /*-DMCP-*/
   /*-DMCP-*/
-  /*-DMCP-*/int16_t export_append_line(char *inputstring) {
+  /*-DMCP-*/int16_t export_append_line(const char *inputstring) {
   /*-DMCP-*/  int ix = 0;
   /*-DMCP-*/  char tmp[200];
   /*-DMCP-*/  int fr;
@@ -677,7 +674,7 @@ bool_t   cancelFilename = false;
 
 //**********************************************************************************************************
 #elif PC_BUILD // PC_BUILD
-  int16_t export_string_to_filename(const char line1[TMP_STR_LENGTH], uint8_t mode, char *dirname, char *filename) {
+  int16_t export_string_to_filename(const char line1[TMP_STR_LENGTH], uint8_t mode, const char *dirname, const char *filename) {
     FILE *outfile;
     char dirfile[40];
     uint16_t fr = 0;
@@ -823,7 +820,7 @@ bool_t   cancelFilename = false;
   }
 
 
-  int16_t export_append_line(char *inputstring) {
+  int16_t export_append_line(const char *inputstring) {
     FILE *outfile;
 
     //strcpy(dirfile, "PROGRAMS/C43_LOG.TXT");

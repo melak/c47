@@ -34,11 +34,32 @@
 #define SCAN true
 #define EXEC true
 
+typedef struct {
+  char     itemName[30];
+} nstr;
+TO_QSPI const nstr XeqmMsgs[] = { 
+/*0*/  { "Loading XEQM program file:" },
+/*1*/  { "Loading XEQM:" },
+/*2*/  { "XEQC47 XEQLBL 01 XXXXXX " },
+/*3*/  { "Press a key" },
+/*4*/  { "XEQMINDEX.TXT" },
+/*5*/  { "XEQM01:HELP;" }
+};
+
+
+typedef struct {
+  char     itemName[180];
+} nstr1;
+TO_QSPI const nstr1 helpMsg[] = { 
+  { "XEQLBL 01 HELP ALPHA \"I\" CASE \"n directory \" CASE \"PROGRAMS\" CASEDN \" create \" CASEUP \"XEQM\" CASEDN \"NN\" CASEUP \".TXT\" EXIT "} };
+//TO_QSPI static const char helpMsg[] = "XEQLBL 01 HELP ALPHA \"I\" CASE \"n directory \" CASE \"PROGRAMS\" CASEDN \" create \" CASEUP \"XEQM\" CASEDN \"NN\" CASEUP \".TXT\" EXIT ";
+
+
 
 
 void press_key(void) {
   #if defined(DMCP_BUILD)
-    print_inlinestr("Press key", true);
+    print_inlinestr(XeqmMsgs[3].itemName, true);  //Press a key
     wait_for_key_press();
   #endif // DMCP_BUILD
 }
@@ -982,9 +1003,9 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
       #else // !DMCP_BUILD
         #define pgmpath "res/PROGRAMS"
       #endif // DMCP_BUILD
-      strcpy(fn_short, "XEQMINDEX.TXT");
+      strcpy(fn_short, XeqmMsgs[4].itemName);    //"XEQMINDEX.TXT"
       strcpy(fn_long,  "");
-      strcpy(fallback, "XEQM01:HELP;");
+      strcpy(fallback, XeqmMsgs[5].itemName);    //"XEQM01:HELP;" 
 
       #if(VERBOSE_LEVEL >= 1)
         strcpy(tmp, fn_short);
@@ -1046,7 +1067,7 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
 
       //printf(">>> original name:|%s|, replacement file name:|%s|\n", fn_short, fn_long);
       if(selection == 1) {
-        sprintf(fallback, "XEQLBL 01 HELP ALPHA \"I\" CASE \"n directory \" CASE \"PROGRAMS\" CASEDN \" create \" CASEUP \"XEQM\" CASEDN \"NN\" CASEUP \".TXT\" EXIT ");
+        sprintf(fallback, "%s", helpMsg[0].itemName);
       }
       else {
         sprintf(fallback, "XEQLBL %s X%s ", nn, nn);
@@ -1109,13 +1130,18 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec, bool_t scan
 }
 
 
+
 void fnXEQMENU(uint16_t XEQM_no) {
   #if !defined(TESTSUITE_BUILD)
-    clearScreenOld(false, true, true);
-    print_linestr("Loading XEQM program file:", true);
+//    clearScreenOld(false, true, true);
+//    print_linestr("Loading XEQM program file:", true);
+
+    printStatus(0, XeqmMsgs[0].itemName,force);
 
     char line[XEQ_STR_LENGTH_LONG];
     XEQMENU_Selection( XEQM_no, line, EXEC, !SCAN);
+
+    refreshScreen(0);
 
     //calcMode = CM_BUG_ON_SCREEN;
     //temporaryInformation = TI_NO_INFO;
@@ -1129,7 +1155,7 @@ void XEQMENU_loadAllfromdisk(void) {
       //uint16_t Delay;
       clearScreenOld(false, true, true);
       print_inlinestr("", true);
-      print_inlinestr("Loading XEQM:", false);
+      print_inlinestr(XeqmMsgs[1].itemName, false); //Loading XEQM:
 
       char line[XEQ_STR_LENGTH_LONG];
 
@@ -1217,7 +1243,7 @@ void fnXEQMSAVE (uint16_t XEQM_no) {                                  //X-REGIST
       #if !defined(TESTSUITE_BUILD)
         stringToUtf8(tmpString + TMP_STR_LENGTH/2, (uint8_t *)tmpString);
         if(tt[0] != 0) {
-          export_string_to_filename(tmpString, OVERWRITE, "res/PROGRAMS", tt);
+          export_string_to_filename(tmpString, OVERWRITE, pgmpath, tt);  //"res/PROGRAMS"
         }
       #endif // !TESTSUITE_BUILD
     }
@@ -1394,7 +1420,7 @@ void fnXEQNEW (uint16_t unusedButMandatoryParameter) {
   #if !defined(SAVE_SPACE_DM42_2)
     setSystemFlag(FLAG_ASLIFT);
     liftStack();
-    fnStrtoX("XEQC47 XEQLBL 01 XXXXXX ");
+    fnStrtoX(XeqmMsgs[2].itemName);  // "XEQC47 XEQLBL 01 XXXXXX "
     fnXSWAP(0);
     fnDrop(0);
   #endif // !SAVE_SPACE_DM42_2

@@ -1008,7 +1008,7 @@ void doubleToXRegisterReal34(double x) { //Convert from double to X register REA
 }
 
 
-void fnStrtoX(char aimBuffer[]) {                             //DONE
+void fnStrtoX(const char aimBuffer[]) {                             //DONE
   setSystemFlag(FLAG_ASLIFT); // 5
   liftStack();
   int16_t mem = stringByteLength(aimBuffer) + 1;

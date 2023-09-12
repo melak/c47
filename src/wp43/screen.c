@@ -61,7 +61,7 @@ uint16_t current_cursor_y = 0;
 #if !defined(TESTSUITE_BUILD)
   #define spc STD_SPACE
   #define spc1 STD_SPACE STD_SPACE_3_PER_EM
-  TO_QSPI static const char *whoStr1 = "C47 Development since 2019" spc "by" spc1
+  TO_QSPI static const char whoStr1[] = "C47 Development since 2019" spc "by" spc1
                                        "\n"
                                        "Ben" spc "GB," spc1
                                        "D" spc "A" spc "CA," spc1
@@ -77,24 +77,28 @@ uint16_t current_cursor_y = 0;
                                        "RJvM" spc "NL," spc1
                                        "Walter" spc "DE.";
 
-  TO_QSPI static const char *disclaimerStr     = "  C47 firmware is free, open source and \n  neither provided nor supported by \n  SwissMicros. Press a key to continue.";
+   TO_QSPI static const char disclaimerStr[]     = "  C47 firmware is free, open source and \n  neither provided nor supported by \n  SwissMicros. Press a key to continue.";
 
-  TO_QSPI static const char *versionStr        = "  C47 " VERSION_STRING ".";
+   TO_QSPI static const char versionStr[]        = "  C47 " VERSION_STRING ".";
 
   #if defined(PC_BUILD)
-    TO_QSPI static const char *versionStr2     = "  C47 Sim " VERSION1 ", compiled " __DATE__ ".";
+    TO_QSPI static const char versionStr2[]     = "  C47 Sim " VERSION1 ", compiled " __DATE__ ".";
   #else // !PC_BUILD
     #if defined(TWO_FILE_PGM)
-      TO_QSPI static const char *versionStr2   = "  C47 QSPI " VERSION1 ", compiled " __DATE__ ".";
+      TO_QSPI static const char versionStr2[]   = "  C47 QSPI " VERSION1 ", compiled " __DATE__ ".";
     #else // !TWO_FILE_PGM
       #if !defined(TWO_FILE_PGM)
-        TO_QSPI static const char *versionStr2 = "  C47 No QSPI " VERSION1 ", compiled " __DATE__ ".";
+        TO_QSPI static const char versionStr2[] = "  C47 No QSPI " VERSION1 ", compiled " __DATE__ ".";
       #endif // !TWO_FILE_PGM
     #endif // TWO_FILE_PGM
   #endif // PC_BUILD
 
   /* Names of day of week */
-  TO_QSPI static const char *nameOfWday_en[8] = {"invalid day of week",                                   "Monday",            "Tuesday",                     "Wednesday",               "Thursday",           "Friday",             "Saturday",             "Sunday"};
+typedef struct {
+  char     itemName[30];
+} nstr;
+
+  TO_QSPI static const nstr nameOfWday_en[8] = { {"invalid day of week"},                                   {"Monday"},            {"Tuesday"},                     {"Wednesday"},               {"Thursday"},           {"Friday"},             {"Saturday"},             {"Sunday"}};
   /*
   TO_QSPI static const char *nameOfWday_de[8] = {"ung" STD_u_DIARESIS "ltiger Wochentag",                 "Montag",            "Dienstag",                    "Mittwoch",                "Donnerstag",         "Freitag",            "Samstag",              "Sonntag"};
   TO_QSPI static const char *nameOfWday_fr[8] = {"jour de la semaine invalide",                           "lundi",             "mardi",                       "mercredi",                "jeudi",              "vendredi",           "samedi",               "dimanche"};
@@ -3682,7 +3686,7 @@ void execTimerApp(uint16_t timerType) {
               if(day < 1 || day > 7) {
                 day = 0;
               }
-              strcpy(prefix, nameOfWday_en[day]);
+              strcpy(prefix, nameOfWday_en[day].itemName);
 
               showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
             }
@@ -3726,7 +3730,7 @@ void execTimerApp(uint16_t timerType) {
         else if(getRegisterDataType(regist) == dtDate) {
           if(temporaryInformation == TI_DAY_OF_WEEK) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, nameOfWday_en[getDayOfWeek(regist)]);
+              strcpy(prefix, nameOfWday_en[getDayOfWeek(regist)].itemName);
               showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
             }
           }
