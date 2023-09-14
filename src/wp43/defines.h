@@ -24,11 +24,10 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
-#define VERSION1 "0.108.13.06SNP"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
+#define VERSION1 "0.108.13.07SNP"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
-//2023-09-10-0.108.13.06 Snapshot Stable update
+//2023-09-14-0.108.13.07 Snapshot Stable update
 
-  #undef SAVE_SPACE_DM42
   #undef SAVE_SPACE_DM42_0
   #undef SAVE_SPACE_DM42_1
   #undef SAVE_SPACE_DM42_2
@@ -60,24 +59,22 @@
 
 //THESE ARE DMCP COMPILE OPTIONS
   #if !defined(TWO_FILE_PGM) //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT WHILE NOT USING QSPI
-  //  #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S)
-  //  #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
-  //  #define SAVE_SPACE_DM42_6  //001648 bytes: ELEC functions
-  //  #define SAVE_SPACE_DM42_7  //002144 bytes: KEYS USER_DM42;
+    #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
+    #define SAVE_SPACE_DM42_6  //001648 bytes: ELEC functions
+    #define SAVE_SPACE_DM42_7  //002144 bytes: KEYS USER_DM42;
   //  #define SAVE_SPACE_DM42_8  //007136 bytes: Standard Flag-, Register-, Font- Browser functions
   //  #define SAVE_SPACE_DM42_9  //004448 bytes: SHOW (new C43)
   //  #define SAVE_SPACE_DM42_10 //005800 bytes: WP43S programming ...
   //  #define SAVE_SPACE_DM42_11 //001552 bytes: Matrix function on entry ...
-  //  #define SAVE_SPACE_DM42_12 //047246 bytes: Standard extra 43S math: SLVQ, PRIME, BESSEL, ELLIPTIC, ZETA, BETA, ORTHO_POLY
-  //  #define SAVE_SPACE_DM42_13GRF //           JM Solver & graphics & stat graphics
-  //  #define SAVE_SPACE_DM42_13GRF_JM //        JM graphics
+    #define SAVE_SPACE_DM42_12 //047246 bytes: Standard extra 43S math: SLVQ, PRIME, BESSEL, ELLIPTIC, ZETA, BETA, ORTHO_POLY
+    #define SAVE_SPACE_DM42_13GRF //           JM Solver & graphics & stat graphics
+    #define SAVE_SPACE_DM42_13GRF_JM //        JM graphics
   //  #define SAVE_SPACE_DM42_14    //           programming sample programs
-  //  #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
-  //  #define SAVE_SPACE_DM42_16    //           without all distributions, i.e. binomial, cauchy, chi
+    #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
+    #define SAVE_SPACE_DM42_16    //           without all distributions, i.e. binomial, cauchy, chi
   #endif // !TWO_FILE_PGM
 
   #if defined(TWO_FILE_PGM) //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT INTO AVAILABLE FLASH EVEN WHILE USING QSPI
-  //  #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2;
   //  #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
   //  #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
   //  #define SAVE_SPACE_DM42_15       //           without all distributions, i.e. binomial, cauchy, chi
@@ -95,7 +92,7 @@
 //#define DM42_KEYCLICK              //Add a 1 ms click after key presses and releases, for scope syncing
 
 
-//Debud showFunctionName
+//Debug showFunctionName
 #define DEBUG_SHOWNAME
 #undef DEBUG_SHOWNAME
 #if defined(DEBUG_SHOWNAME)
@@ -277,6 +274,25 @@
 
 
 #define REAL34_WIDTH_TEST 0 // For debugging real34 ALL 0 formating. Use UP/DOWN to shrink or enlarge the available space. The Z register holds the available width.
+
+
+//fnKeysManagement
+#define JM_ASSIGN        28
+#define USER_COPY        29
+#define USER_V47         40
+#define USER_SHIFTS2     41
+#define USER_E47         43
+#define USER_43S         44
+#define USER_DM42        45
+#define USER_C47         46
+#define USER_D47         47
+#define USER_ARESET      48
+#define USER_MRESET      49
+#define USER_KRESET      50
+#define USER_N47         51
+#define USER_C43         52
+#define USER_MENG        53
+#define USER_MFIN        54
 
 
 //*************************

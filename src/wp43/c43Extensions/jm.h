@@ -100,29 +100,6 @@ void fnGetSigmaAssignToX(uint16_t unusedButMandatoryParameter);
 //void fnInfo(bool_t Info);
 
 void fnJM(uint16_t JM_OPCODE);
-void fnUserJM(uint16_t jmUser);
-
-
-
-//fnUserJM
-#define JM_ASSIGN        28
-#define USER_COPY        29
-#define USER_V47         40
-#define USER_SHIFTS2     41
-#define USER_E47         43
-#define USER_43S         44
-#define USER_DM42        45
-#define USER_C47         46
-#define USER_D47         47
-#define USER_ARESET      48
-#define USER_MRESET      49
-#define USER_KRESET      50
-#define USER_N47         51
-#define USER_C43         52
-#define USER_MENG        53
-#define USER_MFIN        54
- //last number
-
 
 
 void fnJM_GetXToNORMmode(uint16_t Rubbish);
