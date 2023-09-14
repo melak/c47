@@ -2,13 +2,6 @@
 // SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
 
 
-
-/********************************************//** //JM
- * \file graphText.c TEXTFILES module
- ***********************************************/
-
-/* ADDITIONAL C43 functions and routines */
-
 //#define DISPLOADING
 
 #include "c43Extensions/graphText.h"
@@ -24,11 +17,28 @@
 
 #include "wp43.h"
 
-char     filename_csv[40]; //JMMAX                //JM_CSV Changed from 60 to 40 to save 20 bytes.
-uint32_t mem__32;                                 //JM_CSV
+char     filename_csv[40];
+uint32_t mem__32;
 bool_t   cancelFilename = false;
 
 #if defined(DMCP_BUILD)
+  /*-DMCP-*/     typedef struct {              //JM VALUES DEMO
+  /*-DMCP-*/       uint8_t  count;
+  /*-DMCP-*/       char     itemName[40];
+  /*-DMCP-*/     } nstr;
+  /*-DMCP-*/     TO_QSPI const nstr IOMsgs[] = {
+  /*-DMCP-*/       { 0,  "" },
+  /*-DMCP-*/       { 1,  "Write error ID001--> " },
+  /*-DMCP-*/       { 2,  "File open error ID002--> " },
+  /*-DMCP-*/       { 3,  "Seek error ID003--> " },
+  /*-DMCP-*/       { 4,  "Write error ID004--> " },
+  /*-DMCP-*/       { 5,  "Close error ID005--> " },
+  /*-DMCP-*/       { 6,  "Not found ID006 --> " },
+  /*-DMCP-*/       { 7,  "No path ID007 --> " },
+  /*-DMCP-*/       { 8,  ". Using fallback." },
+  /*-DMCP-*/       { 9,  "ERROR too long file using fallback" },
+  /*-DMCP-*/       {100,"Msg List"}
+  /*-DMCP-*/     };
   //###################################################################################
   /*-DMCP-*/ TCHAR *f_gets(TCHAR* buff /* Pointer to the buffer to store read string */, int len /* Size of string buffer (items) */, FIL* fp /* Pointer to the file object */) {
   /*-DMCP-*/   int nc = 0;
@@ -177,26 +187,6 @@ bool_t   cancelFilename = false;
   //###################################################################################
   /*-DMCP-*/
   /*-DMCP-*/
-  /*-DMCP-*/    typedef struct {              //JM VALUES DEMO
-  /*-DMCP-*/      uint8_t  count;
-  /*-DMCP-*/      char     *itemName;
-  /*-DMCP-*/    } nstr;
-  /*-DMCP-*/
-  /*-DMCP-*/    TO_QSPI const nstr IOMsgs[] = {
-  /*-DMCP-*/      { 0,  "" },
-  /*-DMCP-*/      { 1,  "Write error ID001--> " },
-  /*-DMCP-*/      { 2,  "File open error ID002--> " },
-  /*-DMCP-*/      { 3,  "Seek error ID003--> " },
-  /*-DMCP-*/      { 4,  "Write error ID004--> " },
-  /*-DMCP-*/      { 5,  "Close error ID005--> " },
-  /*-DMCP-*/      { 6,  "Not found ID006 --> " },
-  /*-DMCP-*/      { 7,  "No path ID007 --> " },
-  /*-DMCP-*/      { 8,  ". Using fallback." },
-  /*-DMCP-*/      { 9,  "ERROR too long file using fallback" },
-  /*-DMCP-*/      {100,"Msg List"}
-  /*-DMCP-*/    };
-  /*-DMCP-*/
-  /*-DMCP-*/
   /*-DMCP-*/  int16_t export_append_string_to_file(const char line1[TMP_STR_LENGTH], uint8_t mode, const char filedir[40]) {
   /*-DMCP-*/    char line[200]; // Line buffer
   /*-DMCP-*/    FIL fil;        // File object
@@ -207,7 +197,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/    sys_disk_write_enable(1);
   /*-DMCP-*/    fr = sys_is_disk_write_enable();
   /*-DMCP-*/    if(fr==0) {
-  /*-DMCP-*/      sprintf(line,"%s%d    \n",IOMsgs[1].itemName, fr);
+  /*-DMCP-*/      sprintf(line,"%s%d    \n",IOMsgs[1].itemName, fr); //Write error ID001--> 
   /*-DMCP-*/      print_linestr(line,true);
   /*-DMCP-*/      f_close(&fil);
   /*-DMCP-*/      sys_disk_write_enable(0);
@@ -222,7 +212,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/      fr = f_open(&fil, filedir, FA_WRITE | FA_CREATE_ALWAYS);
   /*-DMCP-*/    }
   /*-DMCP-*/    if(fr) {
-  /*-DMCP-*/      sprintf(line,"%s%d    \n",IOMsgs[2].itemName,  fr);
+  /*-DMCP-*/      sprintf(line,"%s%d    \n",IOMsgs[2].itemName,  fr); //File open error ID002--> 
   /*-DMCP-*/      print_linestr(line,false);
   /*-DMCP-*/      f_close(&fil);
   /*-DMCP-*/      sys_disk_write_enable(0);
@@ -233,7 +223,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/    if(mode == APPEND) {
   /*-DMCP-*/      fr = f_lseek(&fil, f_size(&fil));
   /*-DMCP-*/      if(fr) {
-  /*-DMCP-*/        sprintf(line,"%s%d    \n",IOMsgs[3].itemName, fr);
+  /*-DMCP-*/        sprintf(line,"%s%d    \n",IOMsgs[3].itemName, fr); //Seek error ID003--> 
   /*-DMCP-*/        print_linestr(line,false);
   /*-DMCP-*/        f_close(&fil);
   /*-DMCP-*/        sys_disk_write_enable(0);
@@ -244,7 +234,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/    // Create string and output
   /*-DMCP-*/    fr = f_puts(line1, &fil);
   /*-DMCP-*/    if(fr == EOF) {
-  /*-DMCP-*/      sprintf(line,"%s%d    \n",IOMsgs[4].itemName, fr);
+  /*-DMCP-*/      sprintf(line,"%s%d    \n",IOMsgs[4].itemName, fr); //Write error ID004--> 
   /*-DMCP-*/      print_linestr(line,false);
   /*-DMCP-*/      f_close(&fil);
   /*-DMCP-*/      sys_disk_write_enable(0);
@@ -254,7 +244,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/    // close the file
   /*-DMCP-*/    fr = f_close(&fil);
   /*-DMCP-*/    if(fr) {
-  /*-DMCP-*/      sprintf(line,"%s%d    \n",IOMsgs[4].itemName,  fr);
+  /*-DMCP-*/      sprintf(line,"%s%d    \n",IOMsgs[4].itemName,  fr); //Write error ID004--> 
   /*-DMCP-*/      print_linestr(line,false);
   /*-DMCP-*/      f_close(&fil);
   /*-DMCP-*/      sys_disk_write_enable(0);
@@ -279,7 +269,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/        sys_disk_write_enable(1);
   /*-DMCP-*/        fr = sys_is_disk_write_enable();
   /*-DMCP-*/        if(fr == 0) {
-  /*-DMCP-*/          sprintf(line,"%s%d    \n",IOMsgs[1].itemName,  fr);
+  /*-DMCP-*/          sprintf(line,"%s%d    \n",IOMsgs[1].itemName,  fr); //Write error ID001--> 
   /*-DMCP-*/          print_linestr(line,true);
   /*-DMCP-*/          f_close(&fil);
   /*-DMCP-*/          sys_disk_write_enable(0);
@@ -293,7 +283,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/          fr = f_open(&fil, filedir, FA_WRITE|FA_CREATE_ALWAYS);
   /*-DMCP-*/        }
   /*-DMCP-*/        if(fr) {
-  /*-DMCP-*/          sprintf(line,"%s%d    \n",IOMsgs[2].itemName,  fr);
+  /*-DMCP-*/          sprintf(line,"%s%d    \n",IOMsgs[2].itemName,  fr); //File open error ID002--> 
   /*-DMCP-*/          print_linestr(line,false);
   /*-DMCP-*/          f_close(&fil);
   /*-DMCP-*/          sys_disk_write_enable(0);
@@ -303,7 +293,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/        if(mode == APPEND) {
   /*-DMCP-*/          fr = f_lseek(&fil, f_size(&fil));
   /*-DMCP-*/          if(fr) {
-  /*-DMCP-*/            sprintf(line,"%s%d    \n",IOMsgs[3].itemName,  fr);            print_linestr(line,false);
+  /*-DMCP-*/            sprintf(line,"%s%d    \n",IOMsgs[3].itemName,  fr); print_linestr(line,false); //Seek error ID003--> 
   /*-DMCP-*/            f_close(&fil);
   /*-DMCP-*/            sys_disk_write_enable(0);
   /*-DMCP-*/            return (int)fr;
@@ -315,7 +305,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/        /* Create string and output */
   /*-DMCP-*/        fr = f_puts(line1, &fil);
   /*-DMCP-*/        if(fr == EOF) {
-  /*-DMCP-*/          sprintf(line,"%s%d    \n",IOMsgs[4].itemName,  fr);            print_linestr(line,false);
+  /*-DMCP-*/          sprintf(line,"%s%d    \n",IOMsgs[4].itemName,  fr); print_linestr(line,false); //Write error ID004--> 
   /*-DMCP-*/          f_close(&fil);
   /*-DMCP-*/          sys_disk_write_enable(0);
   /*-DMCP-*/          return (int)fr;
@@ -326,7 +316,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/        /* close the file */
   /*-DMCP-*/        fr = f_close(&fil);
   /*-DMCP-*/        if(fr) {
-  /*-DMCP-*/          sprintf(line,"%s%d    \n",IOMsgs[5].itemName,  fr);     print_linestr(line,false);
+  /*-DMCP-*/          sprintf(line,"%s%d    \n",IOMsgs[5].itemName,  fr); print_linestr(line,false); //Close error ID005--> 
   /*-DMCP-*/          f_close(&fil);
   /*-DMCP-*/          sys_disk_write_enable(0);
   /*-DMCP-*/          return (int)fr;
@@ -403,7 +393,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/  }
   /*-DMCP-*/
   /*-DMCP-*/
-  /*-DMCP-*/int16_t export_string_to_filename(const char line1[TMP_STR_LENGTH], uint8_t mode, char *dirname, char *filename) {
+  /*-DMCP-*/int16_t export_string_to_filename(const char line1[TMP_STR_LENGTH], uint8_t mode, const char *dirname, const char *filename) {
   /*-DMCP-*/char dirfile[40];
   /*-DMCP-*/    //Create file name
   /*-DMCP-*/    strcpy(dirfile,dirname);
@@ -456,19 +446,19 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/        print_inlinestr("Not open. ",false);
                     #if(VERBOSE_LEVEL >= 2)
   /*-DMCP-*/          if(fr == 4) {
-  /*-DMCP-*/            sprintf(line,"%s%d ",IOMsgs[6].itemName,   fr);
+  /*-DMCP-*/            sprintf(line,"%s%d ",IOMsgs[6].itemName,   fr); //Not found ID006 --> 
   /*-DMCP-*/            print_inlinestr(line, false);
   /*-DMCP-*/            sprintf(line,"File: %s \n", dirfile);
   /*-DMCP-*/            print_inlinestr(line, false);
   /*-DMCP-*/          }
   /*-DMCP-*/          else if(fr == 5) {
-  /*-DMCP-*/            sprintf(line,"%s%d ",IOMsgs[7].itemName,   fr);
+  /*-DMCP-*/            sprintf(line,"%s%d ",IOMsgs[7].itemName,   fr); //No path ID007 --> 
   /*-DMCP-*/            print_inlinestr(line, false);
   /*-DMCP-*/            sprintf(line,"File: %s \n", dirfile);
   /*-DMCP-*/            print_inlinestr(line, false);
   /*-DMCP-*/          }
   /*-DMCP-*/          else {
-  /*-DMCP-*/            sprintf(line,"%s%d ",IOMsgs[2].itemName,   fr);
+  /*-DMCP-*/            sprintf(line,"%s%d ",IOMsgs[2].itemName,   fr); //File open error ID002--> 
   /*-DMCP-*/            print_inlinestr(line, false);
   /*-DMCP-*/            sprintf(line,"File: %s \n", dirfile);
   /*-DMCP-*/            print_inlinestr(line, false);
@@ -497,19 +487,19 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/            print_inlinestr("Not open. ",false);
                         #if(VERBOSE_LEVEL >= 2)
   /*-DMCP-*/              if(fr == 4) {
-  /*-DMCP-*/                sprintf(line,"%s%d ",IOMsgs[7].itemName,  fr);
+  /*-DMCP-*/                sprintf(line,"%s%d ",IOMsgs[7].itemName,  fr); //No path ID007 --> 
   /*-DMCP-*/                print_inlinestr(line, false);
   /*-DMCP-*/                sprintf(line,"File: %s \n",dirfile);
   /*-DMCP-*/                print_inlinestr(line, false);
   /*-DMCP-*/              }
   /*-DMCP-*/              else {
-  /*-DMCP-*/                sprintf(line,"%s%d ",IOMsgs[2].itemName,   fr);
+  /*-DMCP-*/                sprintf(line,"%s%d ",IOMsgs[2].itemName,   fr); //File open error ID002--> 
   /*-DMCP-*/                print_inlinestr(line, false);
   /*-DMCP-*/              }
                         #endif // VERBOSE_LEVEL >= 2
                       #endif // VERBOSE_LEVEL >= 1
                       #if(VERBOSE_LEVEL >= 1)
-  /*-DMCP-*/            print_inlinestr("%s",IOMsgs[8].itemName,   true);
+  /*-DMCP-*/            print_inlinestr("%s",IOMsgs[8].itemName,   true); //. Using fallback.
                       #endif // VERBOSE_LEVEL >= 1
   /*-DMCP-*/          f_close(&fil);
   /*-DMCP-*/          strcpy(line1, fallback);
@@ -518,7 +508,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/      }
   /*-DMCP-*/      else {
                     #if(VERBOSE_LEVEL >= 1)
-  /*-DMCP-*/          print_inlinestr("%s",IOMsgs[8].itemName,   true);
+  /*-DMCP-*/          print_inlinestr("%s",IOMsgs[8].itemName,   true); //. Using fallback.
                     #endif
   /*-DMCP-*/        strcpy(line1, fallback);
   /*-DMCP-*/        return 1;
@@ -542,7 +532,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/    if(stringByteLength(line1) >= TMP_STR_LENGTH-1) {
   /*-DMCP-*/      strcpy(line1, fallback);
                   #if(VERBOSE_LEVEL >= 1)
-  /*-DMCP-*/        print_inlinestr("%s",IOMsgs[9].itemName, true);
+  /*-DMCP-*/        print_inlinestr("%s",IOMsgs[9].itemName, true); //ERROR too long file using fallback
                   #endif
   /*-DMCP-*/      return 1;
   /*-DMCP-*/    }
@@ -578,7 +568,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/  }
   /*-DMCP-*/
   /*-DMCP-*/
-  /*-DMCP-*/  int16_t export_append_line_short(char *inputstring) {
+  /*-DMCP-*/  int16_t export_append_line_short(const char *inputstring) {
   /*-DMCP-*/    char line[200]; // Line buffer
   /*-DMCP-*/    FIL fil;        // File object
   /*-DMCP-*/    int fr;         // FatFs return code
@@ -587,7 +577,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/    sys_disk_write_enable(1);
   /*-DMCP-*/    fr = sys_is_disk_write_enable();
   /*-DMCP-*/    if(fr==0) {
-  /*-DMCP-*/      sprintf(line,"%s%d    \n",IOMsgs[4].itemName,  fr);
+  /*-DMCP-*/      sprintf(line,"%s%d    \n",IOMsgs[4].itemName,  fr); //Write error ID004--> 
   /*-DMCP-*/      print_linestr(line, false);
   /*-DMCP-*/      f_close(&fil);
   /*-DMCP-*/      sys_disk_write_enable(0);
@@ -598,7 +588,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/    // Opens an existing file. If not exist, creates a new file.
   /*-DMCP-*/    fr = f_open(&fil, filename_csv, FA_OPEN_APPEND | FA_WRITE);
   /*-DMCP-*/    if(fr) {
-  /*-DMCP-*/      sprintf(line,"%s%d    \n",IOMsgs[2].itemName,  fr);
+  /*-DMCP-*/      sprintf(line,"%s%d    \n",IOMsgs[2].itemName,  fr); //File open error ID002--> 
   /*-DMCP-*/      print_linestr(line, false);
   /*-DMCP-*/      f_close(&fil);
   /*-DMCP-*/      sys_disk_write_enable(0);
@@ -608,7 +598,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/    // Seek to end of the file to append data
   /*-DMCP-*/    fr = f_lseek(&fil, f_size(&fil));
   /*-DMCP-*/    if(fr) {
-  /*-DMCP-*/      sprintf(line,"%s%d    \n",IOMsgs[3].itemName, fr);
+  /*-DMCP-*/      sprintf(line,"%s%d    \n",IOMsgs[3].itemName, fr); //Seek error ID003--> 
   /*-DMCP-*/      print_linestr(line, false);
   /*-DMCP-*/      f_close(&fil);
   /*-DMCP-*/      sys_disk_write_enable(0);
@@ -623,7 +613,7 @@ bool_t   cancelFilename = false;
                #endif // VERBOSE_LEVEL >= 1
   /*-DMCP-*/
   /*-DMCP-*/    if(fr == 0) {
-  /*-DMCP-*/      sprintf(line,"%s%d    \n",IOMsgs[4].itemName,  fr);
+  /*-DMCP-*/      sprintf(line,"%s%d    \n",IOMsgs[4].itemName,  fr); //Write error ID004--> 
   /*-DMCP-*/      print_linestr(line, false);
   /*-DMCP-*/      f_close(&fil);
   /*-DMCP-*/      sys_disk_write_enable(0);
@@ -633,7 +623,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/    // close the file
   /*-DMCP-*/    fr = f_close(&fil);
   /*-DMCP-*/    if(fr) {
-  /*-DMCP-*/      sprintf(line,"%s%d    \n",IOMsgs[5].itemName,  fr);
+  /*-DMCP-*/      sprintf(line,"%s%d    \n",IOMsgs[5].itemName,  fr); //Close error ID005--> 
   /*-DMCP-*/      print_linestr(line, false);
   /*-DMCP-*/      f_close(&fil);
   /*-DMCP-*/      sys_disk_write_enable(0);
@@ -650,7 +640,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/  }
   /*-DMCP-*/
   /*-DMCP-*/
-  /*-DMCP-*/int16_t export_append_line(char *inputstring) {
+  /*-DMCP-*/int16_t export_append_line(const char *inputstring) {
   /*-DMCP-*/  int ix = 0;
   /*-DMCP-*/  char tmp[200];
   /*-DMCP-*/  int fr;
@@ -677,7 +667,7 @@ bool_t   cancelFilename = false;
 
 //**********************************************************************************************************
 #elif PC_BUILD // PC_BUILD
-  int16_t export_string_to_filename(const char line1[TMP_STR_LENGTH], uint8_t mode, char *dirname, char *filename) {
+  int16_t export_string_to_filename(const char line1[TMP_STR_LENGTH], uint8_t mode, const char *dirname, const char *filename) {
     FILE *outfile;
     char dirfile[40];
     uint16_t fr = 0;
@@ -823,7 +813,7 @@ bool_t   cancelFilename = false;
   }
 
 
-  int16_t export_append_line(char *inputstring) {
+  int16_t export_append_line(const char *inputstring) {
     FILE *outfile;
 
     //strcpy(dirfile, "PROGRAMS/C43_LOG.TXT");

@@ -1,12 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-only
 // SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
 
-/********************************************//** //JM
- * \file jm.c JM_TEST
- ***********************************************/
-
-/* ADDITIONAL C43 functions and routines */
-
 #include "c43Extensions/jm.h"
 
 #include "c43Extensions/addons.h"
@@ -31,7 +25,6 @@
 #include <string.h>
 
 #include "wp43.h"
-
 
 
 #if defined(PC_BUILD)
@@ -476,42 +469,6 @@ void fnJM(uint16_t JM_OPCODE) {
       fnMultiply(0);
 
       temporaryInformation = TI_ABC;
-    }
-
-    else if(JM_OPCODE == 45) {                                  //PRIME stats
-      #if defined(PC_BUILD)
-        //ramDump();
-      #endif // PC_BUILD
-
-      char line1[700];
-      //Create a 3x3 A-matrix
-      TO_QSPI static const char *aa001 = "XEQC43 ERPN RECT 3 ENTER 3 M.NEW STO 99 DROP INDEX 99 1 ENTER 1 STOIJ DROP DROP";
-      TO_QSPI static const char *aa002 = " 1 STOEL J+ STOEL J+ STOEL";
-      TO_QSPI static const char *aa003 = " J+ STOEL DROP 0.5 ENTER CHS 3 ENTER SQRT 2 / CHS COMPLEX J+ STOEL COMPLEX CHS COMPLEX J+ STOEL";
-      TO_QSPI static const char *aa004 = " 1 J+ STOEL DROP J+ STOEL X^2 J+ STOEL DROP";
-      TO_QSPI static const char *aa005 = " RCL 99 ";
-      strcpy(line1, aa001);
-      strcat(line1, aa002);
-      strcat(line1, aa003);
-      strcat(line1, aa004);
-      strcat(line1, aa005);
-      fnXEQMexecute(line1);
-      }
-
-    else if(JM_OPCODE == 46) {                                  //PRIME stats
-      char line1[700];
-      //Create a 3x1 matrix from Z Y X
-      TO_QSPI static const char *aa006 = "XEQC43 ERPN 3 ENTER 1 M.NEW STO 99 DROP INDEX 99 3 ENTER 1 STOIJ DROP DROP STOEL DROP  I- STOEL DROP  I-  STOEL DROP RCL 99 ";
-      strcpy(line1, aa006);
-      fnXEQMexecute(line1);
-    }
-
-    else if(JM_OPCODE == 47) {                                  //PRIME stats
-      char line1[700];
-      //Create a ZYX form a 3x1 matrix
-      TO_QSPI static const char *aa007 = "XEQC43 ERPN STO 99 INDEX 99 DROP 1 ENTER 1 STOIJ DROP DROP RCLEL I+ RCLEL I+ RCLEL ";
-      strcpy(line1, aa007);
-      fnXEQMexecute(line1);
     }
 
 

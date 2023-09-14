@@ -1,27 +1,7 @@
-/* This file is part of WP43.
- *
- * WP43 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * WP43 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with WP43.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-/* ADDITIONAL C43 functions and routines */
+// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
 
 
-/********************************************//** //JM
- * \file jmgraph.c Graphing module
- ***********************************************/
-
-/* ADDITIONAL C43 functions and routines */
 
 //#define DISPLOADING
 
@@ -36,22 +16,40 @@
 
 #include "wp43.h"
 
+typedef struct {
+  char     itemName[30];
+} nstr;
+
+TO_QSPI static const nstr ClipBoardMsg[] = { 
+/*0*/  { "Real matrix " },
+/*1*/  { " too large for transfer" },
+/*2*/  { "Complex matrix " },
+/*3*/  { "res/PROGRAMS" },
+/*4*/  { "C43_LOG.TXT" },
+/*5*/  { "Alpha buffer: " },
+/*6*/  { "XYZTABCDLIJK" }
+};
+
+
+
 uint8_t reg_Name(int16_t no) {
-  switch(no) {
-    case 100: return 'X'; break;
-    case 101: return 'Y'; break;
-    case 102: return 'Z'; break;
-    case 103: return 'T'; break;
-    case 104: return 'A'; break;
-    case 105: return 'B'; break;
-    case 106: return 'C'; break;
-    case 107: return 'D'; break;
-    case 108: return 'L'; break;
-    case 109: return 'I'; break;
-    case 110: return 'J'; break;
-    case 111: return 'K'; break;
-    default:  return 0;   break;
-  }
+  return (no>=100 && no<=111) ? ClipBoardMsg[6].itemName[no-100] : 0;
+
+//  switch(no) {
+//    case 100: return 'X'; break;
+//    case 101: return 'Y'; break;
+//    case 102: return 'Z'; break;
+//    case 103: return 'T'; break;
+//    case 104: return 'A'; break;
+//    case 105: return 'B'; break;
+//    case 106: return 'C'; break;
+//    case 107: return 'D'; break;
+//    case 108: return 'L'; break;
+//    case 109: return 'I'; break;
+//    case 110: return 'J'; break;
+//    case 111: return 'K'; break;
+//    default:  return 0;   break;
+//  }
 }
 
 
@@ -94,7 +92,7 @@ void copyRegisterToClipboardString2(calcRegister_t regist, char *clipboardString
           //printf(">>>:: %u ?? %u\n",rows*columns*46,stringByteLength(clipboardString));
         }
         else {
-          sprintf(clipboardString, "Real matrix %dx%d too large for transfer", rows, columns);
+          sprintf(clipboardString, "%s%dx%d%s", ClipBoardMsg[0].itemName, rows, columns, ClipBoardMsg[1].itemName);  //Real matrix   too large for transfer
         }
         break;
       }
@@ -109,7 +107,7 @@ void copyRegisterToClipboardString2(calcRegister_t regist, char *clipboardString
           //printf(">>>:: %u ?? %u\n", rows*columns*92, stringByteLength(clipboardString));
         }
         else {
-          sprintf(clipboardString, "Complex matrix %dx%d too large for transfer", rows, columns);
+          sprintf(clipboardString, "%s%dx%d%s", ClipBoardMsg[2].itemName, rows, columns, ClipBoardMsg[1].itemName);  //Complex matrix   too large for transfer
         }
         break;
       }
@@ -186,7 +184,7 @@ void stackregister_csv_out(int16_t reg_b, int16_t reg_e) {
 void aimBuffer_csv_out(void) {
   #if !defined(TESTSUITE_BUILD)
     export_append_line(CSV_STR);                    //Output append to CSV file
-    export_append_line("Alpha buffer: ");           //Output append to CSV file
+    export_append_line(ClipBoardMsg[5].itemName);  //"Alpha buffer: " //Output append to CSV file
     export_append_line(CSV_STR);                    //Output append to CSV file
     export_append_line(CSV_TAB);                    //Output append to CSV file
     export_append_line(CSV_STR);                    //Output append to CSV file
@@ -200,7 +198,7 @@ void aimBuffer_csv_out(void) {
 //**********************************************************************************************************
 #if !defined(TESTSUITE_BUILD)
   int16_t export_string_to_file(const char line1[TMP_STR_LENGTH]) {
-    return export_string_to_filename(line1, APPEND, "res/PROGRAMS", "C43_LOG.TXT");
+    return export_string_to_filename(line1, APPEND, ClipBoardMsg[3].itemName, ClipBoardMsg[4].itemName);  //"res/PROGRAMS", "C43_LOG.TXT"
   }
 #endif // !TESTSUITE_BUILD
 

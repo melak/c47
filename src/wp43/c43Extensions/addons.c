@@ -2,40 +2,11 @@
 // SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
 
 
-/********************************************//**
- * \file addons.c
- ***********************************************/
-
 
 /*
-Math changes:
-
-1. addon.c: Added fnArg_all which uses fnArg, but gives a result of 0 for a real
-   and longint input. The testSuite is not ifluenced. Not needed to modify |x|,
-   as it already works for a real and longint.
-   (testSuite not in use for fnArg, therefore also not added)
-
-2. bufferize.c: closenim: changed the default for (0 CC EXIT to 0) instead of i.
-   (testSuite not ifluenced).
-
 Todo
 
-
-All the below: because both Last x and savestack does not work due to multiple steps.
-
-  5. Added Star > Delta. Change and put in separate c file, and sort out savestack.
-
-  6. vice versa
-
-  7. SYM>ABC
-
-  8. ABC>SYM
-
-  9. e^theta. redo in math file,
-
-  10. three phase Ohms Law: 17,18,19
-
-
+ Check both Last x and savestack does not work due to multiple steps.
  Check for savestack in jm.c
 */
 
@@ -1008,7 +979,7 @@ void doubleToXRegisterReal34(double x) { //Convert from double to X register REA
 }
 
 
-void fnStrtoX(char aimBuffer[]) {                             //DONE
+void fnStrtoX(const char aimBuffer[]) {                             //DONE
   setSystemFlag(FLAG_ASLIFT); // 5
   liftStack();
   int16_t mem = stringByteLength(aimBuffer) + 1;

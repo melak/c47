@@ -271,7 +271,7 @@ void fnSetC47(uint16_t unusedButMandatoryParameter) {
     fnRecallConfig(35);         //restores previously stored C47 config
     lastErrorCode = 0;
     fnRefreshState();
-    refreshScreen();
+    refreshScreen(167);
   }
 #endif // !TESTSUITE_BUILD
 

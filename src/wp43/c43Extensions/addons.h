@@ -1,24 +1,7 @@
-/* This file is part of WP43.
- *
- * WP43 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * WP43 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with WP43.  If not, see <http://www.gnu.org/licenses/>.
- */
+// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-FileCopyrightText: Copyright The WP43 and C47 Authors
 
-/* ADDITIONAL C43 functions and routines */
 
-/********************************************//**
- * \file addons.h
- ***********************************************/
 
 #if !defined(ADDONS_H)
 #define ADDONS_H
@@ -76,7 +59,7 @@ void   doubleToXRegisterReal34  (double x);                 //Convert from doubl
 double convert_to_double        (calcRegister_t regist);    //Convert from X register to double
 
 
-void   fnStrtoX                 (char aimBuffer[]);         //DONE
+void   fnStrtoX                 (const char aimBuffer[]);         //DONE
 void   fnStrInputReal34         (char inp1[]);              // CONVERT STRING to REAL IN X      //DONE
 void   fnStrInputLongint        (char inp1[]);              // CONVERT STRING to Longint X      //DONE
 void   fnRCL                    (int16_t inp);              //DONE

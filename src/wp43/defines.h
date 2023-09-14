@@ -12,9 +12,9 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
-#define VERSION1 "0.109.00.00aSNP"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
+#define VERSION1 "0.109.00.00a3"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
-//2023-09-10-0.108.13.06 Snapshot Stable update
+//2023-09-14-0.109.00.00a3 Snapshot Development update
 
   #undef SAVE_SPACE_DM42_0
   #undef SAVE_SPACE_DM42_1
