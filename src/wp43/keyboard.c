@@ -1495,12 +1495,12 @@ bool_t allowShiftsToClearError = false;
     uint8_t circPtr3 = 0;
     uint8_t circPtr4 = 0;
     TO_QSPI const circ_t circ[] = {
-                  {7 , 2 , 7 , 7 },   //0
-                  {18, 23, 18, 18},   //1
-                  {30, 18, 30, 30},   //2
-                  {24, 12, 24, 24},   //3
-                  {12, 29, 9 , 20},   //4
-                  {28, 33, 13, 9 },   //5
+                  {7 , 2 , 2 , 2 },   //0
+                  {18, 23, 23, 23},   //1
+                  {30, 18, 18, 18},   //2
+                  {24, 12, 9 , 20},   //3
+                  {12, 29, 13, 9 },   //4
+                  {28, 33, 0,  0 },   //5
                   {20, 29, 0 , 0 },   //6
                   {18, 30, 0 , 0 },   //7
                   {29, 0 , 0 , 0 },   //8
@@ -1519,15 +1519,15 @@ bool_t allowShiftsToClearError = false;
         fnSetC47(0);
         return true;
       }
-      if((circPtr3 == 0 && keyCode==7) || circPtr3 > nbrOfElements(circ)) circPtr3 = 0;
+      if((circPtr3 == 0 && keyCode==2) || circPtr3 > nbrOfElements(circ)) circPtr3 = 0;
       if(circ[circPtr3].itm3==keyCode) circPtr3++; else circPtr3 = 0;
-      if(circPtr3 == 6 && keyCode==13) {
+      if(circPtr3 == 5 && keyCode==13) {
         fnSetJM(0);
         return true;
       }
-      if((circPtr4 == 0 && keyCode==7) || circPtr4 > nbrOfElements(circ)) circPtr4 = 0;
+      if((circPtr4 == 0 && keyCode==2) || circPtr4 > nbrOfElements(circ)) circPtr4 = 0;
       if(circ[circPtr4].itm4==keyCode) circPtr4++; else circPtr4 = 0;
-      if(circPtr4 == 6 && keyCode==9) {
+      if(circPtr4 == 5 && keyCode==9) {
         fnSetRJ(0);
         return true;
       }

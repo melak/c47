@@ -163,7 +163,7 @@ TO_QSPI const int16_t menu_FLAGS[]       = { ITM_SF,                        ITM_
 TO_QSPI const int16_t menu_INFO[]        = { ITM_SSIZE,                     ITM_MEM,                    ITM_RMODEQ,               ITM_ISM,               ITM_WSIZEQ,                  ITM_KTYP,
                                              ITM_LocRQ,                     ITM_DSK,                    ITM_ULP,                  ITM_NEIGHB,            ITM_GETSDIGS,                ITM_BATT,
                                              ITM_WHO,                       ITM_VERS,                   ITM_M_DIMQ,               ITM_PMINFINITY,        ITM_ALPHAPOS,                ITM_ALPHALENG,
-                                             ITM_GETRANGE,                  ITM_GETHIDE,                ITM_GET_JUL_GREG,         ITM_NULL,              ITM_SH_ERPN,                 ITM_BESTFQ                      };    //JM INFO
+                                             ITM_GETRANGE,                  ITM_GETHIDE,                ITM_GET_JUL_GREG,         ITM_VOLQ,              ITM_SH_ERPN,                 ITM_BESTFQ                      };    //JM INFO
 
 
 TO_QSPI const int16_t menu_INTS[]        = { ITM_A,                         ITM_B,                      ITM_C,                    ITM_D,                 ITM_E,                       ITM_F,
@@ -280,11 +280,11 @@ TO_QSPI const int16_t menu_Poiss[]       = { ITM_POISSP,                    ITM_
 /*                                 <---------------------------------------------------------------------- 6 f shifted functions ------------------------------------------------------------------------->  */
 /*                                 <---------------------------------------------------------------------- 6 g shifted functions ------------------------------------------------------------------------->  */
 
-TO_QSPI const int16_t menu_PFN[]         = { ITM_XEQ,                       ITM_GTO,                    ITM_LBL,                  ITM_RTN,               ITM_END,                     -MNU_PFN_MORE,
+TO_QSPI const int16_t menu_PFN[]         = { ITM_XEQ,                       ITM_GTO,                    ITM_LBL,                  ITM_RTN,               ITM_END,                    -MNU_PFN_MORE,
                                              ITM_CASE,                      ITM_BACK,                   ITM_SKIP,                 ITM_RTNP1,             ITM_PAUSE,                   ITM_NOP,
                                              ITM_INPUT,                     ITM_MSG,                    ITM_ERR,                  ITM_TICKS,             ITM_LocR,                    ITM_POPLR                     };
 
-TO_QSPI const int16_t menu_PFN_MORE[]    = { ITM_AGRAPH,                    ITM_PIXEL,                  ITM_POINT,                ITM_NULL,              ITM_NULL,                    -MNU_PFN,
+TO_QSPI const int16_t menu_PFN_MORE[]    = { ITM_AGRAPH,                    ITM_PIXEL,                  ITM_POINT,                ITM_VOL,              -MNU_IO,                     -MNU_PFN,
                                              ITM_CLMENU,                    ITM_R_COPY,                 ITM_R_SORT,               ITM_R_SWAP,            ITM_R_CLR,                   ITM_EXITALL,
                                              ITM_MENU,                      ITM_KEYG,                   ITM_KEYX,                 ITM_VARMNU,            ITM_MVAR,                    ITM_PUTK                      };
 
@@ -316,7 +316,7 @@ TO_QSPI const int16_t menu_SUMS_C43[]    = { ITM_SIGMAPLUS,                 ITM_
 
 TO_QSPI const int16_t menu_PLOTTING[]    = { ITM_SIGMAPLUS,                 ITM_SIGMAx,                ITM_SIGMAx2,               ITM_SIGMAy,            ITM_SIGMAy2,                 ITM_SIGMAxy,               
                                              ITM_SIGMAMINUS,                ITM_SIGMA1onx,             ITM_SIGMA1onx2,            ITM_SIGMA1ony,         ITM_SIGMA1ony2,              ITM_SIGMAxony,             
-                                             ITM_NSIGMA,                    ITM_SIGMAx3,               ITM_SIGMAx4,               -MNU_REGR,             ITM_PLOT_STAT,               -MNU_HIST,                 
+                                             ITM_NSIGMA,                    ITM_SIGMAx3,               ITM_SIGMAx4,               -MNU_REGR,             ITM_PLOT_STAT,              -MNU_HIST,                 
     
                                              ITM_SIGMAPLUS,                 ITM_SIGMAlnx,              ITM_SIGMAln2x,             ITM_SIGMAlny,          ITM_SIGMAln2y,               ITM_SIGMAx2y,              
                                              ITM_SIGMAMINUS,                ITM_SIGMAylnx,             ITM_SIGMAlnxy,             ITM_SIGMAxlny,         ITM_SIGMAx2lny,              ITM_SIGMAx2ony,            
@@ -536,9 +536,9 @@ TO_QSPI const int16_t menu_1stDeriv[]    = { ITM_NULL,                      ITM_
 TO_QSPI const int16_t menu_2ndDeriv[]    = { ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
 TO_QSPI const int16_t menu_Sf[]          = { ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
 TO_QSPI const int16_t menu_Solver[]      = { ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
-TO_QSPI const int16_t menu_IO[]          = { ITM_WRITEP,                    ITM_SAVEST,                 ITM_STOCFG,               ITM_SAVE,              ITM_LOADP,                   ITM_LOADR,
-                                             ITM_READP,                     ITM_LOADST,                 ITM_RCLCFG,               ITM_LOAD,              ITM_LOADSIGMA,               ITM_LOADSS,
-                                             ITM_EXPORTP,                   ITM_BEEP,                   ITM_TONE,                 ITM_NULL,              ITM_LOADV,                  -MNU_PRINT                     };   //DL
+TO_QSPI const int16_t menu_IO[]          = { ITM_WRITEP,                    ITM_SAVEST,                 ITM_SAVE,                 ITM_LOADP,             ITM_LOADR,                   ITM_LOADV,
+                                             ITM_READP,                     ITM_LOADST,                 ITM_LOAD,                 ITM_LOADSIGMA,         ITM_LOADSS,                  ITM_VOLMINUS,
+                                             ITM_EXPORTP,                   ITM_BEEP,                   ITM_TONE,                 ITM_BUZZ,              ITM_PLAY,                    ITM_VOLPLUS                   };   //DL
 TO_QSPI const int16_t menu_PRINT[]       = { ITM_PRINTERX,                  ITM_PRINTERR,               ITM_PRINTERSIGMA,         ITM_PRINTERADV,        ITM_PRINTERLCD,              ITM_PRINTERPROG,
                                              ITM_PRINTERSTK,                ITM_PRINTERREGS,            ITM_PRINTERUSER,          ITM_PRINTERTAB,        ITM_PRINTERHASH,             ITM_PRINTERCHAR,
                                              ITM_PRTACT,                    ITM_P_ALLREGS,              ITM_NULL,                 ITM_PRINTERWIDTH,      ITM_PRINTERDLAY,             ITM_PRINTERMODE               };
