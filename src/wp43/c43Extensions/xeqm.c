@@ -169,7 +169,7 @@ void sendkeys(const char aa[]) {
 }
 
 
-bool_t strcompare( char *in1, char *in2) {
+bool_t strcompare(const char *in1, const char *in2) {
   if(stringByteLength(in1) == stringByteLength(in2)) {
     int16_t i = 0;
     bool_t areEqual = true;
@@ -199,7 +199,7 @@ bool_t running_program_jm = false;
 
 typedef struct {
   uint16_t itemNr;            ///<
-  char     *itemName;         ///<
+  char     itemName[16];         ///<
 } function_t;
 
 
