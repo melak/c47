@@ -27,6 +27,13 @@ SECTIONS {
     . = ALIGN(8);
     _qspi_start = .;   /* create a global symbol at qspi start */
     *(.qspi)           /* .qspi  sections */
+    *(.text.__ieee754_sqrt)    /* Added by Jaco - guess we don't need this, we use the WP34S source */
+    *(.text.__ieee754_exp)     /* Added by Jaco - guess we don't need this, we use the WP34S source */
+    *(.text.__ieee754_log)     /* Added by Jaco - guess we don't need this, we use the WP34S source */
+    *(.text.__ieee754_log10)   /* Added by Jaco - guess we don't need this, we use the WP34S source */
+    *(.text.__ieee754_pow)     /* Added by Jaco - guess we don't need this, we use the WP34S source */
+    *(.text.__ieee754_*)       /* Added by Jaco - guess we don't need this, we use the WP34S source */
+
     . = ALIGN(8);
     _qspi_end = .;     /* define a global symbols at end of qspi */
   } >QSPI /* AT> FLASH */

@@ -26,6 +26,7 @@
 #include "c43Extensions/keyboardTweak.h"
 #include "keyboard.h"
 #include "mathematics/matrix.h"
+#include "mathematics/square.h"
 #include "memory.h"
 #include "plotstat.h"
 #include "programming/manage.h"
@@ -43,6 +44,7 @@
 #include "stack.h"
 #include "stats.h"
 #include "store.h"
+#include "recall.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -112,6 +114,8 @@ void configCommon(uint16_t idx) {
   void fnSetHP35(uint16_t unusedButMandatoryParameter) {
     fnKeyExit(0);                            //Clear pending key input
     fnClrMod(0);                             //Get out of NIM or BASE
+    fnStoreConfig(35);                       //Store current config into R35
+    
     fnClearStack(0);                         //Clear stack
     fnPi(0);                                 //Put pi on X
 
@@ -122,7 +126,7 @@ void configCommon(uint16_t idx) {
     exponentLimit     = 99;                  //Set the exponent limit the same as HP35, i.e. 99                ID, if changed, also set the conditions for checkHP in defines.h (99)
     significantDigits = 16;                  //SETSIG2 = 16                                                    ID, if changed, also set the conditions for checkHP in defines.h (10-16)
     displayStack = cachedDisplayStack = 1;   //Change to single stack register display                         ID, if changed, also set the conditions for checkHP in defines.h (1)
-    currentAngularMode = amDegree;           //Set to DEG
+    currentAngularMode = amRadian;           //Set to RAD
     SetSetting(SS_4);                        //SSTACK4
     SetSetting(ITM_CPXRES0);                 //Clear CPXRES
     SetSetting(ITM_SPCRES0);                 //Clear SPCRES
@@ -145,11 +149,15 @@ void configCommon(uint16_t idx) {
 
 
   void fnSetJM(uint16_t unusedButMandatoryParameter){
-    fnSetC47(0);
+    fnDrop(0);
+    fnSquare(0);
+    resetOtherConfigurationStuff();
     //jm_BASE_SCREEN = true;
     //currentAngularMode = amDegree;
     //fneRPN(1);                               //eRPN
-    //setFGLSettings (RB_FGLNFUL);              //fgLine FULL
+    //setFGLSettings (RB_FGLNFUL);             //fgLine FULL
+    //jm_BASE_SCREEN = true;                   //Switch on base = MyMenu
+    
     fnClearFlag    (FLAG_USER);              // Clear USER mode
     clearSystemFlag(FLAG_HPRP);              // Clear HP Rect/Polar
     clearSystemFlag(FLAG_POLAR);             // Set rectangular default
@@ -159,19 +167,60 @@ void configCommon(uint16_t idx) {
     setSystemFlag  (FLAG_CPXj);              // Set j     
     setSystemFlag  (FLAG_SBbatV);            // Set battery voltage indicator
     fnDisplayFormatSigFig(3);                // SIG 3
+    roundingMode = RM_HALF_UP;
+    
+    fnUserJM(USER_MENG);
+    defaultStatusBar();
+    temporaryInformation = TI_NO_INFO;
     fnRefreshState();
     refreshScreen(161);
     }
 
 
   void fnSetRJ(uint16_t unusedButMandatoryParameter){
-    setSystemFlag(FLAG_SBbatV);              //Set battery voltage indicator
+     currentAngularMode = amRadian;       //RAD
+     clearSystemFlag(FLAG_HPRP);          //HP.RP off
+     clearSystemFlag(FLAG_POLAR);         //RECT (default)
+     SetSetting     (SS_8);               //SSIZE 8 (default)
+     SetSetting     (ITM_CPXRES1);        //CPXRES
+     SetSetting     (ITM_SPCRES1);        //SPCRES
+     denMax = 9999;                       //DMX 9999
+     significantDigits = 34;              //SDIGS 34
+     SetSetting(JC_EXFRAC);               //EXFRAC ON
+     setSystemFlag(FLAG_DENANY);          //DENANY ON
+     clearSystemFlag(FLAG_DENFIX);        //DENFIX OFF
+     jm_BASE_SCREEN = true;               //MyM ON
+     SetSetting(JC_HOME_TRIPLE);          //HOME.3 ON
+     SetSetting(JC_G_DOUBLETAP);          //g.2Tp ON
+     SetSetting(JC_SHFT_4s);              //SH.4s ON
+     setFGLSettings (RB_FGLNFUL);         //fg.FUL
+     LongPressM = RB_M1234;               //M.1234
+     LongPressF = RB_F124;                //F.124
+     clearSystemFlag(FLAG_SBang  );  //SBang OFF
+       setSystemFlag(FLAG_SBbatV );  //SBbatV ON
+     clearSystemFlag(FLAG_SBclk  );  //SBclk OFF
+       setSystemFlag(FLAG_SBcpx  );  //SBcpx ON
+       setSystemFlag(FLAG_SBcr   );  //SBcr ON
+       setSystemFlag(FLAG_SBdate );  //SBdate ON
+       setSystemFlag(FLAG_SBfrac );  //SBfrac ON
+     clearSystemFlag(FLAG_SBint  );  //SBint OFF
+       setSystemFlag(FLAG_SBmx   );  //SBmx ON
+     clearSystemFlag(FLAG_SBoc   );  //SBoc OFF
+       setSystemFlag(FLAG_SBprn  );  //SBprn ON
+       setSystemFlag(FLAG_SBser  );  //SBser ON
+     clearSystemFlag(FLAG_SBshfR );  //SBshfR OFF
+     clearSystemFlag(FLAG_SBss   );  //SBss OFF
+     clearSystemFlag(FLAG_SBtime );  //SBtime OFF
+       setSystemFlag(FLAG_SBtvm  );  //SBtvm ON
+    fnKeyExit(0);
+    fnDrop(0);
+    fnSquare(0);
     fnRefreshState();
     refreshScreen(165);
     }
 
 
-  void _fnSetC47(uint16_t unusedButMandatoryParameter) {
+  void _fnSetC47(uint16_t unusedButMandatoryParameter) {         //Reversing the HP35 settings to C47 defaults
     fnKeyExit(0);
     addItemToBuffer(ITM_EXIT1);
 
@@ -210,10 +259,16 @@ void configCommon(uint16_t idx) {
     refreshScreen(162);
   }
 
+
 void fnSetC47(uint16_t unusedButMandatoryParameter) {
     fnKeyExit(0);
+    addItemToBuffer(ITM_EXIT1);
     fnClrMod(0);
-    _fnSetC47(0);
+    _fnSetC47(0);               //Needs a reset in case for some reason RCLCFG R35 fails, then it resets to defaults
+    fnRecallConfig(35);         //restores previously stored C47 config
+    lastErrorCode = 0;
+    fnRefreshState();
+    refreshScreen();
   }
 #endif // !TESTSUITE_BUILD
 
@@ -245,8 +300,10 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
     }
     if(!checkHP) {
       fnDisplayStack(4);    //Restore to default DSTACK 4
-    } else {
-      _fnSetC47(0);          //Snap out of HP35 mode, and reset all setting needed for that
+    } else {                //Snap out of HP35 mode, and reset all setting needed for that
+      _fnSetC47(0);          
+      fnRecallConfig(35);
+      lastErrorCode = 0;
     }
     calcModeNormal();
     refreshScreen(166);
@@ -254,7 +311,6 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
     popSoftmenu();
   #endif // !TESTSUITE_BUILD
 }
-
 
 
 
