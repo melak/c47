@@ -413,7 +413,7 @@ int16_t fnItemShowValue(int16_t item) {
 char tmp[16];
 void add_digitglyph_to_tmp2(char* tmp2, int16_t xx) {
   tmp2[0] = 0;
-    
+
   stringAppend(tmp2, STD_SUB_0);
   if(xx >= 1 && xx <= 16) {
     stringAppend(tmp2, STD_BASE_1);

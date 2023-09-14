@@ -168,6 +168,7 @@ TO_QSPI const calcKey_t kbd_std_WP43[37] = {
 };
 
 
+#if !defined(SAVE_SPACE_DM42)
 
 // E47 Layout from Layout_template_automation template: Do not change manually
 //This variable is to store in flash memory
@@ -348,6 +349,7 @@ TO_QSPI const calcKey_t kbd_std_D47[37] = {
   //keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
 };
 
+#endif //!defined(SAVE_SPACE_DM42)
 
 // DM42 Layout from Layout_template_automation template: Do not change manually
 //This variable is to store in flash memory
