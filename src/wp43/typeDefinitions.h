@@ -21,6 +21,7 @@
 #define TYPEDEFINITIONS_H
 
 #include "realType.h"
+#include "mathematics/pcg_basic.h"
 #include <stdint.h>
   #if defined(PC_BUILD)
   #include <gtk/gtk.h>
@@ -190,33 +191,31 @@ typedef struct {
   uint32_t      firstGregorianDay;
   uint64_t      systemFlags;
   calcKey_t     kbd_usr[37];
-
-  //                                                                         //JMCFGvv
   uint8_t fgLN;
   bool_t eRPN;
   bool_t HOME3;
   bool_t ShiftTimoutMode;
   bool_t CPXMULT;
   bool_t SH_BASE_HOME;
-  bool_t boolSpare;               //Spare Byte
+  bool_t compatibility_bool0;               //Spare Byte !problem
   int16_t Norm_Key_00_VAR;
   uint8_t Input_Default;
-  bool_t compatibility_bool;      //
+  bool_t compatibility_bool00;               //Spare Byte !problem
   bool_t jm_BASE_SCREEN;
   bool_t jm_G_DOUBLETAP;
-  float  graph_xmin;
-  float  graph_xmax;
-  float  graph_ymin;
-  float  graph_ymax;
-  float  graph_dx;
-  float  graph_dy;
-  bool_t roundedTicks;
-  bool_t extentx;
-  bool_t extenty;
+  float  compatibility_float1;              //Spare float
+  float  compatibility_float2;              //Spare float
+  float  compatibility_float3;              //Spare float
+  float  compatibility_float4;              //Spare float
+  float  compatibility_float5;              //Spare float
+  float  compatibility_float6;              //Spare float
+  bool_t compatibility_bool1;               //Spare Byte
+  bool_t compatibility_bool2;               //Spare Byte
+  bool_t compatibility_bool3;               //Spare Byte
   bool_t PLOT_VECT;
   bool_t PLOT_NVECT;
   bool_t PLOT_SCALE;
-  bool_t Aspect_Square;
+  bool_t compatibility_bool4;               //Spare Byte
   bool_t PLOT_LINE;
   bool_t PLOT_CROSS;
   bool_t PLOT_BOX;
@@ -227,7 +226,7 @@ typedef struct {
   bool_t PLOT_AXIS;
   int8_t PLOT_ZMX;
   int8_t PLOT_ZMY;
-  bool_t jm_temporary;
+  bool_t compatibility_bool5;               //Spare Byte
   bool_t jm_LARGELI;
   bool_t constantFractions;
   uint8_t constantFractionsMode;
@@ -241,8 +240,16 @@ typedef struct {
   bool_t SI_All;
   bool_t LongPressM;
   bool_t LongPressF;
-//  int16_t exponentLimit;     //todo
-//  uint8_t significantDigits; //todo
+
+  //Added 2023-09-12
+  //Note: Do not change entries going forward to maintain compatibility
+  //Should any be added, ensure that the defaults are appropriately added when reading the state file
+  uint32_t       lastDenominator;
+  uint8_t        significantDigits;
+  pcg32_random_t pcg32_global;
+  int16_t        exponentLimit;
+  int16_t        exponentHideLimit;
+  uint32_t       lastIntegerBase;
 
 } dtConfigDescriptor_t;
 

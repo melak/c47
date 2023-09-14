@@ -373,8 +373,20 @@ void fnStoreMax(uint16_t regist) {
 
 
 void fnStoreConfig(uint16_t regist) {
-    //uint8_t  compatibility_u8 = 0;            //defaults to use when settings are removed
-    //bool_t   compatibility_bool = false;      //defaults to use when settings are removed
+    //uint8_t  compatibility_u8 = 0;             //defaults to use when settings are removed
+  bool_t compatibility_bool00 = false;           //defaults to use when settings are removed
+  bool_t compatibility_bool0  = false;           //defaults to use when settings are removed
+  bool_t compatibility_bool1  = false;           //defaults to use when settings are removed
+  bool_t compatibility_bool2  = false;           //defaults to use when settings are removed
+  bool_t compatibility_bool3  = false;           //defaults to use when settings are removed
+  bool_t compatibility_bool4  = false;           //defaults to use when settings are removed
+  bool_t compatibility_bool5  = false;           //defaults to use when settings are removed
+  float  compatibility_float1 = 0.1;             //defaults to use when settings are removed
+  float  compatibility_float2 = 0.2;             //defaults to use when settings are removed
+  float  compatibility_float3 = 0.3;             //defaults to use when settings are removed
+  float  compatibility_float4 = 0.4;             //defaults to use when settings are removed
+  float  compatibility_float5 = 0.5;             //defaults to use when settings are removed
+  float  compatibility_float6 = 0.6;             //defaults to use when settings are removed
   reallocateRegister(regist, dtConfig, CONFIG_SIZE, amNone);
   dtConfigDescriptor_t *configToStore = REGISTER_CONFIG_DATA(regist);
 
@@ -398,30 +410,31 @@ void fnStoreConfig(uint16_t regist) {
   storeToDtConfigDescriptor(roundingMode);
   storeToDtConfigDescriptor(systemFlags);
   xcopy(configToStore->kbd_usr, kbd_usr, sizeof(kbd_usr));
-
   storeToDtConfigDescriptor(fgLN);
   storeToDtConfigDescriptor(eRPN);
   storeToDtConfigDescriptor(HOME3);
   storeToDtConfigDescriptor(ShiftTimoutMode);
   storeToDtConfigDescriptor(CPXMULT);
   storeToDtConfigDescriptor(SH_BASE_HOME);
+  storeToDtConfigDescriptor(compatibility_bool00);   //added
   storeToDtConfigDescriptor(Norm_Key_00_VAR);
   storeToDtConfigDescriptor(Input_Default);
+  storeToDtConfigDescriptor(compatibility_bool0);    //added
   storeToDtConfigDescriptor(jm_BASE_SCREEN);
   storeToDtConfigDescriptor(jm_G_DOUBLETAP);
-  storeToDtConfigDescriptor(graph_xmin);
-  storeToDtConfigDescriptor(graph_xmax);
-  storeToDtConfigDescriptor(graph_ymin);
-  storeToDtConfigDescriptor(graph_ymax);
-  storeToDtConfigDescriptor(graph_dx);
-  storeToDtConfigDescriptor(graph_dy);
-  storeToDtConfigDescriptor(roundedTicks);
-  storeToDtConfigDescriptor(extentx);
-  storeToDtConfigDescriptor(extenty);
+  storeToDtConfigDescriptor(compatibility_float1);
+  storeToDtConfigDescriptor(compatibility_float2);
+  storeToDtConfigDescriptor(compatibility_float3);
+  storeToDtConfigDescriptor(compatibility_float4);
+  storeToDtConfigDescriptor(compatibility_float5);
+  storeToDtConfigDescriptor(compatibility_float6);
+  storeToDtConfigDescriptor(compatibility_bool1);
+  storeToDtConfigDescriptor(compatibility_bool2);
+  storeToDtConfigDescriptor(compatibility_bool3);
   storeToDtConfigDescriptor(PLOT_VECT);
   storeToDtConfigDescriptor(PLOT_NVECT);
   storeToDtConfigDescriptor(PLOT_SCALE);
-  storeToDtConfigDescriptor(Aspect_Square);
+  storeToDtConfigDescriptor(compatibility_bool4);
   storeToDtConfigDescriptor(PLOT_LINE);
   storeToDtConfigDescriptor(PLOT_CROSS);
   storeToDtConfigDescriptor(PLOT_BOX);
@@ -432,20 +445,26 @@ void fnStoreConfig(uint16_t regist) {
   storeToDtConfigDescriptor(PLOT_AXIS);
   storeToDtConfigDescriptor(PLOT_ZMX);
   storeToDtConfigDescriptor(PLOT_ZMY);
-  storeToDtConfigDescriptor(jm_temporary);  //JM
-  storeToDtConfigDescriptor(jm_LARGELI);                                   //JMCFG^^
-  storeToDtConfigDescriptor(constantFractions);                           //JM
-  storeToDtConfigDescriptor(constantFractionsMode);                           //JM
-  storeToDtConfigDescriptor(constantFractionsOn);                         //JM
-  storeToDtConfigDescriptor(displayStackSHOIDISP);                                   //JMCFG^^
-  storeToDtConfigDescriptor(bcdDisplay);                                   //JM
-  storeToDtConfigDescriptor(topHex);                                   //JM
-  storeToDtConfigDescriptor(bcdDisplaySign);                                   //JM
-  storeToDtConfigDescriptor(DRG_Cycling);                                   //JM
-  storeToDtConfigDescriptor(DM_Cycling);                                   //JM
-  storeToDtConfigDescriptor(SI_All);                                   //JM
-  storeToDtConfigDescriptor(LongPressM);                                   //JM
-  storeToDtConfigDescriptor(LongPressF);                                   //JM
+  storeToDtConfigDescriptor(compatibility_bool5);
+  storeToDtConfigDescriptor(jm_LARGELI);
+  storeToDtConfigDescriptor(constantFractions);
+  storeToDtConfigDescriptor(constantFractionsMode);
+  storeToDtConfigDescriptor(constantFractionsOn);
+  storeToDtConfigDescriptor(displayStackSHOIDISP);
+  storeToDtConfigDescriptor(bcdDisplay);
+  storeToDtConfigDescriptor(topHex);
+  storeToDtConfigDescriptor(bcdDisplaySign);
+  storeToDtConfigDescriptor(DRG_Cycling);
+  storeToDtConfigDescriptor(DM_Cycling);
+  storeToDtConfigDescriptor(SI_All);
+  storeToDtConfigDescriptor(LongPressM);
+  storeToDtConfigDescriptor(LongPressF);
+  storeToDtConfigDescriptor(lastDenominator);
+  storeToDtConfigDescriptor(significantDigits);
+  storeToDtConfigDescriptor(pcg32_global);
+  storeToDtConfigDescriptor(exponentLimit);
+  storeToDtConfigDescriptor(exponentHideLimit);
+  storeToDtConfigDescriptor(lastIntegerBase);
 }
 
 

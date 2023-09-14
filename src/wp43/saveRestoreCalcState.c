@@ -61,7 +61,7 @@
 #include "wp43.h"
 #define BACKUP_VERSION                     785  // add StatusBarSetup
 #define OLDEST_COMPATIBLE_BACKUP_VERSION   779  // save running app
-#define configFileVersion                  10000007 // 10000007 corrects the gapItemLeft bug in the file format; arbitrary starting point version 10 000 001. Allowable values are 10000000 to 20000000
+#define configFileVersion                  10000008 // New STOCFG and new STATE file; arbitrary starting point version 10 000 001. Allowable values are 10000000 to 20000000
 #define VersionAllowed                     10000005 // This code will not autoload versions earlier than this
 
 /*
@@ -70,6 +70,8 @@
 10000003 // 2022-12-06 version 108_08h, added LongPressM & LongPressF
 10000004 // 2022-12-26 version 108_08n, added lastIntegerBase
 10000005 // 2022-01-08 version 108_08q, Pauli changed the real number saver representaiton
+...
+10000008 // 2023-09-12 version 108.13   Jaco added the missing STOCFG items, remove the unneccary STOCFG items, added the missing STATe file items.
 
 Current version defaults all non-loaded settings from previous version files correctly
 */
@@ -359,7 +361,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
     save(&compatibility_bool,                 sizeof(compatibility_bool));        //EXTRA
     save(&jm_BASE_SCREEN,                     sizeof(jm_BASE_SCREEN));
     save(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP));
-    save(&jm_temporary,                       sizeof(jm_temporary));              //EXTRA
+    save(&compatibility_bool,                 sizeof(compatibility_bool));              //EXTRA
     save(&graph_xmin,                         sizeof(graph_xmin));
     save(&graph_xmax,                         sizeof(graph_xmax));
     save(&graph_ymin,                         sizeof(graph_ymin));
@@ -695,7 +697,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
       restore(&compatibility_bool,                 sizeof(compatibility_bool));
       restore(&jm_BASE_SCREEN,                     sizeof(jm_BASE_SCREEN));
       restore(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP));
-      restore(&jm_temporary,                       sizeof(jm_temporary));
+      restore(&compatibility_bool,                 sizeof(compatibility_bool));
       restore(&graph_xmin,                         sizeof(graph_xmin));
       restore(&graph_xmax,                         sizeof(graph_xmax));
       restore(&graph_ymin,                         sizeof(graph_ymin));
@@ -1240,138 +1242,89 @@ flushBufferCnt = 0;
   }
 
   // Other configuration stuff
-  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n48\n"); //JM 23+10+15
-  save(tmpString, strlen(tmpString));
+        sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n71\n");   
+        save(tmpString, strlen(tmpString));    //JM 23+10+15+23
+/*01*/  save(tmpString, strlen(tmpString)); 
 
-//23
-/*  */  sprintf(tmpString, "firstGregorianDay\n%" PRIu32 "\n", firstGregorianDay);
-/*01*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, "denMax\n%" PRIu32 "\n", denMax);
-/*02*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, "lastDenominator\n%" PRIu32 "\n", lastDenominator);
-/*03*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, "displayFormat\n%" PRIu8 "\n", displayFormat);
-/*04*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, "displayFormatDigits\n%" PRIu8 "\n", displayFormatDigits);
-/*05*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, "timeDisplayFormatDigits\n%" PRIu8 "\n", timeDisplayFormatDigits);
-/*06*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, "shortIntegerWordSize\n%" PRIu8 "\n", shortIntegerWordSize);
-/*07*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, "shortIntegerMode\n%" PRIu8 "\n", shortIntegerMode);
-/*08*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, "significantDigits\n%" PRIu8 "\n", significantDigits);
-/*09*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, "currentAngularMode\n%" PRIu8 "\n", (uint8_t)currentAngularMode);
-/*10*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, "gapItemLeft\n%" PRIu16 "\n", gapItemLeft);
-/*11*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, "gapItemRight\n%" PRIu16 "\n", gapItemRight);
-/*12*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, "gapItemRadix\n%" PRIu16 "\n", gapItemRadix);
-/*13*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, "grpGroupingLeft\n%" PRIu8 "\n", grpGroupingLeft);
-/*14*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, "grpGroupingGr1LeftOverflow\n%" PRIu8 "\n", grpGroupingGr1LeftOverflow);
-/*15*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, "grpGroupingGr1Left\n%" PRIu8 "\n", grpGroupingGr1Left);
-/*16*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, "grpGroupingRight\n%" PRIu8 "\n", grpGroupingRight);
-/*17*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, "roundingMode\n%" PRIu8 "\n", roundingMode);
-/*18*/  save(tmpString, strlen(tmpString));
-/*  */  sprintf(tmpString, "displayStack\n%" PRIu8 "\n", displayStack);
-/*19*/  save(tmpString, strlen(tmpString));
+//23 sprintf(tmpString, "firstGregorianDay\n%" PRIu32 "\n", firstGregorianDay);
+/*02*/  sprintf(tmpString, "denMax\n%"                     PRIu32 "\n",     denMax);                       save(tmpString, strlen(tmpString));
+/*03*/  sprintf(tmpString, "lastDenominator\n%"            PRIu32 "\n",     lastDenominator);              save(tmpString, strlen(tmpString));
+/*04*/  sprintf(tmpString, "displayFormat\n%"              PRIu8  "\n",     displayFormat);                save(tmpString, strlen(tmpString));
+/*05*/  sprintf(tmpString, "displayFormatDigits\n%"        PRIu8  "\n",     displayFormatDigits);          save(tmpString, strlen(tmpString));
+/*06*/  sprintf(tmpString, "timeDisplayFormatDigits\n%"    PRIu8  "\n",     timeDisplayFormatDigits);      save(tmpString, strlen(tmpString));
+/*07*/  sprintf(tmpString, "shortIntegerWordSize\n%"       PRIu8  "\n",     shortIntegerWordSize);         save(tmpString, strlen(tmpString));
+/*08*/  sprintf(tmpString, "shortIntegerMode\n%"           PRIu8  "\n",     shortIntegerMode);             save(tmpString, strlen(tmpString));
+/*09*/  sprintf(tmpString, "significantDigits\n%"          PRIu8  "\n",     significantDigits);            save(tmpString, strlen(tmpString));
+/*10*/  sprintf(tmpString, "currentAngularMode\n%"         PRIu8  "\n",     (uint8_t)currentAngularMode);  save(tmpString, strlen(tmpString));
+/*11*/  sprintf(tmpString, "gapItemLeft\n%"                PRIu16 "\n",     gapItemLeft);                  save(tmpString, strlen(tmpString));
+/*12*/  sprintf(tmpString, "gapItemRight\n%"               PRIu16 "\n",     gapItemRight);                 save(tmpString, strlen(tmpString));
+/*13*/  sprintf(tmpString, "gapItemRadix\n%"               PRIu16 "\n",     gapItemRadix);                 save(tmpString, strlen(tmpString));
+/*14*/  sprintf(tmpString, "grpGroupingLeft\n%"            PRIu8  "\n",     grpGroupingLeft);              save(tmpString, strlen(tmpString));
+/*15*/  sprintf(tmpString, "grpGroupingGr1LeftOverflow\n%" PRIu8  "\n",     grpGroupingGr1LeftOverflow);   save(tmpString, strlen(tmpString));
+/*16*/  sprintf(tmpString, "grpGroupingGr1Left\n%"         PRIu8  "\n",     grpGroupingGr1Left);           save(tmpString, strlen(tmpString));
+/*17*/  sprintf(tmpString, "grpGroupingRight\n%"           PRIu8  "\n",     grpGroupingRight);             save(tmpString, strlen(tmpString));
+/*18*/  sprintf(tmpString, "roundingMode\n%"               PRIu8  "\n",     roundingMode);                 save(tmpString, strlen(tmpString));
+/*19*/  sprintf(tmpString, "displayStack\n%"               PRIu8  "\n",     displayStack);                 save(tmpString, strlen(tmpString));
 /*  */  UI64toString(pcg32_global.state, yy1);
 /*  */  UI64toString(pcg32_global.inc, yy2);
-/*20*/  sprintf(tmpString, "rngState\n%s %s\n", yy1, yy2);
-/*  */  save(tmpString, strlen(tmpString));
-/*21*/  sprintf(tmpString, "exponentLimit\n%" PRId16 "\n", exponentLimit);
-/*  */  save(tmpString, strlen(tmpString));
-/*22*/  sprintf(tmpString, "exponentHideLimit\n%" PRId16 "\n", exponentHideLimit);
-/*  */  save(tmpString, strlen(tmpString));
-/*23*/  sprintf(tmpString, "notBestF\n%" PRIu16 "\n", lrSelection);
-/*  */  save(tmpString, strlen(tmpString));
+/*20*/  sprintf(tmpString, "rngState\n%s %s\n", yy1, yy2);                                                 save(tmpString, strlen(tmpString));
+/*21*/  sprintf(tmpString, "exponentLimit\n%"              PRId16  "\n",    exponentLimit);                save(tmpString, strlen(tmpString));
+/*22*/  sprintf(tmpString, "exponentHideLimit\n%"          PRId16  "\n",    exponentHideLimit);            save(tmpString, strlen(tmpString));
+/*23*/  sprintf(tmpString, "notBestF\n%"                   PRIu16  "\n",    lrSelection);                  save(tmpString, strlen(tmpString));
 
-//10
-/*01*/  sprintf(tmpString, "fgLN\n%"                PRIu8 "\n",       (uint8_t)fgLN);                save(tmpString, strlen(tmpString));      //keep save file format by keeping the old setting
-/*02*/  sprintf(tmpString, "eRPN\n%"                PRIu8 "\n",       (uint8_t)eRPN);                save(tmpString, strlen(tmpString));
-/*03*/  sprintf(tmpString, "HOME3\n%"               PRIu8 "\n",       (uint8_t)HOME3);               save(tmpString, strlen(tmpString));
-/*04*/  sprintf(tmpString, "ShiftTimoutMode\n%"     PRIu8 "\n",       (uint8_t)ShiftTimoutMode);     save(tmpString, strlen(tmpString));
-/*05*/  sprintf(tmpString, "CPXMult\n%"             PRIu8 "\n",       (uint8_t)CPXMULT);             save(tmpString, strlen(tmpString));
-/*06*/  sprintf(tmpString, "SH_BASE_HOME\n%"        PRIu8 "\n",       (uint8_t)SH_BASE_HOME);        save(tmpString, strlen(tmpString));
-/*07*/  sprintf(tmpString, "Norm_Key_00_VAR\n%"     PRId16 "\n",      Norm_Key_00_VAR);              save(tmpString, strlen(tmpString));
-/*08*/  sprintf(tmpString, "Input_Default\n%"       PRIu8 "\n",       Input_Default);                save(tmpString, strlen(tmpString));
-/*09*/  sprintf(tmpString, "jm_BASE_SCREEN\n%"      PRIu8 "\n",       (uint8_t)jm_BASE_SCREEN);      save(tmpString, strlen(tmpString));
-/*10*/  sprintf(tmpString, "jm_G_DOUBLETAP\n%"      PRIu8 "\n",       (uint8_t)jm_G_DOUBLETAP);      save(tmpString, strlen(tmpString));
+//10     
+/*01*/  sprintf(tmpString, "fgLN\n%"                       PRIu8  "\n",     (uint8_t)fgLN);                save(tmpString, strlen(tmpString));      //keep save file format by keeping the old setting
+/*02*/  sprintf(tmpString, "eRPN\n%"                       PRIu8  "\n",     (uint8_t)eRPN);                save(tmpString, strlen(tmpString));
+/*03*/  sprintf(tmpString, "HOME3\n%"                      PRIu8  "\n",     (uint8_t)HOME3);               save(tmpString, strlen(tmpString));
+/*04*/  sprintf(tmpString, "ShiftTimoutMode\n%"            PRIu8  "\n",     (uint8_t)ShiftTimoutMode);     save(tmpString, strlen(tmpString));
+/*05*/  sprintf(tmpString, "CPXMult\n%"                    PRIu8  "\n",     (uint8_t)CPXMULT);             save(tmpString, strlen(tmpString));
+/*06*/  sprintf(tmpString, "SH_BASE_HOME\n%"               PRIu8  "\n",     (uint8_t)SH_BASE_HOME);        save(tmpString, strlen(tmpString));
+/*07*/  sprintf(tmpString, "Norm_Key_00_VAR\n%"            PRId16 "\n",     Norm_Key_00_VAR);              save(tmpString, strlen(tmpString));
+/*08*/  sprintf(tmpString, "Input_Default\n%"              PRIu8  "\n",     Input_Default);                save(tmpString, strlen(tmpString));
+/*09*/  sprintf(tmpString, "jm_BASE_SCREEN\n%"             PRIu8  "\n",     (uint8_t)jm_BASE_SCREEN);      save(tmpString, strlen(tmpString));
+/*10*/  sprintf(tmpString, "jm_G_DOUBLETAP\n%"             PRIu8  "\n",     (uint8_t)jm_G_DOUBLETAP);      save(tmpString, strlen(tmpString));
 
-/*
-  float  graph_xmin;
-  float  graph_xmax;
-  float  graph_ymin;
-  float  graph_ymax;
-  float  graph_dx;
-  float  graph_dy;
-  bool_t roundedTicks;
-  bool_t extentx;
-  bool_t extenty;
-  bool_t PLOT_VECT;
-  bool_t PLOT_NVECT;
-  bool_t PLOT_SCALE;
-  bool_t Aspect_Square;
-  bool_t PLOT_LINE;
-  bool_t PLOT_CROSS;
-  bool_t PLOT_BOX;
-  bool_t PLOT_INTG;
-  bool_t PLOT_DIFF;
-  bool_t PLOT_RMS;
-  bool_t PLOT_SHADE;
-  bool_t PLOT_AXIS;
-  int8_t PLOT_ZMX;
-  int8_t PLOT_ZMY;
+/*  *///15     
+/*01*/  sprintf(tmpString, "compatibility_bool\n%"         PRIu8  "\n",     (uint8_t)0);                   save(tmpString, strlen(tmpString));            //compatibility - use when needed
+/*02*/  sprintf(tmpString, "jm_LARGELI\n%"                 PRIu8  "\n",     (uint8_t)jm_LARGELI);          save(tmpString, strlen(tmpString));
+/*03*/  sprintf(tmpString, "constantFractions\n%"          PRIu8  "\n",     (uint8_t)constantFractions);   save(tmpString, strlen(tmpString));
+/*04*/  sprintf(tmpString, "constantFractionsMode\n%"      PRIu8  "\n",     constantFractionsMode);        save(tmpString, strlen(tmpString));
+/*05*/  sprintf(tmpString, "constantFractionsOn\n%"        PRIu8  "\n",     (uint8_t)constantFractionsOn); save(tmpString, strlen(tmpString));
+/*06*/  sprintf(tmpString, "displayStackSHOIDISP\n%"       PRIu8  "\n",     displayStackSHOIDISP);         save(tmpString, strlen(tmpString));
+/*07*/  sprintf(tmpString, "bcdDisplay\n%"                 PRIu8  "\n",     (uint8_t)bcdDisplay);          save(tmpString, strlen(tmpString));
+/*08*/  sprintf(tmpString, "topHex\n%"                     PRIu8  "\n",     (uint8_t)topHex);              save(tmpString, strlen(tmpString));
+/*09*/  sprintf(tmpString, "bcdDisplaySign\n%"             PRIu8  "\n",     bcdDisplaySign);               save(tmpString, strlen(tmpString));
+/*10*/  sprintf(tmpString, "DRG_Cycling\n%"                PRIu8  "\n",     DRG_Cycling);                  save(tmpString, strlen(tmpString));
+/*11*/  sprintf(tmpString, "DM_Cycling\n%"                 PRIu8  "\n",     DM_Cycling);                   save(tmpString, strlen(tmpString));
+/*12*/  sprintf(tmpString, "SI_All\n%"                     PRIu8  "\n",     (uint8_t)SI_All);              save(tmpString, strlen(tmpString));
+/*13*/  sprintf(tmpString, "LongPressM\n%"                 PRIu8  "\n",     (uint8_t)LongPressM);          save(tmpString, strlen(tmpString));
+/*14*/  sprintf(tmpString, "LongPressF\n%"                 PRIu8  "\n",     (uint8_t)LongPressF);          save(tmpString, strlen(tmpString));
+/*15*/  sprintf(tmpString, "lastIntegerBase\n%"            PRIu8  "\n",     (uint8_t)lastIntegerBase);     save(tmpString, strlen(tmpString));
 
-  sprintf(tmpString, "graph_xmin\n%"                            graph_xmin);                   save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "graph_xmax\n%"                            graph_xmax);                   save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "graph_ymin\n%"                            graph_ymin);                   save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "graph_ymax\n%"                            graph_ymax);                   save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "graph_dx\n%"                              graph_dx);                     save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "graph_dy\n%"                              graph_dy);                     save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "roundedTicks\n%"                          roundedTicks);                 save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "extentx\n%"                               extentx);                      save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "extenty\n%"                               extenty);                      save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "PLOT_VECT\n%"                             PLOT_VECT);                    save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "PLOT_NVECT\n%"                            PLOT_NVECT);                   save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "PLOT_SCALE\n%"                            PLOT_SCALE);                   save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "Aspect_Square\n%"                         Aspect_Square);                save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "PLOT_LINE\n%"                             PLOT_LINE);                    save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "PLOT_CROSS\n%"                            PLOT_CROSS);                   save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "PLOT_BOX\n%"                              PLOT_BOX);                     save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "PLOT_INTG\n%"                             PLOT_INTG);                    save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "PLOT_DIFF\n%"                             PLOT_DIFF);                    save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "PLOT_RMS\n%"                              PLOT_RMS);                     save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "PLOT_SHADE\n%"                            PLOT_SHADE);                   save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "PLOT_AXIS\n%"                             PLOT_AXIS);                    save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "PLOT_ZMX\n%"                              PLOT_ZMX);                     save(tmpString, strlen(tmpString));
-  sprintf(tmpString, "PLOT_ZMY\n%"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString));
-*/
-
-/*  *///15
-/*01*/  sprintf(tmpString, "jm_temporary\n%"          PRIu8 "\n",     (uint8_t)jm_temporary);        save(tmpString, strlen(tmpString));
-/*02*/  sprintf(tmpString, "jm_LARGELI\n%"            PRIu8 "\n",     (uint8_t)jm_LARGELI);          save(tmpString, strlen(tmpString));
-/*03*/  sprintf(tmpString, "constantFractions\n%"     PRIu8 "\n",     (uint8_t)constantFractions);   save(tmpString, strlen(tmpString));
-/*04*/  sprintf(tmpString, "constantFractionsMode\n%" PRIu8 "\n",     constantFractionsMode);        save(tmpString, strlen(tmpString));
-/*05*/  sprintf(tmpString, "constantFractionsOn\n%"   PRIu8 "\n",     (uint8_t)constantFractionsOn); save(tmpString, strlen(tmpString));
-/*06*/  sprintf(tmpString, "displayStackSHOIDISP\n%"  PRIu8 "\n",     displayStackSHOIDISP);         save(tmpString, strlen(tmpString));
-/*07*/  sprintf(tmpString, "bcdDisplay\n%"            PRIu8 "\n",     (uint8_t)bcdDisplay);          save(tmpString, strlen(tmpString));
-/*08*/  sprintf(tmpString, "topHex\n%"                PRIu8 "\n",     (uint8_t)topHex);              save(tmpString, strlen(tmpString));
-/*09*/  sprintf(tmpString, "bcdDisplaySign\n%"        PRIu8 "\n",     bcdDisplaySign);               save(tmpString, strlen(tmpString));
-/*10*/  sprintf(tmpString, "DRG_Cycling\n%"           PRIu8 "\n",     DRG_Cycling);                  save(tmpString, strlen(tmpString));
-/*11*/  sprintf(tmpString, "DM_Cycling\n%"            PRIu8 "\n",     DM_Cycling);                   save(tmpString, strlen(tmpString));
-/*12*/  sprintf(tmpString, "SI_All\n%"                PRIu8 "\n",     (uint8_t)SI_All);              save(tmpString, strlen(tmpString));
-/*13*/  sprintf(tmpString, "LongPressM\n%"            PRIu8 "\n",     (uint8_t)LongPressM);          save(tmpString, strlen(tmpString));
-/*14*/  sprintf(tmpString, "LongPressF\n%"            PRIu8 "\n",     (uint8_t)LongPressF);          save(tmpString, strlen(tmpString));
-/*15*/  sprintf(tmpString, "lastIntegerBase\n%"       PRIu8 "\n",     (uint8_t)lastIntegerBase);     save(tmpString, strlen(tmpString));
-
+/*  *///23        
+/*01*/  sprintf(tmpString, "lrChosen\n%"                   PRIu16 "\n",     lrChosen);                     save(tmpString, strlen(tmpString));
+/*02*/  sprintf(tmpString, "graph_xmin\n"                  "%f"   "\n",     graph_xmin);                   save(tmpString, strlen(tmpString));
+/*03*/  sprintf(tmpString, "graph_xmax\n"                  "%f"   "\n",     graph_xmax);                   save(tmpString, strlen(tmpString));
+/*04*/  sprintf(tmpString, "graph_ymin\n"                  "%f"   "\n",     graph_ymin);                   save(tmpString, strlen(tmpString));
+/*05*/  sprintf(tmpString, "graph_ymax\n"                  "%f"   "\n",     graph_ymax);                   save(tmpString, strlen(tmpString));
+/*06*/  sprintf(tmpString, "graph_dx\n"                    "%f"   "\n",     graph_dx);                     save(tmpString, strlen(tmpString));
+/*07*/  sprintf(tmpString, "graph_dy\n"                    "%f"   "\n",     graph_dy);                     save(tmpString, strlen(tmpString));
+/*08*/  sprintf(tmpString, "roundedTicks\n%"               PRIu8  "\n",     (uint8_t)roundedTicks);        save(tmpString, strlen(tmpString));
+/*09*/  sprintf(tmpString, "extentx\n%"                    PRIu8  "\n",     (uint8_t)extentx);             save(tmpString, strlen(tmpString));
+/*10*/  sprintf(tmpString, "extenty\n%"                    PRIu8  "\n",     (uint8_t)extenty);             save(tmpString, strlen(tmpString));
+/*11*/  sprintf(tmpString, "PLOT_VECT\n%"                  PRIu8  "\n",     (uint8_t)PLOT_VECT);           save(tmpString, strlen(tmpString));
+/*12*/  sprintf(tmpString, "PLOT_NVECT\n%"                 PRIu8  "\n",     (uint8_t)PLOT_NVECT);          save(tmpString, strlen(tmpString));
+/*13*/  sprintf(tmpString, "PLOT_SCALE\n%"                 PRIu8  "\n",     (uint8_t)PLOT_SCALE);          save(tmpString, strlen(tmpString));
+/*14*/  sprintf(tmpString, "PLOT_LINE\n%"                  PRIu8  "\n",     (uint8_t)PLOT_LINE);           save(tmpString, strlen(tmpString));
+/*15*/  sprintf(tmpString, "PLOT_CROSS\n%"                 PRIu8  "\n",     (uint8_t)PLOT_CROSS);          save(tmpString, strlen(tmpString));
+/*16*/  sprintf(tmpString, "PLOT_BOX\n%"                   PRIu8  "\n",     (uint8_t)PLOT_BOX);            save(tmpString, strlen(tmpString));
+/*17*/  sprintf(tmpString, "PLOT_INTG\n%"                  PRIu8  "\n",     (uint8_t)PLOT_INTG);           save(tmpString, strlen(tmpString));
+/*18*/  sprintf(tmpString, "PLOT_DIFF\n%"                  PRIu8  "\n",     (uint8_t)PLOT_DIFF);           save(tmpString, strlen(tmpString));
+/*19*/  sprintf(tmpString, "PLOT_RMS\n%"                   PRIu8  "\n",     (uint8_t)PLOT_RMS);            save(tmpString, strlen(tmpString));
+/*20*/  sprintf(tmpString, "PLOT_SHADE\n%"                 PRIu8  "\n",     (uint8_t)PLOT_SHADE);          save(tmpString, strlen(tmpString));
+/*21*/  sprintf(tmpString, "PLOT_AXIS\n%"                  PRIu8  "\n",     (uint8_t)PLOT_AXIS);           save(tmpString, strlen(tmpString));
+/*22*/  sprintf(tmpString, "PLOT_ZMX\n%"                   PRIu8  "\n",     PLOT_ZMX);                     save(tmpString, strlen(tmpString));
+/*23*/  sprintf(tmpString, "PLOT_ZMY\n%"                   PRIu8  "\n",     PLOT_ZMY);                     save(tmpString, strlen(tmpString));
 
   ioFileClose();
 
@@ -1457,6 +1410,11 @@ stringToUintFunc(stringToUint8,  uint8_t)
 stringToUintFunc(stringToUint16, uint16_t)
 stringToUintFunc(stringToUint32, uint32_t)
 stringToUintFunc(stringToUint64, uint64_t)
+
+
+float strintToFloat(const char *str) {
+  return strtof(str, NULL);
+}
 
 
 int16_t stringToInt16(const char *str) {
@@ -1633,9 +1591,19 @@ int32_t stringToInt32(const char *str) {
       char *cfg;
 
       reallocateRegister(regist, dtConfig, CONFIG_SIZE, amNone);
-      for(cfg=(char *)REGISTER_CONFIG_DATA(regist), tag=0; tag<sizeof(dtConfigDescriptor_t); tag++, value+=2, cfg++) {
+      for(cfg=(char *)REGISTER_CONFIG_DATA(regist), tag=0;  tag < (loadedVersion < 10000008 ? 896 : sizeof(dtConfigDescriptor_t)); tag++, value+=2, cfg++) {
         *cfg = ((*value >= 'A' ? *value - 'A' + 10 : *value - '0') << 4) | (*(value + 1) >= 'A' ? *(value + 1) - 'A' + 10 : *(value + 1) - '0');
       }
+      if (loadedVersion < 10000008) {
+        // For earlier version config files of 896 desxcriptor length, the above Write into the register must only be up to the old descriptor content.
+        // We add the defaults for the new portion of the new descriptor in the following string.
+        char tmpvalue[65];
+        strcpy(tmpvalue, "0000000000000000F777DC2C2B842A1C33203033460C2A330118000000000000");
+        for(tag=0; tag<strlen(tmpvalue); tag+=2, cfg++) {
+          *cfg = ((tmpvalue[tag] >= 'A' ? tmpvalue[tag] - 'A' + 10 : tmpvalue[tag] - '0') << 4) | (tmpvalue[tag + 1] >= 'A' ? tmpvalue[tag + 1] - 'A' + 10 : tmpvalue[tag + 1] - '0');
+        }
+      }
+
     }
 
     else {
@@ -2365,60 +2333,28 @@ int32_t stringToInt32(const char *str) {
               lastDenominator = 4;
             }
           }
-          else if(strcmp(aimBuffer, "displayFormat") == 0) {
-            displayFormat = stringToUint8(tmpString);
-          }
-          else if(strcmp(aimBuffer, "displayFormatDigits") == 0) {
-            displayFormatDigits = stringToUint8(tmpString);
-          }
-          else if(strcmp(aimBuffer, "timeDisplayFormatDigits") == 0) {
-            timeDisplayFormatDigits = stringToUint8(tmpString);
-          }
-          else if(strcmp(aimBuffer, "shortIntegerWordSize") == 0) {
-            shortIntegerWordSize = stringToUint8(tmpString);
-          }
-          else if(strcmp(aimBuffer, "shortIntegerMode") == 0) {
-            shortIntegerMode = stringToUint8(tmpString);
-          }
-          else if(strcmp(aimBuffer, "significantDigits") == 0) {
-            significantDigits = stringToUint8(tmpString);
-          }
-          else if(strcmp(aimBuffer, "currentAngularMode") == 0) {
-            currentAngularMode = stringToUint8(tmpString);
-          }
-          else if(strcmp(aimBuffer, "groupingGap") == 0) {             //backwards compatible loading old config files
+          else if(strcmp(aimBuffer, "displayFormat"               ) == 0) { displayFormat       = stringToUint8(tmpString);   }
+          else if(strcmp(aimBuffer, "displayFormatDigits"         ) == 0) { displayFormatDigits = stringToUint8(tmpString);   }
+          else if(strcmp(aimBuffer, "timeDisplayFormatDigits"     ) == 0) { timeDisplayFormatDigits = stringToUint8(tmpString); }
+          else if(strcmp(aimBuffer, "shortIntegerWordSize"        ) == 0) { shortIntegerWordSize = stringToUint8(tmpString);  }
+          else if(strcmp(aimBuffer, "shortIntegerMode"            ) == 0) { shortIntegerMode     = stringToUint8(tmpString);  }
+          else if(strcmp(aimBuffer, "significantDigits"           ) == 0) { significantDigits    = stringToUint8(tmpString);  }
+          else if(strcmp(aimBuffer, "currentAngularMode"          ) == 0) { currentAngularMode   = stringToUint8(tmpString);  }
+          else if(strcmp(aimBuffer, "groupingGap"                 ) == 0) { //backwards compatible loading old config files
             configCommon(CFG_DFLT);
-            grpGroupingLeft = stringToUint8(tmpString);                //Changed from groupingGap to remain compatible
+            grpGroupingLeft = stringToUint8(tmpString);                     //Changed from groupingGap to remain compatible
             grpGroupingRight = grpGroupingLeft;
           }
-          else if(strcmp2(aimBuffer, "gapItemLeft") == 0) {            //This is to correct a bug in version 00000005-6, to be compatible to the old files
-            gapItemLeft = stringToUint16(tmpString);
-          }
-          else if(strcmp2(aimBuffer, "gapItemRight") == 0) {            //This is to correct a bug in version 00000005-6, to be compatible to the old files
-            gapItemRight = stringToUint16(tmpString);
-          }
-          else if(strcmp2(aimBuffer, "gapItemRadix") == 0) {            //This is to correct a bug in version 00000005-6, to be compatible to the old files
-            gapItemRadix = stringToUint16(tmpString);
-          }
-          else if(strcmp2(aimBuffer, "grpGroupingLeft") == 0) {            //This is to correct a bug in version 00000005-6, to be compatible to the old files
-            grpGroupingLeft = stringToUint8(tmpString);
-          }
-          else if(strcmp2(aimBuffer, "grpGroupingGr1LeftOverflow") == 0) {            //This is to correct a bug in version 00000005-6, to be compatible to the old files
-            grpGroupingGr1LeftOverflow = stringToUint8(tmpString);
-          }
-          else if(strcmp2(aimBuffer, "grpGroupingGr1Left") == 0) {            //This is to correct a bug in version 00000005-6, to be compatible to the old files
-            grpGroupingGr1Left = stringToUint8(tmpString);
-          }
-          else if(strcmp2(aimBuffer, "grpGroupingRight") == 0) {            //This is to correct a bug in version 00000005-6, to be compatible to the old files
-            grpGroupingRight = stringToUint8(tmpString);
-          }
-          else if(strcmp(aimBuffer, "roundingMode") == 0) {
-            roundingMode = stringToUint8(tmpString);
-          }
-          else if(strcmp(aimBuffer, "displayStack") == 0) {
-            displayStack = stringToUint8(tmpString);
-          }
-          else if(strcmp(aimBuffer, "rngState") == 0) {
+          else if(strcmp2(aimBuffer, "gapItemLeft"                ) == 0) { gapItemLeft          = stringToUint16(tmpString); }            //This is to correct a bug in version 00000005-6, to be compatible to the old files
+          else if(strcmp2(aimBuffer, "gapItemRight"               ) == 0) { gapItemRight         = stringToUint16(tmpString); }            //This is to correct a bug in version 00000005-6, to be compatible to the old files
+          else if(strcmp2(aimBuffer, "gapItemRadix"               ) == 0) { gapItemRadix         = stringToUint16(tmpString); }            //This is to correct a bug in version 00000005-6, to be compatible to the old files
+          else if(strcmp2(aimBuffer, "grpGroupingLeft"            ) == 0) { grpGroupingLeft      = stringToUint8(tmpString);  }            //This is to correct a bug in version 00000005-6, to be compatible to the old files
+          else if(strcmp2(aimBuffer, "grpGroupingGr1LeftOverflow" ) == 0) { grpGroupingGr1LeftOverflow = stringToUint8(tmpString);  }      //This is to correct a bug in version 00000005-6, to be compatible to the old files
+          else if(strcmp2(aimBuffer, "grpGroupingGr1Left"         ) == 0) { grpGroupingGr1Left   = stringToUint8(tmpString);  }            //This is to correct a bug in version 00000005-6, to be compatible to the old files
+          else if(strcmp2(aimBuffer, "grpGroupingRight"           ) == 0) { grpGroupingRight     = stringToUint8(tmpString);  }            //This is to correct a bug in version 00000005-6, to be compatible to the old files
+          else if(strcmp(aimBuffer, "roundingMode"                ) == 0) { roundingMode         = stringToUint8(tmpString);  }
+          else if(strcmp(aimBuffer, "displayStack"                ) == 0) { displayStack         = stringToUint8(tmpString);  }
+          else if(strcmp(aimBuffer, "rngState"                    ) == 0) {
             pcg32_global.state = stringToUint64(tmpString);
             str = tmpString;
             while(*str != ' ') {
@@ -2429,62 +2365,24 @@ int32_t stringToInt32(const char *str) {
             }
             pcg32_global.inc = stringToUint64(str);
           }
-          else if(strcmp(aimBuffer, "exponentLimit") == 0) {
-            exponentLimit = stringToInt16(tmpString);
-          }
-          else if(strcmp(aimBuffer, "exponentHideLimit") == 0) {
-            exponentHideLimit = stringToInt16(tmpString);
-          }
-          else if(strcmp(aimBuffer, "notBestF") == 0) {
-            lrSelection = stringToUint16(tmpString);
-          }
-
+          else if(strcmp(aimBuffer, "exponentLimit"               ) == 0) { exponentLimit         = stringToInt16(tmpString); }
+          else if(strcmp(aimBuffer, "exponentHideLimit"           ) == 0) { exponentHideLimit     = stringToInt16(tmpString); }
+          else if(strcmp(aimBuffer, "notBestF"                    ) == 0) { lrSelection           = stringToUint16(tmpString);}
           else if(strcmp(aimBuffer, "fgLN"                        ) == 0) { fgLN                  = stringToUint8(tmpString); }
-          else if(strcmp(aimBuffer, "jm_FG_LINE"                  ) == 0) { fgLN                  = stringToUint8(tmpString); }                       //Keep compatible with old setting
-//        else if(strcmp(aimBuffer, "SigFigMode"                  ) == 0) { }                     //keep save file format by keeping the old setting
+          else if(strcmp(aimBuffer, "jm_FG_LINE"                  ) == 0) { fgLN                  = stringToUint8(tmpString); }             //Keep compatible with old setting
           else if(strcmp(aimBuffer, "eRPN"                        ) == 0) { eRPN                  = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "HOME3"                       ) == 0) { HOME3                 = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "ShiftTimoutMode"             ) == 0) { ShiftTimoutMode       = (bool_t)stringToUint8(tmpString) != 0; }
-//        else if(strcmp(aimBuffer, "UNITDisplay"                 ) == 0) { }                     //keep save file format by keeping the old setting
           else if(strcmp(aimBuffer, "CPXMult"                     ) == 0) { CPXMULT               = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "SH_BASE_HOME"                ) == 0) { SH_BASE_HOME          = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "Norm_Key_00_VAR"             ) == 0) { Norm_Key_00_VAR       = stringToUint16(tmpString); }
           else if(strcmp(aimBuffer, "Input_Default"               ) == 0) { Input_Default         = stringToUint8(tmpString); }
           else if(strcmp(aimBuffer, "jm_BASE_SCREEN"              ) == 0) { jm_BASE_SCREEN        = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "jm_G_DOUBLETAP"              ) == 0) { jm_G_DOUBLETAP        = (bool_t)stringToUint8(tmpString) != 0; }
-
-  /*
-          else if(strcmp(aimBuffer, "graph_xmin\n"                            graph_xmin);                   save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "graph_xmax\n"                            graph_xmax);                   save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "graph_ymin\n"                            graph_ymin);                   save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "graph_ymax\n"                            graph_ymax);                   save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "graph_dx\n"                              graph_dx);                     save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "graph_dy\n"                              graph_dy);                     save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "roundedTicks\n"                          roundedTicks);                 save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "extentx\n"                               extentx);                      save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "extenty\n"                               extenty);                      save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "PLOT_VECT\n"                             PLOT_VECT);                    save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "PLOT_NVECT\n"                            PLOT_NVECT);                   save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "PLOT_SCALE\n"                            PLOT_SCALE);                   save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "Aspect_Square\n"                         Aspect_Square);                save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "PLOT_LINE\n"                             PLOT_LINE);                    save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "PLOT_CROSS\n"                            PLOT_CROSS);                   save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "PLOT_BOX\n"                              PLOT_BOX);                     save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "PLOT_INTG\n"                             PLOT_INTG);                    save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "PLOT_DIFF\n"                             PLOT_DIFF);                    save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "PLOT_RMS\n"                              PLOT_RMS);                     save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "PLOT_SHADE\n"                            PLOT_SHADE);                   save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "PLOT_AXIS\n"                             PLOT_AXIS);                    save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "PLOT_ZMX\n"                              PLOT_ZMX);                     save(tmpString, strlen(tmpString));
-          else if(strcmp(aimBuffer, "PLOT_ZMY\n"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString));
-  */
-          else if(strcmp(aimBuffer, "jm_temporary"                ) == 0) { jm_temporary          = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "jm_LARGELI"                  ) == 0) { jm_LARGELI            = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "constantFractions"           ) == 0) { constantFractions     = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "constantFractionsMode"       ) == 0) { constantFractionsMode = stringToUint8(tmpString); }
           else if(strcmp(aimBuffer, "constantFractionsOn"         ) == 0) { constantFractionsOn   = (bool_t)stringToUint8(tmpString) != 0; }
-
-
           else if(strcmp(aimBuffer, "displayStackSHOIDISP"        ) == 0) { displayStackSHOIDISP = stringToUint8(tmpString); }
           else if(strcmp(aimBuffer, "bcdDisplay"                  ) == 0) { bcdDisplay           = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "topHex"                      ) == 0) { topHex               = (bool_t)stringToUint8(tmpString) != 0; }
@@ -2495,6 +2393,30 @@ int32_t stringToInt32(const char *str) {
           else if(strcmp(aimBuffer, "LongPressM"                  ) == 0) { LongPressM           = stringToUint8(tmpString); }                  //10000003
           else if(strcmp(aimBuffer, "LongPressF"                  ) == 0) { LongPressF           = stringToUint8(tmpString); }                  //10000003
           else if(strcmp(aimBuffer, "lastIntegerBase"             ) == 0) { lastIntegerBase      = stringToUint8(tmpString); }                  //10000004
+          else if(strcmp(aimBuffer, "lrChosen"                    ) == 0) { lrChosen             = stringToUint16(tmpString); }
+          else if(strcmp(aimBuffer, "graph_xmin"                  ) == 0) { graph_xmin           = strintToFloat(tmpString); }
+          else if(strcmp(aimBuffer, "graph_xmax"                  ) == 0) { graph_xmax           = strintToFloat(tmpString); }
+          else if(strcmp(aimBuffer, "graph_ymin"                  ) == 0) { graph_ymin           = strintToFloat(tmpString); }
+          else if(strcmp(aimBuffer, "graph_ymax"                  ) == 0) { graph_ymax           = strintToFloat(tmpString); }
+          else if(strcmp(aimBuffer, "graph_dx"                    ) == 0) { graph_dx             = strintToFloat(tmpString); }
+          else if(strcmp(aimBuffer, "graph_dy"                    ) == 0) { graph_dy             = strintToFloat(tmpString); }
+          else if(strcmp(aimBuffer, "roundedTicks"                ) == 0) { roundedTicks         = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "extentx"                     ) == 0) { extentx              = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "extenty"                     ) == 0) { extenty              = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "PLOT_VECT"                   ) == 0) { PLOT_VECT            = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "PLOT_NVECT"                  ) == 0) { PLOT_NVECT           = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "PLOT_SCALE"                  ) == 0) { PLOT_SCALE           = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "PLOT_LINE"                   ) == 0) { PLOT_LINE            = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "PLOT_CROSS"                  ) == 0) { PLOT_CROSS           = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "PLOT_BOX"                    ) == 0) { PLOT_BOX             = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "PLOT_INTG"                   ) == 0) { PLOT_INTG            = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "PLOT_DIFF"                   ) == 0) { PLOT_DIFF            = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "PLOT_RMS"                    ) == 0) { PLOT_RMS             = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "PLOT_SHADE"                  ) == 0) { PLOT_SHADE           = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "PLOT_AXIS"                   ) == 0) { PLOT_AXIS            = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "PLOT_ZMX"                    ) == 0) { PLOT_ZMX             = stringToUint8(tmpString); }
+          else if(strcmp(aimBuffer, "PLOT_ZMY"                    ) == 0) { PLOT_ZMY             = stringToUint8(tmpString); }
+
 
           hourGlassIconEnabled = false;
 
