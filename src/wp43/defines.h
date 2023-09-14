@@ -60,28 +60,28 @@
 
 //THESE ARE DMCP COMPILE OPTIONS
   #if !defined(TWO_FILE_PGM) //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT WHILE NOT USING QSPI
-    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S)
-    #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
-    #define SAVE_SPACE_DM42_6  //001648 bytes: ELEC functions
-    #define SAVE_SPACE_DM42_7  //002144 bytes: KEYS USER_DM42;
-  //#define SAVE_SPACE_DM42_8  //007136 bytes: Standard Flag-, Register-, Font- Browser functions
-  //#define SAVE_SPACE_DM42_9  //004448 bytes: SHOW (new C43)
-  //#define SAVE_SPACE_DM42_10 //005800 bytes: WP43S programming ...
-  //#define SAVE_SPACE_DM42_11 //001552 bytes: Matrix function on entry ...
-    #define SAVE_SPACE_DM42_12 //047246 bytes: Standard extra 43S math: SLVQ, PRIME, BESSEL, ELLIPTIC, ZETA, BETA, ORTHO_POLY
-    #define SAVE_SPACE_DM42_13GRF //           JM Solver & graphics & stat graphics
-    #define SAVE_SPACE_DM42_13GRF_JM //        JM graphics
-  //#define SAVE_SPACE_DM42_14    //           programming sample programs
-    #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
-    #define SAVE_SPACE_DM42_16    //           without all distributions, i.e. binomial, cauchy, chi
+  //  #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S)
+  //  #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
+  //  #define SAVE_SPACE_DM42_6  //001648 bytes: ELEC functions
+  //  #define SAVE_SPACE_DM42_7  //002144 bytes: KEYS USER_DM42;
+  //  #define SAVE_SPACE_DM42_8  //007136 bytes: Standard Flag-, Register-, Font- Browser functions
+  //  #define SAVE_SPACE_DM42_9  //004448 bytes: SHOW (new C43)
+  //  #define SAVE_SPACE_DM42_10 //005800 bytes: WP43S programming ...
+  //  #define SAVE_SPACE_DM42_11 //001552 bytes: Matrix function on entry ...
+  //  #define SAVE_SPACE_DM42_12 //047246 bytes: Standard extra 43S math: SLVQ, PRIME, BESSEL, ELLIPTIC, ZETA, BETA, ORTHO_POLY
+  //  #define SAVE_SPACE_DM42_13GRF //           JM Solver & graphics & stat graphics
+  //  #define SAVE_SPACE_DM42_13GRF_JM //        JM graphics
+  //  #define SAVE_SPACE_DM42_14    //           programming sample programs
+  //  #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
+  //  #define SAVE_SPACE_DM42_16    //           without all distributions, i.e. binomial, cauchy, chi
   #endif // !TWO_FILE_PGM
 
   #if defined(TWO_FILE_PGM) //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT INTO AVAILABLE FLASH EVEN WHILE USING QSPI
-    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2;
-    #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
-//    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
-  #define SAVE_SPACE_DM42_15       //           without all distributions, i.e. binomial, cauchy, chi
-  #define SAVE_SPACE_DM42_16       //           without Norml
+  //  #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2;
+  //  #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
+  //  #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
+  //  #define SAVE_SPACE_DM42_15       //           without all distributions, i.e. binomial, cauchy, chi
+  //  #define SAVE_SPACE_DM42_16       //           without Norml
   #endif // TWO_FILE_PGM
 #endif // DMCP_BUILD || SCREEN_800X480 == 1
 
