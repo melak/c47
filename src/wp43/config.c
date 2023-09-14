@@ -212,6 +212,16 @@ void configCommon(uint16_t idx) {
      clearSystemFlag(FLAG_SBss   );  //SBss OFF
      clearSystemFlag(FLAG_SBtime );  //SBtime OFF
        setSystemFlag(FLAG_SBtvm  );  //SBtvm ON
+
+     fnDisplayFormatFix(3);                // FIX 3
+     fnSetGapChar(0+    ITM_SPACE_PUNCTUATION);  //IPART NSPC
+     fnSetGapChar(32768+ITM_NULL);               //RADIX WCOM
+     fnSetGapChar(49152+ITM_WCOMMA);              //FPART NONE
+ 
+
+
+
+
     fnKeyExit(0);
     fnDrop(0);
     fnSquare(0);
@@ -268,7 +278,7 @@ void fnSetC47(uint16_t unusedButMandatoryParameter) {
     fnRecallConfig(35);         //restores previously stored C47 config
     lastErrorCode = 0;
     fnRefreshState();
-    refreshScreen();
+    refreshScreen(167);
   }
 #endif // !TESTSUITE_BUILD
 
