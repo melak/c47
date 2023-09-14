@@ -20,20 +20,6 @@
 #include "wp43.h"
 #include <string.h>
 
-/*
-Variables maintained here
-
-TO_QSPI const calcKey_t kbd_std_WP43[37]
-TO_QSPI const calcKey_t kbd_std[37]        //C47
-TO_QSPI const calcKey_t kbd_std_C43[37]
-TO_QSPI const calcKey_t kbd_std_DM42[37]
-*/
-
-
-
-
-
-
 
 // C43 Layout from Layout_template_automation template: Do not change manually
 //This variable is to store in flash memory
@@ -168,7 +154,7 @@ TO_QSPI const calcKey_t kbd_std_WP43[37] = {
 };
 
 
-#if !defined(SAVE_SPACE_DM42)
+#if defined(PC_BUILD)
 
 // E47 Layout from Layout_template_automation template: Do not change manually
 //This variable is to store in flash memory
@@ -349,7 +335,7 @@ TO_QSPI const calcKey_t kbd_std_D47[37] = {
   //keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
 };
 
-#endif //!defined(SAVE_SPACE_DM42)
+#endif //!defined(PC_BUILD)
 
 // DM42 Layout from Layout_template_automation template: Do not change manually
 //This variable is to store in flash memory
