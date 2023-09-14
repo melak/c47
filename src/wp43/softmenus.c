@@ -648,17 +648,17 @@ TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,           ITM_N_KE
                                              ITM_N_KEY_PRGM,            ITM_N_KEY_USER,            ITM_N_KEY_HOME,            ITM_N_KEY_SIGMA,           ITM_N_KEY_SNAP,            DD_SET_SIGMAPLUS,             
                                              ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  DD_GET_SIGMAPLUS                 };
 
-#if defined(SAVE_SPACE_DM42)
+#if defined(DMCP_BUILD)
   #define CC_V47  ITM_NULL
   #define CC_E47  ITM_NULL
   #define CC_D47  ITM_NULL
   #define CC_N47  ITM_NULL
-#else // !SAVE_SPACE_DM42
+#else // !DMCP_BUILD
   #define CC_V47  ITM_USER_V47
   #define CC_E47  ITM_USER_E47
   #define CC_D47  ITM_USER_D47
   #define CC_N47  ITM_USER_N47
-#endif // SAVE_SPACE_DM42
+#endif // !DMCP_BUILD
 
 
 TO_QSPI const int16_t menu_ASN[]       =  { ITM_USER_C47  ,                 ITM_USER_C43  ,             ITM_USER_WP43S  ,         ITM_USER_DM42   ,      ITM_ASSIGN      ,            ITM_USERMODE   ,

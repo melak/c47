@@ -243,4 +243,7 @@ void     fnRange               (uint16_t R);
 void     fnGetRange            (uint16_t unusedButMandatoryParameter);
 void     fnHide                (uint16_t H);
 void     fnGetHide             (uint16_t unusedButMandatoryParameter);
+void     fnKeysManagement      (uint16_t choice);
+
+
 #endif // !CONFIG_H
