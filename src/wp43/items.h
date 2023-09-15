@@ -553,7 +553,7 @@
 #define SFL_SBprn                    520
 #define SFL_SBbatV                   521
 #define SFL_SBshfR                   522
-#define ITM_0523                     523
+#define SFL_HPBBASE                  523
 #define ITM_0524                     524
 #define ITM_0525                     525
 #define ITM_0526                     526
@@ -1948,7 +1948,7 @@
 #define ITM_SI_P                    1892
 #define KEY_fg                      1893
 #define MNU_TAMCMPALPHA             1894
-#define MNU_1895                    1895
+#define ITM_HPBASE                  1895
 #define MNU_1896                    1896
 #define ITM_ASNVIEWER               1897
 #define ITM_N_KEY_ALPHA             1898
