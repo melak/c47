@@ -3653,6 +3653,7 @@ void execTimerApp(uint16_t timerType) {
             }
           }                                                                 //JM ^^
         }
+      }
 
         else if(getRegisterDataType(regist) == dtLongInteger) {
           if(temporaryInformation == TI_SOLVER_VARIABLE) {
