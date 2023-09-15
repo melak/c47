@@ -161,6 +161,7 @@ void configCommon(uint16_t idx) {
     
     fnClearFlag    (FLAG_USER);              // Clear USER mode
     clearSystemFlag(FLAG_HPRP);              // Clear HP Rect/Polar
+    setSystemFlag  (FLAG_HPBASE);            // Set HP Base
     clearSystemFlag(FLAG_POLAR);             // Set rectangular default
     SetSetting     (SS_8);                   // SSTACK 8  
     SetSetting     (ITM_CPXRES1);            // Set CPXRES
@@ -179,6 +180,7 @@ void configCommon(uint16_t idx) {
   void fnSetRJ(uint16_t unusedButMandatoryParameter){
      currentAngularMode = amRadian;              // RAD
      clearSystemFlag(FLAG_HPRP);                 // HP.RP off
+     clearSystemFlag(FLAG_HPBASE);               // Clear HP Base
      clearSystemFlag(FLAG_POLAR);                // RECT (default)
      SetSetting     (SS_8);                      // SSIZE 8 (default)
      SetSetting     (ITM_CPXRES1);               // CPXRES
@@ -1335,6 +1337,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     setSystemFlag(FLAG_PROPFR);
     setSystemFlag(FLAG_ENDPMT);// TVM application = END mode
     setSystemFlag(FLAG_HPRP);
+    setSystemFlag(FLAG_HPBASE);
 
     hourGlassIconEnabled = false;
     watchIconEnabled = false;

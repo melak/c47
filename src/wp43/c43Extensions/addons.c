@@ -747,6 +747,18 @@ void fnChangeBaseJM(uint16_t BASE) {
     //printf(">>> §§§ fnChangeBaseJMa Calmode:%d, nimbuffer:%s, lastbase:%d, nimnumberpart:%d\n", calcMode, nimBuffer, lastIntegerBase, nimNumberPart);
     shrinkNimBuffer();
     fnChangeBase(BASE);
+
+    if(getSystemFlag(FLAG_HPBASE)) {
+      for(uint16_t regist = REGISTER_X + 1; regist < REGISTER_X + (getSystemFlag(FLAG_SSIZE8) ? 8 : 4); regist ++ ) {
+        if(getRegisterDataType(regist) == dtShortInteger) {
+          if(2 <= BASE && BASE <= 16) {
+            setRegisterTag(regist, BASE);
+          }
+          fnRefreshState();
+        }
+      } 
+    }
+
     nimBufferToDisplayBuffer(aimBuffer, nimBufferDisplay + 2);
   #endif // !TESTSUITE_BUILD
 }

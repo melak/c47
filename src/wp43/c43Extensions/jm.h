@@ -158,6 +158,7 @@ void fnRCL          (int16_t inp);
 #define JC_CPXMULT             70
 
 #define JC_SS                  71
+#define PR_HPBASE              72    // BASE CLASSIC MODE
 
 #if defined(PC_BUILD)
 //keyboard.c
