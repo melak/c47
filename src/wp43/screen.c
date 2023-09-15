@@ -3593,7 +3593,7 @@ void execTimerApp(uint16_t timerType) {
 
           //JM SHOIDISP // use the top part of the screen for HEX and BIN    //JM vv SHOIDISP
           //DISP_TI=3    T=16    T=16    T=16
-          //DISP_TI=4            Z=10    T=2
+          //DISP_TI=2            Z=10    T=2
           //DISP_TI=1                    Z=10
           if(baseModeActive && lastErrorCode == 0) {
             if(displayStack == 1) { //handle Reg Pos Y
@@ -3623,7 +3623,7 @@ void execTimerApp(uint16_t timerType) {
               showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
               copySourceRegisterToDestRegister(TEMP_REGISTER_1,REGISTER_Z);
             }
-            if(displayStack == 1 || displayStack == 2 || displayStack == 3) {
+            if(displayStack == 1 || displayStack == 2 || displayStack == 3) { //handle reg pos T
               copySourceRegisterToDestRegister(REGISTER_T, TEMP_REGISTER_1);
               copySourceRegisterToDestRegister(REGISTER_X, REGISTER_T);
               setRegisterTag(REGISTER_T, !bcdDisplay ? 16 : 17);
@@ -3634,8 +3634,6 @@ void execTimerApp(uint16_t timerType) {
               showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_T - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
               copySourceRegisterToDestRegister(TEMP_REGISTER_1,REGISTER_T);
             }
-
-
             if(displayStack == 3) {
               lcd_fill_rect(0, Y_POSITION_OF_REGISTER_Z_LINE - 2, SCREEN_WIDTH, 1, 0xFF);
             }
