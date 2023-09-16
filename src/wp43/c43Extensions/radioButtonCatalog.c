@@ -95,6 +95,7 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   {ITM_BCD10,            BCD10c,                 RB_BCD}, //
 
   {ITM_HPRP,             PR_HPRP,                CB_JC},  //  --
+  {ITM_HPBASE,           PR_HPBASE,              CB_JC},  //  --
   {ITM_DENANY,           DM_ANY,                 CB_JC},  //  --fnDenMode
   {ITM_DENFIX,           DM_FIX,                 CB_JC},  //  --fnDenMode
 
@@ -321,6 +322,7 @@ int8_t fnCbIsSet(int16_t item) {
             case JC_BSR:                 cb_param = getSystemFlag(FLAG_SPCRES);                                       break;
             case JC_BLZ:                 cb_param = getSystemFlag(FLAG_LEAD0);                                        break;
             case PR_HPRP:                cb_param = getSystemFlag(FLAG_HPRP);                                         break;
+            case PR_HPBASE:              cb_param = getSystemFlag(FLAG_HPBASE);                                       break;
             case DM_ANY:                 cb_param = getSystemFlag(FLAG_DENANY);                                       break;
             case DM_FIX:                 cb_param = getSystemFlag(FLAG_DENFIX);                                       break;
             case PRTACT:                 cb_param = getSystemFlag(FLAG_PRTACT);                                       break;
