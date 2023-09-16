@@ -3535,6 +3535,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 
       case CM_NIM: {
         addItemToNimBuffer(ITM_BACKSPACE);
+        screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME);
         break;
       }
 

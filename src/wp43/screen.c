@@ -1690,7 +1690,10 @@ void execTimerApp(uint16_t timerType) {
       }
       else {
         if(checkHP) {
-          lcd_fill_rect(xCursor, yCursor + 15 -50, 13*2, 13*2, LCD_SET_VALUE);
+          uint32_t ccol, crow;
+          getGlyphBounds(STD_CURSOR, 0, cursorFont, &ccol, &crow);
+          lcd_fill_rect(xCursor, yCursor - checkHPoffset, ccol, crow, LCD_SET_VALUE);
+          //lcd_fill_rect(xCursor, yCursor + 15 - checkHPoffset, 13*2, 13*2, LCD_SET_VALUE);
         }
         else {
           lcd_fill_rect(xCursor, yCursor + 15, 13, 13, LCD_SET_VALUE);
@@ -3913,15 +3916,14 @@ void execTimerApp(uint16_t timerType) {
     if(calcMode == CM_PEM) {
         fnPem(NOPARAM);
     }
-
   }
+
   void showShiftStateF(void) {
         showGlyph(STD_MODE_F, &standardFont, X_SHIFT, Y_SHIFT, vmNormal, true, true); // f is pixel 4+8+3 wide
   }
+
   void showShiftStateG(void) {
         showGlyph(STD_MODE_G, &standardFont, X_SHIFT, Y_SHIFT, vmNormal, true, true); // g is pixel 4+10+1 wide
-
-
   }
 
 
