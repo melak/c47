@@ -604,8 +604,8 @@ TO_QSPI const int16_t menu_BASE[]        = { ITM_2HEX,                      ITM_
                                              ITM_U64,                       ITM_U32,                    ITM_U16,                  ITM_U08,               ITM_U06,                     ITM_FBYTE,
 
                                              ITM_A,                         ITM_B,                      ITM_C,                    ITM_D,                 ITM_E,                       ITM_F,
-                                             ITM_1COMPL,                    ITM_2COMPL,                 ITM_UNSIGN,               ITM_SIGNMT,            ITM_CB_LEADING_ZERO,         ITM_HPBASE,
-                                             ITM_BCD9,                      ITM_BCD10,                  ITM_BCDU,                 ITM_TOPHEX,            -MNU_BITS,                   -MNU_INTS,                  };    //JM BASE MENU ADDED
+                                             ITM_1COMPL,                    ITM_2COMPL,                 ITM_UNSIGN,               ITM_SIGNMT,            -MNU_BITS,                   -MNU_INTS,
+                                             ITM_BCD9,                      ITM_BCD10,                  ITM_BCDU,                 ITM_TOPHEX,            ITM_NULL,                    ITM_NULL                  };    //JM BASE MENU ADDED
 
 
 TO_QSPI const int16_t menu_EE[]          = { ITM_CONSTpi,                   ITM_op_j,                   ITM_SQUARE,               ITM_op_a,              ITM_op_a2,                   ITM_CLSTK,                          //JM EE
