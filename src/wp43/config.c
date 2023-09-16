@@ -144,6 +144,7 @@ void configCommon(uint16_t idx) {
     kbd_usr[8].gShifted = ITM_Rup;          //Replace x-rt-y with Rup
     fnSetFlag(FLAG_USER);                    //Set USER mode
     fnRefreshState();
+    screenUpdatingMode = SCRUPD_AUTO;
     refreshScreen(160);
   }
 
@@ -173,6 +174,7 @@ void configCommon(uint16_t idx) {
     fnKeysManagement(USER_MENG);
     temporaryInformation = TI_NO_INFO;
     fnRefreshState();
+    screenUpdatingMode = SCRUPD_AUTO;
     refreshScreen(161);
     }
 
@@ -221,6 +223,7 @@ void configCommon(uint16_t idx) {
      fnDrop(0);
      fnSquare(0);
      fnRefreshState();
+     screenUpdatingMode = SCRUPD_AUTO;
      refreshScreen(165);
     }
 
@@ -273,6 +276,7 @@ void fnSetC47(uint16_t unusedButMandatoryParameter) {
     fnRecallConfig(35);         //restores previously stored C47 config
     lastErrorCode = 0;
     fnRefreshState();
+    screenUpdatingMode = SCRUPD_AUTO;
     refreshScreen(167);
   }
 #endif // !TESTSUITE_BUILD
@@ -311,6 +315,7 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
       lastErrorCode = 0;
     }
     calcModeNormal();
+    screenUpdatingMode = SCRUPD_AUTO;
     refreshScreen(166);
     fnKeyExit(0);           //Call fnkeyExit to ensure the correct home screen is brought up, if HOME is selected.
     popSoftmenu();
@@ -1479,6 +1484,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     #endif // !TESTSUITE_BUILD
     fnKeysManagement(USER_KRESET);                                      //JM USER
     temporaryInformation = TI_NO_INFO;
+    screenUpdatingMode = SCRUPD_AUTO;
     refreshScreen(163);
 
     //kbd_usr[0].primary     = ITM_CC;                         //JM CPX TEMP DEFAULT        //JM note. over-writing the content of setupdefaults
@@ -1567,7 +1573,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
       showSoftmenuCurrentPart();
     #endif // !TESTSUITE_BUILD
     doRefreshSoftMenu = true;     //jm dr
-    last_CM = 253;
+    screenUpdatingMode = SCRUPD_AUTO;
     refreshScreen(164);
 
     fnClearFlag(FLAG_USER);
