@@ -3243,7 +3243,7 @@ void execTimerApp(uint16_t timerType) {
             viewRegName(prefix, &prefixWidth);
           }
 
-          else if(temporaryInformation == TI_STR && regist == REGISTER_X) {
+          else if(temporaryInformation == TI_CONV_MENU_STR && regist == REGISTER_X) {    //convert menu
                 strcpy(prefix," ");
                 strcat(prefix, errorMessage);
                 strcat(prefix, ":");

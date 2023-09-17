@@ -107,6 +107,75 @@ typedef struct {
 
 
 
+
+
+
+void expandConversionName(char *msg1) {   // 2x16+1 character limit, rounded up to 50
+  int16_t i = 0;
+  int16_t jj = 0;
+  char inStr[51];
+  xcopy(inStr, msg1, min(50,stringByteLength(msg1)+1));
+  inStr[50]=0;
+  msg1[0]=0;
+         while(inStr[i] != 0) { //replace /U with /kWh; U/ with kWh/; hkm with 100km  
+            if('h' == inStr[i] && 'k' == inStr[i+1] && 'm' == inStr[i+2]) {    //test beyond end of string is ok, it will not test positive
+              msg1[jj++] = '1'; i++;
+              msg1[jj++] = '0'; i++;
+              msg1[jj++] = '0'; i++;
+              msg1[jj++] = 'k';
+              msg1[jj++] = 'm';
+            } else if('/' == inStr[i] && 'U' == inStr[i+1]) {
+              msg1[jj++] = '/'; i++;
+              msg1[jj++] = 'k'; i++;
+              msg1[jj++] = 'W';
+              msg1[jj++] = 'h';
+            } else if('U' == inStr[i] && '/' == inStr[i+1]) {
+              msg1[jj++] = 'k'; i++;
+              msg1[jj++] = 'W'; i++;
+              msg1[jj++] = 'h';
+              msg1[jj++] = '/';
+            } else {
+              msg1[jj++]=inStr[i++];
+            }
+          }
+        msg1[jj++]=0;        
+}
+
+
+void compressConversionName(char *msg1) {   // 2x16+1 character limit, rounded up to 50
+  int16_t i = 0;
+  int16_t jj = 0;
+  char inStr[51];
+  xcopy(inStr, msg1, min(50,stringByteLength(msg1)+1));
+  inStr[50]=0;
+  msg1[0]=0;
+         while(inStr[i] != 0) { //replace 100k with |ook; 100m with |oom; /kWh with /U; kWh/ with U/
+            if('1' == inStr[i] && '0' == inStr[i+1] && '0' == inStr[i+2] && ('k' == inStr[i+3] || 'm' == inStr[i+3])) {    //test beyond end of string is ok, it will not test positive
+              msg1[jj++] = STD_BINARY_ONE[0];
+              msg1[jj++] = STD_BINARY_ONE[1];
+              msg1[jj++] = STD_BINARY_ZERO[0];
+              msg1[jj++] = STD_BINARY_ZERO[1];
+              msg1[jj++] = STD_BINARY_ZERO[0];
+              msg1[jj++] = STD_BINARY_ZERO[1];
+              msg1[jj++] = inStr[i+3];          //k or m for km or mile
+              i += 4;
+            } else if('/' == inStr[i] && 'k' == inStr[i+1] && 'W' == inStr[i+2] && 'h' == inStr[i+3]) {
+              msg1[jj++] = '/';
+              msg1[jj++] = 'U';
+              i += 4;
+            } else if('k' == inStr[i] && 'W' == inStr[i+1] && 'h' == inStr[i+2] && '/' == inStr[i+3]) {
+              msg1[jj++] = 'U';
+              msg1[jj++] = '/';
+              i += 4;
+            } else {
+              msg1[jj++]=inStr[i++];
+            }
+          }
+        msg1[jj++]=0;        
+}
+
+
+
 static void _calculateStringWidth(const char *str, const font_t *font, bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows, int16_t *width, const char **resultStr) {
   uint16_t charCode;
   int16_t ch, numPixels, glyphId;

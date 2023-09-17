@@ -573,5 +573,6 @@ char *figlabel(const char *label, const char* showText, int16_t showValue) {    
       ii++;
     }
   }
+  compressConversionName(tmp);
   return tmp;
 }                                                           //JM ^^
