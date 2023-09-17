@@ -458,6 +458,7 @@
 #define FLAG_SBprn                            0x8039
 #define FLAG_SBbatV                           0x803A
 #define FLAG_SBshfR                           0x803B
+#define FLAG_HPBASE                           0x803C
 
 #define NUMBER_OF_SYSTEM_FLAGS                    60
 
