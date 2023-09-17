@@ -257,6 +257,12 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
             }
             i++;
           }
+          int16_t j = 0;
+          errorMessage[j] = 0;
+          while(errorMessage[i] != 0) {
+            errorMessage[j++] =  errorMessage[i++];
+          }
+          errorMessage[j] = 0;
           expandConversionName(errorMessage);
           break;
         }
