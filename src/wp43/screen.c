@@ -2245,6 +2245,13 @@ void execTimerApp(uint16_t timerType) {
         displayTemporaryInformationOnX(prefix);
       }
 
+      #if defined(PC_BUILD)
+      else if(temporaryInformation == TI_DMCP_ONLY && regist == REGISTER_X) {
+        sprintf(prefix, "Not available on the simulator");
+        displayTemporaryInformationOnX(prefix);
+      }
+      #endif // PC_BUILD
+
       else if(temporaryInformation == TI_BACKUP_RESTORED && regist == REGISTER_X) {
         clearRegisterLine(REGISTER_X, true, true);
         clearRegisterLine(REGISTER_Y, true, true);
@@ -3585,11 +3592,14 @@ void execTimerApp(uint16_t timerType) {
           showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0) - (fontForShortInteger == &numericFont && temporaryInformation == TI_NO_INFO && checkHP ? 50:0), vmNormal, false, true);
 
           //JM SHOIDISP // use the top part of the screen for HEX and BIN    //JM vv SHOIDISP
+          //DISP_TI=3    T=16    T=16    T=16
+          //DISP_TI=2            Z=10    T=2
+          //DISP_TI=1                    Z=10
           if(baseModeActive && lastErrorCode == 0) {
-            if(displayStack == 1) {
+            if(displayStack == 1) { //handle Reg Pos Y
               copySourceRegisterToDestRegister(REGISTER_Y, TEMP_REGISTER_1);
               copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
-              setRegisterTag(REGISTER_Y,  !bcdDisplay ? 2 : 10);
+              setRegisterTag(REGISTER_Y,  !bcdDisplay ? 10 : 10);
               shortIntegerToDisplayString(REGISTER_Y, tmpString, true);
               if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
                 showString("  X: ", &standardFont, 0, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Y - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
@@ -3597,14 +3607,14 @@ void execTimerApp(uint16_t timerType) {
               showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Y - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
               copySourceRegisterToDestRegister(TEMP_REGISTER_1,REGISTER_Y);
             }
-            if(displayStack == 1 || displayStack == 2){
+            if(displayStack == 1 || displayStack == 2){ //handle reg pos Z 
               copySourceRegisterToDestRegister(REGISTER_Z, TEMP_REGISTER_1);
               copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Z);
               if(displayStack == 2) {
-                setRegisterTag(REGISTER_Z,  !bcdDisplay ? 2 : 10);
+                setRegisterTag(REGISTER_Z,  !bcdDisplay ? 10 : 10);
               }
               else if(displayStack == 1) {
-                setRegisterTag(REGISTER_Z, !bcdDisplay ? 8 : 2);
+                setRegisterTag(REGISTER_Z, !bcdDisplay ? 2 : 2);
               }
               shortIntegerToDisplayString(REGISTER_Z, tmpString, true);
               if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
@@ -3613,7 +3623,7 @@ void execTimerApp(uint16_t timerType) {
               showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
               copySourceRegisterToDestRegister(TEMP_REGISTER_1,REGISTER_Z);
             }
-            if(displayStack == 1 || displayStack == 2 || displayStack == 3) {
+            if(displayStack == 1 || displayStack == 2 || displayStack == 3) { //handle reg pos T
               copySourceRegisterToDestRegister(REGISTER_T, TEMP_REGISTER_1);
               copySourceRegisterToDestRegister(REGISTER_X, REGISTER_T);
               setRegisterTag(REGISTER_T, !bcdDisplay ? 16 : 17);

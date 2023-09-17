@@ -94,12 +94,12 @@
   extern const calcKey_t                 kbd_std_WP43[37];
   extern const calcKey_t                 kbd_std_DM42[37];
   extern const calcKey_t                 kbd_std_C43[37];
-  #if !defined(SAVE_SPACE_DM42)
+  #if defined(PC_BUILD)
     extern const calcKey_t                 kbd_std_D47[37];
     extern const calcKey_t                 kbd_std_V47[37];
     extern const calcKey_t                 kbd_std_E47[37];
     extern const calcKey_t                 kbd_std_N47[37];
-  #endif // !SAVE_SPACE_DM42
+  #endif // PC_BUILD
   extern const font_t                    standardFont, numericFont;
   extern const font_t                   *fontForShortInteger;
   extern const font_t                   *cursorFont;
@@ -312,7 +312,6 @@
   extern float                  graph_xmax;                   //JM Graph
   extern float                  graph_ymin;                   //JM Graph
   extern float                  graph_ymax;                   //JM Graph
-  extern bool_t                 jm_temporary;                 //JMHOME
   extern bool_t                 jm_LARGELI;                   //JM flag to keep large font numbers on screen
   extern bool_t                 constantFractions;            //JM
   extern uint8_t                constantFractionsMode;        //JM

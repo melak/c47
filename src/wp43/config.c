@@ -39,6 +39,7 @@
 #include "c43Extensions/keyboardTweak.h"
 #include "keyboard.h"
 #include "mathematics/matrix.h"
+#include "mathematics/square.h"
 #include "memory.h"
 #include "plotstat.h"
 #include "programming/manage.h"
@@ -56,6 +57,7 @@
 #include "stack.h"
 #include "stats.h"
 #include "store.h"
+#include "recall.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -125,6 +127,8 @@ void configCommon(uint16_t idx) {
   void fnSetHP35(uint16_t unusedButMandatoryParameter) {
     fnKeyExit(0);                            //Clear pending key input
     fnClrMod(0);                             //Get out of NIM or BASE
+    fnStoreConfig(35);                       //Store current config into R35
+    
     fnClearStack(0);                         //Clear stack
     fnPi(0);                                 //Put pi on X
 
@@ -135,7 +139,7 @@ void configCommon(uint16_t idx) {
     exponentLimit     = 99;                  //Set the exponent limit the same as HP35, i.e. 99                ID, if changed, also set the conditions for checkHP in defines.h (99)
     significantDigits = 16;                  //SETSIG2 = 16                                                    ID, if changed, also set the conditions for checkHP in defines.h (10-16)
     displayStack = cachedDisplayStack = 1;   //Change to single stack register display                         ID, if changed, also set the conditions for checkHP in defines.h (1)
-    currentAngularMode = amDegree;           //Set to DEG
+    currentAngularMode = amRadian;           //Set to RAD
     SetSetting(SS_4);                        //SSTACK4
     SetSetting(ITM_CPXRES0);                 //Clear CPXRES
     SetSetting(ITM_SPCRES0);                 //Clear SPCRES
@@ -158,37 +162,82 @@ void configCommon(uint16_t idx) {
 
 
   void fnSetJM(uint16_t unusedButMandatoryParameter){
-    //fnSetHP35(0);
-    jm_BASE_SCREEN = true;
-    fneRPN(1);                               //eRPN                revert HP35 defaults
-    setFGLSettings(RB_FGLNFUL);              //fgLine FULL         revert HP35 defaults
-    clearSystemFlag(FLAG_HPRP);              //Clear HP Rect/Polar revert HP35 defaults
-    SetSetting(SS_8);                        //SSTACK 8            revert HP35 defaults
-    SetSetting(ITM_CPXRES1);                 //Set CPXRES          revert HP35 defaults
-    SetSetting(ITM_SPCRES1);                 //Set SPCRES          revert HP35 defaults
-    setSystemFlag(FLAG_CPXj);                //Set j               revert HP35 defaults
-    setSystemFlag(FLAG_SBbatV);              //Set battery voltage indicator
+    fnDrop(0);
+    fnSquare(0);
+    resetOtherConfigurationStuff();
+    defaultStatusBar();
+    //jm_BASE_SCREEN = true;                   //MyMenu base menu
+    //currentAngularMode = amDegree;           //Deg
+    //fneRPN(1);                               //eRPN
+    //setFGLSettings (RB_FGLNFUL);             //fgLine FULL
+    //jm_BASE_SCREEN = true;                   //Switch on base = MyMenu    
+    fnClearFlag    (FLAG_USER);              // Clear USER mode
+    clearSystemFlag(FLAG_HPRP);              // Clear HP Rect/Polar
+    setSystemFlag  (FLAG_HPBASE);            // Set HP Base
+    clearSystemFlag(FLAG_POLAR);             // Set rectangular default
+    SetSetting     (SS_8);                   // SSTACK 8  
+    SetSetting     (ITM_CPXRES1);            // Set CPXRES
+    SetSetting     (ITM_SPCRES1);            // Set SPCRES
+    setSystemFlag  (FLAG_CPXj);              // Set j     
+    setSystemFlag  (FLAG_SBbatV);            // Set battery voltage indicator
+    fnDisplayFormatSigFig(3);                // SIG 3
+    roundingMode = RM_HALF_UP;    
+    fnKeysManagement(USER_MENG);
+    temporaryInformation = TI_NO_INFO;
     fnRefreshState();
     refreshScreen();
     }
+
 
   void fnSetRJ(uint16_t unusedButMandatoryParameter){
-    //fnSetHP35(0);
-    jm_BASE_SCREEN = true;
-    fneRPN(1);                               //eRPN                revert HP35 defaults
-    setFGLSettings(RB_FGLNFUL);              //fgLine FULL         revert HP35 defaults
-    clearSystemFlag(FLAG_HPRP);              //Clear HP Rect/Polar revert HP35 defaults
-    SetSetting(SS_8);                        //SSTACK 8            revert HP35 defaults
-    SetSetting(ITM_CPXRES1);                 //Set CPXRES          revert HP35 defaults
-    SetSetting(ITM_SPCRES1);                 //Set SPCRES          revert HP35 defaults
-    setSystemFlag(FLAG_CPXj);                //Set j               revert HP35 defaults
-    setSystemFlag(FLAG_SBbatV);              //Set battery voltage indicator
-    fnRefreshState();
-    refreshScreen();
+     currentAngularMode = amRadian;              // RAD
+     clearSystemFlag(FLAG_HPRP);                 // HP.RP off
+     clearSystemFlag(FLAG_HPBASE);               // Clear HP Base
+     clearSystemFlag(FLAG_POLAR);                // RECT (default)
+     SetSetting     (SS_8);                      // SSIZE 8 (default)
+     SetSetting     (ITM_CPXRES1);               // CPXRES
+     SetSetting     (ITM_SPCRES1);               // SPCRES
+     denMax = 9999;                              // DMX 9999
+     significantDigits = 34;                     // SDIGS 34
+     SetSetting(JC_EXFRAC);                      // EXFRAC ON
+     setSystemFlag(FLAG_DENANY);                 // DENANY ON
+     clearSystemFlag(FLAG_DENFIX);               // DENFIX OFF
+     jm_BASE_SCREEN = true;                      // MyM ON
+     SetSetting(JC_HOME_TRIPLE);                 // HOME.3 ON
+     SetSetting(JC_G_DOUBLETAP);                 // g.2Tp ON
+     SetSetting(JC_SHFT_4s);                     // SH.4s ON
+     setFGLSettings (RB_FGLNFUL);                // fg.FUL
+     LongPressM = RB_M1234;                      // M.1234
+     LongPressF = RB_F124;                       // F.124
+     clearSystemFlag(FLAG_SBang  );              // SBang OFF
+       setSystemFlag(FLAG_SBbatV );              // SBbatV ON
+     clearSystemFlag(FLAG_SBclk  );              // SBclk OFF
+       setSystemFlag(FLAG_SBcpx  );              // SBcpx ON
+       setSystemFlag(FLAG_SBcr   );              // SBcr ON
+       setSystemFlag(FLAG_SBdate );              // SBdate ON
+       setSystemFlag(FLAG_SBfrac );              // SBfrac ON
+     clearSystemFlag(FLAG_SBint  );              // SBint OFF
+       setSystemFlag(FLAG_SBmx   );              // SBmx ON
+     clearSystemFlag(FLAG_SBoc   );              // SBoc OFF
+       setSystemFlag(FLAG_SBprn  );              // SBprn ON
+       setSystemFlag(FLAG_SBser  );              // SBser ON
+     clearSystemFlag(FLAG_SBshfR );              // SBshfR OFF
+     clearSystemFlag(FLAG_SBss   );              // SBss OFF
+     clearSystemFlag(FLAG_SBtime );              // SBtime OFF
+       setSystemFlag(FLAG_SBtvm  );              // SBtvm ON
+     fnDisplayFormatFix(3);                      // FIX 3
+     fnSetGapChar(0+    ITM_SPACE_PUNCTUATION);  // IPART NSPC
+     fnSetGapChar(32768+ITM_NULL);               // FPART NONE
+     fnSetGapChar(49152+ITM_WCOMMA);             // RADIX WCOM
+     fnKeyExit(0);
+     fnDrop(0);
+     fnSquare(0);
+     fnRefreshState();
+     refreshScreen();
     }
 
 
-  void _fnSetC47(uint16_t unusedButMandatoryParameter) {
+  void _fnSetC47(uint16_t unusedButMandatoryParameter) {         //Reversing the HP35 settings to C47 defaults
     fnKeyExit(0);
     addItemToBuffer(ITM_EXIT1);
 
@@ -227,10 +276,16 @@ void configCommon(uint16_t idx) {
     refreshScreen();
   }
 
+
 void fnSetC47(uint16_t unusedButMandatoryParameter) {
     fnKeyExit(0);
+    addItemToBuffer(ITM_EXIT1);
     fnClrMod(0);
-    _fnSetC47(0);
+    _fnSetC47(0);               //Needs a reset in case for some reason RCLCFG R35 fails, then it resets to defaults
+    fnRecallConfig(35);         //restores previously stored C47 config
+    lastErrorCode = 0;
+    fnRefreshState();
+    refreshScreen();
   }
 #endif // !TESTSUITE_BUILD
 
@@ -262,8 +317,10 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
     }
     if(!checkHP) {
       fnDisplayStack(4);    //Restore to default DSTACK 4
-    } else {
-      _fnSetC47(0);          //Snap out of HP35 mode, and reset all setting needed for that
+    } else {                //Snap out of HP35 mode, and reset all setting needed for that
+      _fnSetC47(0);          
+      fnRecallConfig(35);
+      lastErrorCode = 0;
     }
     calcModeNormal();
     refreshScreen();
@@ -271,7 +328,6 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
     popSoftmenu();
   #endif // !TESTSUITE_BUILD
 }
-
 
 
 
@@ -1291,6 +1347,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     setSystemFlag(FLAG_PROPFR);
     setSystemFlag(FLAG_ENDPMT);// TVM application = END mode
     setSystemFlag(FLAG_HPRP);
+    setSystemFlag(FLAG_HPBASE);
 
     hourGlassIconEnabled = false;
     watchIconEnabled = false;
@@ -1424,13 +1481,13 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     #endif
     //    calcMode = CM_BUG_ON_SCREEN; this also removes the false start on MyMenu error
 
-    fnUserJM(USER_ARESET);                                      //JM USER
-    fnUserJM(USER_MRESET);                                      //JM USER
-    fnUserJM(USER_MENG);                                        //JM USER    
+    fnKeysManagement(USER_ARESET);                                      //JM USER
+    fnKeysManagement(USER_MRESET);                                      //JM USER
+    fnKeysManagement(USER_MENG);                                        //JM USER    
     #if !defined(TESTSUITE_BUILD)
       showSoftmenu(-MNU_MyMenu);                                   //this removes the false start on MyMenu error
     #endif // !TESTSUITE_BUILD
-    fnUserJM(USER_KRESET);                                      //JM USER
+    fnKeysManagement(USER_KRESET);                                      //JM USER
     temporaryInformation = TI_NO_INFO;
     refreshScreen();
 
@@ -1568,5 +1625,144 @@ void activateUSBdisk(uint16_t confirmation) {
     #if defined(DMCP_BUILD)
       run_menu_item_sys(MI_MSC);
     #endif // DMCP_BUILD
+  }
+}
+
+
+
+/********************************************//**
+ * \brief Sets/resets KEYS MANAGEMENT
+ *
+ * \param[in] jmConfig uint16_t
+ * \return void
+ ***********************************************/
+void fnKeysManagement(uint16_t choice) {
+  switch(choice) {
+    //---KEYS SIGMA+ ALLOCATIONS: COPY SIGMA+ USER MODE primary to -> ALLMODE
+    //-----------------------------------------------------------------------
+    case USER_COPY:
+      if(Norm_Key_00_VAR != ITM_SHIFTf && Norm_Key_00_VAR != ITM_SHIFTg) {
+        kbd_usr[0].primary        = Norm_Key_00_VAR;
+        fnRefreshState();
+        fnSetFlag(FLAG_USER);
+      }
+      break;
+
+    #if defined(PC_BUILD)
+      case USER_E47:          //USER
+        fnKeysManagement(USER_KRESET);
+        fnShowVersion(USER_E47);
+        xcopy(kbd_usr, kbd_std_E47, sizeof(kbd_std_E47));
+        fnSetFlag(FLAG_USER);
+      break;
+
+      case USER_V47:          //USER
+        fnKeysManagement(USER_KRESET);
+        fnShowVersion(USER_V47);
+        xcopy(kbd_usr, kbd_std_V47, sizeof(kbd_std_V47));
+        fnSetFlag(FLAG_USER);
+      break;
+
+      case USER_N47:          //USER
+        fnKeysManagement(USER_KRESET);
+        fnShowVersion(USER_N47);
+        xcopy(kbd_usr, kbd_std_N47, sizeof(kbd_std_N47));
+        fnSetFlag(FLAG_USER);
+        break;
+
+      case USER_D47:          //USER
+        fnKeysManagement(USER_KRESET);
+        fnShowVersion(USER_D47);
+        xcopy(kbd_usr, kbd_std_D47, sizeof(kbd_std_D47));
+        fnSetFlag(FLAG_USER);
+      break;
+    #endif //PC_BUILD
+
+
+    //---KEYS PROFILE: C43
+    //------------------------
+    case USER_C43:          //USER
+      fnKeysManagement(USER_KRESET);
+      fnShowVersion(USER_C43);
+      xcopy(kbd_usr, kbd_std_C43, sizeof(kbd_std_C43));
+      fnSetFlag(FLAG_USER);
+      break;
+
+
+    //---KEYS PROFILE: C47
+    //------------------------
+    case USER_C47:          //USER
+      fnKeysManagement(USER_KRESET);
+      fnShowVersion(USER_C47);
+      //xcopy(kbd_usr, kbd_std, sizeof(kbd_std));         //Removed from the default profile. Return on other defaults like D47
+      //fnSetFlag(FLAG_USER);                             //Removed from the default profile. Return on other defaults like D47
+      break;
+
+
+    //---KEYS PROFILE: DM42
+    //------------------------
+    case USER_DM42:
+      fnKeysManagement(USER_KRESET);
+      fnShowVersion(USER_DM42);
+      xcopy(kbd_usr, kbd_std_DM42, sizeof(kbd_std_DM42));
+      fnSetFlag(FLAG_USER);
+      break;
+
+    //---KEYS PROFILE: WP43
+    //------------------------
+    case USER_43S:
+      fnKeysManagement(USER_KRESET);
+      fnShowVersion(USER_43S);
+      xcopy(kbd_usr, kbd_std_WP43, sizeof(kbd_std_WP43));
+      kbd_usr[10].primary       = KEY_fg;
+      kbd_usr[10].keyLblAim     = KEY_fg;
+      kbd_usr[10].primaryAim    = KEY_fg;
+      kbd_usr[10].gShiftedAim   = ITM_NULL;
+      kbd_usr[10].gShifted      = ITM_NULL;
+      kbd_usr[10].primaryTam    = KEY_fg;
+      kbd_usr[11].fShiftedAim   = ITM_NULL;
+      kbd_usr[11].fShifted      = ITM_NULL;
+      kbd_usr[18].gShifted      = ITM_SNAP;
+      kbd_usr[18].fShifted      = -MNU_ASN;
+      kbd_usr[19].fShifted      = ITM_USERMODE;
+      fnSetFlag(FLAG_USER);
+      break;
+
+    case USER_MRESET:
+      fnRESET_MyM(0);
+      fnShowVersion(USER_MRESET);
+      break;
+
+    case USER_MENG:
+      fnRESET_MyM(USER_MENG);
+      fnShowVersion(USER_MENG);
+      #if !defined(TESTSUITE_BUILD)
+        showSoftmenu(-MNU_MyMenu);
+      #endif // !TESTSUITE_BUILD
+      break;
+
+    case USER_MFIN:
+      fnRESET_MyM(USER_MFIN);
+      fnShowVersion(USER_MFIN);
+      #if !defined(TESTSUITE_BUILD)
+        showSoftmenu(-MNU_MyMenu);
+      #endif // !TESTSUITE_BUILD
+      break;
+
+    case USER_ARESET:
+      fnRESET_Mya();
+      fnShowVersion(USER_ARESET);
+      break;
+
+    case USER_KRESET:
+      fnShowVersion(USER_KRESET);
+      xcopy(kbd_usr, kbd_std, sizeof(kbd_std));
+      Norm_Key_00_VAR = ITM_SIGMAPLUS;
+      fnRefreshState();
+      fnClearFlag(FLAG_USER);
+      break;
+
+    default:
+      break;
   }
 }

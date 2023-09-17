@@ -38,6 +38,7 @@
 #include "mathematics/toPolar.h"
 #include "programming/input.h"
 #include "mathematics/wp34s.h"
+#include "mathematics/rsd.h"
 #include "c43Extensions/radioButtonCatalog.h"
 #include "registers.h"
 #include "registerValueConversions.h"
@@ -64,10 +65,6 @@ static void fnDisplayFormatReset(uint16_t displayFormatN) {
 void fnDisplayFormatFix(uint16_t displayFormatN) {
   fnDisplayFormatReset(displayFormatN);
   displayFormat = DF_FIX;
-  if(getRegisterDataType(REGISTER_X) == dtTime || getRegisterDataType(REGISTER_Y) == dtTime || getRegisterDataType(REGISTER_Z) == dtTime || getRegisterDataType(REGISTER_T) == dtTime) {     //JM let FIX operate on time as well
-    fnDisplayFormatTime(displayFormatN);
-  }
-
   fnRefreshState();                              //drJM
 }
 
@@ -395,10 +392,16 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
   if(displayFormat == DF_SF) {                                 //convert real34 to string, eat away all zeroes from the right and give back to FIX as a real
     char tmpString100[100];                           //cleaning up the REAL
     real34_t reduced;
-    real34Reduce(real34, &reduced);
-    //printReal34ToConsole(&reduced," ------- 002 >>>>>"," <<<<<\n");   //JM
+    real_t tmp1;
+    //printReal34ToConsole(real34," ------- 002a >>>>>"," <<<<<\n");   //JM
+    real34ToReal(real34, &tmp1);
+    roundToSignificantDigits(&tmp1, &tmp1, displayFormatDigits+1, &ctxtReal75);
+    realToReal34(&tmp1, &reduced);
+    //printReal34ToConsole(&reduced," ------- 002b >>>>>"," <<<<<\n");   //JM
+    real34Reduce(&reduced, &reduced);
+    //printReal34ToConsole(&reduced," ------- 002c >>>>>"," <<<<<\n");   //JM
     real34ToString(&reduced, tmpString100);
-    //printf("------- 003 >>>>>%s\n",tmpString100);
+    //printf("------- 003 displayFormatDigits=%u >>>>>%s\n",displayFormatDigits, tmpString100);
     int8_t ii=0;
     while(tmpString100[ii]!=0) {                       //skip all zeroes
       while(tmpString100[ii] == '0') {
@@ -408,7 +411,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
       if(tmpString100[ii] == '.') {
       //printf("------- 004 >>>>%s|, %i\n",tmpString100, ii);
 
-          ii++;                                        //move to first non-'.' ans skip all zeroes
+          ii++;                                        //move to first non-'.' and skip all zeroes
           while(tmpString100[ii] == '0') {
             if(tmpString100[ii] == 0) break;
             ii++;
