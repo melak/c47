@@ -130,6 +130,16 @@
   void fnCvtFirtolb   (uint16_t multiplyDivide);
   void fnCvtFpftomph  (uint16_t multiplyDivide);
 
+  //YMMV
+  void fnL100Tokml    (uint16_t multiplyDivide);
+  void fnKmletok100K  (uint16_t multiplyDivide);
+  void fnK100Ktokmk   (uint16_t multiplyDivide);
+  void fnL100Tomgus   (uint16_t multiplyDivide);
+  void fnMgeustok100M (uint16_t multiplyDivide);
+  void fnK100Mtok100K (uint16_t multiplyDivide);
+  void fnL100Tomguk   (uint16_t multiplyDivide);
+  void fnMgeuktok100M (uint16_t multiplyDivide);
+  void fnK100Mtomik   (uint16_t multiplyDivide);
 
 
 #endif // !CONVERSIONUNITS_H
