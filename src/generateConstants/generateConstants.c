@@ -531,7 +531,8 @@ void generateAllConstants(void) {
   generateConstantArray("1e_10000",      "+1.000000000000000000000000000000000000000000000000000000e-10000");     // cnst225
   generateConstantArray("995on1000",     "+9.950000000000000000000000000000000000000000000000000000e-01");        // cnst226
   generateConstantArray("1e_32",         "+1.000000000000000000000000000000000000000000000000000000e-32");        // cnst227
-  generateConstantArray("rt3",           "+1.732050807568877293527446341505872366942805253810380628e+00");        // cnst228 if the number of constants changes: don't forget to update NUMBER_OF_CONSTANTS_* in defines.h
+  generateConstantArray("rt3",           "+1.732050807568877293527446341505872366942805253810380628e+00");        // cnst228
+  generateConstantArray("GaluseqE",      "+3.370000000000000000000000000000000000000000000000000000e+01");        // cnst229 if the number of constants changes: don't forget to update NUMBER_OF_CONSTANTS_* in defines.h 
 
 
   // Lanczos's coefficients calculated for N=22 and G=22.61891 using Toth's program: https://www.vttoth.com/CMS/projects/41

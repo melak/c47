@@ -119,6 +119,9 @@ uint32_t utf8ToCodePoint  (const uint8_t *utf8, uint32_t *codePoint);
  */
 char    *stringAppend     (char *dest, const char *source);
 
+void     expandConversionName(char *msg1);
+void     compressConversionName(char *msg1);
+
 void     stringToUtf8     (const char *str, uint8_t *utf8);
 void     utf8ToString     (const uint8_t *utf8, char *str);
 void     stringToASCII    (const char *str, char *ascii);

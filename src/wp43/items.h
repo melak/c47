@@ -404,9 +404,9 @@
 #define ITM_CUNtoM                   380
 #define ITM_MtoCUN                   381
 #define ITM_ZHANGtoM                 382
-#define ITM_ZHANGtoMb                383
+#define ITM_0383                     383
 #define ITM_MtoZHANG                 384
-#define ITM_MtoZHANGb                385
+#define ITM_0385                     385
 #define ITM_FENtoM                   386
 #define ITM_MtoFEN                   387
 #define ITM_MI2toKM2                 388
@@ -2258,8 +2258,27 @@
 #define ITM_VOLMINUS                2201
 #define ITM_BUZZ                    2202
 #define ITM_PLAY                    2203
+#define ITM_L100toKML               2204
+#define ITM_KMLtoL100               2205
+#define ITM_KMLEtoK100K             2206
+#define ITM_K100KtoKMLE             2207
+#define ITM_K100KtoKMK              2208
+#define ITM_KMKtoK100K              2209
+#define ITM_L100toMGUS              2210
+#define ITM_MGUStoL100              2211
+#define ITM_MGEUStoK100M            2212
+#define ITM_K100MtoMGEUS            2213
+#define ITM_K100MtoK100K            2214
+#define ITM_K100KtoK100M            2215
+#define ITM_L100toMGUK              2216
+#define ITM_MGUKtoL100              2217
+#define ITM_MGEUKtoK100M            2218
+#define ITM_K100MtoMGEUK            2219
+#define ITM_K100MtoMIK              2220
+#define ITM_MIKtoK100M              2221
+#define MNU_CONVYMMV                2222
 
-#define LAST_ITEM                   2204
+#define LAST_ITEM                   2223
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
