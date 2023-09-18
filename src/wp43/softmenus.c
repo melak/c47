@@ -2374,6 +2374,7 @@ void fnExitAllMenus(uint16_t unusedButMandatoryParameter) {
   while((softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_MyMenu && softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_MyAlpha) || (softmenu[softmenuStack[1].softmenuId].menuItem != -MNU_MyMenu)) {
     popSoftmenu();
   }
+  //fnDumpMenus(0);   //Easy place to access the Dump Menus: PFN / More / ExitAll
 #endif // !TESTSUITE_BUILD
 }
 
@@ -2387,7 +2388,7 @@ void fnMenuDump(uint16_t menu, uint16_t item) {                              //J
   showSoftmenuCurrentPart();
 
   FILE *bmp;
-  char bmpFileName[22];
+  char bmpFileName[100];
   int32_t x, y;
   uint32_t uint32;
   uint16_t uint16;
@@ -2398,9 +2399,17 @@ void fnMenuDump(uint16_t menu, uint16_t item) {                              //J
     gtk_main_iteration();
   }
 
-  printf(">>> %s\n",indexOfItems[-softmenu[menu].menuItem].itemSoftmenuName);
+  //printf(">>> %s\n",indexOfItems[-softmenu[menu].menuItem].itemSoftmenuName);
+  char asciiString[448];
+  char asciiString1[448];
+  stringToASCII(indexOfItems[-softmenu[menu].menuItem].itemSoftmenuName, asciiString1);
+  //printf(">>> Menustring:%s|",asciiString1);
+  stringToFileNameChars(asciiString1, asciiString);
+  //printf(">>> Menustring:%s|",asciiString);
 
-  sprintf(bmpFileName,"Menu_%4d%4d.bmp",menu,item);
+  sprintf(bmpFileName,"Menu_%s_%4d p%d.bmp",asciiString, menu, (int)(item/18)+1);
+  printf(">>> filename:%s|\n",bmpFileName);
+
   bmp = fopen(bmpFileName, "wb");
 
   fwrite("BM", 1, 2, bmp);        // Offset 0x00  0  BMP header
@@ -2511,7 +2520,15 @@ void fnDumpMenus(uint16_t unusedButMandatoryParameter) {                      //
       n=0;
       while(n <= softmenu[m].numItems && softmenu[m].numItems != 0) {
         printf("m=%d n=%d\n",m,n );
-        fnMenuDump(m, n);
+        switch(m) {
+          case 30:
+          case 31:
+          case 32:
+          case 33:
+            break;      
+          default:
+           fnMenuDump(m, n);
+         }
         n += 18;
       }
       m++;
