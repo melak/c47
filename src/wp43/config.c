@@ -166,11 +166,6 @@ void configCommon(uint16_t idx) {
     fnSquare(0);
     resetOtherConfigurationStuff();
     defaultStatusBar();
-    //jm_BASE_SCREEN = true;                   //MyMenu base menu
-    //currentAngularMode = amDegree;           //Deg
-    //fneRPN(1);                               //eRPN
-    //setFGLSettings (RB_FGLNFUL);             //fgLine FULL
-    //jm_BASE_SCREEN = true;                   //Switch on base = MyMenu    
     fnClearFlag    (FLAG_USER);              // Clear USER mode
     clearSystemFlag(FLAG_HPRP);              // Clear HP Rect/Polar
     setSystemFlag  (FLAG_HPBASE);            // Set HP Base
@@ -183,6 +178,11 @@ void configCommon(uint16_t idx) {
     fnDisplayFormatSigFig(3);                // SIG 3
     roundingMode = RM_HALF_UP;    
     fnKeysManagement(USER_MENG);
+
+    itemToBeAssigned = -MNU_EE;
+    _assignItem(&userMenuItems[6]); //fF1
+    cachedDynamicMenu = 0;
+
     temporaryInformation = TI_NO_INFO;
     fnRefreshState();
     refreshScreen();
@@ -190,45 +190,24 @@ void configCommon(uint16_t idx) {
 
 
   void fnSetRJ(uint16_t unusedButMandatoryParameter){
-     currentAngularMode = amRadian;              // RAD
-     clearSystemFlag(FLAG_HPRP);                 // HP.RP off
-     clearSystemFlag(FLAG_HPBASE);               // Clear HP Base
-     clearSystemFlag(FLAG_POLAR);                // RECT (default)
-     SetSetting     (SS_8);                      // SSIZE 8 (default)
-     SetSetting     (ITM_CPXRES1);               // CPXRES
-     SetSetting     (ITM_SPCRES1);               // SPCRES
-     denMax = 9999;                              // DMX 9999
-     significantDigits = 34;                     // SDIGS 34
-     SetSetting(JC_EXFRAC);                      // EXFRAC ON
-     setSystemFlag(FLAG_DENANY);                 // DENANY ON
-     clearSystemFlag(FLAG_DENFIX);               // DENFIX OFF
-     jm_BASE_SCREEN = true;                      // MyM ON
-     SetSetting(JC_HOME_TRIPLE);                 // HOME.3 ON
-     SetSetting(JC_G_DOUBLETAP);                 // g.2Tp ON
-     SetSetting(JC_SHFT_4s);                     // SH.4s ON
-     setFGLSettings (RB_FGLNFUL);                // fg.FUL
-     LongPressM = RB_M1234;                      // M.1234
-     LongPressF = RB_F124;                       // F.124
-     clearSystemFlag(FLAG_SBang  );              // SBang OFF
-       setSystemFlag(FLAG_SBbatV );              // SBbatV ON
-     clearSystemFlag(FLAG_SBclk  );              // SBclk OFF
-       setSystemFlag(FLAG_SBcpx  );              // SBcpx ON
-       setSystemFlag(FLAG_SBcr   );              // SBcr ON
-       setSystemFlag(FLAG_SBdate );              // SBdate ON
-       setSystemFlag(FLAG_SBfrac );              // SBfrac ON
-     clearSystemFlag(FLAG_SBint  );              // SBint OFF
-       setSystemFlag(FLAG_SBmx   );              // SBmx ON
-     clearSystemFlag(FLAG_SBoc   );              // SBoc OFF
-       setSystemFlag(FLAG_SBprn  );              // SBprn ON
-       setSystemFlag(FLAG_SBser  );              // SBser ON
-     clearSystemFlag(FLAG_SBshfR );              // SBshfR OFF
-     clearSystemFlag(FLAG_SBss   );              // SBss OFF
-     clearSystemFlag(FLAG_SBtime );              // SBtime OFF
-       setSystemFlag(FLAG_SBtvm  );              // SBtvm ON
-     fnDisplayFormatFix(3);                      // FIX 3
-     fnSetGapChar(0+    ITM_SPACE_PUNCTUATION);  // IPART NSPC
-     fnSetGapChar(32768+ITM_NULL);               // FPART NONE
-     fnSetGapChar(49152+ITM_WCOMMA);             // RADIX WCOM
+    resetOtherConfigurationStuff();
+    defaultStatusBar();
+    currentAngularMode = amRadian;                 // RAD
+    clearSystemFlag(FLAG_HPRP);                    // HP.RP off
+    clearSystemFlag(FLAG_HPBASE);                  // Clear HP Base
+    denMax = 9999;                                 // DMX 9999
+    constantFractions = false; SetSetting(JC_EXFRAC); // EXFRAC ON (also setting the fractions modes appropriately)
+    setSystemFlag(FLAG_DENANY);                    // DENANY ON
+       setSystemFlag(FLAG_SBbatV );                // SBbatV ON
+     clearSystemFlag(FLAG_SBclk  );                // SBclk OFF
+       setSystemFlag(FLAG_SBcr   );                // SBcr ON
+     clearSystemFlag(FLAG_SBint  );                // SBint OFF
+       setSystemFlag(FLAG_SBmx   );                // SBmx ON
+     clearSystemFlag(FLAG_SBoc   );                // SBoc OFF
+     fnDisplayFormatFix(3);                        // FIX 3
+     fnSetGapChar(0+    ITM_SPACE_PUNCTUATION);    // IPART NSPC
+     fnSetGapChar(32768+ITM_NULL);                 // FPART NONE
+     fnSetGapChar(49152+ITM_WCOMMA);               // RADIX WCOM
      fnKeyExit(0);
      fnDrop(0);
      fnSquare(0);
