@@ -2189,9 +2189,14 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         else if(nimNumberPart == NP_REAL_EXPONENT && aimBuffer[lastChar] == 'e') {
           aimBuffer[lastChar--] = 0;
         }
-
-        if(nimNumberPart == NP_COMPLEX_INT_PART && (aimBuffer[lastChar] == 'i' || aimBuffer[lastChar-1]*256 + aimBuffer[lastChar]*256 == 0xa221)) { // complex i or measured angle
-          aimBuffer[++lastChar] = '0';                    //JM CHANGED FROM "1" to '0'. DEFAULTING TO 0+0xi WHEN ABORTING CC ENTRY.
+        bool_t is_i     = nimNumberPart == NP_COMPLEX_INT_PART && aimBuffer[lastChar] == 'i';
+        bool_t is_theta = nimNumberPart == NP_COMPLEX_INT_PART && aimBuffer[lastChar-1]*256 + aimBuffer[lastChar]*256 == 0xa221;
+        if((is_i || is_theta) && !getSystemFlag(FLAG_POLAR)) { // complex i
+          aimBuffer[++lastChar] = '1';                                                   //JM 2020-06-22 CHANGED FROM "1" to "0". DEFAULTING TO 0+0xi WHEN ABORTING CC ENTRY. #6072aee
+          aimBuffer[lastChar + 1] = 0;                                                   //JM 2023-09-18 reverted partially (for RECT) from "0" to "1", specifically for a blank i
+        } else
+        if((is_i || is_theta) && getSystemFlag(FLAG_POLAR)) { // complex measured angle
+          aimBuffer[++lastChar] = '0';                                                   //JM 2020-06-22 CHANGED FROM "1" to '0'. DEFAULTING TO 0+0xi WHEN ABORTING CC ENTRY. #6072aee
           aimBuffer[lastChar + 1] = 0;
         }
 
