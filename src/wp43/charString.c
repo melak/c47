@@ -672,7 +672,7 @@ TO_QSPI const function_t2 indexOfStrings2[] = {
 };
 
 
-  bool_t _getText(uint8_t a1, uint8_t a2, char *str) {
+  static bool_t _getText(uint8_t a1, uint8_t a2, char *str) {
     //printf("_getText %u %u : ",(uint8_t)a1,(uint8_t)a2);
     str[0] = 0;
     uint_fast16_t n = nbrOfElements(indexOfStrings2);
@@ -798,6 +798,39 @@ void stringToASCII(const char *str, char *ascii) {
     *ascii = 0;
   }
 }
+
+
+void stringToFileNameChars(const char *str, char *ascii) {
+  int16_t len;
+  len = stringGlyphLength(str);
+
+  if(len == 0) {
+    *ascii = 0;
+    return;
+  }
+
+  for(int16_t i=0; i<len; i++) {
+    if(((uint8_t)(*str) & 0x80) != 0) { 
+      *ascii = '_';
+      str++;
+      str++;
+      ascii++;
+    }
+    else if((uint8_t)(*str) < 0x20 || *str == '/' || *str == '\\') { 
+      *ascii = '_';
+      str++;
+      ascii++;
+    }
+    else {
+      *ascii = *str;
+      str++;
+       ascii++;
+    }
+    *ascii = 0;
+  }
+}
+
+
 
 void *xcopy(void *dest, const void *source, int n) {
   char       *pDest   = (char *)dest;

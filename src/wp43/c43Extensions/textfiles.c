@@ -149,8 +149,11 @@ void stackregister_csv_out(int16_t reg_b, int16_t reg_e) {
       #if(VERBOSE_LEVEL >= 1)
         print_linestr("-2b", false);
       #endif // VERBOSE_LEVEL >= 1
-
+      
+      char tmpString2[TMP_STR_LENGTH];
       copyRegisterToClipboardString2((calcRegister_t)ix, tmpString);
+      utf8ToString((uint8_t *)tmpString, tmpString2);
+      stringToASCII(tmpString2, tmpString);
 
       #if(VERBOSE_LEVEL >= 1)
         char tmpTmp[TMP_STR_LENGTH+100];
