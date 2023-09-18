@@ -421,8 +421,10 @@ void fnMultiplySI(uint16_t multiplier) {
 }
 
 
-static void cpxToStk(const real_t *real1, const real_t *real2) {
-  setSystemFlag(FLAG_ASLIFT);
+#define forcedLiftTheStack true
+
+static void cpxToStk(const real_t *real1, const real_t *real2, const bool_t sl) {
+  if(sl == forcedLiftTheStack) setSystemFlag(FLAG_ASLIFT);
   liftStack();
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
   realToReal34(real1, REGISTER_REAL34_DATA(REGISTER_X));
@@ -436,36 +438,30 @@ void fn_cnst_op_j(uint16_t unusedButMandatoryParameter) {
     fnKeyCC(ITM_op_j);
   }
   else {
-    cpxToStk(const_0, const_1);
+    cpxToStk(const_0, const_1, !forcedLiftTheStack);
   }
 }
 
 
 void fn_cnst_op_aa(uint16_t unusedButMandatoryParameter) {
-  cpxToStk(const_1on2, const_root3on2);
+  cpxToStk(const_1on2, const_root3on2, !forcedLiftTheStack);
   chsCplx();
 }
 
 
 void fn_cnst_op_a(uint16_t unusedButMandatoryParameter) {
-  cpxToStk(const_1on2, const_root3on2);
+  cpxToStk(const_1on2, const_root3on2, !forcedLiftTheStack);
   chsReal();
 }
 
 
 void fn_cnst_0_cpx(uint16_t unusedButMandatoryParameter) {
-  cpxToStk(const_0, const_0);
+  cpxToStk(const_0, const_0, !forcedLiftTheStack);
 }
 
 
 void fn_cnst_1_cpx(uint16_t unusedButMandatoryParameter) {
-  cpxToStk(const_1, const_0);
-  //setSystemFlag(FLAG_ASLIFT);
-  //liftStack();
-  //reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  //realToReal34(const_1, REGISTER_REAL34_DATA(REGISTER_X)); // 0+i0
-  //realToReal34(const_0, REGISTER_IMAG34_DATA(REGISTER_X));
-  //adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+  cpxToStk(const_1, const_0, !forcedLiftTheStack);
 }
 
 
