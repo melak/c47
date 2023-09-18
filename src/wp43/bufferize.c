@@ -705,9 +705,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case ITM_CUNtoM :
           case ITM_MtoCUN :
           case ITM_ZHANGtoM :
-          case ITM_ZHANGtoMb :
           case ITM_MtoZHANG :
-          case ITM_MtoZHANGb :
           case ITM_FENtoM :
           case ITM_MtoFEN :
           case ITM_MILEtoM :

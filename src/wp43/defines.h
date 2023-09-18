@@ -749,7 +749,7 @@ typedef enum {
 #define NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS     10
 
 // Number of constants
-#define NUMBER_OF_CONSTANTS_39                   229
+#define NUMBER_OF_CONSTANTS_39                   230
 #define NUMBER_OF_CONSTANTS_51                    39
 #define NUMBER_OF_CONSTANTS_1071                   1
 #define NUMBER_OF_CONSTANTS_34                    44
@@ -949,7 +949,7 @@ typedef enum {
 #define TI_IQRX_IQRY                              63
 #define TI_RANGEX_RANGEY                          64
 #define TI_PCTILEX_PCTILEY                        65
-#define TI_STR                                    66
+#define TI_CONV_MENU_STR                          66
 #define TI_PERC                                   67
 #define TI_PERCD                                  68
 #define TI_PERCD2                                 69
