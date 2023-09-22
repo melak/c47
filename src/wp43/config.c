@@ -203,11 +203,12 @@ void configCommon(uint16_t idx) {
        setSystemFlag(FLAG_SBcr   );                // SBcr ON
      clearSystemFlag(FLAG_SBint  );                // SBint OFF
        setSystemFlag(FLAG_SBmx   );                // SBmx ON
-     clearSystemFlag(FLAG_SBoc   );                // SBoc OFF
      fnDisplayFormatFix(3);                        // FIX 3
-     fnSetGapChar(0+    ITM_SPACE_PUNCTUATION);    // IPART NSPC
+     fnSetGapChar(0+    ITM_SPACE_4_PER_EM);       // IPART NSPC
      fnSetGapChar(32768+ITM_NULL);                 // FPART NONE
      fnSetGapChar(49152+ITM_WCOMMA);               // RADIX WCOM
+     grpGroupingGr1LeftOverflow = 1;               //IPGRP1x = 1
+     
      fnKeyExit(0);
      fnDrop(0);
      fnSquare(0);

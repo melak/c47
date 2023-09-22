@@ -1260,6 +1260,7 @@ bool_t allowShiftsToClearError = false;
     switch(key->primary) {                              //JMSHOW vv
       case      ITM_UP1:
       case      ITM_DOWN1: break;                       //JM SHOWregis unchanged
+      case      ITM_RCL: break;
       default:  SHOWregis = 9999; break;
     }                                                   //JMSHOW ^^
 
@@ -2249,6 +2250,12 @@ RELEASE_END:
             keyActionProcessed = true;
           }
           break;
+        }
+        else if(calcMode == CM_NORMAL && SHOWregis != 9999) {
+          fnRecall(SHOWregis);
+          setSystemFlag(FLAG_ASLIFT);
+          keyActionProcessed = true;
+          temporaryInformation = TI_COPY_FROM_SHOW;
         }
         else if(tam.mode) {
           if(tam.alpha) {
@@ -3633,12 +3640,14 @@ static bool_t activatescroll(void) { //jm
    int16_t menuId = softmenuStack[0].softmenuId; //JM
    return (calcMode == CM_NORMAL) &&
           (temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) &&
-          (softmenu[menuId].menuItem != -MNU_EQN) &&
-          (
-            ((menuId == 0) && !jm_BASE_SCREEN) ||
-            ((menuId == 0) && (softmenu[menuId].numItems<=18)) ||
-            ((menuId >= NUMBER_OF_DYNAMIC_SOFTMENUS) && (softmenu[menuId].numItems<=18))
-          );
+          (softmenu[menuId].menuItem != -MNU_EQN)
+//remove menu interlock completely, since the NEW SHOW takes over the screen and does not respect menu operation
+//    &&    (
+//            ((menuId == 0) && !jm_BASE_SCREEN) ||
+//            ((menuId == 0) && (softmenu[menuId].numItems<=18)) ||
+//            ((menuId >= NUMBER_OF_DYNAMIC_SOFTMENUS) && (softmenu[menuId].numItems<=18))
+//          )
+          ;
  }
  #endif // !TESTSUITE_BUILD
 

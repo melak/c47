@@ -2648,7 +2648,7 @@ void mimShowElement(void) {
 
 #if !defined(TESTSUITE_BUILD)
 
-  static void viewRegName1(int16_t currentViewRegister, char *sstmp) {
+  void viewRegName1(int16_t currentViewRegister, char *sstmp) {
     if(currentViewRegister < REGISTER_X) {
       sprintf(sstmp, "R%02" PRIu16 ": ", currentViewRegister);
     }
