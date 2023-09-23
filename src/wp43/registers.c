@@ -2039,8 +2039,7 @@ void fnToReal(uint16_t unusedButMandatoryParameter) {
     case dtShortInteger: {
       copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
       convertShortIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
-      lastIntegerBase = 0;                                                       //JM
-      fnRefreshState();                                 //drJM
+      setLastintegerBasetoZero();
       break;
     }
 

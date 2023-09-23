@@ -21,6 +21,7 @@
 #include "c43Extensions/graphs.h"
 #include "c43Extensions/graphText.h"
 #include "c43Extensions/inlineTest.h"
+#include "c43Extensions/radioButtonCatalog.h"
 #include "items.h"
 #include "c43Extensions/jm.h"
 #include "c43Extensions/xeqm.h"
@@ -50,6 +51,18 @@
 //#define DEBUGCLEARS
 
 bool_t reDraw = true;
+bool_t refreshNIMdone = false;
+
+void setLastintegerBasetoZero(void) {
+  if(lastIntegerBase != 0) {
+    lastIntegerBase = 0;
+    screenUpdatingMode = SCRUPD_AUTO;
+    refreshNIMdone = false;
+    refreshScreen(56);
+  }
+  fnRefreshState();                                                //JMNIM
+}
+
 
 uint8_t multiEdLines = 0;            // lines   0
 uint8_t yMultiLineEdOffset = 0;      // pixels
@@ -2064,6 +2077,73 @@ void execTimerApp(uint16_t timerType) {
   }
 
 
+  void displayBaseMode(calcRegister_t regist) {
+     #if defined(PC_BUILD)
+       if(!BASEMODEREGISTERX) {
+         printf("XXXX NOT BASEMODE, regist=%u\n",regist);
+//       setLastintegerBasetoZero();
+//      return;
+       }
+     #endif
+
+     calcRegister_t Register_X = calcMode == CM_NIM ? REGISTER_Y : REGISTER_X;
+
+     //JM SHOIDISP // use the top part of the screen for HEX and BIN    //JM vv SHOIDISP
+     //DISP_TI=3    T=16    T=16    T=16
+     //DISP_TI=2            Z=10    T=2
+     //DISP_TI=1                    Z=10
+     if(BASEMODEREGISTERX && regist == REGISTER_X && lastErrorCode == 0) {
+       if(displayStack == 1 && calcMode != CM_NIM) { //handle Reg Pos Y
+         copySourceRegisterToDestRegister(REGISTER_Y, TEMP_REGISTER_1);
+         copySourceRegisterToDestRegister(Register_X, REGISTER_Y);
+         setRegisterTag(REGISTER_Y,  !bcdDisplay ? 10 : 10);
+         shortIntegerToDisplayString(REGISTER_Y, tmpString, true);
+         if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
+           showString("  X: ", &standardFont, 0, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Y - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
+         }
+         showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Y - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
+         copySourceRegisterToDestRegister(TEMP_REGISTER_1,REGISTER_Y);
+       }
+       if((displayStack == 1 && calcMode != CM_NIM) || displayStack == 2){ //handle reg pos Z 
+         copySourceRegisterToDestRegister(REGISTER_Z, TEMP_REGISTER_1);
+         copySourceRegisterToDestRegister(Register_X, REGISTER_Z);
+         if(displayStack == 2) {
+           setRegisterTag(REGISTER_Z,  !bcdDisplay ? 10 : 10);
+         }
+         else if(displayStack == 1) {
+           setRegisterTag(REGISTER_Z, !bcdDisplay ? 2 : 2);
+         }
+         shortIntegerToDisplayString(REGISTER_Z, tmpString, true);
+         if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
+           showString("  X: ", &standardFont, 0, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
+         }
+         showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
+         copySourceRegisterToDestRegister(TEMP_REGISTER_1,REGISTER_Z);
+       }
+       if((displayStack == 1 && calcMode != CM_NIM) || displayStack == 2 || displayStack == 3) { //handle reg pos T
+         copySourceRegisterToDestRegister(REGISTER_T, TEMP_REGISTER_1);
+         copySourceRegisterToDestRegister(Register_X, REGISTER_T);
+         setRegisterTag(REGISTER_T, !bcdDisplay ? 16 : 17);
+         shortIntegerToDisplayString(REGISTER_T, tmpString, true);
+         if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
+           showString("  X: ", &standardFont, 0, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_T - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
+         }
+         showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_T - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
+         copySourceRegisterToDestRegister(TEMP_REGISTER_1,REGISTER_T);
+       }
+       if(displayStack == 3) {
+         lcd_fill_rect(0, Y_POSITION_OF_REGISTER_Z_LINE - 2, SCREEN_WIDTH, 1, 0xFF);
+       }
+       else if(displayStack == 2) {
+         lcd_fill_rect(0, Y_POSITION_OF_REGISTER_Y_LINE - 2, SCREEN_WIDTH, 1, 0xFF);
+       }
+       else if(displayStack == 1) {
+         lcd_fill_rect(0, Y_POSITION_OF_REGISTER_X_LINE - 2, SCREEN_WIDTH, 1, 0xFF);
+       }
+     }                                                                 //JM ^^
+  }
+
+
   void refreshRegisterLine(calcRegister_t regist) {
     int32_t w;
     int16_t wLastBaseNumeric, wLastBaseStandard, prefixWidth = 0, lineWidth = 0;
@@ -2071,7 +2151,6 @@ void execTimerApp(uint16_t timerType) {
     bool_t prefixPost = true;
     const uint8_t origDisplayStack = displayStack;
     bool_t distModeActive = false;
-    bool_t baseModeActive = false;
 
     char prefix[200], lastBase[12];
 
@@ -2088,15 +2167,11 @@ void execTimerApp(uint16_t timerType) {
     #endif //DMCP
 
     #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
-      printf(">>> refreshRegisterLine   register=%u screenUpdatingMode=%d temporaryInformation=%u baseModeActive=%u\n", regist, screenUpdatingMode, temporaryInformation, baseModeActive);
+      printf(">>> refreshRegisterLine   register=%u screenUpdatingMode=%d temporaryInformation=%u BASEMODEACTIVE=%u, lastIntegerBase=%u\n", regist, screenUpdatingMode, temporaryInformation, BASEMODEACTIVE, lastIntegerBase);
     #endif // PC_BUILD &&MONITOR_CLRSCR
 
-    baseModeActive = (showRegis == 9999) && displayStackSHOIDISP != 0 && (lastIntegerBase != 0 || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_BASE);
-    if(regist == REGISTER_X && baseModeActive && getRegisterDataType(REGISTER_X) == dtShortInteger) { //JMSHOI
-      if(displayStack != 4-displayStackSHOIDISP) {
-        fnDisplayStack(4-displayStackSHOIDISP);
-        screenUpdatingMode = SCRUPD_AUTO;                                                    //must be full clear due to status bar A-F indication
-      }
+    if(BASEMODEREGISTERX && !SHOWMODE && displayStack != 4-displayStackSHOIDISP) { //JMSHOI
+      fnDisplayStack(4-displayStackSHOIDISP);
     }
 
     #if(DEBUG_PANEL == 1)
@@ -2386,7 +2461,7 @@ void execTimerApp(uint16_t timerType) {
         }
       }
 
-      // NEW SHOW
+      // NEW SHOW                                                                  //JMSHOW vv
       else if(temporaryInformation == TI_SHOW_REGISTER_SMALL) {
         #define line_h0 21
         switch(regist) {
@@ -2581,6 +2656,7 @@ void execTimerApp(uint16_t timerType) {
             wLastBaseStandard = 0;
           }
 
+          displayBaseMode(regist);
           displayNim(nimBufferDisplay, lastBase, wLastBaseNumeric, wLastBaseStandard);
         }
 
@@ -3631,62 +3707,9 @@ void execTimerApp(uint16_t timerType) {
             shortIntegerToDisplayString(regist, tmpString, true);
             showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0) - (fontForShortInteger == &numericFont && temporaryInformation == TI_NO_INFO && checkHP ? 50:0), vmNormal, false, true);
 
-            //JM SHOIDISP // use the top part of the screen for HEX and BIN    //JM vv SHOIDISP
-            //DISP_TI=3    T=16    T=16    T=16
-            //DISP_TI=2            Z=10    T=2
-            //DISP_TI=1                    Z=10
-            if(baseModeActive && lastErrorCode == 0) {
-              if(displayStack == 1) { //handle Reg Pos Y
-                copySourceRegisterToDestRegister(REGISTER_Y, TEMP_REGISTER_1);
-                copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
-                setRegisterTag(REGISTER_Y,  !bcdDisplay ? 10 : 10);
-                shortIntegerToDisplayString(REGISTER_Y, tmpString, true);
-                if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
-                  showString("  X: ", &standardFont, 0, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Y - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
-                }
-                showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Y - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
-                copySourceRegisterToDestRegister(TEMP_REGISTER_1,REGISTER_Y);
-              }
-              if(displayStack == 1 || displayStack == 2){ //handle reg pos Z 
-                copySourceRegisterToDestRegister(REGISTER_Z, TEMP_REGISTER_1);
-                copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Z);
-                if(displayStack == 2) {
-                  setRegisterTag(REGISTER_Z,  !bcdDisplay ? 10 : 10);
-                }
-                else if(displayStack == 1) {
-                  setRegisterTag(REGISTER_Z, !bcdDisplay ? 2 : 2);
-                }
-                shortIntegerToDisplayString(REGISTER_Z, tmpString, true);
-                if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
-                  showString("  X: ", &standardFont, 0, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
-                }
-                showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
-                copySourceRegisterToDestRegister(TEMP_REGISTER_1,REGISTER_Z);
-              }
-              if(displayStack == 1 || displayStack == 2 || displayStack == 3) { //handle reg pos T
-                copySourceRegisterToDestRegister(REGISTER_T, TEMP_REGISTER_1);
-                copySourceRegisterToDestRegister(REGISTER_X, REGISTER_T);
-                setRegisterTag(REGISTER_T, !bcdDisplay ? 16 : 17);
-                shortIntegerToDisplayString(REGISTER_T, tmpString, true);
-                if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
-                  showString("  X: ", &standardFont, 0, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_T - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
-                }
-                showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_T - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
-                copySourceRegisterToDestRegister(TEMP_REGISTER_1,REGISTER_T);
-              }
-              if(displayStack == 3) {
-                lcd_fill_rect(0, Y_POSITION_OF_REGISTER_Z_LINE - 2, SCREEN_WIDTH, 1, 0xFF);
-              }
-              else if(displayStack == 2) {
-                lcd_fill_rect(0, Y_POSITION_OF_REGISTER_Y_LINE - 2, SCREEN_WIDTH, 1, 0xFF);
-              }
-              else if(displayStack == 1) {
-                lcd_fill_rect(0, Y_POSITION_OF_REGISTER_X_LINE - 2, SCREEN_WIDTH, 1, 0xFF);
-              }
-            }
-          }
-                                                                           //JM ^^
+          displayBaseMode(regist);
         }
+      }
 
         else if(getRegisterDataType(regist) == dtLongInteger) {
           if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
@@ -3885,7 +3908,7 @@ void execTimerApp(uint16_t timerType) {
       }
     }
 
-    if(getRegisterDataType(REGISTER_X) == dtReal34Matrix || getRegisterDataType(REGISTER_X) == dtComplex34Matrix || calcMode == CM_MIM || distModeActive || baseModeActive) {
+    if(getRegisterDataType(REGISTER_X) == dtReal34Matrix || getRegisterDataType(REGISTER_X) == dtComplex34Matrix || calcMode == CM_MIM || distModeActive || BASEMODEACTIVE) {
       displayStack = origDisplayStack;
     }
   }
@@ -3997,12 +4020,16 @@ void execTimerApp(uint16_t timerType) {
     }
   }
 
+
+
+
   static void _selectiveClearScreen(void) {
     if(screenUpdatingMode == SCRUPD_AUTO) {
       #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
         printf("   >>> lcd_fill_rect clear all\n");
       #endif // PC_BUILD && MONITOR_CLRSCR
       clearScreen();
+      refreshNIMdone = false;
     }
     else {
       if(!(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR)) {
@@ -4110,7 +4137,7 @@ void execTimerApp(uint16_t timerType) {
     refreshStatusBar();
   }
 
-  bool_t refreshNIMdone = false;
+
   static void _refreshNormalScreen(void) {
         #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
           printf(">>> BEGIN _refreshNormalScreen calcMode=%d previousCalcMode=%d screenUpdatingMode=%d\n", calcMode, previousCalcMode, screenUpdatingMode);    //JMYY
@@ -4120,6 +4147,11 @@ void execTimerApp(uint16_t timerType) {
         
         if(calcMode == CM_NORMAL && screenUpdatingMode != SCRUPD_AUTO && temporaryInformation == TI_SHOWNOTHING) {
           goto RETURN_NORMAL;
+        }
+
+        if(BASEMODEREGISTERX) {
+          screenUpdatingMode = SCRUPD_AUTO;
+          if(calcMode == CM_NIM) refreshNIMdone = false;
         }
 
         if(calcMode == CM_CONFIRMATION) {
@@ -4138,7 +4170,6 @@ void execTimerApp(uint16_t timerType) {
         else if(SHOWMODE) {
           screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU);
         }
-
         //else if(temporaryInformation == TI_SHOWNOTHING) {
         //  screenUpdatingMode |= (SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_STACK);
         //}

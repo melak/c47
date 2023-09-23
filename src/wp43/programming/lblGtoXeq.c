@@ -780,6 +780,8 @@ void runProgram(bool_t singleStep, uint16_t menuLabel) {
   programRunStop = PGM_RUNNING;
   if(!getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
     showHideHourGlass();
+    screenUpdatingMode = SCRUPD_AUTO; // &= ~SCRUPD_MANUAL_STATUSBAR;
+    refreshScreen(5);
     #if defined(DMCP_BUILD)
       lcd_refresh();
     #else // !DMCP_BUILD

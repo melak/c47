@@ -29,6 +29,7 @@
 #include "mathematics/matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
+#include "screen.h"
 
 #include "wp43.h"
 
@@ -86,7 +87,7 @@ void lintRema(void) {
 
 void lintShoI(void) {
   convertShortIntegerRegisterToLongIntegerRegister(REGISTER_X, REGISTER_X);
-  lastIntegerBase = 0;
+  setLastintegerBasetoZero();
 }
 
 

@@ -14,7 +14,7 @@
 
 #define VERSION1 "0.109.00.00a5"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
-//2023-09-23-0.109.00.00 alpha 5
+//2023-09-23-0.109.00.00a5 Development update
 
   #undef SAVE_SPACE_DM42_0
   #undef SAVE_SPACE_DM42_1
@@ -50,14 +50,14 @@
     #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
     #define SAVE_SPACE_DM42_6  //001648 bytes: ELEC functions
     #define SAVE_SPACE_DM42_7  //002144 bytes: KEYS USER_DM42;
-  //  #define SAVE_SPACE_DM42_8  //007136 bytes: Standard Flag-, Register-, Font- Browser functions
-  //  #define SAVE_SPACE_DM42_9  //004448 bytes: SHOW (new C43)
-  //  #define SAVE_SPACE_DM42_10 //005800 bytes: WP43S programming ...
-  //  #define SAVE_SPACE_DM42_11 //001552 bytes: Matrix function on entry ...
+  //#define SAVE_SPACE_DM42_8  //007136 bytes: Standard Flag-, Register-, Font- Browser functions
+  //#define SAVE_SPACE_DM42_9  //004448 bytes: SHOW (new C43)
+  //#define SAVE_SPACE_DM42_10 //005800 bytes: WP43S programming ...
+  //#define SAVE_SPACE_DM42_11 //001552 bytes: Matrix function on entry ...
     #define SAVE_SPACE_DM42_12 //047246 bytes: Standard extra 43S math: SLVQ, PRIME, BESSEL, ELLIPTIC, ZETA, BETA, ORTHO_POLY
     #define SAVE_SPACE_DM42_13GRF //           JM Solver & graphics & stat graphics
     #define SAVE_SPACE_DM42_13GRF_JM //        JM graphics
-  //  #define SAVE_SPACE_DM42_14    //           programming sample programs
+  //#define SAVE_SPACE_DM42_14    //           programming sample programs
     #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
     #define SAVE_SPACE_DM42_16    //           without all distributions, i.e. binomial, cauchy, chi
   #endif // !TWO_FILE_PGM
@@ -77,9 +77,9 @@
 #define allowShowDigits true        // true to allow typing of double digits to get to register number nn in SHOW.      
 
 #define LOW_GRAPH_ACC                                     //Lowered graph accuracy for EQN graphs
+//#undef LOW_GRAPH_ACC
 #define significantDigitsForEqnGraphs (significantDigits) //If 6 is chosen by user, all four types are changes as follows: 34 to SDIGS; 39 to SDIGS+3; 51 to SDIGS+6; 75 to SDIGS+9
 #define significantDigitsForScreen    4                   //Only for screen coord scaling of the resulting graphic matrix: 34 to 4; 39 to 4+3; 51 to 4+3; 75 to 4+3
-//#undef LOW_GRAPH_ACC
 
 //Testing and debugging
   #define    DM42_KEYCLICK              //Add a 1 ms click after key presses and releases, for scope syncing
@@ -88,7 +88,7 @@
   //#undef     CLICK_REFRESHSCR
 
 
-//Debug showFunctionName
+//Debud showFunctionName
 #define DEBUG_SHOWNAME
 #undef DEBUG_SHOWNAME
 #if defined(DEBUG_SHOWNAME)
@@ -1341,6 +1341,14 @@ typedef enum {
 //#define modulo(n, d)                         ((n)%(d)<0 ? ((d)<0 ? (n)%(d) - (d) : (n)%(d) + (d)) : (n)%(d)) // modulo(n,d) = rmd(n,d) (+ |d| if rmd(n,d)<0)  thus the result is always >= 0
 #define modulo(n, d)                         ((n)%(d)<0 ? (n)%(d)+(d) : (n)%(d))                             // This version works only if d > 0
 #define nbrOfElements(x)                     (sizeof(x) / sizeof((x)[0]))                                    //dr
+
+#define BASEMODEACTIVE                       (lastIntegerBase != 0 || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_BASE)
+#define BASEMODEREGISTERX                    (BASEMODEACTIVE && \
+                                              displayStackSHOIDISP != 0 && \
+                                              ( \
+                                                (calcMode == CM_NORMAL && getRegisterDataType(REGISTER_X) == dtShortInteger) || \
+                                                (calcMode == CM_NIM && getRegisterDataType(REGISTER_Y) == dtShortInteger) ) \
+                                              )
 
 #define SHOWMODE                             (calcMode == CM_NORMAL && (temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL || temporaryInformation == TI_SHOWNOTHING))
 #define GRAPHMODE                            (calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH)

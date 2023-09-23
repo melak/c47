@@ -15,6 +15,7 @@
   #include <gdk/gdk.h>
   #endif // PC_BUILD
 
+  void     setLastintegerBasetoZero           (void);
   extern bool_t   doRefreshSoftMenu;                                                                              //dr
   void     FN_handler();                                                                                          //JM LONGPRESS
   void     Shft_handler();                                                                                        //JM LONGPRESS f/g

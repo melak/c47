@@ -823,7 +823,6 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     uint8_t savedNimNumberPart;
     bool_t done;
     char *strBase;
-
     if(item >= ITM_A && item <= ITM_F && lastIntegerBase == 0) lastIntegerBase = 16;
 //    if(item != ITM_EXIT1) resetKeytimers();  //JM
 
@@ -839,8 +838,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           aimBuffer[2] = '.';
           aimBuffer[3] = 0;
           nimNumberPart = NP_REAL_FLOAT_PART;
-          lastIntegerBase = 0;
-          fnRefreshState();                                                //JMNIM
+          setLastintegerBasetoZero();
           break;
         }
 
@@ -850,6 +848,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           aimBuffer[1] = '0';
           aimBuffer[2] = 0;
           nimNumberPart = NP_INT_10;
+          setLastintegerBasetoZero();
           break;
         }
 
@@ -880,7 +879,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           sprintf(errorMessage, "In function addItemToNimBuffer:%d is an unexpected item value when initializing NIM!", item);
           displayBugScreen(errorMessage);
           return;
-      }
+        }
       }
 
       if(programRunStop != PGM_RUNNING) {
@@ -1074,8 +1073,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           strcat(aimBuffer, "0");
         }
 
-        lastIntegerBase = 0;
-        fnRefreshState();                                                //JMNIM
+        setLastintegerBasetoZero();
 
         switch(nimNumberPart) {
           case NP_INT_10: {
@@ -1131,8 +1129,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           strcat(aimBuffer, "1");
         }
 
-        lastIntegerBase = 0;
-        fnRefreshState();                                                //JMNIM
+        setLastintegerBasetoZero();
 
         switch(nimNumberPart) {
           case NP_INT_10: {
@@ -1173,8 +1170,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       case ITM_toINT: { // #
         done = true;
 
-        lastIntegerBase = 0;
-        fnRefreshState();                                                //JMNIM
+        setLastintegerBasetoZero();
 
         if(nimNumberPart == NP_INT_10 || nimNumberPart == NP_INT_16) {
           strcat(aimBuffer, "#");
@@ -1256,8 +1252,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
 
         done = true;
 
-        lastIntegerBase = 0;
-        fnRefreshState();                                                //JMNIM
+        setLastintegerBasetoZero();
 
         switch(nimNumberPart) {
          case NP_REAL_EXPONENT: {
@@ -1303,6 +1298,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           done = true;
           strcat(aimBuffer, "3.141592653589793238462643383279503");
           reallyRunFunction(ITM_EXIT1, NOPARAM);
+          setLastintegerBasetoZero();
         }
         break;
       }
@@ -1523,6 +1519,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       case ITM_DMS: {
         if(nimNumberPart == NP_INT_10 || nimNumberPart == NP_REAL_FLOAT_PART) {
           done = true;
+          setLastintegerBasetoZero();
 
           screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
           closeNim();
@@ -1574,6 +1571,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       case ITM_toHMS:{
         if(nimNumberPart == NP_INT_10 || nimNumberPart == NP_REAL_FLOAT_PART || nimNumberPart == NP_REAL_EXPONENT) {
           done = true;
+          setLastintegerBasetoZero();
 
           screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
           closeNim();
@@ -1830,8 +1828,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       if(calcMode != CM_NIM) {
         if(item == ITM_CONSTpi || (item >= 0 && indexOfItems[item].func == fnConstant)) {
           setSystemFlag(FLAG_ASLIFT);
-          lastIntegerBase = 0;                                             //JMNIM
-          fnRefreshState();                                                //JMNIM
+          setLastintegerBasetoZero();
         }
 
         if(lastErrorCode == 0) {
@@ -2156,8 +2153,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       nimNumberPart = NP_INT_BASE;
     }
     else {
-      lastIntegerBase = 0;
-      fnRefreshState();                                                //JMNIM
+      setLastintegerBasetoZero();
     }
 
     int16_t lastChar = strlen(aimBuffer) - 1;

@@ -1080,6 +1080,7 @@ int16_t lastItem = 0;
             }
           }
           else if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (ITM_0<=item && item<=ITM_F) && (!catalog || catalog == CATALOG_MVAR)) {
+            if(lastIntegerBase == 0) lastIntegerBase = 16;
             addItemToNimBuffer(item);
           }
           else if((calcMode == CM_NIM) && ((item==ITM_DRG || item == ITM_DMS2 || item == ITM_dotD) && !catalog)) {   //JM
@@ -1094,7 +1095,7 @@ int16_t lastItem = 0;
                 (lastIntegerBase ==  8 && item == ITM_2OCT) ||
                 (lastIntegerBase == 10 && item == ITM_2DEC) ||
                 (lastIntegerBase == 16 && item == ITM_2HEX)    )) {
-              lastIntegerBase = 0;
+              setLastintegerBasetoZero();
               screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
               goto noMoreToDo;
             }
@@ -2057,7 +2058,8 @@ RELEASE_END:
       case ITM_BACKSPACE: {
         if(calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_EIM) {
           temporaryInformation = TI_NO_INFO;
-          refreshRegisterLine(NIM_REGISTER_LINE); }
+          refreshRegisterLine(NIM_REGISTER_LINE); 
+        }
         else {
           //JM No if needed, it does nothing if not in NIM. TO DISPLAY NUMBER KEYPRESS DIRECTLY AFTER PRESS, NOT ONLY UPON RELEASE          break;
           keyActionProcessed = true;   //JM move this to before fnKeyBackspace to allow fnKeyBackspace to cancel it if needed to allow this function via timing out to NOP, and this is incorporated with the CLRDROP

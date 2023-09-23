@@ -22,6 +22,7 @@
 
 #include "bufferize.h"
 #include "c43Extensions/jm.h"
+#include "c43Extensions/addons.h"
 #include "calcMode.h"
 #include "charString.h"
 #include "constantPointers.h"
@@ -593,7 +594,7 @@ static void _resetCursorPos() {
   yCursor = Y_POSITION_OF_NIM_LINE;
   cursorEnabled = true;
   cursorFont = &numericFont;
-  lastIntegerBase = 0;
+  setLastintegerBasetoZero();
 }
 
 void mimAddNumber(int16_t item) {
