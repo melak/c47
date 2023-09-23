@@ -748,6 +748,11 @@ static uint32_t restore(void *buffer, uint32_t size) {
 
       if(SHOWMODE)                             //clear SHOW to normal mode as it is not reasonable to switch calculator on on SHOW mode
         temporaryInformation = TI_NO_INFO;
+      if(showRegis != 9999)
+        showRegis = 9999;
+      if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_SHOW) {
+        popSoftmenu();
+      }
 
       scanLabelsAndPrograms();
       defineCurrentProgramFromGlobalStepNumber(currentLocalStepNumber + abs(programList[currentProgramNumber - 1].step) - 1);

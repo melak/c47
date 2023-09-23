@@ -14,7 +14,7 @@
 
 #define VERSION1 "0.109.00.00a4"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
-//2023-09-18-0.109.00.00a4 Snapshot Development update
+//2023-09-14-0.108.13.07 Snapshot Stable update
 
   #undef SAVE_SPACE_DM42_0
   #undef SAVE_SPACE_DM42_1
@@ -50,14 +50,14 @@
     #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
     #define SAVE_SPACE_DM42_6  //001648 bytes: ELEC functions
     #define SAVE_SPACE_DM42_7  //002144 bytes: KEYS USER_DM42;
-  //#define SAVE_SPACE_DM42_8  //007136 bytes: Standard Flag-, Register-, Font- Browser functions
-  //#define SAVE_SPACE_DM42_9  //004448 bytes: SHOW (new C43)
-  //#define SAVE_SPACE_DM42_10 //005800 bytes: WP43S programming ...
-  //#define SAVE_SPACE_DM42_11 //001552 bytes: Matrix function on entry ...
+  //  #define SAVE_SPACE_DM42_8  //007136 bytes: Standard Flag-, Register-, Font- Browser functions
+  //  #define SAVE_SPACE_DM42_9  //004448 bytes: SHOW (new C43)
+  //  #define SAVE_SPACE_DM42_10 //005800 bytes: WP43S programming ...
+  //  #define SAVE_SPACE_DM42_11 //001552 bytes: Matrix function on entry ...
     #define SAVE_SPACE_DM42_12 //047246 bytes: Standard extra 43S math: SLVQ, PRIME, BESSEL, ELLIPTIC, ZETA, BETA, ORTHO_POLY
     #define SAVE_SPACE_DM42_13GRF //           JM Solver & graphics & stat graphics
     #define SAVE_SPACE_DM42_13GRF_JM //        JM graphics
-  //#define SAVE_SPACE_DM42_14    //           programming sample programs
+  //  #define SAVE_SPACE_DM42_14    //           programming sample programs
     #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
     #define SAVE_SPACE_DM42_16    //           without all distributions, i.e. binomial, cauchy, chi
   #endif // !TWO_FILE_PGM
@@ -88,7 +88,7 @@
   //#undef     CLICK_REFRESHSCR
 
 
-//Debud showFunctionName
+//Debug showFunctionName
 #define DEBUG_SHOWNAME
 #undef DEBUG_SHOWNAME
 #if defined(DEBUG_SHOWNAME)
@@ -1004,6 +1004,7 @@ typedef enum {
 #define TI_SCATTER_SMI                            90
 #define TI_DMCP_ONLY                              91    //DL
 #define TI_SHOWNOTHING                            92
+#define TI_COPY_FROM_SHOW                         92
 
 // Register browser mode
 #define RBR_GLOBAL                                 0 // Global registers are browsed
@@ -1341,7 +1342,7 @@ typedef enum {
 #define modulo(n, d)                         ((n)%(d)<0 ? (n)%(d)+(d) : (n)%(d))                             // This version works only if d > 0
 #define nbrOfElements(x)                     (sizeof(x) / sizeof((x)[0]))                                    //dr
 
-#define SHOWMODE                             (calcMode == CM_NORMAL && (temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL || temporaryInformation == TI_SHOWNOTHING))
+#define SHOWMODE                             (calcMode == CM_NORMAL && (temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL || temporaryInformation == TI_SHOWNOTHING))
 #define GRAPHMODE                            (calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH)
 
 #define COMPLEX_UNIT                         (getSystemFlag(FLAG_CPXj)   ? STD_op_j  : STD_op_i)  //Do not change back to single byte character - code must also change accordingly

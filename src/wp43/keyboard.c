@@ -2325,11 +2325,21 @@ RELEASE_END:
                   keyActionProcessed = true;
                   fnRecall(showRegis);
                   setSystemFlag(FLAG_ASLIFT);
-                  fnKeyExit(NOPARAM);
+                  temporaryInformation = TI_COPY_FROM_SHOW;
+                  if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_SHOW) {
+                    popSoftmenu();
+                  }
+                  screenUpdatingMode = SCRUPD_AUTO;
+                  refreshScreen(0);
                 } else if(ITM_0 <= item && item <= ITM_9) {
                   keyActionProcessed = true;
-                  showRegis = (item - ITM_0)*10+1; //Will only work if ##SHOWDIGITS is enabled
-                  fnKeyDown(NOPARAM);
+                  if(showRegis%10 == 0 && showRegis <=90) {  //Will only get to this point if ##SHOWDIGITS is enabled
+                    showRegis += (item - ITM_0);
+                  } else {
+                    showRegis = (item - ITM_0)*10;
+                  }
+                  fnShow_SCROLL(255);
+//                  refreshScreen(138);
                 }
               } else
 
@@ -2999,7 +3009,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         case CM_FONT_BROWSER:
         case CM_CONFIRMATION:
         case CM_ERROR_MESSAGE:
-      case CM_BUG_ON_SCREEN: {
+        case CM_BUG_ON_SCREEN: {
             // Browser or message should be closed first
             break;
       }
@@ -3023,7 +3033,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
                 }
                 return;
             }
-    }
+        }
     }
 
     if(tam.mode) {                               //if in TAM mode
@@ -3713,27 +3723,27 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 #if !defined(TESTSUITE_BUILD)
 static bool_t activatescroll(void) { //jm
    //This is the portion that allows the arrows shortcut to SHOW in NORMAL MODE
-   int16_t menuId = softmenuStack[0].softmenuId; //JM
-   return (calcMode == CM_NORMAL) && (SHOWMODE) &&
-          (softmenu[menuId].menuItem != -MNU_EQN) &&
-          (
-            ((menuId == 0) && !jm_BASE_SCREEN) ||
-            ((menuId == 0) && (softmenu[menuId].numItems<=18)) ||
-            ((menuId >= NUMBER_OF_DYNAMIC_SOFTMENUS) && (softmenu[menuId].numItems<=18))
-          );
+   return SHOWMODE && 
+          softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN
+//remove menu interlock completely, since the NEW SHOW takes over the screen and does not respect menu operation
+//      &&  (
+//            ((menuId == 0) && !jm_BASE_SCREEN) ||
+//            ((menuId == 0) && (softmenu[menuId].numItems<=18)) ||
+//            ((menuId >= NUMBER_OF_DYNAMIC_SOFTMENUS) && (softmenu[menuId].numItems<=18))
+//          )
+          ;
  }
  #endif // !TESTSUITE_BUILD
 
 #define RBR_INCDEC1 10
 
 void fnKeyUp(uint16_t unusedButMandatoryParameter) {
-  doRefreshSoftMenu = true;     //dr
   #if !defined(TESTSUITE_BUILD)
     int16_t menuId = softmenuStack[0].softmenuId; //JM
 
     if(activatescroll() && !tam.mode) { //JMSHOW vv
       fnShow_SCROLL(1);
-      refreshScreen(130);
+//      refreshScreen(130);
       return;
     }                              //JMSHOW ^^
 
@@ -3939,13 +3949,12 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
 
 
 void fnKeyDown(uint16_t unusedButMandatoryParameter) {
-  doRefreshSoftMenu = true;     //dr
   #if !defined(TESTSUITE_BUILD)
     int16_t menuId = softmenuStack[0].softmenuId; //JM
 
     if(activatescroll() && !tam.mode) { //JMSHOW vv
       fnShow_SCROLL(2);
-      refreshScreen(133);
+//      refreshScreen(133);
       return;
     }                             //JMSHOW ^^
 

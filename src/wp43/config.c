@@ -192,11 +192,12 @@ void configCommon(uint16_t idx) {
        setSystemFlag(FLAG_SBcr   );                // SBcr ON
      clearSystemFlag(FLAG_SBint  );                // SBint OFF
        setSystemFlag(FLAG_SBmx   );                // SBmx ON
-     clearSystemFlag(FLAG_SBoc   );                // SBoc OFF
      fnDisplayFormatFix(3);                        // FIX 3
-     fnSetGapChar(0+    ITM_SPACE_PUNCTUATION);    // IPART NSPC
+     fnSetGapChar(0+    ITM_SPACE_4_PER_EM);       // IPART NSPC
      fnSetGapChar(32768+ITM_NULL);                 // FPART NONE
      fnSetGapChar(49152+ITM_WCOMMA);               // RADIX WCOM
+     grpGroupingGr1LeftOverflow = 1;               //IPGRP1x = 1
+     
      fnKeyExit(0);
      fnDrop(0);
      fnSquare(0);
@@ -265,7 +266,6 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
   #if defined(PC_BUILD)
     jm_show_comment("^^^^fnClrModa");
   #endif // PC_BUILD
-
   #if !defined(TESTSUITE_BUILD)
     resetKeytimers();  //JM
     clearSystemFlag(FLAG_FRACT);
@@ -297,6 +297,9 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
     refreshScreen(166);
     fnKeyExit(0);           //Call fnkeyExit to ensure the correct home screen is brought up, if HOME is selected.
     popSoftmenu();
+    #if defined(PC_BUILD_TELLTALE)
+      jm_show_calc_state("fnClrMod end: \n");
+    #endif //PC_BUILD_TELLTALE
   #endif // !TESTSUITE_BUILD
 }
 

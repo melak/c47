@@ -2634,7 +2634,7 @@ void mimShowElement(void) {
 
 #if !defined(TESTSUITE_BUILD)
 
-  static void viewRegName1(uint16_t reg, char *sstmp) {
+  void viewRegName1(uint16_t reg, char *sstmp) {
     if(reg < REGISTER_X) {
       sprintf(sstmp, "R%02" PRIu16 ": ", reg);
     }
@@ -2690,26 +2690,23 @@ static void checkAndEat(int16_t *source, int16_t last, int16_t *dest) {
 static void printXAngle(int16_t cc, int16_t d) {
   real34_t real34;
   int16_t ww, last, source, dest;
-
-     real34Copy(REGISTER_REAL34_DATA(showRegis), &real34);
-     convertAngle34FromTo(&real34, getRegisterAngularMode(showRegis), cc);
-     tmpString[2103]=0;
-     ww = stringWidth(tmpString + 2100, &numericFont, true, true);
-     real34ToDisplayString(&real34, cc, tmpString + 2103, &numericFont, SCREEN_WIDTH - ww, 34, false, false);
-     last = 2100 + stringByteLength(tmpString + 2100);
-     source = 2100;
-//     d=1200;
-     dest = d;
-     while(source < last && stringWidth(tmpString + d, &numericFont, true, true) <= SCREEN_WIDTH - 8*2) {
-       tmpString[dest] = tmpString[source];
-       if(tmpString[dest] & 0x80) {
-         tmpString[++dest] = tmpString[++source];
-       }
-       source++;
-       tmpString[++dest] = 0;
-     }
-
+  real34Copy(REGISTER_REAL34_DATA(showRegis), &real34);
+  convertAngle34FromTo(&real34, getRegisterAngularMode(showRegis), cc);
+  RegName();
+  ww = stringWidth(tmpString + 2100, &numericFont, true, true);
+  real34ToDisplayString(&real34, cc, tmpString + 2100 + stringByteLength(tmpString + 2100), &numericFont, SCREEN_WIDTH - ww, 34, false, false);
+  last = 2100 + stringByteLength(tmpString + 2100);
+  source = 2100;
+  dest = d;
+  while(source < last && stringWidth(tmpString + d, &numericFont, true, true) <= SCREEN_WIDTH - 8*2) {
+    tmpString[dest] = tmpString[source];
+    if(tmpString[dest] & 0x80) {
+      tmpString[++dest] = tmpString[++source];
+    }
+    source++;
+    tmpString[++dest] = 0;
   }
+}
 
 
 static void dispM(uint16_t regist, char * prefix) {

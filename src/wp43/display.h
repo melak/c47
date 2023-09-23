@@ -41,4 +41,6 @@ void supNumberToDisplayString          (int32_t supNumber, char *displayString, 
 void subNumberToDisplayString          (int32_t subNumber, char *displayString, char *displayValueString);
 void longIntegerToAllocatedString      (const longInteger_t lgInt, char *str, int32_t strLen);
 void fnShow_SCROLL                     (uint16_t fnShow_param);    //JMSHOW
+void viewRegName1                      (uint16_t reg, char *sstmp);
+
 #endif // !DISPLAY_H

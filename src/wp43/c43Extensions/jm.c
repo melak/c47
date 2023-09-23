@@ -82,7 +82,7 @@
       }
       printf("\n");
 
-      printf(".  (tam.mode=%d, catalog=%d) (mm_MNU_HOME=%d, mm_MNU_ALPHA=%d)\n",tam.mode, catalog, mm_MNU_HOME, mm_MNU_ALPHA);
+      printf(".  (tam.mode=%d, catalog=%d) (mm_MNU_HOME=%d, mm_MNU_ALPHA=%d) SHOWMODE=%u showRegis=%u\n",tam.mode, catalog, mm_MNU_HOME, mm_MNU_ALPHA, SHOWMODE, showRegis);
       jm_show_comment("calcstate END:");
     #endif //PC_BUILD_TELLTALE
   }
@@ -91,10 +91,10 @@
   void jm_show_comment(char comment[]) {
     #if defined(PC_BUILD_VERBOSE2)
       char tmp[600];
-      strcpy(tmp,comment);
+      tmp[0]=0;
       strcat(tmp,"                                                                                                                                                                ");
-      tmp[130]=0;
-      printf("....%s calcMode=%4d last_CM=%4d tam.mode=%5d catalog=%5d Id=%4d Name=%8s F=%d G=%d \n",tmp, calcMode, last_CM, tam.mode, catalog, softmenuStack[0].softmenuId, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName,shiftF,shiftG);
+      tmp[100]=0;
+      printf("....%s %s calcMode=%4d last_CM=%4d tam.mode=%5d catalog=%5d Id=%4d Name=%8s f=%d g=%d \n",tmp, comment, calcMode, last_CM, tam.mode, catalog, softmenuStack[0].softmenuId, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName,shiftF,shiftG);
     //  printf("....%s\n",tmp);
     #endif // PC_BUILD_VERBOSE2
   }
