@@ -2967,7 +2967,9 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
           printf("SHOW:Real\n");
         #endif // VERBOSE_SCREEN && PC_BUILD
         temporaryInformation = TI_SHOW_REGISTER_BIG;
-        real34ToDisplayString(REGISTER_REAL34_DATA(showRegis), getRegisterAngularMode(showRegis), tmpString + 2100+stringByteLength(tmpString + 2100), &numericFont, SCREEN_WIDTH * 2, 34, false, false);
+        int16_t angleM = getRegisterAngularMode(showRegis);
+        if(angleM == amDMS) angleM = amDegree;
+        real34ToDisplayString(REGISTER_REAL34_DATA(showRegis), angleM, tmpString + 2100+stringByteLength(tmpString + 2100), &numericFont, SCREEN_WIDTH * 2, 34, false, false);
         last = 2100 + stringByteLength(tmpString + 2100);
         source = 2100;
         for(d=0; d<=900 ; d+=300) {
@@ -3007,7 +3009,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
             case amRadian: aa = amMultPi; bb = amDegree; cc = amDMS;    dd = amGrad;   break;
             case amGrad:   aa = amDegree; bb = amDMS;    cc = amRadian; dd = amMultPi; break;
             case amMultPi: aa = amRadian; bb = amDegree; cc = amDMS;    dd = amGrad;   break;
-            case amDMS:    aa = amDegree; bb = amRadian; cc = amMultPi; dd = amGrad;   break;
+            case amDMS:    aa = amDMS;    bb = amRadian; cc = amMultPi; dd = amGrad;   break;  //note amDMS displays the same way as amDegree, to show all 34 digits in the top line
             default: ;
           }
 

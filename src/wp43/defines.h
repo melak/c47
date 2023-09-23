@@ -74,7 +74,7 @@
 
 #define TEXT_MULTILINE_EDIT         // 5 line buffer
 #define MAXLINES 5                  // numner of equavalent lines in small font maximum that is allowed in entry. Entry is hardlocked to multiline 3 lines bif font, but this is still the limit. WP has 2 lines fixed small font.
-#define allowShowDigits false     
+#define allowShowDigits true        // true to allow typing of double digits to get to register number nn in SHOW.      
 
 #define LOW_GRAPH_ACC                                     //Lowered graph accuracy for EQN graphs
 #define significantDigitsForEqnGraphs (significantDigits) //If 6 is chosen by user, all four types are changes as follows: 34 to SDIGS; 39 to SDIGS+3; 51 to SDIGS+6; 75 to SDIGS+9
