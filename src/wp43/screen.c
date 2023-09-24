@@ -1212,7 +1212,7 @@ void execTimerApp(uint16_t timerType) {
         }
       }
       uint16_t tmp = ch;                                     //LF after 0x0A is recognized (/n)
-      if(LF && (charCodeFromString(string, &tmp) == 0x0A)) {   //do not touch character pointer
+      while (LF && (charCodeFromString(string, &tmp) == 0x0A)) {   //do not touch character pointer
         charCodeFromString(string, &ch);                       //increment character pointer to skip 0x0A
         x = orgX;
         prevX = x;
