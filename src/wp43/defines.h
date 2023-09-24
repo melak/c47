@@ -1383,6 +1383,9 @@ typedef enum {
 #define SEPARATOR_LEFT                       (gapChar1Left)
 #define SEPARATOR_RIGHT                      (gapChar1Right)
 
+#define gapItemFrac                          (gapItemLeft == 0 ? 0 : ITM_SPACE_4_PER_EM)          // Fractions only get to have narrow space or nothing
+#define SEPARATOR_FRAC                       (gapItemFrac  == 0 ? (char*) "\1\1\0" : (char*)indexOfItems[gapItemFrac].itemSoftmenuName) // Actual separator character
+
 #define checkHP                              (significantDigits <= 16 && displayStack == 1 && exponentLimit == 99 && Input_Default == ID_DP && (calcMode == CM_NORMAL || calcMode == CM_NIM))
 #define REPLACEFONT                          // Use HP 7-segment font
 #ifdef REPLACEFONT

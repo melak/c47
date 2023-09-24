@@ -1340,8 +1340,8 @@ void fractionToDisplayString(calcRegister_t regist, char *displayString) {
         gap = 0;
         endingZero++;
         xcopy(displayString + insertAt + 2, displayString + insertAt, endingZero++ - insertAt);
-        displayString[insertAt]     = STD_SPACE_PUNCTUATION[0];
-        displayString[insertAt + 1] = STD_SPACE_PUNCTUATION[1];
+        displayString[insertAt]     = SEPARATOR_LEFT[0];
+        displayString[insertAt + 1] = SEPARATOR_LEFT[1];
       }
 
       u = intPart % 10;
@@ -1375,8 +1375,8 @@ void fractionToDisplayString(calcRegister_t regist, char *displayString) {
       gap = 0;
       endingZero++;
       xcopy(displayString + insertAt + 2, displayString + insertAt, endingZero++ - insertAt);
-      displayString[insertAt]     = STD_SPACE_PUNCTUATION[0];
-      displayString[insertAt + 1] = STD_SPACE_PUNCTUATION[1];
+      displayString[insertAt]     = SEPARATOR_FRAC[0];
+      displayString[insertAt + 1] = SEPARATOR_FRAC[1];
     }
 
     u = numer % 10;
@@ -1404,8 +1404,8 @@ void fractionToDisplayString(calcRegister_t regist, char *displayString) {
       gap = 0;
       endingZero++;
       xcopy(displayString + insertAt + 2, displayString + insertAt, endingZero++ - insertAt);
-      displayString[insertAt]     = STD_SPACE_PUNCTUATION[0];
-      displayString[insertAt + 1] = STD_SPACE_PUNCTUATION[1];
+      displayString[insertAt]     = SEPARATOR_FRAC[0];
+      displayString[insertAt + 1] = SEPARATOR_FRAC[1];
     }
 
     u = denom % 10;
