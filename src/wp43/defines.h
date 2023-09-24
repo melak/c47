@@ -85,7 +85,7 @@
   #define    DM42_KEYCLICK              //Add a 1 ms click after key presses and releases, for scope syncing
   #undef     DM42_KEYCLICK
   #define    CLICK_REFRESHSCR             //Add a 5 ms click before refresh screen
-  //#undef     CLICK_REFRESHSCR
+  #undef     CLICK_REFRESHSCR
 
 
 //Debud showFunctionName

@@ -2078,13 +2078,13 @@ void execTimerApp(uint16_t timerType) {
 
 
   void displayBaseMode(calcRegister_t regist) {
-     #if defined(PC_BUILD)
-       if(!BASEMODEREGISTERX) {
-         printf("XXXX NOT BASEMODE, regist=%u\n",regist);
+//     #if defined(PC_BUILD)
+//       if(!BASEMODEREGISTERX) {
+//         printf("XXXX NOT BASEMODE, regist=%u\n",regist);
 //       setLastintegerBasetoZero();
 //      return;
-       }
-     #endif
+//       }
+//     #endif
 
      calcRegister_t Register_X = calcMode == CM_NIM ? REGISTER_Y : REGISTER_X;
 
