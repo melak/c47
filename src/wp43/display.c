@@ -2648,32 +2648,9 @@ void mimShowElement(void) {
 
 #if !defined(TESTSUITE_BUILD)
 
-  void viewRegName1(int16_t currentViewRegister, char *sstmp) {
-    if(currentViewRegister < REGISTER_X) {
-      sprintf(sstmp, "R%02" PRIu16 ": ", currentViewRegister);
-    }
-    else if(currentViewRegister < FIRST_LOCAL_REGISTER) {
-      sprintf(sstmp, "%c" ": ", "XYZTABCDLIJK"[currentViewRegister - REGISTER_X]);
-    }
-    else if(currentViewRegister <= LAST_LOCAL_REGISTER) {
-      sprintf(sstmp, "R.%02" PRIu16 ": ", (uint16_t)(currentViewRegister - FIRST_LOCAL_REGISTER));
-    }
-    else if(currentViewRegister >= FIRST_NAMED_VARIABLE && currentViewRegister <= LAST_NAMED_VARIABLE) {
-      memcpy(sstmp, allNamedVariables[currentViewRegister - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[currentViewRegister - FIRST_NAMED_VARIABLE].variableName[0]);
-      strcpy(sstmp + allNamedVariables[currentViewRegister - FIRST_NAMED_VARIABLE].variableName[0], ": ");
-    }
-    else if(currentViewRegister >= FIRST_RESERVED_VARIABLE && currentViewRegister <= LAST_RESERVED_VARIABLE) {
-      memcpy(sstmp, allReservedVariables[currentViewRegister - FIRST_RESERVED_VARIABLE].reservedVariableName + 1, allReservedVariables[currentViewRegister - FIRST_RESERVED_VARIABLE].reservedVariableName[0]);
-      strcpy(sstmp + allReservedVariables[currentViewRegister - FIRST_RESERVED_VARIABLE].reservedVariableName[0], ": ");
-    }
-    else {
-      sprintf(sstmp, "?" ": ");
-    }
-  }
-
-
-static void RegName(void) {    //JM using standard reg name
-  viewRegName1(SHOWregis, tmpString + 2100);
+static void RegName(void) {    //JM using standard reg name, using SHOWregis, not using prefixWidth
+  int16_t tmp;
+  viewRegName2(tmpString + 2100, &tmp);
   //printf("|%s|%d|\n",tmpString + 2100, 2100+stringByteLength(tmpString + 2100));
 }
 

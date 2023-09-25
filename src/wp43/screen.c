@@ -1840,7 +1840,7 @@ void execTimerApp(uint16_t timerType) {
   }
 
 
-  static void viewRegName(char *prefix, int16_t *prefixWidth) {
+  static void viewRegName(char *prefix, int16_t *prefixWidth) { //using "=" for VIEW
     if(currentViewRegister < REGISTER_X) {
       sprintf(prefix, "R%02" PRIu16 STD_SPACE_4_PER_EM "=" STD_SPACE_4_PER_EM, currentViewRegister);
     }
@@ -1863,6 +1863,23 @@ void execTimerApp(uint16_t timerType) {
     }
     *prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
   }
+
+
+  void viewRegName2(char *prefix, int16_t *prefixWidth) { //using ":" for SHOW
+    uint16_t currentViewRegisterStored = currentViewRegister;
+    currentViewRegister = SHOWregis;
+    viewRegName(prefix, prefixWidth);
+    uint16_t nn = 0;
+    while(prefix[nn] != 0) {
+      if(prefix[nn] == '=') {
+        prefix[nn] = ':';
+        *prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+      }
+      nn++;
+    }
+    currentViewRegister = currentViewRegisterStored;
+  }
+
 
   static void inputRegName(char *prefix, int16_t *prefixWidth) {
     if((currentInputVariable & 0x3fff) < REGISTER_X) {
@@ -2644,11 +2661,7 @@ void execTimerApp(uint16_t timerType) {
 
         else if(getRegisterDataType(regist) == dtReal34) {
           if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
-            sprintf(prefix, "SHOW RCL ");
-            char nn[20];
-            viewRegName1(SHOWregis, nn);
-            strcat(prefix, nn);
-            prefixWidth = stringWidth(tmpString, &standardFont, true, true);
+            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
           }
 
           else if(temporaryInformation == TI_THETA_RADIUS) {
@@ -3406,11 +3419,7 @@ void execTimerApp(uint16_t timerType) {
           //JM complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION);   //JM EE Removed and replaced with the below
         else if(getRegisterDataType(regist) == dtComplex34) {
           if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
-            sprintf(prefix, "SHOW RCL ");
-            char nn[20];
-            viewRegName1(SHOWregis, nn);
-            strcat(prefix, nn);
-            prefixWidth = stringWidth(tmpString, &standardFont, true, true);
+            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
           }
 
           else if(temporaryInformation == TI_SOLVER_VARIABLE) {
@@ -3495,11 +3504,7 @@ void execTimerApp(uint16_t timerType) {
 
         else if(getRegisterDataType(regist) == dtString) {
           if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
-            sprintf(prefix, "SHOW RCL ");
-            char nn[20];
-            viewRegName1(SHOWregis, nn);
-            strcat(prefix, nn);
-            prefixWidth = stringWidth(tmpString, &standardFont, true, true);
+            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
           }
           
           else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
@@ -3615,11 +3620,7 @@ void execTimerApp(uint16_t timerType) {
             viewRegName(prefix, &prefixWidth);
           }
           else if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
-            sprintf(prefix, "SHOW RCL ");
-            char nn[20];
-            viewRegName1(SHOWregis, nn);
-            strcat(prefix, nn);
-            prefixWidth = stringWidth(tmpString, &standardFont, true, true);
+            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
           }
           if(prefixWidth > 0) {
             if(regist == REGISTER_X) {
@@ -3691,11 +3692,7 @@ void execTimerApp(uint16_t timerType) {
 
         else if(getRegisterDataType(regist) == dtLongInteger) {
           if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
-            sprintf(prefix, "SHOW RCL ");
-            char nn[20];
-            viewRegName1(SHOWregis, nn);
-            strcat(prefix, nn);
-            prefixWidth = stringWidth(tmpString, &standardFont, true, true);
+            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
           }
 
           else if(temporaryInformation == TI_SOLVER_VARIABLE) {
@@ -3786,11 +3783,7 @@ void execTimerApp(uint16_t timerType) {
 
         else if(getRegisterDataType(regist) == dtTime) {
           if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
-            sprintf(prefix, "SHOW RCL ");
-            char nn[20];
-            viewRegName1(SHOWregis, nn);
-            strcat(prefix, nn);
-            prefixWidth = stringWidth(tmpString, &standardFont, true, true);
+            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
           }
 
           else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
@@ -3806,11 +3799,7 @@ void execTimerApp(uint16_t timerType) {
 
         else if(getRegisterDataType(regist) == dtDate) {
           if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
-            sprintf(prefix, "SHOW RCL ");
-            char nn[20];
-            viewRegName1(SHOWregis, nn);
-            strcat(prefix, nn);
-            prefixWidth = stringWidth(tmpString, &standardFont, true, true);
+            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
           }
           else if(temporaryInformation == TI_DAY_OF_WEEK) {
             if(regist == REGISTER_X) {
@@ -3832,11 +3821,7 @@ void execTimerApp(uint16_t timerType) {
 
         else if(getRegisterDataType(regist) == dtConfig) {
           if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
-            sprintf(prefix, "SHOW RCL ");
-            char nn[20];
-            viewRegName1(SHOWregis, nn);
-            strcat(prefix, nn);
-            prefixWidth = stringWidth(tmpString, &standardFont, true, true);
+            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
           }
           if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
             viewRegName(prefix, &prefixWidth);
