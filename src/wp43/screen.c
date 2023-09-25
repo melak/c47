@@ -1840,7 +1840,7 @@ void execTimerApp(uint16_t timerType) {
   }
 
 
-  static void viewRegName(char *prefix, int16_t *prefixWidth) {
+  static void viewRegName(char *prefix, int16_t *prefixWidth) { //using "=" for VIEW
     if(currentViewRegister < REGISTER_X) {
       sprintf(prefix, "R%02" PRIu16 STD_SPACE_4_PER_EM "=" STD_SPACE_4_PER_EM, currentViewRegister);
     }
@@ -1863,6 +1863,23 @@ void execTimerApp(uint16_t timerType) {
     }
     *prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
   }
+
+
+  void viewRegName2(char *prefix, int16_t *prefixWidth) { //using ":" for SHOW
+    uint16_t currentViewRegisterStored = currentViewRegister;
+    currentViewRegister = SHOWregis;
+    viewRegName(prefix, prefixWidth);
+    uint16_t nn = 0;
+    while(prefix[nn] != 0) {
+      if(prefix[nn] == '=') {
+        prefix[nn] = ':';
+        *prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+      }
+      nn++;
+    }
+    currentViewRegister = currentViewRegisterStored;
+  }
+
 
   static void inputRegName(char *prefix, int16_t *prefixWidth) {
     if((currentInputVariable & 0x3fff) < REGISTER_X) {
@@ -2051,7 +2068,7 @@ void execTimerApp(uint16_t timerType) {
 
     char prefix[200], lastBase[12];
 
-    baseModeActive = displayStackSHOIDISP != 0 && (lastIntegerBase != 0 || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_BASE);
+    baseModeActive = (SHOWregis == 9999) && displayStackSHOIDISP != 0 && (lastIntegerBase != 0 || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_BASE);
     if(baseModeActive && getRegisterDataType(REGISTER_X) == dtShortInteger) { //JMSHOI
       if(displayStack != 4-displayStackSHOIDISP) {                            //JMSHOI
         fnDisplayStack(4-displayStackSHOIDISP);                               //JMSHOI
@@ -2643,7 +2660,11 @@ void execTimerApp(uint16_t timerType) {
         }
 
         else if(getRegisterDataType(regist) == dtReal34) {
-          if(temporaryInformation == TI_THETA_RADIUS) {
+          if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
+            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
+          }
+
+          else if(temporaryInformation == TI_THETA_RADIUS) {
             if(regist == REGISTER_Y) {
               strcpy(prefix, "r =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
@@ -3397,7 +3418,11 @@ void execTimerApp(uint16_t timerType) {
           //JM else if(getRegisterDataType(regist) == dtComplex34) {                                                                                                      //JM EE Removed and replaced with the below
           //JM complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION);   //JM EE Removed and replaced with the below
         else if(getRegisterDataType(regist) == dtComplex34) {
-          if(temporaryInformation == TI_SOLVER_VARIABLE) {
+          if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
+            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
+          }
+
+          else if(temporaryInformation == TI_SOLVER_VARIABLE) {
             if(regist == REGISTER_X) {
               memcpy(prefix, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0]);
               strcpy(prefix + allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0], " =");
@@ -3478,9 +3503,14 @@ void execTimerApp(uint16_t timerType) {
         }
 
         else if(getRegisterDataType(regist) == dtString) {
-          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+          if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
+            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
+          }
+          
+          else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
             viewRegName(prefix, &prefixWidth);
           }
+
           if(prefixWidth > 0) {
             showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
           }
@@ -3585,69 +3615,87 @@ void execTimerApp(uint16_t timerType) {
         //}
 
         else if(getRegisterDataType(regist) == dtShortInteger) {
-          //if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
-          //  viewRegName(prefix, &prefixWidth);
-          //}
-          shortIntegerToDisplayString(regist, tmpString, true);
-          showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0) - (fontForShortInteger == &numericFont && temporaryInformation == TI_NO_INFO && checkHP ? 50:0), vmNormal, false, true);
-
-          //JM SHOIDISP // use the top part of the screen for HEX and BIN    //JM vv SHOIDISP
-          //DISP_TI=3    T=16    T=16    T=16
-          //DISP_TI=2            Z=10    T=2
-          //DISP_TI=1                    Z=10
-          if(baseModeActive && lastErrorCode == 0) {
-            if(displayStack == 1) { //handle Reg Pos Y
-              copySourceRegisterToDestRegister(REGISTER_Y, TEMP_REGISTER_1);
-              copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
-              setRegisterTag(REGISTER_Y,  !bcdDisplay ? 10 : 10);
-              shortIntegerToDisplayString(REGISTER_Y, tmpString, true);
-              if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
-                showString("  X: ", &standardFont, 0, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Y - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
-              }
-              showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Y - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
-              copySourceRegisterToDestRegister(TEMP_REGISTER_1,REGISTER_Y);
+          prefixWidth = 0;
+          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+            viewRegName(prefix, &prefixWidth);
+          }
+          else if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
+            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
+          }
+          if(prefixWidth > 0) {
+            if(regist == REGISTER_X) {
+              showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE + TEMPORARY_INFO_OFFSET - REGISTER_LINE_HEIGHT*(regist - REGISTER_X), vmNormal, true, true);
             }
-            if(displayStack == 1 || displayStack == 2){ //handle reg pos Z 
-              copySourceRegisterToDestRegister(REGISTER_Z, TEMP_REGISTER_1);
-              copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Z);
-              if(displayStack == 2) {
-                setRegisterTag(REGISTER_Z,  !bcdDisplay ? 10 : 10);
+            shortIntegerToDisplayString(regist, tmpString, true);
+            showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0) - (fontForShortInteger == &numericFont && temporaryInformation == TI_NO_INFO && checkHP ? 50:0), vmNormal, false, true);
+          } else {
+
+            shortIntegerToDisplayString(regist, tmpString, true);
+            showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0) - (fontForShortInteger == &numericFont && temporaryInformation == TI_NO_INFO && checkHP ? 50:0), vmNormal, false, true);
+
+            //JM SHOIDISP // use the top part of the screen for HEX and BIN    //JM vv SHOIDISP
+            //DISP_TI=3    T=16    T=16    T=16
+            //DISP_TI=2            Z=10    T=2
+            //DISP_TI=1                    Z=10
+            if(baseModeActive && lastErrorCode == 0) {
+              if(displayStack == 1) { //handle Reg Pos Y
+                copySourceRegisterToDestRegister(REGISTER_Y, TEMP_REGISTER_1);
+                copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
+                setRegisterTag(REGISTER_Y,  !bcdDisplay ? 10 : 10);
+                shortIntegerToDisplayString(REGISTER_Y, tmpString, true);
+                if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
+                  showString("  X: ", &standardFont, 0, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Y - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
+                }
+                showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Y - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
+                copySourceRegisterToDestRegister(TEMP_REGISTER_1,REGISTER_Y);
+              }
+              if(displayStack == 1 || displayStack == 2){ //handle reg pos Z 
+                copySourceRegisterToDestRegister(REGISTER_Z, TEMP_REGISTER_1);
+                copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Z);
+                if(displayStack == 2) {
+                  setRegisterTag(REGISTER_Z,  !bcdDisplay ? 10 : 10);
+                }
+                else if(displayStack == 1) {
+                  setRegisterTag(REGISTER_Z, !bcdDisplay ? 2 : 2);
+                }
+                shortIntegerToDisplayString(REGISTER_Z, tmpString, true);
+                if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
+                  showString("  X: ", &standardFont, 0, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
+                }
+                showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
+                copySourceRegisterToDestRegister(TEMP_REGISTER_1,REGISTER_Z);
+              }
+              if(displayStack == 1 || displayStack == 2 || displayStack == 3) { //handle reg pos T
+                copySourceRegisterToDestRegister(REGISTER_T, TEMP_REGISTER_1);
+                copySourceRegisterToDestRegister(REGISTER_X, REGISTER_T);
+                setRegisterTag(REGISTER_T, !bcdDisplay ? 16 : 17);
+                shortIntegerToDisplayString(REGISTER_T, tmpString, true);
+                if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
+                  showString("  X: ", &standardFont, 0, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_T - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
+                }
+                showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_T - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
+                copySourceRegisterToDestRegister(TEMP_REGISTER_1,REGISTER_T);
+              }
+              if(displayStack == 3) {
+                lcd_fill_rect(0, Y_POSITION_OF_REGISTER_Z_LINE - 2, SCREEN_WIDTH, 1, 0xFF);
+              }
+              else if(displayStack == 2) {
+                lcd_fill_rect(0, Y_POSITION_OF_REGISTER_Y_LINE - 2, SCREEN_WIDTH, 1, 0xFF);
               }
               else if(displayStack == 1) {
-                setRegisterTag(REGISTER_Z, !bcdDisplay ? 2 : 2);
+                lcd_fill_rect(0, Y_POSITION_OF_REGISTER_X_LINE - 2, SCREEN_WIDTH, 1, 0xFF);
               }
-              shortIntegerToDisplayString(REGISTER_Z, tmpString, true);
-              if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
-                showString("  X: ", &standardFont, 0, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
-              }
-              showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
-              copySourceRegisterToDestRegister(TEMP_REGISTER_1,REGISTER_Z);
             }
-            if(displayStack == 1 || displayStack == 2 || displayStack == 3) { //handle reg pos T
-              copySourceRegisterToDestRegister(REGISTER_T, TEMP_REGISTER_1);
-              copySourceRegisterToDestRegister(REGISTER_X, REGISTER_T);
-              setRegisterTag(REGISTER_T, !bcdDisplay ? 16 : 17);
-              shortIntegerToDisplayString(REGISTER_T, tmpString, true);
-              if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
-                showString("  X: ", &standardFont, 0, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_T - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
-              }
-              showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_T - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
-              copySourceRegisterToDestRegister(TEMP_REGISTER_1,REGISTER_T);
-            }
-            if(displayStack == 3) {
-              lcd_fill_rect(0, Y_POSITION_OF_REGISTER_Z_LINE - 2, SCREEN_WIDTH, 1, 0xFF);
-            }
-            else if(displayStack == 2) {
-              lcd_fill_rect(0, Y_POSITION_OF_REGISTER_Y_LINE - 2, SCREEN_WIDTH, 1, 0xFF);
-            }
-            else if(displayStack == 1) {
-              lcd_fill_rect(0, Y_POSITION_OF_REGISTER_X_LINE - 2, SCREEN_WIDTH, 1, 0xFF);
-            }
-          }                                                                 //JM ^^
+          }
+                                                                           //JM ^^
         }
 
         else if(getRegisterDataType(regist) == dtLongInteger) {
-          if(temporaryInformation == TI_SOLVER_VARIABLE) {
+          if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
+            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
+          }
+
+          else if(temporaryInformation == TI_SOLVER_VARIABLE) {
             if(regist == REGISTER_X) {
               memcpy(prefix, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0]);
               strcpy(prefix + allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0], " =");
@@ -3734,7 +3782,11 @@ void execTimerApp(uint16_t timerType) {
         }
 
         else if(getRegisterDataType(regist) == dtTime) {
-          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+          if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
+            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
+          }
+
+          else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
             viewRegName(prefix, &prefixWidth);
           }
           timeToDisplayString(regist, tmpString, false);
@@ -3746,7 +3798,10 @@ void execTimerApp(uint16_t timerType) {
         }
 
         else if(getRegisterDataType(regist) == dtDate) {
-          if(temporaryInformation == TI_DAY_OF_WEEK) {
+          if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
+            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
+          }
+          else if(temporaryInformation == TI_DAY_OF_WEEK) {
             if(regist == REGISTER_X) {
               strcpy(prefix, nameOfWday_en[getDayOfWeek(regist)]);
               showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
@@ -3765,6 +3820,9 @@ void execTimerApp(uint16_t timerType) {
         }
 
         else if(getRegisterDataType(regist) == dtConfig) {
+          if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
+            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
+          }
           if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
             viewRegName(prefix, &prefixWidth);
           }

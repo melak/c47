@@ -975,7 +975,7 @@ typedef enum {
 #define TI_VARIABLES_RESTORED                     89    //DL
 #define TI_SCATTER_SMI                            90
 #define TI_DMCP_ONLY                              91    //DL
-
+#define TI_COPY_FROM_SHOW                         92
 
 // Register browser mode
 #define RBR_GLOBAL                                 0 // Global registers are browsed
