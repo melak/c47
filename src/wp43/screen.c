@@ -1906,6 +1906,14 @@ void execTimerApp(uint16_t timerType) {
   }
 
 
+  static void _fnShowRecallTI(char * prefix, int16_t *prefixWidth) {
+    viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), prefixWidth);
+    *prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+    temporaryInformation = TI_NO_INFO;
+    screenUpdatingMode |= SCRUPD_SKIP_STACK_ONE_TIME;
+  }
+
+
   void updateMatrixHeightCache(void) {
     int16_t prefixWidth = 0;
     char prefix[200];
@@ -2661,7 +2669,7 @@ void execTimerApp(uint16_t timerType) {
 
         else if(getRegisterDataType(regist) == dtReal34) {
           if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
-            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
+            _fnShowRecallTI(prefix, &prefixWidth);
           }
 
           else if(temporaryInformation == TI_THETA_RADIUS) {
@@ -3419,7 +3427,7 @@ void execTimerApp(uint16_t timerType) {
           //JM complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION);   //JM EE Removed and replaced with the below
         else if(getRegisterDataType(regist) == dtComplex34) {
           if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
-            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
+            _fnShowRecallTI(prefix, &prefixWidth);
           }
 
           else if(temporaryInformation == TI_SOLVER_VARIABLE) {
@@ -3504,7 +3512,7 @@ void execTimerApp(uint16_t timerType) {
 
         else if(getRegisterDataType(regist) == dtString) {
           if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
-            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
+            _fnShowRecallTI(prefix, &prefixWidth);
           }
           
           else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
@@ -3620,7 +3628,7 @@ void execTimerApp(uint16_t timerType) {
             viewRegName(prefix, &prefixWidth);
           }
           else if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
-            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
+            _fnShowRecallTI(prefix, &prefixWidth);
           }
           if(prefixWidth > 0) {
             if(regist == REGISTER_X) {
@@ -3692,7 +3700,7 @@ void execTimerApp(uint16_t timerType) {
 
         else if(getRegisterDataType(regist) == dtLongInteger) {
           if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
-            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
+            _fnShowRecallTI(prefix, &prefixWidth);
           }
 
           else if(temporaryInformation == TI_SOLVER_VARIABLE) {
@@ -3783,7 +3791,7 @@ void execTimerApp(uint16_t timerType) {
 
         else if(getRegisterDataType(regist) == dtTime) {
           if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
-            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
+            _fnShowRecallTI(prefix, &prefixWidth);
           }
 
           else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
@@ -3799,7 +3807,7 @@ void execTimerApp(uint16_t timerType) {
 
         else if(getRegisterDataType(regist) == dtDate) {
           if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
-            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
+            _fnShowRecallTI(prefix, &prefixWidth);
           }
           else if(temporaryInformation == TI_DAY_OF_WEEK) {
             if(regist == REGISTER_X) {
@@ -3821,7 +3829,7 @@ void execTimerApp(uint16_t timerType) {
 
         else if(getRegisterDataType(regist) == dtConfig) {
           if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
-            viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), &prefixWidth);
+            _fnShowRecallTI(prefix, &prefixWidth);
           }
           if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
             viewRegName(prefix, &prefixWidth);
