@@ -1931,6 +1931,14 @@ void execTimerApp(uint16_t timerType) {
   }
 
 
+  static void _fnShowRecallTI(char * prefix, int16_t *prefixWidth) {
+    viewRegName2(prefix + sprintf(prefix, "SHOW RCL "), prefixWidth);
+    *prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+    temporaryInformation = TI_NO_INFO;
+    screenUpdatingMode |= SCRUPD_SKIP_STACK_ONE_TIME;
+  }
+
+
   void updateMatrixHeightCache(void) {
     int16_t prefixWidth = 0;
     char prefix[200];
