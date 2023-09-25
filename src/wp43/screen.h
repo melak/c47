@@ -253,6 +253,7 @@ void       fnAGraph                           (uint16_t regist);
    */
   void     refreshRegisterLine                (calcRegister_t regist);
 
+  void     viewRegName2(char *prefix, int16_t *prefixWidth); //register name + ":" for SHOW
   void     displayNim                         (const char *nim, const char *lastBase, int16_t wLastBaseNumeric, int16_t wLastBaseStandard);
   void     clearTamBuffer                     (void);
   void     clearShiftState                    (void);

@@ -1865,7 +1865,7 @@ void execTimerApp(uint16_t timerType) {
   }
 
 
-  static void viewRegName(char *prefix, int16_t *prefixWidth) {
+  static void viewRegName(char *prefix, int16_t *prefixWidth) { //using "=" for VIEW
     if(currentViewRegister < REGISTER_X) {
       sprintf(prefix, " R%02" PRIu16 STD_SPACE_4_PER_EM "=" STD_SPACE_4_PER_EM, currentViewRegister);
     }
@@ -1888,6 +1888,23 @@ void execTimerApp(uint16_t timerType) {
     }
     *prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
   }
+
+
+  void viewRegName2(char *prefix, int16_t *prefixWidth) { //using ":" for SHOW
+    uint16_t currentViewRegisterStored = currentViewRegister;
+    currentViewRegister = showRegis;
+    viewRegName(prefix, prefixWidth);
+    uint16_t nn = 0;
+    while(prefix[nn] != 0) {
+      if(prefix[nn] == '=') {
+        prefix[nn] = ':';
+        *prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+      }
+      nn++;
+    }
+    currentViewRegister = currentViewRegisterStored;
+  }
+
 
   static void inputRegName(char *prefix, int16_t *prefixWidth) {
     if((currentInputVariable & 0x3fff) < REGISTER_X) {
@@ -2067,11 +2084,8 @@ void execTimerApp(uint16_t timerType) {
 
 
   static void _fnShowRecallTI(char * prefix, int16_t *prefixWidth) {
-    sprintf(prefix, "SHOW RCL ");
-    char nn[20];
-    viewRegName1(showRegis, nn);
-    strcat(prefix, nn);
-    *prefixWidth = stringWidth(prefix, &standardFont, true, true);
+    viewRegName2(prefix + sprintf(prefix, "SHOW RCL"), prefixWidth);
+    *prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
     temporaryInformation = TI_NO_INFO;
     screenUpdatingMode |= SCRUPD_SKIP_STACK_ONE_TIME;
   }
@@ -3597,6 +3611,7 @@ void execTimerApp(uint16_t timerType) {
           else if(temporaryInformation == TI_VIEW_REGISTER && origRegist == REGISTER_T) {
             viewRegName(prefix, &prefixWidth);
           }
+
           if(prefixWidth > 0) {
             showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
           }
@@ -3694,7 +3709,6 @@ void execTimerApp(uint16_t timerType) {
           else if(temporaryInformation == TI_COPY_FROM_SHOW && regist == REGISTER_X) {
             _fnShowRecallTI(prefix, &prefixWidth);
           }
-
           if(prefixWidth > 0) {
             if(regist == REGISTER_X) {
               showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
