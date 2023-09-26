@@ -4037,6 +4037,18 @@ void execTimerApp(uint16_t timerType) {
 
 
 
+  void closeShowMenu(void) {
+    if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_SHOW) {
+      popSoftmenu();
+    }
+    uint8_t calcModeStore = calcMode;
+    calcMode = CM_NORMAL;
+    screenUpdatingMode = SCRUPD_AUTO;
+    refreshScreen(137);
+    calcMode = calcModeStore;
+  }
+
+
 
   static void _selectiveClearScreen(void) {
     if(screenUpdatingMode == SCRUPD_AUTO) {

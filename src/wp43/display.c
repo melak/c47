@@ -2671,7 +2671,7 @@ static void printXAngle(int16_t cc, int16_t d) {
   convertAngle34FromTo(&real34, getRegisterAngularMode(showRegis), cc);
   RegName();
   ww = stringWidth(tmpString + 2100, &numericFont, true, true);
-  real34ToDisplayString(&real34, cc, tmpString + 2100 + stringByteLength(tmpString + 2100), &numericFont, SCREEN_WIDTH - ww, 34, false, false);
+  real34ToDisplayString(&real34, cc, tmpString + 2100 + stringByteLength(tmpString + 2100), &numericFont, SCREEN_WIDTH - ww - 8*2, 34, false, false);
   last = 2100 + stringByteLength(tmpString + 2100);
   source = 2100;
   dest = d;

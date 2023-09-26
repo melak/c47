@@ -74,7 +74,7 @@
 
 #define TEXT_MULTILINE_EDIT         // 5 line buffer
 #define MAXLINES 5                  // numner of equavalent lines in small font maximum that is allowed in entry. Entry is hardlocked to multiline 3 lines bif font, but this is still the limit. WP has 2 lines fixed small font.
-#define allowShowDigits true        // true to allow typing of double digits to get to register number nn in SHOW.      
+#define allowShowDigits false       // true to allow typing of double digits to get to register number nn in SHOW.      
 
 #define LOW_GRAPH_ACC                                     //Lowered graph accuracy for EQN graphs
 //#undef LOW_GRAPH_ACC
@@ -127,7 +127,7 @@
 
 //Debugging
   #if defined(PC_BUILD)
-    //#define DEBUGUNDO
+    #define DEBUGUNDO
     #undef DEBUGUNDO
   #else // !PC_BUILD
     #undef DEBUGUNDO
