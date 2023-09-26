@@ -882,15 +882,13 @@ void printStatus(uint8_t row, const char *line1, uint8_t forced) {
     g_line_y = Y_POSITION_OF_REGISTER_T_LINE; //20
     g_line_x = 20 * row;
 
-    refreshRegisterLine(REGISTER_T);
+//  refreshRegisterLine(REGISTER_T);
+    clearRegisterLine(REGISTER_T, true, true);
 
     //g_line_x = showStringEnhanced(line1, &standardFont, g_line_x, g_line_y, vmNormal, false, false, NO_compress, NO_raise, DO_Show, NO_LF);
     g_line_x = showString(line1, &standardFont, (uint32_t) g_line_x, (uint32_t) g_line_y, vmNormal, true, true);
 
-    while((uint32_t)g_line_x < SCREEN_WIDTH - 20) { //pad
-      //g_line_x = showStringEnhanced(" ", &standardFont, g_line_x, g_line_y, vmNormal, false, false, NO_compress, NO_raise, DO_Show, NO_LF);
-      g_line_x = showString(" ", &standardFont, (uint32_t) g_line_x, (uint32_t) g_line_y, vmNormal, true, true);
-    }
+//  clearRect(g_line_x, g_line_y);
 
     if(forced == force) {
       force_refresh(force);

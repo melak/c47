@@ -1843,6 +1843,13 @@ void execTimerApp(uint16_t timerType) {
   }
 
 
+  void clearRect(uint32_t g_line_x, uint32_t g_line_y) {
+    uint32_t fcol, frow;
+    getGlyphBounds(" ", 0, &standardFont, &fcol, &frow);
+    lcd_fill_rect((uint32_t) g_line_x, (uint32_t) g_line_y, SCREEN_WIDTH-g_line_x-1, frow, LCD_SET_VALUE);   
+  }
+
+
   void clearRegisterLine(calcRegister_t regist, bool_t clearTop, bool_t clearBottom) {
     if(REGISTER_X <= regist && regist <= REGISTER_T) {
       uint32_t yStart = Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X);

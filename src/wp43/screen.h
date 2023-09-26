@@ -241,6 +241,8 @@ void       fnAGraph                           (uint16_t regist);
    *
    * \param[in] yStart y coordinate from where starting to clear
    */
+  void     clearRect                          (uint32_t g_line_x, uint32_t g_line_y);
+
   void     clearRegisterLine                  (calcRegister_t regist, bool_t clearTop, bool_t clearBottom);
 
   /**
