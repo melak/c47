@@ -58,7 +58,7 @@ void press_key(void) {
   #endif // DMCP_BUILD
 }
 
-#define XEQ_STR_LENGTH_LONG  3000 // note the limit is the tmpString limit
+#define XEQ_STR_LENGTH_LONG  TMP_STR_LENGTH // 3000 // note the limit is the tmpString limit
 
 void capture_sequence(char *origin, uint16_t item) {
   #if defined(PC_BUILD)
