@@ -2007,7 +2007,7 @@ RELEASE_END:
 #if !defined(TESTSUITE_BUILD)
   void processKeyAction(int16_t item) {
     #if defined(PC_BUILD) && defined(MONITOR_CLRSCR)
-      printf(">>>> processKeyAction: calcMode=%u item=%d  programRunStop=%d lastErrorCode=%u \n",calcMode, item, programRunStop, lastErrorCode);
+      printf(">>>> processKeyAction: calcMode=%u item=%d  programRunStop=%d lastErrorCode=%u SHOWMODE=%u\n",calcMode, item, programRunStop, lastErrorCode, SHOWMODE);
     #endif // PC_BUILD &&MONITOR_CLRSCR
     keyActionProcessed = false;
     lowercaseselected = ((alphaCase == AC_LOWER && !lastshiftF) || (alphaCase == AC_UPPER && lastshiftF /*&& !numLock*/)); //JM remove last !numlock if you want the shift, during numlock, to produce lower case
@@ -2026,14 +2026,11 @@ RELEASE_END:
       }
     }
     else if(temporaryInformation != TI_NO_INFO && item != ITM_UP1 && item != ITM_DOWN1 && item != ITM_EXIT1 && item != ITM_BACKSPACE && 
-           !(  (item == ITM_RCL || (item >= ITM_0 && item <= ITM_9)) && SHOWMODE && allowShowDigits  )) {
-      uint8_t calcModeStore = calcMode;
-      calcMode = CM_NORMAL;
-      screenUpdatingMode = SCRUPD_AUTO;
-      refreshScreen(137);
-      calcMode = calcModeStore;
+           !(  ((item == ITM_RCL) || (item >= ITM_0 && item <= ITM_9 && allowShowDigits)) && SHOWMODE  ) ) {
       temporaryInformation = TI_NO_INFO;
+      closeShowMenu();
     }
+
     if(programRunStop == PGM_WAITING) {
       programRunStop = PGM_STOPPED;
     }
@@ -2046,6 +2043,7 @@ RELEASE_END:
     if(item == KEY_COMPLEX && calcMode == CM_MIM) {   //JM Allow COMPLEX to function as CC if in Matrix
       item = ITM_CC;
     }
+
     if(GRAPHMODE && item != ITM_BACKSPACE && item != ITM_EXIT1 && item != ITM_UP1 && item != ITM_DOWN1) {
       keyActionProcessed = true;
     } else
@@ -2255,7 +2253,7 @@ RELEASE_END:
       default:
       {
         #if defined(PC_BUILD) && ((defined VERBOSEKEYS) || (defined MONITOR_CLRSCR))
-          printf("Switch - default: processKeyAction: calcMode=%d itemToBeAssigned=%d item=%d\n",calcMode, itemToBeAssigned, item);
+          printf("Switch - default: processKeyAction: calcMode=%d itemToBeAssigned=%d item=%d SHOWMODE=%u\n",calcMode, itemToBeAssigned, item, SHOWMODE);
         #endif //PC_BUILD
         if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && item == ITM_USERMODE) {
           while(softmenuStack[0].softmenuId > 1) {
@@ -2328,11 +2326,7 @@ RELEASE_END:
                   fnRecall(showRegis);
                   setSystemFlag(FLAG_ASLIFT);
                   temporaryInformation = TI_COPY_FROM_SHOW;
-                  if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_SHOW) {
-                    popSoftmenu();
-                  }
-                  screenUpdatingMode = SCRUPD_AUTO;
-                  refreshScreen(0);
+                  closeShowMenu();
                 } else if(ITM_0 <= item && item <= ITM_9) {
                   keyActionProcessed = true;
                   if(showRegis%10 == 0 && showRegis <=90) {  //Will only get to this point if ##SHOWDIGITS is enabled
@@ -3087,11 +3081,8 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         } else
         if(temporaryInformation == TI_SHOW_REGISTER || SHOWMODE) {
           temporaryInformation = TI_NO_INFO;
-          screenUpdatingMode = SCRUPD_AUTO;
-          if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_SHOW) {
-            popSoftmenu();
-          }
-        }
+          closeShowMenu();
+         }
         else
         if(lastErrorCode != 0) {
           lastErrorCode = 0;
@@ -3479,10 +3470,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
         if(temporaryInformation == TI_SHOW_REGISTER || SHOWMODE) {
           temporaryInformation = TI_NO_INFO;
           keyActionProcessed = true;
-          screenUpdatingMode = SCRUPD_AUTO;
-          if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_SHOW) {
-            popSoftmenu();
-          }
+          closeShowMenu();
           return;
         }
         else
