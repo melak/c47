@@ -14,7 +14,7 @@
 
 #define VERSION1 "0.109.00.00a6"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
-//2023-09-26-0.109.00.00a6 Development update
+//2023-09-14-0.108.13.07 Snapshot Stable update
 
   #undef SAVE_SPACE_DM42_0
   #undef SAVE_SPACE_DM42_1
@@ -50,14 +50,14 @@
     #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
     #define SAVE_SPACE_DM42_6  //001648 bytes: ELEC functions
     #define SAVE_SPACE_DM42_7  //002144 bytes: KEYS USER_DM42;
-  //#define SAVE_SPACE_DM42_8  //007136 bytes: Standard Flag-, Register-, Font- Browser functions
-  //#define SAVE_SPACE_DM42_9  //004448 bytes: SHOW (new C43)
-  //#define SAVE_SPACE_DM42_10 //005800 bytes: WP43S programming ...
-  //#define SAVE_SPACE_DM42_11 //001552 bytes: Matrix function on entry ...
+  //  #define SAVE_SPACE_DM42_8  //007136 bytes: Standard Flag-, Register-, Font- Browser functions
+  //  #define SAVE_SPACE_DM42_9  //004448 bytes: SHOW (new C43)
+  //  #define SAVE_SPACE_DM42_10 //005800 bytes: WP43S programming ...
+  //  #define SAVE_SPACE_DM42_11 //001552 bytes: Matrix function on entry ...
     #define SAVE_SPACE_DM42_12 //047246 bytes: Standard extra 43S math: SLVQ, PRIME, BESSEL, ELLIPTIC, ZETA, BETA, ORTHO_POLY
     #define SAVE_SPACE_DM42_13GRF //           JM Solver & graphics & stat graphics
     #define SAVE_SPACE_DM42_13GRF_JM //        JM graphics
-  //#define SAVE_SPACE_DM42_14    //           programming sample programs
+  //  #define SAVE_SPACE_DM42_14    //           programming sample programs
     #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
     #define SAVE_SPACE_DM42_16    //           without all distributions, i.e. binomial, cauchy, chi
   #endif // !TWO_FILE_PGM
@@ -65,6 +65,7 @@
   #if defined(TWO_FILE_PGM) //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT INTO AVAILABLE FLASH EVEN WHILE USING QSPI
   //  #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
   //  #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
+  //  #define SAVE_SPACE_DM42_12 //047246 bytes: Standard extra 43S math: SLVQ, PRIME, BESSEL, ELLIPTIC, ZETA, BETA, ORTHO_POLY
   //  #define SAVE_SPACE_DM42_15       //           without all distributions, i.e. binomial, cauchy, chi
   //  #define SAVE_SPACE_DM42_16       //           without Norml
   #endif // TWO_FILE_PGM
@@ -88,7 +89,7 @@
   #undef     CLICK_REFRESHSCR
 
 
-//Debud showFunctionName
+//Debug showFunctionName
 #define DEBUG_SHOWNAME
 #undef DEBUG_SHOWNAME
 #if defined(DEBUG_SHOWNAME)
@@ -1512,7 +1513,7 @@ typedef enum {
 #if defined(DMCP_BUILD)
   #define TMP_STR_LENGTH     2560 //2560 //dr - remove #include <dmcp.h> again - AUX_BUF_SIZE
 #else // !DMCP_BUILD
-  #define TMP_STR_LENGTH     3000 //2560 //JMMAX ORG:2560
+  #define TMP_STR_LENGTH     2560 //2560 //JMMAX ORG:2560, changed back from 3000; 2023-09-26
 #endif // DMCP_BUILD
   #define WRITE_BUFFER_LEN       4096
   #define ERROR_MESSAGE_LENGTH    512 //JMMAX(325) 512          //JMMAX Temporarily reduced - ORG:512.
