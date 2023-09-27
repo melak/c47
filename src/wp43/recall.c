@@ -344,6 +344,7 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(exponentLimit);
     recallFromDtConfigDescriptor(exponentHideLimit);
     recallFromDtConfigDescriptor(lastIntegerBase);
+    recallFromDtConfigDescriptor(HOME3);
   }
 
   else {

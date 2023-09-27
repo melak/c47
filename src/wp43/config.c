@@ -983,7 +983,6 @@ void restoreStats(void){
       {0,USER_E47,     "E47: Exp 2 shifts L /x-+ R"                      },
       {0,USER_N47,     "N47: Exp 2 shft L (32 mould) /x-+ R " STD_UP_ARROW STD_DOWN_ARROW " top"  },
       {0,USER_V47,     "V47: Exp Vintage 2 shifts TopR -+x/ L"           },
-      {0,USER_C43,     "C43: Org. classic 1-shift (DM42 mould, discon)"  },
       {0,USER_DM42,    "DM42: Final Compatibility layout"                },
       {0,USER_43S,     "WP 43S Pilot: Final Compatibility layout"        },
       {0,USER_KRESET,  "C47 All USER keys cleaned"                       },
@@ -1067,6 +1066,7 @@ void resetOtherConfigurationStuff(void) {
 
   eRPN = true;
   HOME3 = true;
+  MYM3 = false;
   ShiftTimoutMode = true;
   SH_BASE_HOME   = false;
   Norm_Key_00_VAR  = ITM_SIGMAPLUS;                            //JM NORM MODE SIGMA REPLACEMENT KEY
@@ -1658,15 +1658,6 @@ void fnKeysManagement(uint16_t choice) {
       break;
     #endif //PC_BUILD
 
-
-    //---KEYS PROFILE: C43
-    //------------------------
-    case USER_C43:          //USER
-      fnKeysManagement(USER_KRESET);
-      fnShowVersion(USER_C43);
-      xcopy(kbd_usr, kbd_std_C43, sizeof(kbd_std_C43));
-      fnSetFlag(FLAG_USER);
-      break;
 
 
     //---KEYS PROFILE: C47

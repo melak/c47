@@ -1791,17 +1791,19 @@ void fnConstantR(uint16_t constantAddr, uint16_t *constNr, real_t *rVal) {
 
 
 void fnSafeReset (uint16_t unusedButMandatoryParameter) {
-  if(!jm_G_DOUBLETAP && !ShiftTimoutMode && !HOME3) {
+  if(!jm_G_DOUBLETAP && !ShiftTimoutMode && !HOME3 && !MYM3) {
     fgLN            = RB_FGLNFUL;  //not in conditional clear
     jm_G_DOUBLETAP  = true;
     ShiftTimoutMode = true;
     HOME3           = true;
+    MYM3            = false;
   }
   else {
     fgLN            = RB_FGLNOFF;  //not in conditional clear
     jm_G_DOUBLETAP  = false;
     ShiftTimoutMode = false;
     HOME3           = false;
+    MYM3            = false;
   }
 }
 

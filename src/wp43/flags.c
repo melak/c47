@@ -737,6 +737,12 @@ void SetSetting(uint16_t jmConfig) {
       break;
     }
 
+    case JC_MYM_TRIPLE: {
+      MYM3 = !MYM3;
+      fnRefreshState();
+      break;
+    }
+
     case JC_SHFT_4s: {
       ShiftTimoutMode = !ShiftTimoutMode;
       fnRefreshState();

@@ -250,6 +250,7 @@ typedef struct {
   int16_t        exponentLimit;
   int16_t        exponentHideLimit;
   uint32_t       lastIntegerBase;
+  bool_t MYM3;
 
 } dtConfigDescriptor_t;
 
