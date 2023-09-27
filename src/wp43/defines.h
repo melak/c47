@@ -14,7 +14,7 @@
 
 #define VERSION1 "0.109.00.00a7"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
-//2023-09-27-0.109.00.00 Alpha 7
+//2023-09-26-0.108.14.00 RC1 Stable
 
   #undef SAVE_SPACE_DM42_0
   #undef SAVE_SPACE_DM42_1
@@ -295,7 +295,6 @@
 #define USER_MRESET      49
 #define USER_KRESET      50
 #define USER_N47         51
-#define USER_C43         52
 #define USER_MENG        53
 #define USER_MFIN        54
 

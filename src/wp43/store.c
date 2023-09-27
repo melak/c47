@@ -457,6 +457,7 @@ void fnStoreConfig(uint16_t regist) {
   storeToDtConfigDescriptor(exponentLimit);
   storeToDtConfigDescriptor(exponentHideLimit);
   storeToDtConfigDescriptor(lastIntegerBase);
+  storeToDtConfigDescriptor(HOME3);
 }
 
 

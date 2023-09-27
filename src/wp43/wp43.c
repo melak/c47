@@ -177,6 +177,7 @@ uint32_t              indic_y = SCREEN_HEIGHT-1;
 
 bool_t                eRPN;                                    //JM eRPN Create a flag to enable or disable eRPN. See bufferize.c
 bool_t                HOME3;                                   //JM HOME Create a flag to enable or disable triple shift HOME3. Create a flag to enable or disable HOME TIMER CANCEL.
+bool_t                MYM3;                                    //JM HOME Create a flag to enable or disable triple shift MYM3. Create a flag to enable or disable HOME TIMER CANCEL.
 bool_t                ShiftTimoutMode;                         //JM SHIFT Create a flag to enable or disable SHIFT TIMER CANCEL.
 bool_t                SH_BASE_HOME;                            //JM BASEHOME
 int16_t               Norm_Key_00_VAR;                         //JM USER NORMAL

@@ -100,6 +100,7 @@ void fnRCL          (int16_t inp);
 #define JC_HOME_TRIPLE          2    // HOME.3
 #define JC_SHFT_4s              3    // SH_4s
 #define JC_BASE_HOME            4    // HOME
+#define JC_MYM_TRIPLE           5    // HOME.3
 #define JC_BCR                  9    // CB ComplexResult
 #define JC_BLZ                 10    // CB LeadingZeros
 #define JC_PROPER              11    // CB FractionType

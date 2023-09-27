@@ -126,6 +126,7 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   {ITM_BASE_SCREEN,      JC_BASE_SCREEN,         CB_JC},  //SetSetting
   {ITM_G_DOUBLETAP,      JC_G_DOUBLETAP,         CB_JC},  //SetSetting
   {ITM_HOMEx3,           JC_HOME_TRIPLE,         CB_JC},  //SetSetting
+  {ITM_MYMx3,            JC_MYM_TRIPLE,          CB_JC},  //SetSetting
   {ITM_SHTIM,            JC_SHFT_4s,             CB_JC},  //SetSetting
   {ITM_VECT,             JC_VECT,                CB_JC},  //SetSetting
   {ITM_NVECT,            JC_NVECT,               CB_JC},  //SetSetting
@@ -317,6 +318,7 @@ int8_t fnCbIsSet(int16_t item) {
             case JC_BASE_SCREEN:         cb_param = jm_BASE_SCREEN;                                                   break;
             case JC_G_DOUBLETAP:         cb_param = jm_G_DOUBLETAP;                                                   break;
             case JC_HOME_TRIPLE:         cb_param = HOME3;                                                            break;
+            case JC_MYM_TRIPLE:          cb_param = MYM3;                                                             break;
             case JC_SHFT_4s:             cb_param = ShiftTimoutMode;                                                  break;
             case JC_VECT:                cb_param = PLOT_VECT;                                                        break;
             case JC_NVECT:               cb_param = PLOT_NVECT;                                                       break;
