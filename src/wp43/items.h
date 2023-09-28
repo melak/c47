@@ -1427,13 +1427,13 @@
 #define MNU_SYSFL                   1379
 #define MNU_Sf                      1380
 #define MNU_Sfdx                    1381
-#define MNU_ANGLECONV_C43           1382
+#define MNU_ANGLECONV_43S           1382
 #define MNU_alpha_omega             1383
 #define MNU_ALPHAintl               1384
 #define MNU_TAM                     1385
 #define MNU_TAMCMP                  1386
 #define MNU_TAMSTORCL               1387
-#define MNU_SUMS_C43                1388
+#define ITM_1388                    1388
 #define MNU_VAR                     1389
 #define MNU_TAMFLAG                 1390
 #define MNU_TAMSHUFFLE              1391
@@ -1914,7 +1914,7 @@
 #define CHR_case                    1858
 #define ITM_BASE_HOME               1859
 #define MNU_MISC                    1860
-#define MNU_1861                    1861
+#define ITM_MYMx3                   1861
 #define ITM_DTtoJ                   1862
 #define ITM_JtoDT                   1863
 #define ITM_DSPCYCLE                1864
@@ -2017,7 +2017,7 @@
 #define ITM_USER_D47                1961
 #define ITM_USER_N47                1962
 #define ITM_USER_E47                1963
-#define ITM_USER_C43                1964
+#define ITM_1964                    1964
 #define ITM_X_P1                    1965
 #define ITM_X_P2                    1966
 #define ITM_X_P3                    1967
@@ -2157,9 +2157,9 @@
 #define ITM_RADtoGRAD               2101
 #define MNU_TRG_C47                 2102
 #define MNU_TRG_C47_MORE            2103
-#define MNU_PARTS_C43               2104
-#define MNU_UNITCONV_C43            2105
-#define MNU_ALPHAFN_C43             2106
+#define ITM_2104                    2104
+#define ITM_2105                    2105
+#define ITM_2106                    2106
 #define MNU_PLOTTING                2107
 #define MNU_TAMNONREGIND            2108
 #define ITM_SAVEST                  2109

@@ -124,15 +124,15 @@ void expandConversionName(char *msg1) {   // 2x16+1 character limit, rounded up 
               msg1[jj++] = '0'; i++;
               msg1[jj++] = 'k';
               msg1[jj++] = 'm';
-            } else if('/' == inStr[i] && 'U' == inStr[i+1]) {
+            } else if('/' == inStr[i] && STD_USER_MODE[0] == inStr[i+1] && STD_USER_MODE[1] == inStr[i+2]) {
               msg1[jj++] = '/'; i++;
-              msg1[jj++] = 'k'; i++;
-              msg1[jj++] = 'W';
-              msg1[jj++] = 'h';
-            } else if('U' == inStr[i] && '/' == inStr[i+1]) {
               msg1[jj++] = 'k'; i++;
               msg1[jj++] = 'W'; i++;
               msg1[jj++] = 'h';
+            } else if(STD_USER_MODE[0] == inStr[i] && STD_USER_MODE[1] == inStr[i+1] && '/' == inStr[i+2]) {
+              msg1[jj++] = 'k'; i++;
+              msg1[jj++] = 'W'; i++;
+              msg1[jj++] = 'h'; i++;
               msg1[jj++] = '/';
             } else {
               msg1[jj++]=inStr[i++];
@@ -161,10 +161,12 @@ void compressConversionName(char *msg1) {   // 2x16+1 character limit, rounded u
               i += 4;
             } else if('/' == inStr[i] && 'k' == inStr[i+1] && 'W' == inStr[i+2] && 'h' == inStr[i+3]) {
               msg1[jj++] = '/';
-              msg1[jj++] = 'U';
+              msg1[jj++] = STD_USER_MODE[0];
+              msg1[jj++] = STD_USER_MODE[1];
               i += 4;
             } else if('k' == inStr[i] && 'W' == inStr[i+1] && 'h' == inStr[i+2] && '/' == inStr[i+3]) {
-              msg1[jj++] = 'U';
+              msg1[jj++] = STD_USER_MODE[0];
+              msg1[jj++] = STD_USER_MODE[1];
               msg1[jj++] = '/';
               i += 4;
             } else {

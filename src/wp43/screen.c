@@ -845,18 +845,23 @@ void execTimerApp(uint16_t timerType) {
           //fnTimerStop(TO_FG_LONG);                  // vv moved to resetShiftState()
           //fnTimerStop(TO_FG_TIMR);                  // ^^
           resetShiftState();                        //force into no shift state, i.e. to wait
-          if(HOME3) {
+          if(HOME3 || MYM3) {
             #if defined(PC_BUILD)
               jm_show_calc_state("screen.c: Shft_handler: HOME3");
             #endif //PC_BUILD
-            if(softmenuStack[0].softmenuId == mm_MNU_HOME) {              //JM shifts    //softmenuStackPointerJM
+            if(HOME3 && softmenuStack[0].softmenuId == mm_MNU_HOME) {              //JM shifts    //softmenuStackPointerJM
               popSoftmenu();                                                                                                  //JM shifts
             }
             else {
               if(calcMode == CM_AIM) {                                                                                        //JM shifts
               }
               else {                                                                                                          //JM SHIFTS
-                showSoftmenu(-MNU_HOME);                                                                          //JM shifts  //JM ALPHA-HOME
+                if(HOME3) {
+                  showSoftmenu(-MNU_HOME);
+                }
+                else if(MYM3) {
+                  showSoftmenu(-MNU_MyMenu);
+                }
               }                                                                                                               //JM shifts
             }
             showSoftmenuCurrentPart();

@@ -59,7 +59,7 @@
 #endif
 
 #include "wp43.h"
-#define BACKUP_VERSION                     785  // add StatusBarSetup
+#define BACKUP_VERSION                     786  // add MYM3
 #define OLDEST_COMPATIBLE_BACKUP_VERSION   779  // save running app
 #define configFileVersion                  10000008 // New STOCFG and new STATE file; arbitrary starting point version 10 000 001. Allowable values are 10000000 to 20000000
 #define VersionAllowed                     10000005 // This code will not autoload versions earlier than this
@@ -401,6 +401,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
     save(&grpGroupingGr1LeftOverflow,         sizeof(grpGroupingGr1LeftOverflow));//JM
     save(&grpGroupingGr1Left,                 sizeof(grpGroupingGr1Left));        //JM
     save(&grpGroupingRight,                   sizeof(grpGroupingRight));          //JM
+    save(&MYM3,                               sizeof(MYM3));
 
     ioFileClose();
     printf("End of calc's backup\n");
@@ -739,6 +740,10 @@ static uint32_t restore(void *buffer, uint32_t size) {
         restore(&grpGroupingGr1Left,                 sizeof(grpGroupingGr1Left));        //JM
         restore(&grpGroupingRight,                   sizeof(grpGroupingRight));          //JM
       }
+
+      if(backupVersion >= 786) {
+        restore(&MYM3,                                 sizeof(MYM3));
+      } else MYM3 = false;
 
       ioFileClose();
       printf("End of calc's restoration\n");
@@ -1242,8 +1247,8 @@ flushBufferCnt = 0;
   }
 
   // Other configuration stuff
-        sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n71\n");   
-        save(tmpString, strlen(tmpString));    //JM 23+10+15+23
+        sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n72\n");   
+        save(tmpString, strlen(tmpString));    //JM 23+11+15+23
 /*01*/  save(tmpString, strlen(tmpString)); 
 
 //23 sprintf(tmpString, "firstGregorianDay\n%" PRIu32 "\n", firstGregorianDay);
@@ -1276,13 +1281,14 @@ flushBufferCnt = 0;
 /*01*/  sprintf(tmpString, "fgLN\n%"                       PRIu8  "\n",     (uint8_t)fgLN);                save(tmpString, strlen(tmpString));      //keep save file format by keeping the old setting
 /*02*/  sprintf(tmpString, "eRPN\n%"                       PRIu8  "\n",     (uint8_t)eRPN);                save(tmpString, strlen(tmpString));
 /*03*/  sprintf(tmpString, "HOME3\n%"                      PRIu8  "\n",     (uint8_t)HOME3);               save(tmpString, strlen(tmpString));
-/*04*/  sprintf(tmpString, "ShiftTimoutMode\n%"            PRIu8  "\n",     (uint8_t)ShiftTimoutMode);     save(tmpString, strlen(tmpString));
-/*05*/  sprintf(tmpString, "CPXMult\n%"                    PRIu8  "\n",     (uint8_t)CPXMULT);             save(tmpString, strlen(tmpString));
-/*06*/  sprintf(tmpString, "SH_BASE_HOME\n%"               PRIu8  "\n",     (uint8_t)SH_BASE_HOME);        save(tmpString, strlen(tmpString));
-/*07*/  sprintf(tmpString, "Norm_Key_00_VAR\n%"            PRId16 "\n",     Norm_Key_00_VAR);              save(tmpString, strlen(tmpString));
-/*08*/  sprintf(tmpString, "Input_Default\n%"              PRIu8  "\n",     Input_Default);                save(tmpString, strlen(tmpString));
-/*09*/  sprintf(tmpString, "jm_BASE_SCREEN\n%"             PRIu8  "\n",     (uint8_t)jm_BASE_SCREEN);      save(tmpString, strlen(tmpString));
-/*10*/  sprintf(tmpString, "jm_G_DOUBLETAP\n%"             PRIu8  "\n",     (uint8_t)jm_G_DOUBLETAP);      save(tmpString, strlen(tmpString));
+/*04*/  sprintf(tmpString, "MYM3\n%"                       PRIu8  "\n",     (uint8_t)MYM3);                save(tmpString, strlen(tmpString));
+/*05*/  sprintf(tmpString, "ShiftTimoutMode\n%"            PRIu8  "\n",     (uint8_t)ShiftTimoutMode);     save(tmpString, strlen(tmpString));
+/*06*/  sprintf(tmpString, "CPXMult\n%"                    PRIu8  "\n",     (uint8_t)CPXMULT);             save(tmpString, strlen(tmpString));
+/*07*/  sprintf(tmpString, "SH_BASE_HOME\n%"               PRIu8  "\n",     (uint8_t)SH_BASE_HOME);        save(tmpString, strlen(tmpString));
+/*08*/  sprintf(tmpString, "Norm_Key_00_VAR\n%"            PRId16 "\n",     Norm_Key_00_VAR);              save(tmpString, strlen(tmpString));
+/*09*/  sprintf(tmpString, "Input_Default\n%"              PRIu8  "\n",     Input_Default);                save(tmpString, strlen(tmpString));
+/*10*/  sprintf(tmpString, "jm_BASE_SCREEN\n%"             PRIu8  "\n",     (uint8_t)jm_BASE_SCREEN);      save(tmpString, strlen(tmpString));
+/*11*/  sprintf(tmpString, "jm_G_DOUBLETAP\n%"             PRIu8  "\n",     (uint8_t)jm_G_DOUBLETAP);      save(tmpString, strlen(tmpString));
 
 /*  *///15     
 /*01*/  sprintf(tmpString, "compatibility_bool\n%"         PRIu8  "\n",     (uint8_t)0);                   save(tmpString, strlen(tmpString));            //compatibility - use when needed
@@ -2372,6 +2378,7 @@ int32_t stringToInt32(const char *str) {
           else if(strcmp(aimBuffer, "jm_FG_LINE"                  ) == 0) { fgLN                  = stringToUint8(tmpString); }             //Keep compatible with old setting
           else if(strcmp(aimBuffer, "eRPN"                        ) == 0) { eRPN                  = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "HOME3"                       ) == 0) { HOME3                 = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "MYM3"                        ) == 0) { MYM3                  = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "ShiftTimoutMode"             ) == 0) { ShiftTimoutMode       = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "CPXMult"                     ) == 0) { CPXMULT               = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "SH_BASE_HOME"                ) == 0) { SH_BASE_HOME          = (bool_t)stringToUint8(tmpString) != 0; }
