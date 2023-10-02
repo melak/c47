@@ -286,15 +286,7 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
       //printf("|%s|\n", aimBuffer);
     }
     lastIntegerBase = 0;
-
-    uint_fast8_t ix = 0;
-    while(ix < SOFTMENU_STACK_SIZE && softmenuStack[0].softmenuId != 0) {
-    #if defined(PC_BUILD)
-      jm_show_comment("^^^^fnClrModb");
-    #endif // PC_BUILD
-      popSoftmenu();
-      ix++;
-    }
+    fnExitAllMenus(0);
     if(!checkHP) {
       fnDisplayStack(4);    //Restore to default DSTACK 4
     } else {                //Snap out of HP35 mode, and reset all setting needed for that

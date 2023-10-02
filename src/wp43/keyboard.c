@@ -1355,7 +1355,7 @@ bool_t allowShiftsToClearError = false;
         updateMatrixHeightCache();
       }
       else {
-        temporaryInformation = TI_NO_INFO;
+          temporaryInformation = TI_NO_INFO;
       }
       if(lastErrorCode != 0) allowShiftsToClearError = true;
       if(programRunStop == PGM_WAITING) {
@@ -2016,12 +2016,8 @@ RELEASE_END:
         else {
           //JM No if needed, it does nothing if not in NIM. TO DISPLAY NUMBER KEYPRESS DIRECTLY AFTER PRESS, NOT ONLY UPON RELEASE          break;
           keyActionProcessed = true;   //JM move this to before fnKeyBackspace to allow fnKeyBackspace to cancel it if needed to allow this function via timing out to NOP, and this is incorporated with the CLRDROP
-          if(temporaryInformation == TI_NO_INFO) {
-            fnKeyBackspace(NOPARAM);
-          }
-          else {
-            temporaryInformation = TI_NO_INFO;
-          }
+          fnKeyBackspace(NOPARAM);
+          temporaryInformation = TI_NO_INFO;
         }
         break;
       }
@@ -2135,6 +2131,10 @@ RELEASE_END:
           keyActionProcessed = true;
         }
         else if(tam.mode) {
+
+// To TEST and investigate 2023-10-02
+// User menu name create: ASN + USER 'DDD' has a problem by exiting to MyAlpha 
+
           tamProcessInput(ITM_ENTER);
           keyActionProcessed = true;
         }
@@ -2743,9 +2743,18 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
       }
 
       case CM_AIM: {
+
 //        if(softmenuStack[0].softmenuId == mm_MNU_ALPHA) {     //JMvv
 //          popSoftmenu();
 //        }                                                     //JM^^
+
+          if(softmenuStack[0].softmenuId <= 1 && softmenu[softmenuStack[1].softmenuId].menuItem == -MNU_ALPHA) {
+            popSoftmenu();
+          }
+          if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA) {  //JM
+            softmenuStack[0].softmenuId = 1;                                  //JM
+          }                                                                   //JM
+
 
         calcModeNormal();
         popSoftmenu();

@@ -136,7 +136,7 @@
   void fnK100Ktokmk   (uint16_t multiplyDivide);
   void fnL100Tomgus   (uint16_t multiplyDivide);
   void fnMgeustok100M (uint16_t multiplyDivide);
-  void fnK100Mtok100K (uint16_t multiplyDivide);
+  void fnK100Ktok100M (uint16_t multiplyDivide);
   void fnL100Tomguk   (uint16_t multiplyDivide);
   void fnMgeuktok100M (uint16_t multiplyDivide);
   void fnK100Mtomik   (uint16_t multiplyDivide);

@@ -24,9 +24,9 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
-#define VERSION1 "0.108.14.00RC2"     // major release . minor release . tracked build . internal OR un/tracked OR subrelease : Alpha / Beta / RC1
+#define VERSION1 "0.108.14.00RC3"     // major release . minor release . tracked build . internal OR un/tracked OR subrelease : Alpha / Beta / RC1
 
-//2023-09-27-0.108.14.00 RC2 Stable
+//2023-10-02-0.108.14.00 RC3 Stable
 
   #undef SAVE_SPACE_DM42_0
   #undef SAVE_SPACE_DM42_1
@@ -976,6 +976,7 @@ typedef enum {
 #define TI_SCATTER_SMI                            90
 #define TI_DMCP_ONLY                              91    //DL
 #define TI_COPY_FROM_SHOW                         92
+#define TI_DATA_LOSS                              93
 
 // Register browser mode
 #define RBR_GLOBAL                                 0 // Global registers are browsed
