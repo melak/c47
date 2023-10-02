@@ -1727,10 +1727,36 @@ bool_t checkForAndChange_(char *displayString, const real34_t *value34, const re
     //printf(">>>@@@ §%s§%s§%s§\n", resstr, constantStr, denomStr);
 
     displayString[0]=0;
+
     if(real34CompareAbsLessThan(&result_fp,tol34)) {
+      char prefixchar[6];
+      prefixchar[0]=0;
+      if(constantFractionsMode == CF_COMPLEX1) {     //In case of complex, mark the accuracy of the first real fp
+        real34Copy(&result_fp,&result_fp1);
+      }
+      else {
+        if(constantFractionsMode == CF_COMPLEX2) {   //In case of complex, use  accuracy of the real and imag fp
+          if(real34IsZero(&result_fp1) && real34IsZero(&result_fp)) {
+          }
+          else {
+            strcat(prefixchar,STD_ALMOST_EQUAL);   //If either complex part is non-zero the show ~
+          }
+        }
+        else {                                       //If neither complex parts, then it must be real
+          if(real34IsZero(&result_fp)) {
+            strcat(prefixchar, "");
+          }
+          else {
+            strcat(prefixchar, "" STD_ALMOST_EQUAL);
+          }
+        }
+      }
+
+      strcat(displayString, prefixchar);  //prefix
+
       if(sign[0]=='+') {
         if(frontSpace) {
-          strcat(displayString, " ");
+          strcat(displayString, STD_SPACE_4_PER_EM);  //changed, not allowing for a space equal length to "-" 
           if(resstr[0] !=0 ) {
             strcat(displayString, resstr);
           }
@@ -1746,7 +1772,7 @@ bool_t checkForAndChange_(char *displayString, const real34_t *value34, const re
         }
       }
       else {
-        strcat(displayString, "-");
+        strcat(displayString, STD_SPACE_4_PER_EM "-");
         if(resstr[0] !=0 ) {
           strcat(displayString, resstr);
         }
@@ -1754,26 +1780,7 @@ bool_t checkForAndChange_(char *displayString, const real34_t *value34, const re
         strcat(displayString,denomStr);
       }
 
-      if(constantFractionsMode == CF_COMPLEX1) {     //In case of complex, mark the accuracy of the first real fp
-        real34Copy(&result_fp,&result_fp1);
-      }
-      else {
-        if(constantFractionsMode == CF_COMPLEX2) {   //In case of complex, use  accuracy of the real and imag fp
-          if(real34IsZero(&result_fp1) && real34IsZero(&result_fp)) {
-          }
-          else {
-            strcat(displayString,STD_ALMOST_EQUAL);   //If either complex part is non-zero the show ~
-          }
-        }
-        else {                                       //If neither complex parts, then it must be real
-          if(real34IsZero(&result_fp)) {
-            strcat(displayString, "");
-          }
-          else {
-            strcat(displayString, "" STD_ALMOST_EQUAL);
-          }
-        }
-      }
+      //strcat(displayString, prefixchar);   //postfix
 
       return true;
     }

@@ -657,6 +657,9 @@ void fnFractionType(uint16_t unusedButMandatoryParameter) {
   if(constantFractions) {
     if(constantFractionsOn) {
       flipSystemFlag(FLAG_PROPFR);
+      if(getSystemFlag(FLAG_PROPFR)) {
+        SetSetting(JC_EXFRAC);
+      }
     }
     else {
       constantFractionsOn = true;
@@ -667,6 +670,9 @@ void fnFractionType(uint16_t unusedButMandatoryParameter) {
   else {
     if(getSystemFlag(FLAG_FRACT)) {
       flipSystemFlag(FLAG_PROPFR);
+      if(getSystemFlag(FLAG_PROPFR)) {
+        SetSetting(JC_EXFRAC);
+      }
     }
     else {
       setSystemFlag(FLAG_FRACT);
