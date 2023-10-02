@@ -3629,6 +3629,16 @@ void execTimerApp(uint16_t timerType) {
 
         else if(getRegisterDataType(regist) == dtShortInteger) {
           prefixWidth = 0;
+          tmpString[0]=0;
+          if(temporaryInformation == TI_DATA_LOSS && regist == REGISTER_X) {
+             shortIntegerToDisplayString(regist, tmpString, true);
+             sprintf(prefix,"Ovrfl>%ubits:",shortIntegerWordSize);
+             prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+             if(prefixWidth + stringWidth(tmpString, fontForShortInteger, true, true) + 1 > SCREEN_WIDTH) {
+               sprintf(prefix,"OF");              
+               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+             }
+          }
           if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
             viewRegName(prefix, &prefixWidth);
           }
@@ -3639,10 +3649,11 @@ void execTimerApp(uint16_t timerType) {
             if(regist == REGISTER_X) {
               showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE + TEMPORARY_INFO_OFFSET - REGISTER_LINE_HEIGHT*(regist - REGISTER_X), vmNormal, true, true);
             }
-            shortIntegerToDisplayString(regist, tmpString, true);
+            if(tmpString[0]!=0) {
+              shortIntegerToDisplayString(regist, tmpString, true);
+            }
             showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0) - (fontForShortInteger == &numericFont && temporaryInformation == TI_NO_INFO && checkHP ? 50:0), vmNormal, false, true);
           } else {
-
             shortIntegerToDisplayString(regist, tmpString, true);
             showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0) - (fontForShortInteger == &numericFont && temporaryInformation == TI_NO_INFO && checkHP ? 50:0), vmNormal, false, true);
 
