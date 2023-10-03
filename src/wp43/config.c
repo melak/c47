@@ -654,31 +654,28 @@ void fnAngularMode(uint16_t am) {
 
 
 void fnFractionType(uint16_t unusedButMandatoryParameter) {
-  if(constantFractions) {
-    if(constantFractionsOn) {
-      flipSystemFlag(FLAG_PROPFR);
-      if(getSystemFlag(FLAG_PROPFR)) {
-        SetSetting(JC_EXFRAC);
-      }
-    }
-    else {
-      constantFractionsOn = true;
-      setSystemFlag(FLAG_PROPFR);
-    }
-    clearSystemFlag(FLAG_FRACT);
+  #define STATE_bc       0b0001  //1
+  #define STATE_abc      0b0011  //3
+  #define STATE_exfr_bc  0b1100  //12
+  #define STATE_exfr_abc 0b1110  //14  
+  #define STATE          ((constantFractions         ? 8:0) +  \
+                         (constantFractionsOn        ? 4:0) +  \
+                         (getSystemFlag(FLAG_PROPFR) ? 2:0) +  \
+                         (getSystemFlag(FLAG_FRACT)  ? 1:0))
+  uint8_t state = STATE;
+  //printf("%u ",state);
+  switch(state) {
+    case STATE_bc       : state = STATE_exfr_abc; break;
+    case STATE_exfr_abc : state = STATE_exfr_bc; break;
+    case STATE_exfr_bc  : state = STATE_abc; break;
+    case STATE_abc      : state = STATE_bc;  break;
+    default             : state = STATE_abc; break;
   }
-  else {
-    if(getSystemFlag(FLAG_FRACT)) {
-      flipSystemFlag(FLAG_PROPFR);
-      if(getSystemFlag(FLAG_PROPFR)) {
-        SetSetting(JC_EXFRAC);
-      }
-    }
-    else {
-      setSystemFlag(FLAG_FRACT);
-      setSystemFlag(FLAG_PROPFR);
-    }
-  }
+  constantFractions   = (state & 8) ? true : false;
+  constantFractionsOn = (state & 4) ? true : false;
+  if (((state & 2) == 2) == !getSystemFlag(FLAG_PROPFR)) flipSystemFlag(FLAG_PROPFR);
+  if (((state & 1) == 1) == !getSystemFlag(FLAG_FRACT)) flipSystemFlag(FLAG_FRACT);
+  //printf("--> %u --> %u\n",state, STATE);
 }
 
 

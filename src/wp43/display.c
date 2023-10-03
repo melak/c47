@@ -1214,7 +1214,7 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
     real34Copy(VARIABLE_IMAG34_DATA(complex34), &imag34);
   }
 
-  constantFractionsMode = CF_COMPLEX1;  //JM
+  constantFractionsMode = CF_COMPLEX_1st_Re_or_L;  //JM
 //printf("###>> displayHasNDigits=%u\n",displayHasNDigits);
   real34ToDisplayString2(&real34, displayString, displayHasNDigits, limitExponent, false, frontSpace);
 
@@ -1227,7 +1227,7 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
     }
   }
 
-  constantFractionsMode = CF_COMPLEX2;  //JM
+  constantFractionsMode = CF_COMPLEX_2nd_Im;  //JM
 //printf("###>>> displayHasNDigits=%u\n",displayHasNDigits);
   real34ToDisplayString2(&imag34, displayString + i, displayHasNDigits, limitExponent, false, false);
 
