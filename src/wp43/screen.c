@@ -3716,6 +3716,16 @@ void execTimerApp(uint16_t timerType) {
 
         else if(getRegisterDataType(regist) == dtShortInteger) {
           prefixWidth = 0;
+          tmpString[0]=0;
+          if(temporaryInformation == TI_DATA_LOSS && regist == REGISTER_X) {
+             shortIntegerToDisplayString(regist, tmpString, true);
+             sprintf(prefix,"Ovrfl>%ubits:",shortIntegerWordSize);
+             prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+             if(prefixWidth + stringWidth(tmpString, fontForShortInteger, true, true) + 1 > SCREEN_WIDTH) {
+               sprintf(prefix,"OF");              
+               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+             }
+          }
           if(temporaryInformation == TI_VIEW_REGISTER && origRegist == REGISTER_T) {
             viewRegName(prefix, &prefixWidth);
           }
@@ -3726,11 +3736,11 @@ void execTimerApp(uint16_t timerType) {
             if(regist == REGISTER_X) {
               showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
             }
-            shortIntegerToDisplayString(regist, tmpString, true);
-            w = stringWidth(tmpString, fontForShortInteger, false, true);
-            showString(tmpString, fontForShortInteger, (temporaryInformation == TI_VIEW_REGISTER && origRegist == REGISTER_T) ? min(prefixWidth, SCREEN_WIDTH - w) : SCREEN_WIDTH - w, baseY + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
-          }
-          else {
+            if(tmpString[0]!=0) {
+              shortIntegerToDisplayString(regist, tmpString, true);
+            }
+            showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0) - (fontForShortInteger == &numericFont && temporaryInformation == TI_NO_INFO && checkHP ? 50:0), vmNormal, false, true);
+          } else {
             shortIntegerToDisplayString(regist, tmpString, true);
             showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0) - (fontForShortInteger == &numericFont && temporaryInformation == TI_NO_INFO && checkHP ? 50:0), vmNormal, false, true);
 

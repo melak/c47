@@ -2268,8 +2268,8 @@
 #define ITM_MGUStoL100              2211
 #define ITM_MGEUStoK100M            2212
 #define ITM_K100MtoMGEUS            2213
-#define ITM_K100MtoK100K            2214
-#define ITM_K100KtoK100M            2215
+#define ITM_K100KtoK100M            2214
+#define ITM_K100MtoK100K            2215
 #define ITM_L100toMGUK              2216
 #define ITM_MGUKtoL100              2217
 #define ITM_MGEUKtoK100M            2218

@@ -823,6 +823,8 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     uint8_t savedNimNumberPart;
     bool_t done;
     char *strBase;
+    changeFractionModeOnENTER = false;
+
     if(item >= ITM_A && item <= ITM_F && lastIntegerBase == 0) lastIntegerBase = 16;
 //    if(item != ITM_EXIT1) resetKeytimers();  //JM
 
@@ -879,7 +881,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           sprintf(errorMessage, "In function addItemToNimBuffer:%d is an unexpected item value when initializing NIM!", item);
           displayBugScreen(errorMessage);
           return;
-        }
+      }
       }
 
       if(programRunStop != PGM_RUNNING) {
@@ -1085,16 +1087,40 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           }
 
           case NP_REAL_FLOAT_PART: {
+            bool_t HP32SII = false;
             if(aimBuffer[strlen(aimBuffer) - 1] == '.') {
               strcat(aimBuffer, "0");
+              HP32SII = true; //This is the 123 .. 4 meaning 123/4 shortcut
             }
 
-            for(uint16_t i=0; i<strlen(aimBuffer); i++) {
-              if(aimBuffer[i] == '.') {
-                aimBuffer[i] = ' ';
-                break;
+
+            if(HP32SII) {     //Changed the part below for 123..4 to mean 0 123/4
+              uint16_t i;
+              //printf("%s: %u %u %u %u %u\n",aimBuffer, aimBuffer[0], aimBuffer[1], aimBuffer[2], aimBuffer[3], aimBuffer[4] );
+              for(i=0; i<strlen(aimBuffer); i++) {
+                if(aimBuffer[i] == '.') {
+                  aimBuffer[i] = 0;
+                  break;
+                }
+              }
+              if(aimBuffer[i]==0) { //this is therefore part of the "123.." and is changed to "+0 123/"
+                for(uint16_t i=strlen(aimBuffer); i>0; i--) {
+                  aimBuffer[i+2] = aimBuffer[i];
+                }
+                aimBuffer[1] = '0';
+                aimBuffer[2] = ' ';
               }
             }
+
+            else { //!HP32SII .. situation (standard code)
+              for(uint16_t i=0; i<strlen(aimBuffer); i++) {
+                if(aimBuffer[i] == '.') {
+                  aimBuffer[i] = ' ';
+                  break;
+                }
+              }
+            }
+
             strcat(aimBuffer, "/");
 
             denominatorLocation = strlen(aimBuffer);
@@ -1440,6 +1466,10 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       }
 
       case ITM_EXIT1: {
+        if(changeFractionModeOnENTER) {
+          setSystemFlag(FLAG_FRACT);
+          changeFractionModeOnENTER = false;  
+        }
         addItemToNimBuffer_exit:
         done = true;
         screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
@@ -1982,6 +2012,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
   }
 
 
+  bool_t changeFractionModeOnENTER = false;
   void closeNimWithFraction(real34_t *dest) {
     int16_t i, posSpace, posSlash, lg;
     int32_t integer, numer, denom;
@@ -1989,10 +2020,12 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
 
     // Set Fraction mode
     if(!getSystemFlag(FLAG_FRACT)) {
-      setSystemFlag(FLAG_FRACT);
+      setSystemFlag(FLAG_FRACT);          //1     //NOTE CHANGE HERE TO SWITCH OFF AUTO FRAC MODE AFTER FRACTION INPUT
+      //changeFractionModeOnENTER = true; //2     //USE either //1 or //2
+    } else {
+      changeFractionModeOnENTER = false;
     }
-    constantFractionsOn = false; //JM
-
+    constantFractionsOn = false;
 
     lg = strlen(aimBuffer);
 

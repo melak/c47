@@ -580,7 +580,7 @@ void fnMgeustok100M   (uint16_t multiplyDivide) {
   unitConversion(&factor, multiply, inverting);
 }
 
-void fnK100Mtok100K   (uint16_t multiplyDivide) {
+void fnK100Ktok100M   (uint16_t multiplyDivide) {
   unitConversion(const_MiToKm, multiplyDivide, noninverting);
 }
 

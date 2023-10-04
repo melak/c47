@@ -72,6 +72,10 @@ char*    figlabel              (const char* label, const char* showText, int16_t
 #define RB_FP   'J' // SEPS
 #define RB_RX   'K' // SEPS
 #define RB_PRN  'L' // PRON PROFF
+#define RB_x3   'M' // HOME/MYM x3
+#define RB_BA   'N' // BASE SCREEN/MENU
+#define RB_GW   'O' // GROW/WRAP
+
 
 typedef struct {
   uint16_t itemNr;            ///<

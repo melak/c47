@@ -12,9 +12,9 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
-#define VERSION1 "0.109.00.00a7"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
+#define VERSION1 "0.109.00.00a8"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
 
-//2023-09-26-0.108.14.00 RC1 Stable
+//2023-09-27-0.108.14.00 RC2 Stable
 
   #undef SAVE_SPACE_DM42_0
   #undef SAVE_SPACE_DM42_1
@@ -225,8 +225,8 @@
 //constantFractionsMode         //JM
 #define CF_OFF                   0
 #define CF_NORMAL                1
-#define CF_COMPLEX1              2
-#define CF_COMPLEX2              3
+#define CF_COMPLEX_1st_Re_or_L   2    //Complex numbers have two passes to the display function, first for Real or Length, then for Im.
+#define CF_COMPLEX_2nd_Im        3
 
 
 //Input mode                    //JM
@@ -1005,6 +1005,7 @@ typedef enum {
 #define TI_DMCP_ONLY                              91    //DL
 #define TI_SHOWNOTHING                            92
 #define TI_COPY_FROM_SHOW                         92
+#define TI_DATA_LOSS                              93
 
 // Register browser mode
 #define RBR_GLOBAL                                 0 // Global registers are browsed

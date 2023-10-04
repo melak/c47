@@ -25,6 +25,7 @@
 #include "realType.h"
 
   extern bool_t delayCloseNim;
+  extern bool_t changeFractionModeOnENTER;
 
   #if !defined(TESTSUITE_BUILD)
   void     fnAim                    (uint16_t unusedButMandatoryParameter);

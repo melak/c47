@@ -1360,7 +1360,7 @@ bool_t allowShiftsToClearError = false;
       if(ShiftTimoutMode) {
         fnTimerStart(TO_FG_TIMR, TO_FG_TIMR, JM_SHIFT_TIMER); //^^
       }
-      if(temporaryInformation == TI_SHOW_REGISTER || SHOWMODE) allowShiftsToClearError = true; //JM
+      if(temporaryInformation == TI_VIEW_REGISTER || SHOWMODE) allowShiftsToClearError = true; //JM
       if(temporaryInformation != TI_NO_INFO) {
         screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
         if(temporaryInformation == TI_VIEW_REGISTER) {
@@ -2030,7 +2030,6 @@ RELEASE_END:
       temporaryInformation = TI_NO_INFO;
       closeShowMenu();
     }
-
     if(programRunStop == PGM_WAITING) {
       programRunStop = PGM_STOPPED;
     }
@@ -2056,17 +2055,12 @@ RELEASE_END:
       case ITM_BACKSPACE: {
         if(calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_EIM) {
           temporaryInformation = TI_NO_INFO;
-          refreshRegisterLine(NIM_REGISTER_LINE); 
-        }
+          refreshRegisterLine(NIM_REGISTER_LINE); }
         else {
           //JM No if needed, it does nothing if not in NIM. TO DISPLAY NUMBER KEYPRESS DIRECTLY AFTER PRESS, NOT ONLY UPON RELEASE          break;
           keyActionProcessed = true;   //JM move this to before fnKeyBackspace to allow fnKeyBackspace to cancel it if needed to allow this function via timing out to NOP, and this is incorporated with the CLRDROP
-          if(temporaryInformation == TI_NO_INFO) {
-            fnKeyBackspace(NOPARAM);
-          }
-          else {
-            temporaryInformation = TI_NO_INFO;
-          }
+          fnKeyBackspace(NOPARAM);
+          temporaryInformation = TI_NO_INFO;
         }
         break;
       }
@@ -2180,6 +2174,10 @@ RELEASE_END:
           keyActionProcessed = true;
         }
         else if(tam.mode) {
+
+// To TEST and investigate 2023-10-02
+// User menu name create: ASN + USER 'DDD' has a problem by exiting to MyAlpha 
+
           tamProcessInput(ITM_ENTER);
           keyActionProcessed = true;
         }
@@ -2781,6 +2779,10 @@ RELEASE_END:
 void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
   doRefreshSoftMenu = true;     //dr
   #if !defined(TESTSUITE_BUILD)
+    if(changeFractionModeOnENTER) {
+      setSystemFlag(FLAG_FRACT);
+      changeFractionModeOnENTER = false;  
+    }
     switch(calcMode) {
       case CM_NORMAL: {
 
@@ -2817,6 +2819,14 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
 //        if(softmenuStack[0].softmenuId == mm_MNU_ALPHA) {     //JMvv
 //          popSoftmenu();
 //        }                                                     //JM^^
+
+          if(softmenuStack[0].softmenuId <= 1 && softmenu[softmenuStack[1].softmenuId].menuItem == -MNU_ALPHA) {
+            popSoftmenu();
+          }
+          if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA) {  //JM
+            softmenuStack[0].softmenuId = 1;                                  //JM
+          }                                                                   //JM
+
 
         calcModeNormal();
         popSoftmenu();
@@ -3005,7 +3015,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         case CM_FONT_BROWSER:
         case CM_CONFIRMATION:
         case CM_ERROR_MESSAGE:
-        case CM_BUG_ON_SCREEN: {
+      case CM_BUG_ON_SCREEN: {
             // Browser or message should be closed first
             break;
       }
@@ -3029,7 +3039,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
                 }
                 return;
             }
-        }
+    }
     }
 
     if(tam.mode) {                               //if in TAM mode
@@ -3716,7 +3726,7 @@ static bool_t activatescroll(void) { //jm
    return SHOWMODE && 
           softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN
 //remove menu interlock completely, since the NEW SHOW takes over the screen and does not respect menu operation
-//      &&  (
+//    &&    (
 //            ((menuId == 0) && !jm_BASE_SCREEN) ||
 //            ((menuId == 0) && (softmenu[menuId].numItems<=18)) ||
 //            ((menuId >= NUMBER_OF_DYNAMIC_SOFTMENUS) && (softmenu[menuId].numItems<=18))
