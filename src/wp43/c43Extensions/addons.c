@@ -1609,9 +1609,9 @@ void changeToSub(char *str) {
 
 //without mixedNumber flag, improper fractions are allowed: In WP43 misnomer: FLAG_PROPFR = MixedNumber = a b/c
 real34_t result_fp1;
-bool_t checkForAndChange_(char *displayString, const real34_t *value34, const real_t *constant, const real34_t *tol34, const char *constantStr,  bool_t frontSpace) {
+bool_t checkForAndChange_(char *displayString, const real34_t *value34, const real_t *constant, const real34_t *tolerance, const char *constantStr,  bool_t frontSpace) {
     //printf(">>> constantFractionsMode %i\n",constantFractionsMode);
-    bool_t mixedNumber = getSystemFlag(FLAG_PROPFR) && !(constantFractionsMode == CF_COMPLEX1 || constantFractionsMode == CF_COMPLEX2);
+    bool_t mixedNumber = getSystemFlag(FLAG_PROPFR) && !(constantFractionsMode == CF_COMPLEX_1st_Re_or_L || constantFractionsMode == CF_COMPLEX_2nd_Im);
     //printf(">>>## mixedNumber %u\n",mixedNumber);
     real34_t multConstant34, constant_34;
     real34_t val, val1, result, result_ip, result_fp;
@@ -1681,7 +1681,7 @@ bool_t checkForAndChange_(char *displayString, const real34_t *value34, const re
       return false;
     }
 
-    if(resultingInteger > 1 && real34CompareAbsLessThan(&result_fp,tol34)) {
+    if(resultingInteger > 1 && real34CompareAbsLessThan(&result_fp,tolerance)) {
       //a whole multiple of the constant exists
       real34Divide(&val, &result_ip, &val1);
       //printf(">>>Resultinginteger:%i SmallestDenom:%i\n", resultingInteger, smallestDenom);
@@ -1727,10 +1727,34 @@ bool_t checkForAndChange_(char *displayString, const real34_t *value34, const re
     //printf(">>>@@@ §%s§%s§%s§\n", resstr, constantStr, denomStr);
 
     displayString[0]=0;
-    if(real34CompareAbsLessThan(&result_fp,tol34)) {
+
+    if(real34CompareAbsLessThan(&result_fp,tolerance)) {
+      char prefixchar[6];
+      prefixchar[0]=0;
+      if(constantFractionsMode == CF_COMPLEX_1st_Re_or_L) {    //In case of complex polar/Re, save the value to test in the 2nd pass
+        real34Copy(&result_fp,&result_fp1);
+      }
+      else {
+        if(constantFractionsMode == CF_COMPLEX_2nd_Im) {       //In case of complex Im, use the saved value from previous pass, and the new Im
+          if(!(real34IsZero(&result_fp1) && real34IsZero(&result_fp))) {
+            strcat(prefixchar,STD_ALMOST_EQUAL);               //If either complex part is non-zero then show ~
+          }
+        }
+        else {                                                 //If neither complex parts, then it must be real
+          if(real34IsZero(&result_fp)) {
+            strcat(prefixchar, "");
+          }
+          else {
+            strcat(prefixchar, "" STD_ALMOST_EQUAL);
+          }
+        }
+      }
+
+      strcat(displayString, prefixchar);  //prefix
+
       if(sign[0]=='+') {
         if(frontSpace) {
-          strcat(displayString, " ");
+          strcat(displayString, STD_SPACE_4_PER_EM);  //changed, not allowing for a space equal length to "-" 
           if(resstr[0] !=0 ) {
             strcat(displayString, resstr);
           }
@@ -1746,7 +1770,7 @@ bool_t checkForAndChange_(char *displayString, const real34_t *value34, const re
         }
       }
       else {
-        strcat(displayString, "-");
+        strcat(displayString, STD_SPACE_4_PER_EM "-");
         if(resstr[0] !=0 ) {
           strcat(displayString, resstr);
         }
@@ -1754,26 +1778,7 @@ bool_t checkForAndChange_(char *displayString, const real34_t *value34, const re
         strcat(displayString,denomStr);
       }
 
-      if(constantFractionsMode == CF_COMPLEX1) {     //In case of complex, mark the accuracy of the first real fp
-        real34Copy(&result_fp,&result_fp1);
-      }
-      else {
-        if(constantFractionsMode == CF_COMPLEX2) {   //In case of complex, use  accuracy of the real and imag fp
-          if(real34IsZero(&result_fp1) && real34IsZero(&result_fp)) {
-          }
-          else {
-            strcat(displayString,STD_ALMOST_EQUAL);   //If either complex part is non-zero the show ~
-          }
-        }
-        else {                                       //If neither complex parts, then it must be real
-          if(real34IsZero(&result_fp)) {
-            strcat(displayString, "");
-          }
-          else {
-            strcat(displayString, "" STD_ALMOST_EQUAL);
-          }
-        }
-      }
+      //strcat(displayString, prefixchar);   //postfix
 
       return true;
     }

@@ -372,7 +372,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
     if(checkForAndChange_(displayString, real34, const_pi , &tol34, STD_pi                   ,frontSpace))                   return_fr;
 
     fnConstantR( 8  /*const_eE     */,  &constNr, &c_temp);
-    if(checkForAndChange_(displayString, real34, &c_temp, &tol34,  "e"                                         ,frontSpace)) return_fr;
+    if(checkForAndChange_(displayString, real34, &c_temp, &tol34,  STD_EulerE                                  ,frontSpace)) return_fr;
 
     realMultiply(const_root2on2, const_2, &c_temp, &ctxtReal39);
     if(checkForAndChange_(displayString, real34, &c_temp, &tol34,  STD_SQUARE_ROOT STD_SUB_2                   ,frontSpace)) return_fr;
@@ -1214,7 +1214,7 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
     real34Copy(VARIABLE_IMAG34_DATA(complex34), &imag34);
   }
 
-  constantFractionsMode = CF_COMPLEX1;  //JM
+  constantFractionsMode = CF_COMPLEX_1st_Re_or_L;  //JM
 //printf("###>> displayHasNDigits=%u\n",displayHasNDigits);
   real34ToDisplayString2(&real34, displayString, displayHasNDigits, limitExponent, false, frontSpace);
 
@@ -1227,7 +1227,7 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
     }
   }
 
-  constantFractionsMode = CF_COMPLEX2;  //JM
+  constantFractionsMode = CF_COMPLEX_2nd_Im;  //JM
 //printf("###>>> displayHasNDigits=%u\n",displayHasNDigits);
   real34ToDisplayString2(&imag34, displayString + i, displayHasNDigits, limitExponent, false, false);
 
