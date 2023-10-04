@@ -193,8 +193,11 @@ void showFracMode(void) {
         strcpy(divStr,"/");
       }
       else {
+        raiseString = 3;
+        strcpy(divStr,"a" STD_SPACE_4_PER_EM);
+        x = showString(divStr, &standardFont, x, 0, vmNormal, true, true);
         raiseString = 9;
-        strcpy(divStr,STD_SUB_a STD_SPACE_4_PER_EM STD_SUB_b);
+        strcpy(divStr, STD_SUB_b);
         x = showString(divStr, &standardFont, x, 0, vmNormal, true, true)-2;
         strcpy(divStr,"/");
       }
@@ -216,9 +219,18 @@ void showFracMode(void) {
       }
 
       if(constantFractions && constantFractionsOn && !getSystemFlag(FLAG_FRACT)) {
-        raiseString = 1;
-        strcpy(divStr,"c");
-        x = showString(divStr, &standardFont, x, 0, vmNormal, true, true);
+        strcpy(divStr,STD_DOT);
+        raiseString = 2;
+        x = showString(divStr, &standardFont, x+1, 0, vmNormal, true, true);
+        strcpy(divStr,"I");
+        raiseString = 2;
+        showString(divStr, &standardFont, x, 0, vmNormal, true, true);
+        raiseString = 2;
+        x = showString(divStr, &standardFont, x+1, 0, vmNormal, true, true);
+        x -= 5;
+        for(uint16_t yy = 4; yy<=11; yy++) {
+          setWhitePixel(x, yy); 
+        }
       }
       else {
         if(!getSystemFlag(FLAG_DENANY)) {

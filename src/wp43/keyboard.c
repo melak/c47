@@ -2710,6 +2710,10 @@ RELEASE_END:
 void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
   doRefreshSoftMenu = true;     //dr
   #if !defined(TESTSUITE_BUILD)
+    if(changeFractionModeOnENTER) {
+      setSystemFlag(FLAG_FRACT);
+      changeFractionModeOnENTER = false;  
+    }
     switch(calcMode) {
       case CM_NORMAL: {
 
