@@ -218,9 +218,9 @@ TO_QSPI const int16_t menu_MODE[]        = { ITM_DEG,                       ITM_
                                              ITM_SETSIG2,                   ITM_RMODE,                  ITM_EXFRAC,               ITM_DENANY,            ITM_DENFIX,                  ITM_NULL,        //JM
                                              ITM_INP_DEF_43S,               ITM_INP_DEF_DP,             ITM_INP_DEF_CPXDP,        ITM_INP_DEF_LI,        ITM_NULL,                    ITM_NULL,                          //JM
 
-                                             ITM_BASE_SCREEN  ,             ITM_BASE_HOME    ,          ITM_HOMEx3       ,        ITM_G_DOUBLETAP  ,     ITM_SHTIM        ,           ITM_SAFERESET ,
-                                             ITM_FGLNOFF      ,             ITM_FGLNLIM      ,          ITM_FGLNFUL      ,        ITM_M14          ,     ITM_M124         ,           ITM_M1234          ,
-                                /*ITM_MYMx3*/ITM_NULL         ,             ITM_NULL         ,          ITM_TST,                  ITM_F14          ,     ITM_F124         ,           ITM_F1234                       };
+                                             ITM_FGLNOFF,                   ITM_FGLNLIM,                ITM_FGLNFUL,              ITM_G_DOUBLETAP,       ITM_SHTIM,                 ITM_SAFERESET,             
+                                             ITM_M14,                       ITM_M124,                   ITM_M1234,                ITM_NULL,              ITM_BASE_SCREEN,           ITM_BASE_HOME,             
+                                             ITM_F14,                       ITM_F124,                   ITM_F1234,                ITM_NULL,              ITM_MYMx3,                 ITM_HOMEx3         };
 
 // D47 vv
 TO_QSPI const int16_t menu_SETUP[]       = { ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_HPRP,              ITM_RECT,                    ITM_POLAR,
@@ -231,9 +231,9 @@ TO_QSPI const int16_t menu_SETUP[]       = { ITM_NULL,                      ITM_
                                              ITM_SETSIG2,                   ITM_RMODE,                  ITM_EXFRAC,               ITM_DENANY,            ITM_DENFIX,                  ITM_NULL,        //JM
                                              ITM_INP_DEF_43S,               ITM_INP_DEF_DP,             ITM_INP_DEF_CPXDP,        ITM_INP_DEF_LI,        ITM_NULL,                    ITM_NULL,                          //JM
 
-                                             ITM_BASE_SCREEN,               ITM_BASE_HOME,              ITM_HOMEx3,               ITM_G_DOUBLETAP,       ITM_SHTIM,                   ITM_SAFERESET,
-                                             ITM_FGLNOFF,                   ITM_FGLNLIM,                ITM_FGLNFUL,              ITM_M14,               ITM_M124,                    ITM_M1234,
-                                             ITM_NULL,                      ITM_NULL,                   ITM_TST,                  ITM_F14,               ITM_F124,                    ITM_F1234                     };
+                                             ITM_FGLNOFF,                   ITM_FGLNLIM,                ITM_FGLNFUL,              ITM_G_DOUBLETAP,       ITM_SHTIM,                 ITM_SAFERESET,             
+                                             ITM_M14,                       ITM_M124,                   ITM_M1234,                ITM_NULL,              ITM_BASE_SCREEN,           ITM_BASE_HOME,             
+                                             ITM_F14,                       ITM_F124,                   ITM_F1234,                ITM_NULL,              ITM_MYMx3,                 ITM_HOMEx3         };
 // D47 ^^
 
 
