@@ -196,12 +196,12 @@ typedef struct {
   bool_t HOME3;
   bool_t ShiftTimoutMode;
   bool_t CPXMULT;
-  bool_t SH_BASE_HOME;
+  bool_t BASE_HOME;
   bool_t compatibility_bool0;               //Spare Byte !problem
   int16_t Norm_Key_00_VAR;
   uint8_t Input_Default;
   bool_t compatibility_bool00;               //Spare Byte !problem
-  bool_t jm_BASE_SCREEN;
+  bool_t BASE_MYM;
   bool_t jm_G_DOUBLETAP;
   float  compatibility_float1;              //Spare float
   float  compatibility_float2;              //Spare float

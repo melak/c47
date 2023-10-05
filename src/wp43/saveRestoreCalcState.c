@@ -344,11 +344,11 @@ static uint32_t restore(void *buffer, uint32_t size) {
     save(&ShiftTimoutMode,                    sizeof(ShiftTimoutMode));
     save(&CPXMULT,                            sizeof(CPXMULT));                   //JM
     save(&fgLN,                               sizeof(fgLN));
-    save(&SH_BASE_HOME,                       sizeof(SH_BASE_HOME  ));
+    save(&BASE_HOME,                          sizeof(BASE_HOME));
     save(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR));
     save(&Input_Default,                      sizeof(Input_Default));
     save(&compatibility_bool,                 sizeof(compatibility_bool));        //EXTRA
-    save(&jm_BASE_SCREEN,                     sizeof(jm_BASE_SCREEN));
+    save(&BASE_MYM,                           sizeof(BASE_MYM));
     save(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP));
     save(&compatibility_bool,                 sizeof(compatibility_bool));              //EXTRA
     save(&graph_xmin,                         sizeof(graph_xmin));
@@ -685,11 +685,11 @@ static uint32_t restore(void *buffer, uint32_t size) {
       restore(&ShiftTimoutMode,                    sizeof(ShiftTimoutMode));
       restore(&CPXMULT,                            sizeof(CPXMULT));                  //JM
       restore(&fgLN,                               sizeof(fgLN));
-      restore(&SH_BASE_HOME,                       sizeof(SH_BASE_HOME  ));
+      restore(&BASE_HOME,                          sizeof(BASE_HOME));
       restore(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR));
       restore(&Input_Default,                      sizeof(Input_Default));
       restore(&compatibility_bool,                 sizeof(compatibility_bool));
-      restore(&jm_BASE_SCREEN,                     sizeof(jm_BASE_SCREEN));
+      restore(&BASE_MYM,                           sizeof(BASE_MYM));
       restore(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP));
       restore(&compatibility_bool,                 sizeof(compatibility_bool));
       restore(&graph_xmin,                         sizeof(graph_xmin));
@@ -1290,10 +1290,10 @@ flushBufferCnt = 0;
 /*04*/  sprintf(tmpString, "MYM3\n%"                       PRIu8  "\n",     (uint8_t)MYM3);                save(tmpString, strlen(tmpString));
 /*05*/  sprintf(tmpString, "ShiftTimoutMode\n%"            PRIu8  "\n",     (uint8_t)ShiftTimoutMode);     save(tmpString, strlen(tmpString));
 /*06*/  sprintf(tmpString, "CPXMult\n%"                    PRIu8  "\n",     (uint8_t)CPXMULT);             save(tmpString, strlen(tmpString));
-/*07*/  sprintf(tmpString, "SH_BASE_HOME\n%"               PRIu8  "\n",     (uint8_t)SH_BASE_HOME);        save(tmpString, strlen(tmpString));
+/*07*/  sprintf(tmpString, "BASE_HOME\n%"                  PRIu8  "\n",     (uint8_t)BASE_HOME);           save(tmpString, strlen(tmpString));
 /*08*/  sprintf(tmpString, "Norm_Key_00_VAR\n%"            PRId16 "\n",     Norm_Key_00_VAR);              save(tmpString, strlen(tmpString));
 /*09*/  sprintf(tmpString, "Input_Default\n%"              PRIu8  "\n",     Input_Default);                save(tmpString, strlen(tmpString));
-/*10*/  sprintf(tmpString, "jm_BASE_SCREEN\n%"             PRIu8  "\n",     (uint8_t)jm_BASE_SCREEN);      save(tmpString, strlen(tmpString));
+/*10*/  sprintf(tmpString, "BASE_MYM\n%"                   PRIu8  "\n",     (uint8_t)BASE_MYM);            save(tmpString, strlen(tmpString));
 /*11*/  sprintf(tmpString, "jm_G_DOUBLETAP\n%"             PRIu8  "\n",     (uint8_t)jm_G_DOUBLETAP);      save(tmpString, strlen(tmpString));
 
 /*  *///15     
@@ -2387,10 +2387,12 @@ int32_t stringToInt32(const char *str) {
           else if(strcmp(aimBuffer, "MYM3"                        ) == 0) { MYM3                  = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "ShiftTimoutMode"             ) == 0) { ShiftTimoutMode       = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "CPXMult"                     ) == 0) { CPXMULT               = (bool_t)stringToUint8(tmpString) != 0; }
-          else if(strcmp(aimBuffer, "SH_BASE_HOME"                ) == 0) { SH_BASE_HOME          = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "SH_BASE_HOME"                ) == 0) { BASE_HOME             = (bool_t)stringToUint8(tmpString) != 0; }  //Keep compatible with old name by repeating it
+          else if(strcmp(aimBuffer, "BASE_HOME"                   ) == 0) { BASE_HOME             = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "Norm_Key_00_VAR"             ) == 0) { Norm_Key_00_VAR       = stringToUint16(tmpString); }
           else if(strcmp(aimBuffer, "Input_Default"               ) == 0) { Input_Default         = stringToUint8(tmpString); }
-          else if(strcmp(aimBuffer, "jm_BASE_SCREEN"              ) == 0) { jm_BASE_SCREEN        = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "jm_BASE_SCREEN"              ) == 0) { BASE_MYM        = (bool_t)stringToUint8(tmpString) != 0; }        //Keep compatible by repeating
+          else if(strcmp(aimBuffer, "BASE_MYM"                    ) == 0) { BASE_MYM        = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "jm_G_DOUBLETAP"              ) == 0) { jm_G_DOUBLETAP        = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "jm_LARGELI"                  ) == 0) { jm_LARGELI            = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "constantFractions"           ) == 0) { constantFractions     = (bool_t)stringToUint8(tmpString) != 0; }

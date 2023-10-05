@@ -4,9 +4,34 @@
 
 
 /*
+Math changes:
+
+1. addon.c: Added fnArg_all which uses fnArg, but gives a result of 0 for a real
+   and longint input. The testSuite is not ifluenced. Not needed to modify |x|,
+   as it already works for a real and longint.
+   (testSuite not in use for fnArg, therefore also not added)
+
+2. bufferize.c: closenim: changed the default for (0 CC EXIT to 0) instead of i.
+   (testSuite not ifluenced).
+
 Todo
 
- Check both Last x and savestack does not work due to multiple steps.
+
+All the below: because both Last x and savestack does not work due to multiple steps.
+
+  5. Added Star > Delta. Change and put in separate c file, and sort out savestack.
+
+  6. vice versa
+
+  7. SYM>ABC
+
+  8. ABC>SYM
+
+  9. e^theta. redo in math file,
+
+  10. three phase Ohms Law: 17,18,19
+
+
  Check for savestack in jm.c
 */
 
@@ -1803,7 +1828,7 @@ void fnSafeReset (uint16_t unusedButMandatoryParameter) {
 void fnRESET_MyM(uint8_t param) {
   //Pre-assign the MyMenu                   //JM
   #if !defined(TESTSUITE_BUILD)
-    jm_BASE_SCREEN = false;                                           //JM prevent slow updating of 6 menu items
+    BASE_MYM = false;                                                   //JM prevent slow updating of 6 menu items
     for(int8_t fn = 1; fn <= 6; fn++) {
       if(param == USER_MENG) {
         itemToBeAssigned = menu_HOME[fn -1];                            //Function key follows if the yellow key: Copy the default f-shofted to the primaries of MyMenu
@@ -1827,7 +1852,7 @@ void fnRESET_MyM(uint8_t param) {
       itemToBeAssigned = ASSIGN_CLEAR;
       assignToMyMenu_(12 + fn - 1);
     }
-    jm_BASE_SCREEN = true;                                           //JM Menu system default (removed from reset_jm_defaults)
+    BASE_MYM = true;                                           //JM Menu system default (removed from reset_jm_defaults)
     refreshScreen(42);
   #endif // !TESTSUITE_BUILD
 }

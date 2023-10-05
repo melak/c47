@@ -121,8 +121,8 @@ void configCommon(uint16_t idx) {
 
     fnInDefault(ID_DP);                      //Change to Real input only :                                     ID, if changed, also set the conditions for checkHP in defines.h (DP)
     fnDisplayFormatSigFig(9);                //SIG 9                                                           There is special treatment for the Sig mode in the display driver, to restrict to 9+1 digits while SDIGS > 10
-    jm_BASE_SCREEN = false;                  //Switch off base = MyMenu
-    SH_BASE_HOME = false;                    //Ensure base = HOME is off
+    BASE_MYM = false;                        //Switch off base = MyMenu
+    BASE_HOME = false;                       //Ensure base = HOME is off
     exponentLimit     = 99;                  //Set the exponent limit the same as HP35, i.e. 99                ID, if changed, also set the conditions for checkHP in defines.h (99)
     significantDigits = 16;                  //SETSIG2 = 16                                                    ID, if changed, also set the conditions for checkHP in defines.h (10-16)
     displayStack = cachedDisplayStack = 1;   //Change to single stack register display                         ID, if changed, also set the conditions for checkHP in defines.h (1)
@@ -213,8 +213,8 @@ void configCommon(uint16_t idx) {
 
     fnInDefault(ID_43S);                     //!ID
     fnDisplayFormatAll(3);
-    jm_BASE_SCREEN = true;
-    SH_BASE_HOME = false;
+    BASE_MYM = true;
+    BASE_HOME = false;
     exponentLimit     = 6145;                //!ID
     significantDigits = 34;                  //!ID
     displayStack = cachedDisplayStack = 4;   //!ID
@@ -1057,11 +1057,11 @@ void resetOtherConfigurationStuff(void) {
   HOME3 = true;
   MYM3 = false;
   ShiftTimoutMode = true;
-  SH_BASE_HOME   = false;
+  BASE_HOME   = false;
   Norm_Key_00_VAR  = ITM_SIGMAPLUS;                            //JM NORM MODE SIGMA REPLACEMENT KEY
   Input_Default =  ID_43S;
   jm_G_DOUBLETAP = true;
-  jm_BASE_SCREEN = true;                                       //"MyM" setting, set as part of USER_MRESET
+  BASE_MYM = true;                                             //"MyM" setting, set as part of USER_MRESET
   jm_LARGELI = true;                                           //Large font for long integers on stack
   constantFractions = false;                                   //Extended fractions
   constantFractionsMode = CF_NORMAL;                           //Extended fractions
@@ -1399,7 +1399,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
       mm_MNU_ALPHA      = mm(-MNU_ALPHA);    //printf("####CC> %i \n",mm_MNU_ALPHA);                      //JM
 
       calcModeNormal();
-      if(SH_BASE_HOME) showSoftmenu(mm_MNU_HOME); //JM Reset to BASE MENU HOME;
+      if(BASE_HOME) showSoftmenu(mm_MNU_HOME); //JM Reset to BASE MENU HOME;
     #endif // !TESTSUITE_BUILD
 
     showRegis = 9999;                                          //JMSHOW

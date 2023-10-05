@@ -800,7 +800,7 @@ void execTimerApp(uint16_t timerType) {
 
   void FN_handler(void) {                     //JM FN LONGPRESS vv Handler FN Key shift longpress handler
                                               //   Processing cycles here while the key is pressed, that is, after PRESS #1, waiting for RELEASE #2
-    if((FN_state == ST_1_PRESS1) && FN_timeouts_in_progress && (FN_key_pressed != 0) && !(softmenuStack[0].softmenuId == 0 && !jm_BASE_SCREEN) ) {
+    if((FN_state == ST_1_PRESS1) && FN_timeouts_in_progress && (FN_key_pressed != 0) && !(softmenuStack[0].softmenuId == 0 && !BASE_MYM) ) {
       if(fnTimerGetStatus(TO_FN_LONG) == TMR_COMPLETED) {
         FN_handle_timed_out_to_EXEC = false;
         if(!shiftF && !shiftG) {                              //From No_Shift State 1
@@ -3741,6 +3741,7 @@ void execTimerApp(uint16_t timerType) {
             }
             showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0) - (fontForShortInteger == &numericFont && temporaryInformation == TI_NO_INFO && checkHP ? 50:0), vmNormal, false, true);
           } else {
+
             shortIntegerToDisplayString(regist, tmpString, true);
             showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0) - (fontForShortInteger == &numericFont && temporaryInformation == TI_NO_INFO && checkHP ? 50:0), vmNormal, false, true);
 

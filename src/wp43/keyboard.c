@@ -78,7 +78,7 @@ TO_QSPI static const char bugScreenItemNotDetermined[] = "In function determineI
       jm_show_comment(tmp);
     #endif // PC_BUILD
 
-    if((menuId==0 && !jm_BASE_SCREEN) ) {
+    if((menuId==0 && !BASE_MYM) ) {
       return item;
     }
 

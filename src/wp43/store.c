@@ -407,12 +407,12 @@ void fnStoreConfig(uint16_t regist) {
   storeToDtConfigDescriptor(HOME3);
   storeToDtConfigDescriptor(ShiftTimoutMode);
   storeToDtConfigDescriptor(CPXMULT);
-  storeToDtConfigDescriptor(SH_BASE_HOME);
+  storeToDtConfigDescriptor(BASE_HOME);
   storeToDtConfigDescriptor(compatibility_bool00);   //added
   storeToDtConfigDescriptor(Norm_Key_00_VAR);
   storeToDtConfigDescriptor(Input_Default);
   storeToDtConfigDescriptor(compatibility_bool0);    //added
-  storeToDtConfigDescriptor(jm_BASE_SCREEN);
+  storeToDtConfigDescriptor(BASE_MYM);
   storeToDtConfigDescriptor(jm_G_DOUBLETAP);
   storeToDtConfigDescriptor(compatibility_float1);
   storeToDtConfigDescriptor(compatibility_float2);
