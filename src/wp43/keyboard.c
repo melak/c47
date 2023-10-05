@@ -91,7 +91,7 @@ TO_QSPI static const char bugScreenItemNotDetermined[] = "In function determineI
       jm_show_comment(tmp);
     #endif // PC_BUILD
 
-    if((menuId==0 && !jm_BASE_SCREEN) ) {
+    if((menuId==0 && !BASE_MYM) ) {
       return item;
     }
 
@@ -3656,7 +3656,7 @@ static bool_t activatescroll(void) { //jm
           (softmenu[menuId].menuItem != -MNU_EQN)
 //remove menu interlock completely, since the NEW SHOW takes over the screen and does not respect menu operation
 //    &&    (
-//            ((menuId == 0) && !jm_BASE_SCREEN) ||
+//            ((menuId == 0) && !BASE_MYM) ||
 //            ((menuId == 0) && (softmenu[menuId].numItems<=18)) ||
 //            ((menuId >= NUMBER_OF_DYNAMIC_SOFTMENUS) && (softmenu[menuId].numItems<=18))
 //          )

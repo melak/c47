@@ -1849,7 +1849,7 @@
 
 //Jaymos C43 extensions
 #define MNU_1795                    1795
-#define ITM_BASE_SCREEN             1796
+#define ITM_BASE_MYM                1796
 #define ITM_G_DOUBLETAP             1797
 #define ITM_CPXMULT                 1798
 #define ITM_P_ALLREGS               1799
@@ -1949,8 +1949,8 @@
 #define KEY_fg                      1893
 #define MNU_TAMCMPALPHA             1894
 #define ITM_HPBASE                  1895
-#define MNU_1896                    1896
-#define ITM_ASNVIEWER               1897
+#define ITM_ASNVIEWER               1896
+#define ITM_N_KEY_TGLFRT            1897
 #define ITM_N_KEY_ALPHA             1898
 #define ITM_N_KEY_CC                1899
 #define ITM_N_KEY_GSH               1900
