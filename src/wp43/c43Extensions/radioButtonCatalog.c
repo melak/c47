@@ -68,6 +68,7 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   {ITM_WS32,             32,                     RB_WS},  //fnSetWordSize
   {ITM_WS64,             64,                     RB_WS},  //fnSetWordSize
 
+  {ITM_N_KEY_TGLFRT,     16384+ITM_TGLFRT,       RB_SA},  //fnSigmaAssign
   {ITM_N_KEY_ALPHA,      16384+ITM_AIM,          RB_SA},  //fnSigmaAssign
   {ITM_N_KEY_CC,         16384+ITM_CC,           RB_SA},  //fnSigmaAssign
   {ITM_N_KEY_GSH,        16384+ITM_SHIFTg,       RB_SA},  //fnSigmaAssign
@@ -176,8 +177,8 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   {ITM_HOMEx3,           JC_HOME_TRIPLE,         RB_x3},  //SetSetting
   {ITM_MYMx3,            JC_MYM_TRIPLE,          RB_x3},  //SetSetting
 
-  {ITM_BASE_HOME,        JC_BASE_HOME,           RB_BA},  //SetSetting
-  {ITM_BASE_SCREEN,      JC_BASE_SCREEN,         RB_BA},  //SetSetting
+  {ITM_BASE_HOME,        BA_BASE_HOME,           RB_BA},  //SetSetting
+  {ITM_BASE_MYM,         BA_BASE_MYM,            RB_BA},  //SetSetting
 
 
   {ITM_GAPDOT_L,         ITM_DOT,                RB_IP},
@@ -299,24 +300,24 @@ int8_t fnCbIsSet(int16_t item) {
                      else                     return result;
                      break;
 
-        case RB_x3:  if(MYM3) {
-                       rb_param = JC_MYM_TRIPLE;
-                       HOME3 = false;
-                     }
-                     else if(HOME3) {
+        case RB_x3:  if(HOME3) {
                        rb_param = JC_HOME_TRIPLE;
                        MYM3 = false;
+                     } else
+                     if(MYM3) {
+                       rb_param = JC_MYM_TRIPLE;
+                       HOME3 = false;
                      }
                      else return result;
                      break;
 
-        case RB_BA:  if(SH_BASE_HOME) {
-                       rb_param = JC_BASE_HOME;
-                       jm_BASE_SCREEN = false;
-                     }
-                     else if(jm_BASE_SCREEN) {
-                       rb_param = JC_BASE_SCREEN;
-                       SH_BASE_HOME = false;
+        case RB_BA:  if(BASE_MYM) {
+                       rb_param = BA_BASE_MYM;
+                       BASE_HOME = false;
+                     } else
+                     if(BASE_HOME) {
+                       rb_param = BA_BASE_HOME;
+                       BASE_MYM = false;
                      }
                      else return result;
                      break;
