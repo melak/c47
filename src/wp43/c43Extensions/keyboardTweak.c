@@ -278,7 +278,10 @@ void resetKeytimers(void) {
 
   bool_t Check_SigmaPlus_Assigned(int16_t * result, int16_t tempkey) {
     //JM NORMKEY CHANGE NORMAL MODE KEY SIGMA+ TO SOMETHING
-    if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (!shiftF && !shiftG && (tempkey == 0) && ((kbd_std + 0)->primary == *result) )) {
+    if((calcMode == CM_NORMAL || calcMode == CM_NIM) && 
+       (!catalog || (catalog && (Norm_Key_00_VAR != ITM_SHIFTg))) && 
+       (!shiftF && !shiftG && (tempkey == 0) && ((kbd_std + 0)->primary == *result) )
+       ) {
       *result = Norm_Key_00_VAR;
       return Norm_Key_00_VAR == ITM_SHIFTg;
     }
