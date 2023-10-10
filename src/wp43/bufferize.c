@@ -1857,6 +1857,9 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     }
 
     else {
+      #if defined (PC_BUILD)
+        printf("delayCloseNim=%u\n",delayCloseNim);
+      #endif
       if(!delayCloseNim) {      //delayCloseNim can only be activaed by ITM.ms in bufferize
         switch(item) {          //JMCLOSE remove auto closenim directly after KEY PRESSED for these functions only.
           case ITM_HASH_JM:     //closeNim simply not needed because we need to type the base while NIM remains open

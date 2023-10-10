@@ -1379,7 +1379,7 @@
 #define MNU_FIN                     1331
 #define MNU_SINTS                   1332
 #define MNU_FLAGS                   1333
-#define ITM_1334                    1334
+#define ITM_BASEMENU                1334
 #define MNU_1STDERIV                1335
 #define MNU_2NDDERIV                1336
 #define MNU_CONVFP                  1337

@@ -788,7 +788,7 @@ void SetSetting(uint16_t jmConfig) {
         }
       }
       else {
-        if(constantFractionsOn) {
+        if(constantFractionsOn) {              //when switching off EXFRAC, if it was currently displaying, revert back to fractions, not decimal
           setSystemFlag(FLAG_FRACT);
           constantFractionsOn = false;
         }

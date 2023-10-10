@@ -1696,21 +1696,25 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
 }
 
 
+bool_t BASE_OVERRIDEONCE = false;
+
   void showSoftmenuCurrentPart(void) {
 
 //JMTOCHECK: Removed exceptions for underline removal.
 
-    maxfLines = 0;
-    maxgLines = 0;
-    char tmp1[16];
-    int16_t x, y, yDotted=0, currentFirstItem, item, numberOfItems, m = softmenuStack[0].softmenuId;
-    bool_t dottedTopLine;
-    #if defined(PC_BUILD)
-      char tmp[200]; sprintf(tmp,"^^^^showSoftmenuCurrentPart: Showing Softmenu id=%d\n",m); jm_show_comment(tmp);
-    #endif // PC_BUILD
-    if(!(m==0 && !BASE_MYM) && calcMode != CM_FLAG_BROWSER && calcMode != CM_ASN_BROWSER && calcMode != CM_FONT_BROWSER && calcMode != CM_REGISTER_BROWSER && calcMode != CM_BUG_ON_SCREEN) {           //JM: Added exclusions, as this procedure is not only called from refreshScreen, but from various places due to underline
-    clearScreen_old(false, false, true); //JM, added to ensure the f/g underlines are deleted
+  maxfLines = 0;
+  maxgLines = 0;
+  char tmp1[16];
+  int16_t x, y, yDotted=0, currentFirstItem, item, numberOfItems, m = softmenuStack[0].softmenuId;
+  bool_t dottedTopLine;
+  #if defined(PC_BUILD)
+    char tmp[200]; sprintf(tmp,"^^^^showSoftmenuCurrentPart: Showing Softmenu id=%d\n",m); jm_show_comment(tmp);
+    printf("==>%s\n",tmp);
+  #endif // PC_BUILD
 
+  if((!IS_BASEBLANK_(m) || BASE_OVERRIDEONCE) && calcMode != CM_FLAG_BROWSER && calcMode != CM_ASN_BROWSER && calcMode != CM_FONT_BROWSER && calcMode != CM_REGISTER_BROWSER && calcMode != CM_BUG_ON_SCREEN) {           //JM: Added exclusions, as this procedure is not only called from refreshScreen, but from various places due to underline
+    clearScreen_old(false, false, true); //JM, added to ensure the f/g underlines are deleted
+    BASE_OVERRIDEONCE = false;
     if(tam.mode == TM_KEY && !tam.keyInputFinished) {
       for(y=0; y<=2; y++) {
         for(x=0; x<6; x++) {
@@ -2112,16 +2116,18 @@ void fnStrikeOutIfNotCoded(int16_t itemNr, int16_t x, int16_t y) {
     else if(softmenuStack[0].softmenuId == 1 && calcMode != CM_AIM) { // MyAlpha displayed and not in AIM
       softmenuStack[0].softmenuId = 0; // MyMenu
     }
-    else
-
-    if(softmenuStack[0].softmenuId == 0 && BASE_HOME && calcMode != CM_AIM) {                  //JM vv
+    if(softmenuStack[0].softmenuId == 0 && BASE_HOME && calcMode != CM_AIM) {
       softmenuStack[0].softmenuId = mm_MNU_HOME;
+    }
+    else if(softmenuStack[0].softmenuId == 0 && BASE_MYM && calcMode != CM_AIM) {
+      //softmenuStack[0].softmenuId = 0;                                                       //already 0, not needed to change
     }
     else if(softmenuStack[0].softmenuId == 1 && calcMode == CM_AIM) {
       softmenuStack[0].softmenuId = mm_MNU_ALPHA;
     }
+
                                                               //JM ^^
-    if(softmenuStack[0].softmenuId != mm_MNU_HOME && softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_MODE && softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_DISP) {          //JM reset menu base point only if not HOME menu
+    if(softmenuStack[0].softmenuId != mm_MNU_HOME && softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_MODE && softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_DISP) {          //JM reset menu base point only if not HOME, MODE & DISP menus
       softmenuStack[0].firstItem = 0;
     }
 
@@ -2341,12 +2347,25 @@ char *dynmenuGetLabelWithDup(int16_t menuitem, int16_t *dupNum) {
 }
 
 
+void fnBaseMenu(uint16_t unusedButMandatoryParameter) {
+  #if !defined(TESTSUITE_BUILD)
+    BASE_OVERRIDEONCE = true;
+    showSoftmenu(-MNU_MyMenu);
+    return;
+  #endif // !TESTSUITE_BUILD
+}
+
 
 void fnExitAllMenus(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
+  uint16_t cnt = SOFTMENU_STACK_SIZE - 1;
   while((softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_MyMenu && softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_MyAlpha) || (softmenu[softmenuStack[1].softmenuId].menuItem != -MNU_MyMenu)) {
     popSoftmenu();
+    if(cnt-- == 0) break;
   }
+  softmenuStack[1].softmenuId = 0;
+  popSoftmenu();    
+
   //fnDumpMenus(0);   //Easy place to access the Dump Menus: PFN / More / ExitAll
 #endif // !TESTSUITE_BUILD
 }
