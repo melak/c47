@@ -99,7 +99,7 @@ void fnRCL          (int16_t inp);
 #define JC_ERPN                 1    // eRPN
 #define JC_HOME_TRIPLE          2    // HOME.3
 #define JC_SHFT_4s              3    // SH_4s
-#define BA_BASE_HOME            4    // HOME
+#define JC_BASE_HOME            4    // HOME
 #define JC_MYM_TRIPLE           5    // HOME.3
 #define JC_BCR                  9    // CB ComplexResult
 #define JC_BLZ                 10    // CB LeadingZeros
@@ -114,7 +114,7 @@ void fnRCL          (int16_t inp);
 #define PRTACT0                21    // PRTACT checkbox
 #define PRTACT1                22    // PRTACT checkbox
 
-#define BA_BASE_MYM            23    // screen setup
+#define JC_BASE_MYM            23    // screen setup
 #define JC_G_DOUBLETAP         24    // screen setup
 
 #define JC_LARGELI             29
@@ -150,7 +150,7 @@ void fnRCL          (int16_t inp);
 #define JC_GAUSS_FITTING       63
 #define JC_ORTHOGONAL_FITTING  64
 
-#define JC_EXFRAC              65
+#define JC_IRFRAC              65
 #define JC_UU                  66
 #define JC_BCD                 67
 #define JC_TOPHEX              68

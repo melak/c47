@@ -78,7 +78,7 @@ TO_QSPI static const char bugScreenItemNotDetermined[] = "In function determineI
       jm_show_comment(tmp);
     #endif // PC_BUILD
 
-    if((menuId==0 && !BASE_MYM) ) {
+    if(IS_BASEBLANK_(menuId)) {
       return item;
     }
 
@@ -2113,15 +2113,15 @@ RELEASE_END:
         break;
       }
 
-      case ITM_EXIT1: {
-        fnKeyExit(NOPARAM);
-        if(temporaryInformation != TI_NO_INFO) {
-          refreshScreen(120);
-        }
-        temporaryInformation = TI_NO_INFO;
-        keyActionProcessed = true;
-        break;
-      }
+//      case ITM_EXIT1: {                         //Removed to force EXIT on the RELEASE cycle to make it do fnKeyExit later to allow NOP
+//        fnKeyExit(NOPARAM);
+//        if(temporaryInformation != TI_NO_INFO) {
+//        refreshScreen(120);
+//        }
+//        temporaryInformation = TI_NO_INFO;
+//        keyActionProcessed = true;
+//      break;
+//      }
 
       case ITM_op_j:
       case ITM_CC:
@@ -2816,6 +2816,7 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
       }
 
       case CM_AIM: {
+
 //        if(softmenuStack[0].softmenuId == mm_MNU_ALPHA) {     //JMvv
 //          popSoftmenu();
 //        }                                                     //JM^^
@@ -3727,7 +3728,7 @@ static bool_t activatescroll(void) { //jm
           softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN
 //remove menu interlock completely, since the NEW SHOW takes over the screen and does not respect menu operation
 //    &&    (
-//            ((menuId == 0) && !jm_BASE_SCREEN) ||
+//            ((menuId == 0) && !BASE_MYM) ||
 //            ((menuId == 0) && (softmenu[menuId].numItems<=18)) ||
 //            ((menuId >= NUMBER_OF_DYNAMIC_SOFTMENUS) && (softmenu[menuId].numItems<=18))
 //          )

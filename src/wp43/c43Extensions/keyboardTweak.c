@@ -215,13 +215,14 @@ void resetKeytimers(void) {
               }
               else {
                 if(calcMode == CM_AIM || calcMode == CM_EIM) {                    //JM shifts
-                  processKeyAction(CHR_num);
+                  showSoftmenu(-MNU_MyAlpha);
                 }
                 else {                                                            //JM SHIFTS
                   if(HOME3) {
                     showSoftmenu(-MNU_HOME);
                   }
                   else if(MYM3) {
+                    BASE_OVERRIDEONCE = true;
                     showSoftmenu(-MNU_MyMenu);
                   }
                 }                                                                 //JM shifts
@@ -323,7 +324,7 @@ void resetKeytimers(void) {
           break;
         case ITM_EXIT1:
           longpressDelayedkey2 = ITM_CLRMOD;     //EXIT longpress DOES CLRMOD
-          longpressDelayedkey1 = -MNU_MyMenu;
+          longpressDelayedkey1 = ITM_BASEMENU;
           break;
         default:;
       }
@@ -343,7 +344,7 @@ void resetKeytimers(void) {
           break;
         case ITM_EXIT1:
             longpressDelayedkey2 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
-            longpressDelayedkey1 =-MNU_MyMenu;
+            longpressDelayedkey1 = ITM_BASEMENU;
             break;
         default:;
       }

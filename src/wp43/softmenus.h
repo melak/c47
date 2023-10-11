@@ -60,7 +60,9 @@ void     fnExitAllMenus         (uint16_t unusedButMandatoryParameter);
   extern TO_QSPI const int16_t menu_HOME[];                //JM
 
 #endif // !TESTSUITE_BUILD
+void   fnBaseMenu               (uint16_t unusedButMandatoryParameter);
 char    *dynmenuGetLabel        (int16_t menuitem);
 char    *dynmenuGetLabelWithDup (int16_t menuitem, int16_t *dupNum);
-void     fnDumpMenus            (uint16_t unusedButMandatoryParameter);  //JM
+void    fnDumpMenus            (uint16_t unusedButMandatoryParameter);  //JM
+extern  bool_t BASE_OVERRIDEONCE;
 #endif // !SOFTMENUS_H

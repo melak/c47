@@ -1796,6 +1796,8 @@ void fnSafeReset (uint16_t unusedButMandatoryParameter) {
     ShiftTimoutMode = true;
     HOME3           = true;
     MYM3            = false;
+    BASE_HOME       = false;
+    BASE_MYM        = true;
   }
   else {
     fgLN            = RB_FGLNOFF;  //not in conditional clear
@@ -1803,6 +1805,8 @@ void fnSafeReset (uint16_t unusedButMandatoryParameter) {
     ShiftTimoutMode = false;
     HOME3           = false;
     MYM3            = false;
+    BASE_HOME       = false;
+    BASE_MYM        = true;
   }
 }
 

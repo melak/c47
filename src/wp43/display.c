@@ -1249,7 +1249,7 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
     if(CPXMULT) {                  // i x 1.0
       strcat(displayString, COMPLEX_UNIT);
       real34CopyAbs(&imag34, &absimag34);
-//      if(!real34CompareEqual(&absimag34, const34_1)) {     //JM force a |imag|=1 not to display. Maybe make it part of Exfrac.
+//      if(!real34CompareEqual(&absimag34, const34_1)) {     //JM force a |imag|=1 not to display. Maybe make it part of IRFRAC.
         strcat(displayString, PRODUCT_SIGN);
         xcopy(strchr(displayString, '\0'), displayString + i, strlen(displayString + i) + 1);
 //      }
@@ -1257,7 +1257,7 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
 
     if(!CPXMULT) {                   // 1.0 i
       real34CopyAbs(&imag34, &absimag34);
-//      if(!real34CompareEqual(&absimag34, const34_1)) {     //JM force a |imag|=1 not to display.  Maybe make it part of Exfrac.
+//      if(!real34CompareEqual(&absimag34, const34_1)) {     //JM force a |imag|=1 not to display.  Maybe make it part of IRFRAC.
         xcopy(strchr(displayString, '\0'), displayString + i, strlen(displayString + i) + 1);
 //      }
       strcat(displayString, STD_SPACE_HAIR);
