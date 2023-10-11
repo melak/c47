@@ -959,7 +959,7 @@ typedef enum {
 #define TI_012                                    73    //JM EE
 #define TI_SHOW_REGISTER_BIG                      74    //JM_SHOW
 #define TI_SHOW_REGISTER_SMALL                    75
-#define TI_ms                                     76    //JMms
+#define TI_V                                      76
 #define TI_FROM_DMS                               77
 #define TI_FROM_MS_TIME                           78
 #define TI_FROM_MS_DEG                            79

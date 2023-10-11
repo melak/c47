@@ -2677,6 +2677,13 @@ void execTimerApp(uint16_t timerType) {
             _fnShowRecallTI(prefix, &prefixWidth);
           }
 
+          else if(temporaryInformation == TI_V) {                             //JMms vv
+            if(regist == REGISTER_X) {
+              strcpy(prefix, "V" STD_SPACE_FIGURE "=");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
           else if(temporaryInformation == TI_THETA_RADIUS) {
             if(regist == REGISTER_Y) {
               strcpy(prefix, "r =");
@@ -3723,13 +3730,6 @@ void execTimerApp(uint16_t timerType) {
             if(regist == REGISTER_X) {
               memcpy(prefix, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0]);
               strcpy(prefix + allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0], " =");
-              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
-            }
-          }
-
-          else if(temporaryInformation == TI_ms) {                             //JMms vv
-            if(regist == REGISTER_X) {
-              strcpy(prefix, "t (ms)" STD_SPACE_FIGURE "=");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }

@@ -398,7 +398,7 @@ TO_QSPI const function_t indexOfFunctions[] = {
               {ITM_G_DOUBLETAP,               "G2TP"},
               {ITM_HOMEx3,                    "HOMEX3"},
               {ITM_SHTIM,                     "SH4S"},
-              {ITM_EXFRAC,                    "@"},
+              {ITM_IRFRAC,                    "@"},
               {ITM_BASE_HOME,                 "HOME"},
               {ITM_LARGELI,                   "LARGELI"},
               {ITM_CPXRES1,                   "@"},

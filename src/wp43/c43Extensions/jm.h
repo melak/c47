@@ -163,7 +163,7 @@ void fnRCL          (int16_t inp);
 #define JC_GAUSS_FITTING       63
 #define JC_ORTHOGONAL_FITTING  64
 
-#define JC_EXFRAC              65
+#define JC_IRFRAC              65
 #define JC_UU                  66
 #define JC_BCD                 67
 #define JC_TOPHEX              68
