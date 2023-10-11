@@ -113,13 +113,12 @@ void fnRCL          (int16_t inp);
 #define PRTACT                 20    // PRTACT checkbox
 #define PRTACT0                21    // PRTACT checkbox
 #define PRTACT1                22    // PRTACT checkbox
+#define DM_PROPFR              23
+#define JC_BASE_MYM            24    // screen setup
+#define JC_G_DOUBLETAP         25    // screen setup
+#define JC_LARGELI             26
 
-#define JC_BASE_MYM            23    // screen setup
-#define JC_G_DOUBLETAP         24    // screen setup
-
-#define JC_LARGELI             29
-
-#define JC_ITM_TST             31    //dr
+#define JC_ITM_TST             27    //dr
 
 #define JC_VECT                39    // graph setup
 #define JC_NVECT               40    // graph setup

@@ -1942,7 +1942,7 @@
 #define ITM_GET_TEST_BS             1885
 #define ITM_SET_TEST_BS             1886
 #define ITM_INP_DEF_DP              1887
-#define MNU_1888                    1888
+#define ITM_PROPFR                  1888
 #define ITM_INP_DEF_CPXDP           1889
 #define ITM_INP_DEF_SI              1890
 #define ITM_INP_DEF_LI              1891
