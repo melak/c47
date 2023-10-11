@@ -2351,7 +2351,6 @@ void fnBaseMenu(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
     BASE_OVERRIDEONCE = true;
     showSoftmenu(-MNU_MyMenu);
-    return;
   #endif // !TESTSUITE_BUILD
 }
 
