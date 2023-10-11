@@ -224,7 +224,7 @@ void resetKeytimers(void) {
                   else if(MYM3) {
                     BASE_OVERRIDEONCE = true;
                     showSoftmenu(-MNU_MyMenu);
-                  }
+                  }                             //If none selected, do not display any menu, keep the screen blank
                 }                                                                 //JM shifts
               }                                                                   //JM shifts
               showSoftmenuCurrentPart();

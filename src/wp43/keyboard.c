@@ -3074,7 +3074,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
       case CM_NORMAL: {                                                     //If in Custom Menu
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -ITM_MENU) {
-          dynamicMenuItem = 20;
+          dynamicMenuItem = NUMBER_OF_DYNAMIC_SOFTMENUS + 1;
           fnProgrammableMenu(NOPARAM);
           return;
         }
@@ -3101,6 +3101,13 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         else {
           if(softmenuStack[0].softmenuId <= 1) { // MyMenu or MyAlpha is displayed
             currentInputVariable = INVALID_VARIABLE;
+            if(BASE_HOME) {
+               showSoftmenu(-MNU_HOME);
+            }
+            else if(BASE_MYM) {
+              BASE_OVERRIDEONCE = true;
+              showSoftmenu(-MNU_MyMenu);
+            }                             //If none selected, do not display any menu, keep the screen blank
           }
           else {                  //jm: this is where 43S cleared an error
             popSoftmenu();
@@ -3774,7 +3781,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
     }
 
     if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && softmenu[softmenuStack[0].softmenuId].menuItem == -ITM_MENU) {
-      dynamicMenuItem = 18;
+      dynamicMenuItem = NUMBER_OF_DYNAMIC_SOFTMENUS + 1;
       fnProgrammableMenu(NOPARAM);
       return;
     }
@@ -3985,7 +3992,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
     }
 
     if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && softmenu[softmenuStack[0].softmenuId].menuItem == -ITM_MENU) {
-      dynamicMenuItem = 19;
+      dynamicMenuItem = NUMBER_OF_DYNAMIC_SOFTMENUS + 1;
       fnProgrammableMenu(NOPARAM);
       return;
     }
