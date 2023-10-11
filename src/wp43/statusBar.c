@@ -208,37 +208,43 @@ void showFracMode(void) {
     compressString = 1;             //^JM
 
 
-    if(getSystemFlag(FLAG_DENANY) && denMax == MAX_DENMAX) {
-      sprintf(statusMessage,"%smax",divStr);
+    if(constantFractions && constantFractionsOn && !getSystemFlag(FLAG_FRACT)) {
+      sprintf(statusMessage,"%s",divStr);
       x = showString(statusMessage, &standardFont, x, 0, vmNormal, true, true);
-    }
-    else {
-      if((getSystemFlag(FLAG_DENANY) && denMax != MAX_DENMAX) || !getSystemFlag(FLAG_DENANY)) {
-        sprintf(statusMessage, "%s%" PRIu32, divStr,denMax);
+      raiseString = 4;
+      sprintf(statusMessage,STD_SUB_c);
+      x = showString(statusMessage, &standardFont, x-2, 0, vmNormal, true, true);
+
+      strcpy(divStr,STD_DOT);
+      raiseString = 2;
+      x = showString(divStr, &standardFont, x+1, 0, vmNormal, true, true);
+      strcpy(divStr,"I");
+      raiseString = 2;
+      showString(divStr, &standardFont, x, 0, vmNormal, true, true);
+      raiseString = 2;
+      x = showString(divStr, &standardFont, x+1, 0, vmNormal, true, true);
+      x -= 5;
+      for(uint16_t yy = 4; yy<=11; yy++) {
+        setWhitePixel(x, yy); 
+      }
+    } else {
+
+      if(getSystemFlag(FLAG_DENANY) && denMax == MAX_DENMAX) {
+        sprintf(statusMessage,"%smax",divStr);
         x = showString(statusMessage, &standardFont, x, 0, vmNormal, true, true);
       }
-
-      if(constantFractions && constantFractionsOn && !getSystemFlag(FLAG_FRACT)) {
-        strcpy(divStr,STD_DOT);
-        raiseString = 2;
-        x = showString(divStr, &standardFont, x+1, 0, vmNormal, true, true);
-        strcpy(divStr,"I");
-        raiseString = 2;
-        showString(divStr, &standardFont, x, 0, vmNormal, true, true);
-        raiseString = 2;
-        x = showString(divStr, &standardFont, x+1, 0, vmNormal, true, true);
-        x -= 5;
-        for(uint16_t yy = 4; yy<=11; yy++) {
-          setWhitePixel(x, yy); 
-        }
-      }
       else {
+        if((getSystemFlag(FLAG_DENANY) && denMax != MAX_DENMAX) || !getSystemFlag(FLAG_DENANY)) {
+          sprintf(statusMessage, "%s%" PRIu32, divStr,denMax);
+          x = showString(statusMessage, &standardFont, x, 0, vmNormal, true, true);
+        }
+
         if(!getSystemFlag(FLAG_DENANY)) {
           if(getSystemFlag(FLAG_DENFIX)) {
-            showGlyphCode('f',  &standardFont, x, 0, vmNormal, true, false); // f is 0+7+3 pixel wide
+            x = showGlyphCode('f',  &standardFont, x, 0, vmNormal, true, false); // f is 0+7+3 pixel wide
           }
           else {
-            showString(PRODUCT_SIGN, &standardFont, x, 0, vmNormal, true, false); // STD_DOT is 0+3+2 pixel wide and STD_CROSS is 0+7+2 pixel wide
+            x = showString(PRODUCT_SIGN, &standardFont, x, 0, vmNormal, true, false); // STD_DOT is 0+3+2 pixel wide and STD_CROSS is 0+7+2 pixel wide
           }
         }
       }
