@@ -2070,15 +2070,15 @@ RELEASE_END:
         break;
       }
 
-//      case ITM_EXIT1: {                         //Removed to force EXIT on the RELEASE cycle to make it do fnKeyExit later to allow NOP
+      case ITM_EXIT1: {
 //        fnKeyExit(NOPARAM);
-  //      if(temporaryInformation != TI_NO_INFO) {
-  //        refreshScreen();
-    //    }
-    //    temporaryInformation = TI_NO_INFO;
-      //  keyActionProcessed = true;
-      //  break;
-      //}
+//        keyActionProcessed = true;            //Removed to force EXIT on the RELEASE cycle to make it do fnKeyExit later to allow NOP
+        if(temporaryInformation != TI_NO_INFO) {
+          refreshScreen();
+        }
+        temporaryInformation = TI_NO_INFO;
+        break;
+      }
 
       case ITM_op_j:
       case ITM_CC:
