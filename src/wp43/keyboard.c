@@ -2117,7 +2117,7 @@ RELEASE_END:
 //        fnKeyExit(NOPARAM);
 //        keyActionProcessed = true;            //Removed to force EXIT on the RELEASE cycle to make it do fnKeyExit later to allow NOP
         if(temporaryInformation != TI_NO_INFO) {
-          refreshScreen();
+          refreshScreen(120);
         }
         temporaryInformation = TI_NO_INFO;
         break;
