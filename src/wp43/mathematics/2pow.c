@@ -106,10 +106,10 @@ void twoPowLonI(void) {
     return;
   }
   else if(exponentSign == -1) {
-    uIntToLongInteger(0, base);
-    convertLongIntegerToLongIntegerRegister(base, REGISTER_X);
     longIntegerFree(base);
     longIntegerFree(exponent);
+    convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
+    twoPowReal();
     return;
   }
 
