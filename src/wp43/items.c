@@ -1037,6 +1037,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnArg_all                  (uint16_t unusedButMandatoryParameter) {}
   void fnMultiplySI               (uint16_t unusedButMandatoryParameter) {}
   void fn_cnst_op_j               (uint16_t unusedButMandatoryParameter) {}
+  void fn_cnst_op_j_pol           (uint16_t unusedButMandatoryParameter) {}
   void fn_cnst_op_aa              (uint16_t unusedButMandatoryParameter) {}
   void fn_cnst_op_a               (uint16_t unusedButMandatoryParameter) {}
   void fn_cnst_0_cpx              (uint16_t unusedButMandatoryParameter) {}
@@ -2989,7 +2990,7 @@ TO_QSPI const item_t indexOfItems[] = {
 
 
 //Jaymos C43 extensions
-/* 1795 */  { itemToBeCoded,                NOPARAM,                     "1795",                                        "1795",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1795 */  { fn_cnst_op_j_pol,              NOPARAM,                     "op_" STD_op_i STD_SUB_SUN,                    STD_op_i STD_SUB_SUN,                          (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },//JM Operator j
 /* 1796 */  { SetSetting,                   JC_BASE_MYM,                 "MyM",                                         "MyM",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM NOBASE MENU SETTING
 /* 1797 */  { SetSetting,                   JC_G_DOUBLETAP,              "g.2Tp",                                       "g.2Tp",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM KEY TAP DOUBLE SETTING
 /* 1798 */  { SetSetting,                   JC_CPXMULT,                  "CPXmul",                                      "CPXmul",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
