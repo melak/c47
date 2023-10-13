@@ -1663,6 +1663,9 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
       //printf("WWW1: itemName=%s, 0:%i 1:%i, ItemNr=%i \n",itemName, (uint8_t) itemName[0], (uint8_t) itemName[1], itemNr);
       return;
     }
+    else if((indexOfItems[itemNr%10000].status & CAT_STATUS) == CAT_CNST) {
+      stringAppend(itemName, indexOfItems[itemNr%10000].itemCatalogName);    
+    }
     else {
       if(itemNr%10000 >= ITM_X_P1 && itemNr%10000 <= ITM_X_g6) {
         stringAppend(itemName, indexOfItemsXEQM + 8*(itemNr%10000-fnXEQMENUpos));
