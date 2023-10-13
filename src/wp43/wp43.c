@@ -321,6 +321,7 @@ char                   statMx[8];
 char                   plotStatMx[8];
 
 bool_t temporaryFlagRect;
+bool_t temporaryFlagPolar;
 
 
 #if defined(DMCP_BUILD)
