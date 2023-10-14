@@ -297,6 +297,7 @@
 #define USER_N47         51
 #define USER_MENG        53
 #define USER_MFIN        54
+#define USER_MCPX        55
 
 
 //*************************
