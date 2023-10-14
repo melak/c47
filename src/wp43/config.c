@@ -278,6 +278,9 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
       fnKeyBackspace(0);
       //printf("|%s|\n", aimBuffer);
     }
+    if(calcMode == CM_ASSIGN) {
+      fnKeyExit(0);
+    }
     lastIntegerBase = 0;
     fnExitAllMenus(0);
     if(!checkHP) {
