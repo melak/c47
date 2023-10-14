@@ -1877,6 +1877,17 @@ void fnRESET_MyM(uint8_t param) {
           case 6: itemToBeAssigned = -MNU_FIN;    break;
           default:break;          
         }
+      } else
+      if(param == USER_MCPX) {
+        switch(fn) {
+          case 1: itemToBeAssigned = ITM_DRG;      break;
+          case 2: itemToBeAssigned = ITM_CC;       break;
+          case 3: itemToBeAssigned = ITM_EE_EXP_TH;break;    
+          case 4: itemToBeAssigned = ITM_EXP;      break;
+          case 5: itemToBeAssigned = ITM_op_j_pol; break;
+          case 6: itemToBeAssigned = ITM_op_j;     break;
+          default:break;          
+        }
       } else {
         itemToBeAssigned = ASSIGN_CLEAR;
       }
