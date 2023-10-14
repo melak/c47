@@ -1139,6 +1139,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnK100Mtomik               (uint16_t unusedButMandatoryParameter) {}
   void fnBaseMenu                 (uint16_t unusedButMandatoryParameter) {}
                                                                               //JM ^^
+  void fnExecutePlusSkip          (uint16_t unusedButMandatoryParameter) {}   //DL
 #endif // GENERATE_CATALOGS
 
 #ifdef TESTSUITE_BUILD
@@ -3418,6 +3419,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2220 */  { fnK100Mtomik,                 multiply,                    "E/100mi" STD_RIGHT_ARROW "mi/E",              "kWh/100mi" STD_RIGHT_ARROW,                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 2221 */  { fnK100Mtomik,                 divide,                      "mi/E" STD_RIGHT_ARROW "E/100mi",              "mi/kWh" STD_RIGHT_ARROW,                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 2222 */  { itemToBeCoded,                NOPARAM,                     "Ymmv:",                                       "Ymmv:",                                       (0 << TAM_MAX_BITS) |     0, CAT_MENU | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2223 */  { fnExecutePlusSkip,                TM_LABEL,                    "XEQ.SKP",                                     "XEQ.SKP",                                     (0 << TAM_MAX_BITS) |    99, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_LABEL        },
 
-/* 2223 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
+/* 2224 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
 };
