@@ -2277,8 +2277,9 @@
 #define ITM_K100MtoMIK              2220
 #define ITM_MIKtoK100M              2221
 #define MNU_CONVYMMV                2222
+#define ITM_XEQP1                   2223
 
-#define LAST_ITEM                   2223
+#define LAST_ITEM                   2224
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
