@@ -1892,10 +1892,10 @@ void fnRESET_MyM(uint8_t param) {
         itemToBeAssigned = ASSIGN_CLEAR;
       }
       assignToMyMenu_(fn - 1);
-      itemToBeAssigned = ASSIGN_CLEAR;
-      assignToMyMenu_(6 + fn - 1);
-      itemToBeAssigned = ASSIGN_CLEAR;
-      assignToMyMenu_(12 + fn - 1);
+//      itemToBeAssigned = ASSIGN_CLEAR;                      //removed auto clearing of the whole MyMenu, to fit the new Ribbon model 
+//      assignToMyMenu_(6 + fn - 1);                          //removed auto clearing of the whole MyMenu, to fit the new Ribbon model 
+//      itemToBeAssigned = ASSIGN_CLEAR;                      //removed auto clearing of the whole MyMenu, to fit the new Ribbon model 
+//      assignToMyMenu_(12 + fn - 1);                         //removed auto clearing of the whole MyMenu, to fit the new Ribbon model  
     }
     BASE_MYM = true;                                           //JM Menu system default (removed from reset_jm_defaults)
     refreshScreen();
