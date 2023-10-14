@@ -1086,7 +1086,7 @@ int16_t lastItem = 0;
           else if((calcMode == CM_NIM) && ((item==ITM_DRG || item == ITM_DMS2 || item == ITM_dotD) && !catalog)) {   //JM
             addItemToNimBuffer(item);
           }                                                                                      //JM
-          else if(calcMode == CM_MIM && softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_M_EDIT && (item != ITM_CC && item != ITM_op_j)) { //JM added ITM_CC to let it work in matrix edit
+          else if(calcMode == CM_MIM && softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_M_EDIT && (item != ITM_CC && item != ITM_op_j && item != ITM_op_j_pol)) { //JM added ITM_CC to let it work in matrix edit
             addItemToBuffer(item);
           }
           else if(item > 0) { // function
@@ -1099,7 +1099,7 @@ int16_t lastItem = 0;
               screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
               goto noMoreToDo;
             }
-            if(calcMode == CM_NIM && (item != ITM_CC && item != ITM_op_j) && item!=ITM_HASH_JM && item!=ITM_toHMS && item!=ITM_ms) {  //JMNIM Allow NIM not closed, so that JMNIM can change the bases without ierrors thrown
+            if(calcMode == CM_NIM && (item != ITM_CC && item != ITM_op_j && item != ITM_op_j_pol) && item!=ITM_HASH_JM && item!=ITM_toHMS && item!=ITM_ms) {  //JMNIM Allow NIM not closed, so that JMNIM can change the bases without ierrors thrown
               closeNim();
               if(calcMode != CM_NIM) {
                 if(indexOfItems[item].func == fnConstant) {
@@ -1874,7 +1874,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           char tmp[200]; sprintf(tmp,"^^^^btnReleased %d:\'%s\'",item,(char *)data); jm_show_comment(tmp);
         #endif //PC_BUILD
 
-        if(calcMode == CM_NIM && delayCloseNim && item != ITM_ms && item != ITM_CC && item != ITM_op_j) {
+        if(calcMode == CM_NIM && delayCloseNim && item != ITM_ms && item != ITM_CC && item != ITM_op_j && item != ITM_op_j) {
           delayCloseNim = false;
           closeNim();                 //JM moved here, from bufferize see JMCLOSE, to retain NIM if needed for .ms. Only a problem due to longpress.
           screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
@@ -2123,6 +2123,7 @@ RELEASE_END:
         break;
       }
 
+      case ITM_op_j_pol:
       case ITM_op_j:
       case ITM_CC:
       case ITM_dotD: {
@@ -3419,9 +3420,15 @@ void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter
 
     if(complex_Type == ITM_op_j) {
       temporaryFlagRect = true;
+      temporaryFlagPolar = false;
+    }
+    else if(complex_Type == ITM_op_j_pol) {
+      temporaryFlagRect = false;
+      temporaryFlagPolar = true;
     }
     else {
       temporaryFlagRect = false;
+      temporaryFlagPolar = false;
     }
 
     switch(calcMode) {                     //JM

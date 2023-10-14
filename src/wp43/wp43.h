@@ -380,6 +380,7 @@
 
 
   extern bool_t                 temporaryFlagRect;
+  extern bool_t                 temporaryFlagPolar;
 
 
   #if defined(DMCP_BUILD)

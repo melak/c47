@@ -1849,7 +1849,7 @@
 
 
 //Jaymos C43 extensions
-#define MNU_1795                    1795
+#define ITM_op_j_pol                1795
 #define ITM_BASE_MYM                1796
 #define ITM_G_DOUBLETAP             1797
 #define ITM_CPXMULT                 1798

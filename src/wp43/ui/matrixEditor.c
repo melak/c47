@@ -684,6 +684,7 @@ void mimAddNumber(int16_t item) {
       break;
       }
 
+      case ITM_op_j_pol:
       case ITM_op_j:
       case ITM_CC: {
         if(aimBuffer[0] == 0) {

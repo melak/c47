@@ -311,6 +311,7 @@ calcRegister_t         regStatsXY;
 
 
 bool_t temporaryFlagRect;
+bool_t temporaryFlagPolar;
 
 
 #if defined(DMCP_BUILD)

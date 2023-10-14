@@ -18,6 +18,7 @@ void fnTo_ms        (uint16_t unusedButMandatoryParameter);
 void fnFrom_ms      (uint16_t unusedButMandatoryParameter);
 void fnMultiplySI   (uint16_t multiplier);
 void fn_cnst_op_j   (uint16_t unusedButMandatoryParameter);
+void fn_cnst_op_j_pol(uint16_t unusedButMandatoryParameter);
 void fn_cnst_op_aa  (uint16_t unusedButMandatoryParameter);
 void fn_cnst_op_a   (uint16_t unusedButMandatoryParameter);
 void fn_cnst_0_cpx  (uint16_t unusedButMandatoryParameter);

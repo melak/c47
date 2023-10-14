@@ -583,7 +583,7 @@ TO_QSPI const int16_t menu_BASE[]        = { ITM_2HEX,                      ITM_
                                              ITM_BCD9,                      ITM_BCD10,                  ITM_BCDU,                 ITM_TOPHEX,            ITM_NULL,                    ITM_NULL                  };    //JM BASE MENU ADDED
 
 
-TO_QSPI const int16_t menu_EE[]          = { ITM_CONSTpi,                   ITM_op_j,                   ITM_SQUARE,               ITM_op_a,              ITM_op_a2,                   ITM_CLSTK,                          //JM EE
+TO_QSPI const int16_t menu_EE[]          = { ITM_op_j_pol,                  ITM_op_j,                   ITM_SQUARE,               ITM_op_a,              ITM_op_a2,                   ITM_CLSTK,                          //JM EE
                                              ITM_M_INV,                     ITM_STKTO3x1,               ITM_3x1TOSTK,             ITM_MATX_A,            ITM_PARALLEL,                -MNU_CPX,                           //JM EE
                                              ITM_DEG,                       ITM_DEG2,                   ITM_RAD,                  ITM_RAD2,              ITM_RECT,                    ITM_POLAR,                          //JM EE
 
@@ -1007,7 +1007,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       else if(menuData[i].item == ITM_NOP || menuData[i].item == ITM_NULL) {
         numberOfBytes += 1;
       }
-      else if( indexOfItems[abs(menuData[i].item)].itemCatalogName[0] == 0 || (menuData[i].item == ITM_op_j || menuData[i].item == ITM_op_a || menuData[i].item == ITM_op_a2)) {
+      else if( indexOfItems[abs(menuData[i].item)].itemCatalogName[0] == 0 || (menuData[i].item == ITM_op_j || menuData[i].item == ITM_op_j_pol || menuData[i].item == ITM_op_a || menuData[i].item == ITM_op_a2)) {
         numberOfBytes += stringByteLength(indexOfItems[abs(menuData[i].item)].itemSoftmenuName) + 1;
       }
       else {
@@ -1024,7 +1024,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       else if(menuData[i].item == ITM_NULL) {
         lbl = "";
       }
-      else if(indexOfItems[abs(menuData[i].item)].itemCatalogName[0] == 0 || (menuData[i].item == ITM_op_j || menuData[i].item == ITM_op_a || menuData[i].item == ITM_op_a2)) {
+      else if(indexOfItems[abs(menuData[i].item)].itemCatalogName[0] == 0 || (menuData[i].item == ITM_op_j || menuData[i].item == ITM_op_j_pol || menuData[i].item == ITM_op_a || menuData[i].item == ITM_op_a2)) {
         lbl = indexOfItems[abs(menuData[i].item)].itemSoftmenuName;
       }
       else {
@@ -1581,12 +1581,12 @@ static char *changeItoJ(int16_t item) {
   stringAppend(FF,indexOfItems[item%10000].itemSoftmenuName);
   //printf(">>>> changeItoJ: %i %u %u %u %u %u %s %u %u\n", item, (uint8_t)(FF[0]), (uint8_t)(FF[1]), (uint8_t)(FF[2]), (uint8_t)(FF[3]), (uint8_t)(FF[4]), FF , (uint8_t)(STD_SUP_i[0]), (uint8_t)(STD_SUP_i[1]));
   if(getSystemFlag(FLAG_CPXj)) {
-    if((item == ITM_op_j || item == ITM_op_j_SIGN) && FF[1] == STD_op_i[1]) {
+    if((item == ITM_op_j || item == ITM_op_j_pol || item == ITM_op_j_SIGN) && FF[1] == STD_op_i[1]) {
       //printf(">>>> changed: %u %u %u %u %u %s %u %u\n", (uint8_t)(FF[0]), (uint8_t)(FF[1]), (uint8_t)(FF[2]), (uint8_t)(FF[3]), (uint8_t)(FF[4]), FF , (uint8_t)(STD_SUP_i[0]), (uint8_t)(STD_SUP_i[1]));
       FF[1]++;
     }
-    if(item == ITM_EE_EXP_TH && FF[2] == STD_SUP_i[1]) {
-      FF[2]++;
+    if(item == ITM_EE_EXP_TH && FF[3] == STD_SUP_i[1]) {
+      FF[3]++;
     }
   }
   return FF;
@@ -1651,6 +1651,9 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
       stringAppend(itemName, indexOfItems[!getSystemFlag(FLAG_MULTx) ? ITM_DOT : ITM_CROSS].itemSoftmenuName);
       //printf("WWW1: itemName=%s, 0:%i 1:%i, ItemNr=%i \n",itemName, (uint8_t) itemName[0], (uint8_t) itemName[1], itemNr);
       return;
+    }
+    else if((indexOfItems[itemNr%10000].status & CAT_STATUS) == CAT_CNST) {
+      stringAppend(itemName, indexOfItems[itemNr%10000].itemCatalogName);    
     }
     else {
       if(itemNr%10000 >= ITM_X_P1 && itemNr%10000 <= ITM_X_g6) {
