@@ -3502,22 +3502,20 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
           return;
         }
         else
-        if(temporaryInformation != TI_NO_INFO) {
-          temporaryInformation = TI_NO_INFO;
-          keyActionProcessed = true;
-          screenUpdatingMode = SCRUPD_AUTO;
-          if(lastErrorCode != 0) {
-            lastErrorCode = 0;
-          }
-          return;
-        }
-        else
         if(lastErrorCode != 0) {
           lastErrorCode = 0;
           screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
           return;
         }
         else {
+          if(temporaryInformation != TI_NO_INFO) {
+            temporaryInformation = TI_NO_INFO;
+            keyActionProcessed = true;
+            screenUpdatingMode = SCRUPD_AUTO;
+            if(lastErrorCode != 0) {
+              lastErrorCode = 0;
+            }
+          }
           showFunctionName(ITM_CLX, 1000, ""); //JM 1000ms = 1s
         }
         break;
