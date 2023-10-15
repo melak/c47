@@ -800,15 +800,15 @@ void execTimerApp(uint16_t timerType) {
 
   void FN_handler(void) {                     //JM FN LONGPRESS vv Handler FN Key shift longpress handler
                                               //   Processing cycles here while the key is pressed, that is, after PRESS #1, waiting for RELEASE #2
-    if((FN_state == ST_1_PRESS1) && FN_timeouts_in_progress && (FN_key_pressed != 0) && !IS_BASEBLANK_(softmenuStack[0].softmenuId) ) {
+    if((FN_state == ST_1_PRESS1 || FN_state == ST_3_PRESS2) && FN_timeouts_in_progress && (FN_key_pressed != 0) && !IS_BASEBLANK_(softmenuStack[0].softmenuId) ) {
       if(fnTimerGetStatus(TO_FN_LONG) == TMR_COMPLETED) {
         FN_handle_timed_out_to_EXEC = false;
         if(!shiftF && !shiftG) {                              //From No_Shift State 1
           if(LongPressF == RB_F1234) {
-            FN_handler_StepToF(JM_TO_FN_LONG);                //To F State 2
+            FN_handler_StepToF(TIME_FN_1234_F_TO_G);           //To F State 2
           }
           else if(LongPressF == RB_F124) {
-            FN_handler_StepToF(JM_TO_FN_LONG * 2);            //To F State 2
+            FN_handler_StepToF(TIME_FN_124_F_TO_NOP);            //To F State 2
           }
           else if(LongPressF == RB_F14) {
             FN_handler_StepToNOP();                           //To NOP State 4
@@ -820,7 +820,7 @@ void execTimerApp(uint16_t timerType) {
         }
         else if(shiftF && !shiftG) {                          //From F State 2
           if(LongPressF == RB_F1234) {
-            FN_handler_StepToG(JM_TO_FN_LONG);                //To G State 3
+            FN_handler_StepToG(TIME_FN_1234_G_TO_NOP);            //To G State 3
           }
           else if(LongPressF == RB_F124) {
             FN_handler_StepToNOP();                           //To NOP State 4
