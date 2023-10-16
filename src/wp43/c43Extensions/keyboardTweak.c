@@ -215,8 +215,8 @@ void resetKeytimers(void) {
 
 
   void fg_processing_jm(void) {
-    if(ShiftTimoutMode || HOME3) {
-      if(HOME3) {
+    if(ShiftTimoutMode || HOME3 || MYM3) {
+      if(HOME3 || MYM3) {
         if(fnTimerGetStatus(TO_3S_CTFF) == TMR_RUNNING) {
           JM_SHIFT_HOME_TIMER1++;
           if(JM_SHIFT_HOME_TIMER1 >= 3) {
@@ -224,12 +224,12 @@ void resetKeytimers(void) {
             fnTimerStop(TO_3S_CTFF);
             shiftF = false;               // Set it up, for flags to be cleared below.
             shiftG = true;
-            if(HOME3) {
+            if(HOME3 || MYM3) {
               #if defined(PC_BUILD)
                 //printf("HOME3 %d %d\n", softmenuStack[softmenuStackPointer].softmenu, mm_MNU_HOME);
                 jm_show_calc_state("keyboardtweak.c: fg_processing_jm: HOME3");
               #endif // PC_BUILD
-              if(softmenuStack[0].softmenuId == mm_MNU_HOME) {                    //JM shifts
+              if(HOME3 && softmenuStack[0].softmenuId == mm_MNU_HOME) {                    //JM shifts
               //printf("popping\n");
                 popSoftmenu();                                                    //JM shifts
               }
@@ -238,7 +238,12 @@ void resetKeytimers(void) {
                   processKeyAction(CHR_num);
                 }
                 else {                                                            //JM SHIFTS
-                  showSoftmenu(-MNU_HOME);                                        //JM shifts  //JM ALPHA-HOME
+                  if(HOME3) {
+                    showSoftmenu(-MNU_HOME);
+                  }
+                  else if(MYM3) {
+                    showSoftmenu(-MNU_MyMenu);
+                  }
                 }                                                                 //JM shifts
               }                                                                   //JM shifts
               showSoftmenuCurrentPart();
@@ -273,7 +278,10 @@ void resetKeytimers(void) {
 
   bool_t Check_SigmaPlus_Assigned(int16_t * result, int16_t tempkey) {
     //JM NORMKEY CHANGE NORMAL MODE KEY SIGMA+ TO SOMETHING
-    if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (!shiftF && !shiftG && (tempkey == 0) && ((kbd_std + 0)->primary == *result) )) {
+    if((calcMode == CM_NORMAL || calcMode == CM_NIM) && 
+       (!catalog || (catalog && (Norm_Key_00_VAR != ITM_SHIFTg))) && 
+       (!shiftF && !shiftG && (tempkey == 0) && ((kbd_std + 0)->primary == *result) )
+       ) {
       *result = Norm_Key_00_VAR;
       return Norm_Key_00_VAR == ITM_SHIFTg;
     }
@@ -334,8 +342,8 @@ void resetKeytimers(void) {
           }
           break;
         case ITM_EXIT1:
-          longpressDelayedkey2 = -MNU_MyMenu;
-          longpressDelayedkey1 = ITM_CLRMOD;     //EXIT longpress DOES CLRMOD
+          longpressDelayedkey2 = ITM_CLRMOD;     //EXIT longpress DOES CLRMOD
+          longpressDelayedkey1 = -MNU_MyMenu;
           break;
         default:;
       }
@@ -354,14 +362,16 @@ void resetKeytimers(void) {
           }
           break;
         case ITM_EXIT1:
-            longpressDelayedkey2=-MNU_MyMenu;
-            longpressDelayedkey1 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
+            longpressDelayedkey2 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
+            longpressDelayedkey1 =-MNU_MyMenu;
             break;
         default:;
       }
-      if(*result == ITM_ms || longpressDelayedkey1 == ITM_ms || longpressDelayedkey2 == ITM_ms || longpressDelayedkey3 == ITM_ms) { //.ms needs NIM mode to be open if the user intends it to be open. 
+      if( (*result == ITM_ms || longpressDelayedkey1 == ITM_ms || longpressDelayedkey2 == ITM_ms || longpressDelayedkey3 == ITM_ms ) || //.ms needs NIM mode to be open if the user intends it to be open. 
+          (*result == ITM_CC || longpressDelayedkey1 == ITM_CC || longpressDelayedkey2 == ITM_CC || longpressDelayedkey3 == ITM_CC ) ||
+          (*result == ITM_op_j || longpressDelayedkey1 == ITM_op_j || longpressDelayedkey2 == ITM_op_j || longpressDelayedkey3 == ITM_op_j )) {
         delayCloseNim = true;
-      }
+      }  
     }
     else if(calcMode == CM_AIM) {
       switch(*result) {
@@ -371,8 +381,8 @@ void resetKeytimers(void) {
             }
           break;
         case ITM_EXIT1:
-          longpressDelayedkey2=-MNU_MyAlpha;
-          longpressDelayedkey1 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
+          longpressDelayedkey2 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
+          longpressDelayedkey1 =-MNU_MyAlpha;
           break;
         case ITM_ENTER:
           if(tam.mode == 0) {

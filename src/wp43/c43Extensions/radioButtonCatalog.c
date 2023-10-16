@@ -68,6 +68,7 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   {ITM_WS32,             32,                     RB_WS},  //fnSetWordSize
   {ITM_WS64,             64,                     RB_WS},  //fnSetWordSize
 
+  {ITM_N_KEY_TGLFRT,     16384+ITM_TGLFRT,       RB_SA},  //fnSigmaAssign
   {ITM_N_KEY_ALPHA,      16384+ITM_AIM,          RB_SA},  //fnSigmaAssign
   {ITM_N_KEY_CC,         16384+ITM_CC,           RB_SA},  //fnSigmaAssign
   {ITM_N_KEY_GSH,        16384+ITM_SHIFTg,       RB_SA},  //fnSigmaAssign
@@ -99,8 +100,8 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   {ITM_DENANY,           DM_ANY,                 CB_JC},  //  --fnDenMode
   {ITM_DENFIX,           DM_FIX,                 CB_JC},  //  --fnDenMode
 
-  {ITM_M_GROW,           ITM_M_GROW,               CB_JC},  // SFL_PRTACT
-  {ITM_M_WRAP,           ITM_M_WRAP,               CB_JC},  // SFL_PRTACT
+  {ITM_M_GROW,           ITM_M_GROW,             RB_GW},  // SFL_PRTACT
+  {ITM_M_WRAP,           ITM_M_WRAP,             RB_GW},  // SFL_PRTACT
 
   {ITM_PRTACT,           PRTACT,                 CB_JC},  // SFL_PRTACT
   {ITM_PRTACT0,          PRTACT0,                RB_PRN},  // SFL_PRTACT
@@ -132,15 +133,13 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   {ITM_BEGINP,           FN_BEG,                 RB_TV},  //SetSetting
   {ITM_ENDP,             FN_END,                 RB_TV},  //SetSetting
 
-  {ITM_BASE_HOME,        JC_BASE_HOME,           CB_JC},  //SetSetting
+
   {ITM_CB_CPXRES,        JC_BCR,                 CB_JC},  //SetSetting
   {ITM_CB_SPCRES,        JC_BSR,                 CB_JC},  //SetSetting
   {ITM_CB_LEADING_ZERO,  JC_BLZ,                 CB_JC},  //SetSetting
   {ITM_CB_FRCSRN,        JC_FRC,                 CB_JC},  //SetSetting
   {ITM_ERPN,             JC_ERPN,                CB_JC},  //SetSetting
-  {ITM_BASE_SCREEN,      JC_BASE_SCREEN,         CB_JC},  //SetSetting
   {ITM_G_DOUBLETAP,      JC_G_DOUBLETAP,         CB_JC},  //SetSetting
-  {ITM_HOMEx3,           JC_HOME_TRIPLE,         CB_JC},  //SetSetting
   {ITM_SHTIM,            JC_SHFT_4s,             CB_JC},  //SetSetting
   {ITM_VECT,             JC_VECT,                CB_JC},  //SetSetting
   {ITM_NVECT,            JC_NVECT,               CB_JC},  //SetSetting
@@ -174,6 +173,12 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   {ITM_2OCT,             8,                      RB_HX},  //fnChangeBaseJM
   {ITM_2DEC,             10,                     RB_HX},  //fnChangeBaseJM
   {ITM_2HEX,             16,                     RB_HX},  //fnChangeBaseJM
+
+  {ITM_HOMEx3,           JC_HOME_TRIPLE,         RB_x3},  //SetSetting
+  {ITM_MYMx3,            JC_MYM_TRIPLE,          RB_x3},  //SetSetting
+
+  {ITM_BASE_HOME,        BA_BASE_HOME,           RB_BA},  //SetSetting
+  {ITM_BASE_MYM,         BA_BASE_MYM,            RB_BA},  //SetSetting
 
 
   {ITM_GAPDOT_L,         ITM_DOT,                RB_IP},
@@ -271,6 +276,10 @@ int8_t fnCbIsSet(int16_t item) {
                      else                           rb_param = FN_BEG;
                      break;
 
+        case RB_GW:  if(getSystemFlag(FLAG_GROW))   rb_param = ITM_M_GROW;
+                     else                           rb_param = ITM_M_WRAP;
+                     break;
+
         case RB_F:   rb_param = LongPressF;
                      break;
 
@@ -289,6 +298,28 @@ int8_t fnCbIsSet(int16_t item) {
 
         case RB_HX:  if(lastIntegerBase != 0) rb_param = lastIntegerBase;
                      else                     return result;
+                     break;
+
+        case RB_x3:  if(HOME3) {
+                       rb_param = JC_HOME_TRIPLE;
+                       MYM3 = false;
+                     } else
+                     if(MYM3) {
+                       rb_param = JC_MYM_TRIPLE;
+                       HOME3 = false;
+                     }
+                     else return result;
+                     break;
+
+        case RB_BA:  if(BASE_MYM) {
+                       rb_param = BA_BASE_MYM;
+                       BASE_HOME = false;
+                     } else
+                     if(BASE_HOME) {
+                       rb_param = BA_BASE_HOME;
+                       BASE_MYM = false;
+                     }
+                     else return result;
                      break;
 
         case RB_FP:  rb_param = gapItemRight;
@@ -316,7 +347,6 @@ int8_t fnCbIsSet(int16_t item) {
             case JC_CAUCHY_FITTING:      cb_param = (lrSelection & CF_CAUCHY_FITTING)      == CF_CAUCHY_FITTING;      break;
             case JC_GAUSS_FITTING:       cb_param = (lrSelection & CF_GAUSS_FITTING)       == CF_GAUSS_FITTING;       break;
             case JC_ORTHOGONAL_FITTING:  cb_param = (lrSelection & CF_ORTHOGONAL_FITTING)  == CF_ORTHOGONAL_FITTING;  break;
-            case JC_BASE_HOME:           cb_param = SH_BASE_HOME;                                                     break;
             case JC_BCR:                 cb_param = getSystemFlag(FLAG_CPXRES);                                       break;
             case JC_FRC:                 cb_param = getSystemFlag(FLAG_FRCSRN);                                       break;
             case JC_BSR:                 cb_param = getSystemFlag(FLAG_SPCRES);                                       break;
@@ -326,12 +356,8 @@ int8_t fnCbIsSet(int16_t item) {
             case DM_ANY:                 cb_param = getSystemFlag(FLAG_DENANY);                                       break;
             case DM_FIX:                 cb_param = getSystemFlag(FLAG_DENFIX);                                       break;
             case PRTACT:                 cb_param = getSystemFlag(FLAG_PRTACT);                                       break;
-            case ITM_M_GROW:             cb_param = getSystemFlag(FLAG_GROW);                                         break;
-            case ITM_M_WRAP:             cb_param = !getSystemFlag(FLAG_GROW);                                        break;
             case JC_ERPN:                cb_param = eRPN;                                                             break;
-            case JC_BASE_SCREEN:         cb_param = jm_BASE_SCREEN;                                                   break;
             case JC_G_DOUBLETAP:         cb_param = jm_G_DOUBLETAP;                                                   break;
-            case JC_HOME_TRIPLE:         cb_param = HOME3;                                                            break;
             case JC_SHFT_4s:             cb_param = ShiftTimoutMode;                                                  break;
             case JC_VECT:                cb_param = PLOT_VECT;                                                        break;
             case JC_NVECT:               cb_param = PLOT_NVECT;                                                       break;
@@ -586,5 +612,6 @@ char *figlabel(const char *label, const char* showText, int16_t showValue) {    
       ii++;
     }
   }
+  compressConversionName(tmp);
   return tmp;
 }                                                           //JM ^^

@@ -180,7 +180,7 @@ uint8_t               displayStackSHOIDISP;          //JM SHOIDISP
 uint8_t               scrLock;
 bool_t                numLock;                       //JM
 bool_t                doRefreshSoftMenu;                       //dr
-bool_t                jm_BASE_SCREEN;                          //JM Screen / keyboard operation setup
+bool_t                BASE_MYM;                                //JM Screen / keyboard operation setup
 bool_t                jm_G_DOUBLETAP;                          //JM Screen / keyboard operation setup
 bool_t                jm_LARGELI;
 bool_t                constantFractions;                       //JM
@@ -191,8 +191,9 @@ uint32_t              indic_y = SCREEN_HEIGHT-1;
 
 bool_t                eRPN;                                    //JM eRPN Create a flag to enable or disable eRPN. See bufferize.c
 bool_t                HOME3;                                   //JM HOME Create a flag to enable or disable triple shift HOME3. Create a flag to enable or disable HOME TIMER CANCEL.
+bool_t                MYM3;                                    //JM HOME Create a flag to enable or disable triple shift MYM3. Create a flag to enable or disable HOME TIMER CANCEL.
 bool_t                ShiftTimoutMode;                         //JM SHIFT Create a flag to enable or disable SHIFT TIMER CANCEL.
-bool_t                SH_BASE_HOME;                            //JM BASEHOME
+bool_t                BASE_HOME;                               //JM BASEHOME
 int16_t               Norm_Key_00_VAR;                         //JM USER NORMAL
 uint8_t               Input_Default;                           //JM Input Default
 float                 graph_xmin;                              //JM Graph

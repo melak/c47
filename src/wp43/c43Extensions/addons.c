@@ -464,8 +464,10 @@ void fnMultiplySI(uint16_t multiplier) {
 }
 
 
-static void cpxToStk(const real_t *real1, const real_t *real2) {
-  setSystemFlag(FLAG_ASLIFT);
+#define forcedLiftTheStack true
+
+static void cpxToStk(const real_t *real1, const real_t *real2, const bool_t sl) {
+  if(sl == forcedLiftTheStack) setSystemFlag(FLAG_ASLIFT);
   liftStack();
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
   realToReal34(real1, REGISTER_REAL34_DATA(REGISTER_X));
@@ -479,53 +481,59 @@ void fn_cnst_op_j(uint16_t unusedButMandatoryParameter) {
     fnKeyCC(ITM_op_j);
   }
   else {
-    cpxToStk(const_0, const_1);
+    cpxToStk(const_0, const_1, !forcedLiftTheStack);
   }
 }
 
 
 void fn_cnst_op_aa(uint16_t unusedButMandatoryParameter) {
-  cpxToStk(const_1on2, const_root3on2);
+  cpxToStk(const_1on2, const_root3on2, !forcedLiftTheStack);
   chsCplx();
 }
 
 
 void fn_cnst_op_a(uint16_t unusedButMandatoryParameter) {
-  cpxToStk(const_1on2, const_root3on2);
+  cpxToStk(const_1on2, const_root3on2, !forcedLiftTheStack);
   chsReal();
 }
 
 
 void fn_cnst_0_cpx(uint16_t unusedButMandatoryParameter) {
-  cpxToStk(const_0, const_0);
+  cpxToStk(const_0, const_0, !forcedLiftTheStack);
 }
 
 
 void fn_cnst_1_cpx(uint16_t unusedButMandatoryParameter) {
-  cpxToStk(const_1, const_0);
-  //setSystemFlag(FLAG_ASLIFT);
-  //liftStack();
-  //reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  //realToReal34(const_1, REGISTER_REAL34_DATA(REGISTER_X)); // 0+i0
-  //realToReal34(const_0, REGISTER_IMAG34_DATA(REGISTER_X));
-  //adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+  cpxToStk(const_1, const_0, !forcedLiftTheStack);
 }
 
 
 //Rounding
 void fnJM_2SI(uint16_t unusedButMandatoryParameter) { //Convert Real to Longint; Longint to shortint; shortint to longint
+  longInteger_t tmp1, tmp2, tmp3;
+  uint64_t tmp2UI, mask;
+  uint16_t tmp2sign;
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:
-      if(lastIntegerBase >= 2 && lastIntegerBase <= 16) {
-        //fnChangeBase(lastIntegerBase);                  //This converts shortint, longint and real to shortint!
-        convertLongIntegerRegisterToShortIntegerRegister(REGISTER_X, REGISTER_X);
-        setRegisterShortIntegerBase(REGISTER_X, lastIntegerBase);
+      convertLongIntegerRegisterToLongInteger(REGISTER_X, tmp2);
+      convertLongIntegerRegisterToLongInteger(REGISTER_X, tmp3);
+      tmp2sign = longIntegerIsNegative(tmp2) ? 1:0;
+      if (tmp2sign == 1) longIntegerChangeSign(tmp2);
+      longIntegerToUInt(tmp2,tmp2UI);
+      if(shortIntegerMode != SIM_UNSIGN) {
+        mask = 1;
+        mask = ~(mask << (shortIntegerWordSize-1));
+        tmp2UI &= mask;
       }
-      else {
-        //fnChangeBase(10);                               //This converts shortint, longint and real to shortint!
-        convertLongIntegerRegisterToShortIntegerRegister(REGISTER_X, REGISTER_X);
-        setRegisterShortIntegerBase(REGISTER_X, 10);
+      convertUInt64ToShortIntegerRegister(tmp2sign, tmp2UI, (lastIntegerBase >= 2 && lastIntegerBase <= 16) ? lastIntegerBase : 10, REGISTER_X);
+      convertShortIntegerRegisterToLongInteger(REGISTER_X, tmp1);
+      if(longIntegerCompare(tmp1,tmp3) != 0) {
+        temporaryInformation = TI_DATA_LOSS;
+        setSystemFlag(FLAG_OVERFLOW);
       }
+      longIntegerFree(tmp1);
+      longIntegerFree(tmp2);
+      longIntegerFree(tmp3);
       break;
     case dtReal34:
       //ipReal();                                         //This converts real to longint!
@@ -1601,9 +1609,9 @@ void changeToSub(char *str) {
 
 //without mixedNumber flag, improper fractions are allowed: In WP43 misnomer: FLAG_PROPFR = MixedNumber = a b/c
 real34_t result_fp1;
-bool_t checkForAndChange_(char *displayString, const real34_t *value34, const real_t *constant, const real34_t *tol34, const char *constantStr,  bool_t frontSpace) {
+bool_t checkForAndChange_(char *displayString, const real34_t *value34, const real_t *constant, const real34_t *tolerance, const char *constantStr,  bool_t frontSpace) {
     //printf(">>> constantFractionsMode %i\n",constantFractionsMode);
-    bool_t mixedNumber = getSystemFlag(FLAG_PROPFR) && !(constantFractionsMode == CF_COMPLEX1 || constantFractionsMode == CF_COMPLEX2);
+    bool_t mixedNumber = getSystemFlag(FLAG_PROPFR) && !(constantFractionsMode == CF_COMPLEX_1st_Re_or_L || constantFractionsMode == CF_COMPLEX_2nd_Im);
     //printf(">>>## mixedNumber %u\n",mixedNumber);
     real34_t multConstant34, constant_34;
     real34_t val, val1, result, result_ip, result_fp;
@@ -1673,7 +1681,7 @@ bool_t checkForAndChange_(char *displayString, const real34_t *value34, const re
       return false;
     }
 
-    if(resultingInteger > 1 && real34CompareAbsLessThan(&result_fp,tol34)) {
+    if(resultingInteger > 1 && real34CompareAbsLessThan(&result_fp,tolerance)) {
       //a whole multiple of the constant exists
       real34Divide(&val, &result_ip, &val1);
       //printf(">>>Resultinginteger:%i SmallestDenom:%i\n", resultingInteger, smallestDenom);
@@ -1719,10 +1727,34 @@ bool_t checkForAndChange_(char *displayString, const real34_t *value34, const re
     //printf(">>>@@@ §%s§%s§%s§\n", resstr, constantStr, denomStr);
 
     displayString[0]=0;
-    if(real34CompareAbsLessThan(&result_fp,tol34)) {
+
+    if(real34CompareAbsLessThan(&result_fp,tolerance)) {
+      char prefixchar[6];
+      prefixchar[0]=0;
+      if(constantFractionsMode == CF_COMPLEX_1st_Re_or_L) {    //In case of complex polar/Re, save the value to test in the 2nd pass
+        real34Copy(&result_fp,&result_fp1);
+      }
+      else {
+        if(constantFractionsMode == CF_COMPLEX_2nd_Im) {       //In case of complex Im, use the saved value from previous pass, and the new Im
+          if(!(real34IsZero(&result_fp1) && real34IsZero(&result_fp))) {
+            strcat(prefixchar,STD_ALMOST_EQUAL);               //If either complex part is non-zero then show ~
+          }
+        }
+        else {                                                 //If neither complex parts, then it must be real
+          if(real34IsZero(&result_fp)) {
+            strcat(prefixchar, "");
+          }
+          else {
+            strcat(prefixchar, "" STD_ALMOST_EQUAL);
+          }
+        }
+      }
+
+      strcat(displayString, prefixchar);  //prefix
+
       if(sign[0]=='+') {
         if(frontSpace) {
-          strcat(displayString, " ");
+          strcat(displayString, STD_SPACE_4_PER_EM);  //changed, not allowing for a space equal length to "-" 
           if(resstr[0] !=0 ) {
             strcat(displayString, resstr);
           }
@@ -1738,7 +1770,7 @@ bool_t checkForAndChange_(char *displayString, const real34_t *value34, const re
         }
       }
       else {
-        strcat(displayString, "-");
+        strcat(displayString, STD_SPACE_4_PER_EM "-");
         if(resstr[0] !=0 ) {
           strcat(displayString, resstr);
         }
@@ -1746,26 +1778,7 @@ bool_t checkForAndChange_(char *displayString, const real34_t *value34, const re
         strcat(displayString,denomStr);
       }
 
-      if(constantFractionsMode == CF_COMPLEX1) {     //In case of complex, mark the accuracy of the first real fp
-        real34Copy(&result_fp,&result_fp1);
-      }
-      else {
-        if(constantFractionsMode == CF_COMPLEX2) {   //In case of complex, use  accuracy of the real and imag fp
-          if(real34IsZero(&result_fp1) && real34IsZero(&result_fp)) {
-          }
-          else {
-            strcat(displayString,STD_ALMOST_EQUAL);   //If either complex part is non-zero the show ~
-          }
-        }
-        else {                                       //If neither complex parts, then it must be real
-          if(real34IsZero(&result_fp)) {
-            strcat(displayString, "");
-          }
-          else {
-            strcat(displayString, "" STD_ALMOST_EQUAL);
-          }
-        }
-      }
+      //strcat(displayString, prefixchar);   //postfix
 
       return true;
     }
@@ -1795,17 +1808,19 @@ void fnConstantR(uint16_t constantAddr, uint16_t *constNr, real_t *rVal) {
 
 
 void fnSafeReset (uint16_t unusedButMandatoryParameter) {
-  if(!jm_G_DOUBLETAP && !ShiftTimoutMode && !HOME3) {
+  if(!jm_G_DOUBLETAP && !ShiftTimoutMode && !HOME3 && !MYM3) {
     fgLN            = RB_FGLNFUL;  //not in conditional clear
     jm_G_DOUBLETAP  = true;
     ShiftTimoutMode = true;
     HOME3           = true;
+    MYM3            = false;
   }
   else {
     fgLN            = RB_FGLNOFF;  //not in conditional clear
     jm_G_DOUBLETAP  = false;
     ShiftTimoutMode = false;
     HOME3           = false;
+    MYM3            = false;
   }
 }
 
@@ -1831,7 +1846,7 @@ void fnSafeReset (uint16_t unusedButMandatoryParameter) {
 void fnRESET_MyM(uint8_t param) {
   //Pre-assign the MyMenu                   //JM
   #if !defined(TESTSUITE_BUILD)
-    jm_BASE_SCREEN = false;                                           //JM prevent slow updating of 6 menu items
+    BASE_MYM = false;                                                   //JM prevent slow updating of 6 menu items
     for(int8_t fn = 1; fn <= 6; fn++) {
       if(param == USER_MENG) {
         itemToBeAssigned = menu_HOME[fn -1];                            //Function key follows if the yellow key: Copy the default f-shofted to the primaries of MyMenu
@@ -1855,7 +1870,7 @@ void fnRESET_MyM(uint8_t param) {
       itemToBeAssigned = ASSIGN_CLEAR;
       assignToMyMenu_(12 + fn - 1);
     }
-    jm_BASE_SCREEN = true;                                           //JM Menu system default (removed from reset_jm_defaults)
+    BASE_MYM = true;                                           //JM Menu system default (removed from reset_jm_defaults)
     refreshScreen();
   #endif // !TESTSUITE_BUILD
 }

@@ -978,6 +978,11 @@ void pemCloseNumberInput(void) {
       case NP_COMPLEX_INT_PART:
       case NP_COMPLEX_FLOAT_PART:
       case NP_COMPLEX_EXPONENT: {
+        if(aimBuffer[stringByteLength(aimBuffer)-1] == 'i') {
+          strcat(aimBuffer,"1");
+          inputLength++;
+        }
+
         if(inputLength >= TO_BYTES(COMPLEX34_SIZE)) {
           real34_t re, im;
           char *imag = numBuffer;

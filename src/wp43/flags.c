@@ -719,12 +719,6 @@ void SetSetting(uint16_t jmConfig) {
       fnRefreshState();
       break;
 
-    case JC_BASE_SCREEN: {
-      jm_BASE_SCREEN = !jm_BASE_SCREEN;
-      fnRefreshState();
-      break;
-    }
-
     case JC_G_DOUBLETAP: {
       jm_G_DOUBLETAP = !jm_G_DOUBLETAP;
       fnRefreshState();
@@ -733,6 +727,18 @@ void SetSetting(uint16_t jmConfig) {
 
     case JC_HOME_TRIPLE: {
       HOME3 = !HOME3;
+      if(HOME3) {
+        MYM3 = false;
+      }
+      fnRefreshState();
+      break;
+    }
+
+    case JC_MYM_TRIPLE: {
+      MYM3 = !MYM3;
+      if(MYM3) {
+        HOME3 = false;
+      }
       fnRefreshState();
       break;
     }
@@ -743,8 +749,20 @@ void SetSetting(uint16_t jmConfig) {
       break;
     }
 
-    case JC_BASE_HOME: {
-      SH_BASE_HOME = !SH_BASE_HOME;
+    case BA_BASE_MYM: {
+      BASE_MYM = !BASE_MYM;
+      if(BASE_MYM) {
+        BASE_HOME = false;
+      }
+      fnRefreshState();
+      break;
+    }
+
+    case BA_BASE_HOME: {
+      BASE_HOME = !BASE_HOME;
+      if(BASE_HOME) {
+        BASE_MYM = false;
+      }
       fnRefreshState();
       break;
     }

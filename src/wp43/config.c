@@ -134,8 +134,8 @@ void configCommon(uint16_t idx) {
 
     fnInDefault(ID_DP);                      //Change to Real input only :                                     ID, if changed, also set the conditions for checkHP in defines.h (DP)
     fnDisplayFormatSigFig(9);                //SIG 9                                                           There is special treatment for the Sig mode in the display driver, to restrict to 9+1 digits while SDIGS > 10
-    jm_BASE_SCREEN = false;                  //Switch off base = MyMenu
-    SH_BASE_HOME = false;                    //Ensure base = HOME is off
+    BASE_MYM = false;                        //Switch off base = MyMenu
+    BASE_HOME = false;                       //Ensure base = HOME is off
     exponentLimit     = 99;                  //Set the exponent limit the same as HP35, i.e. 99                ID, if changed, also set the conditions for checkHP in defines.h (99)
     significantDigits = 16;                  //SETSIG2 = 16                                                    ID, if changed, also set the conditions for checkHP in defines.h (10-16)
     displayStack = cachedDisplayStack = 1;   //Change to single stack register display                         ID, if changed, also set the conditions for checkHP in defines.h (1)
@@ -166,11 +166,6 @@ void configCommon(uint16_t idx) {
     fnSquare(0);
     resetOtherConfigurationStuff();
     defaultStatusBar();
-    //jm_BASE_SCREEN = true;                   //MyMenu base menu
-    //currentAngularMode = amDegree;           //Deg
-    //fneRPN(1);                               //eRPN
-    //setFGLSettings (RB_FGLNFUL);             //fgLine FULL
-    //jm_BASE_SCREEN = true;                   //Switch on base = MyMenu    
     fnClearFlag    (FLAG_USER);              // Clear USER mode
     clearSystemFlag(FLAG_HPRP);              // Clear HP Rect/Polar
     setSystemFlag  (FLAG_HPBASE);            // Set HP Base
@@ -183,6 +178,11 @@ void configCommon(uint16_t idx) {
     fnDisplayFormatSigFig(3);                // SIG 3
     roundingMode = RM_HALF_UP;    
     fnKeysManagement(USER_MENG);
+
+    itemToBeAssigned = -MNU_EE;
+    _assignItem(&userMenuItems[6]); //fF1
+    cachedDynamicMenu = 0;
+
     temporaryInformation = TI_NO_INFO;
     fnRefreshState();
     refreshScreen();
@@ -190,45 +190,25 @@ void configCommon(uint16_t idx) {
 
 
   void fnSetRJ(uint16_t unusedButMandatoryParameter){
-     currentAngularMode = amRadian;              // RAD
-     clearSystemFlag(FLAG_HPRP);                 // HP.RP off
-     clearSystemFlag(FLAG_HPBASE);               // Clear HP Base
-     clearSystemFlag(FLAG_POLAR);                // RECT (default)
-     SetSetting     (SS_8);                      // SSIZE 8 (default)
-     SetSetting     (ITM_CPXRES1);               // CPXRES
-     SetSetting     (ITM_SPCRES1);               // SPCRES
-     denMax = 9999;                              // DMX 9999
-     significantDigits = 34;                     // SDIGS 34
-     SetSetting(JC_EXFRAC);                      // EXFRAC ON
-     setSystemFlag(FLAG_DENANY);                 // DENANY ON
-     clearSystemFlag(FLAG_DENFIX);               // DENFIX OFF
-     jm_BASE_SCREEN = true;                      // MyM ON
-     SetSetting(JC_HOME_TRIPLE);                 // HOME.3 ON
-     SetSetting(JC_G_DOUBLETAP);                 // g.2Tp ON
-     SetSetting(JC_SHFT_4s);                     // SH.4s ON
-     setFGLSettings (RB_FGLNFUL);                // fg.FUL
-     LongPressM = RB_M1234;                      // M.1234
-     LongPressF = RB_F124;                       // F.124
-     clearSystemFlag(FLAG_SBang  );              // SBang OFF
-       setSystemFlag(FLAG_SBbatV );              // SBbatV ON
-     clearSystemFlag(FLAG_SBclk  );              // SBclk OFF
-       setSystemFlag(FLAG_SBcpx  );              // SBcpx ON
-       setSystemFlag(FLAG_SBcr   );              // SBcr ON
-       setSystemFlag(FLAG_SBdate );              // SBdate ON
-       setSystemFlag(FLAG_SBfrac );              // SBfrac ON
-     clearSystemFlag(FLAG_SBint  );              // SBint OFF
-       setSystemFlag(FLAG_SBmx   );              // SBmx ON
-     clearSystemFlag(FLAG_SBoc   );              // SBoc OFF
-       setSystemFlag(FLAG_SBprn  );              // SBprn ON
-       setSystemFlag(FLAG_SBser  );              // SBser ON
-     clearSystemFlag(FLAG_SBshfR );              // SBshfR OFF
-     clearSystemFlag(FLAG_SBss   );              // SBss OFF
-     clearSystemFlag(FLAG_SBtime );              // SBtime OFF
-       setSystemFlag(FLAG_SBtvm  );              // SBtvm ON
-     fnDisplayFormatFix(3);                      // FIX 3
-     fnSetGapChar(0+    ITM_SPACE_PUNCTUATION);  // IPART NSPC
-     fnSetGapChar(32768+ITM_NULL);               // FPART NONE
-     fnSetGapChar(49152+ITM_WCOMMA);             // RADIX WCOM
+    resetOtherConfigurationStuff();
+    defaultStatusBar();
+    currentAngularMode = amRadian;                 // RAD
+    clearSystemFlag(FLAG_HPRP);                    // HP.RP off
+    clearSystemFlag(FLAG_HPBASE);                  // Clear HP Base
+    denMax = 9999;                                 // DMX 9999
+    constantFractions = false; SetSetting(JC_EXFRAC); // EXFRAC ON (also setting the fractions modes appropriately)
+    setSystemFlag(FLAG_DENANY);                    // DENANY ON
+       setSystemFlag(FLAG_SBbatV );                // SBbatV ON
+     clearSystemFlag(FLAG_SBclk  );                // SBclk OFF
+       setSystemFlag(FLAG_SBcr   );                // SBcr ON
+     clearSystemFlag(FLAG_SBint  );                // SBint OFF
+       setSystemFlag(FLAG_SBmx   );                // SBmx ON
+     fnDisplayFormatFix(3);                        // FIX 3
+     fnSetGapChar(0+    ITM_SPACE_4_PER_EM);       // IPART NSPC
+     fnSetGapChar(32768+ITM_NULL);                 // FPART NONE
+     fnSetGapChar(49152+ITM_WCOMMA);               // RADIX WCOM
+     grpGroupingGr1LeftOverflow = 1;               //IPGRP1x = 1
+     
      fnKeyExit(0);
      fnDrop(0);
      fnSquare(0);
@@ -243,8 +223,8 @@ void configCommon(uint16_t idx) {
 
     fnInDefault(ID_43S);                     //!ID
     fnDisplayFormatAll(3);
-    jm_BASE_SCREEN = true;
-    SH_BASE_HOME = false;
+    BASE_MYM = true;
+    BASE_HOME = false;
     exponentLimit     = 6145;                //!ID
     significantDigits = 34;                  //!ID
     displayStack = cachedDisplayStack = 4;   //!ID
@@ -306,15 +286,7 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
       //printf("|%s|\n", aimBuffer);
     }
     lastIntegerBase = 0;
-
-    uint_fast8_t ix = 0;
-    while(ix < SOFTMENU_STACK_SIZE && softmenuStack[0].softmenuId != 0) {
-    #if defined(PC_BUILD)
-      jm_show_comment("^^^^fnClrModb");
-    #endif // PC_BUILD
-      popSoftmenu();
-      ix++;
-    }
+    fnExitAllMenus(0);
     if(!checkHP) {
       fnDisplayStack(4);    //Restore to default DSTACK 4
     } else {                //Snap out of HP35 mode, and reset all setting needed for that
@@ -682,25 +654,28 @@ void fnAngularMode(uint16_t am) {
 
 
 void fnFractionType(uint16_t unusedButMandatoryParameter) {
-  if(constantFractions) {
-    if(constantFractionsOn) {
-      flipSystemFlag(FLAG_PROPFR);
-    }
-    else {
-      constantFractionsOn = true;
-      setSystemFlag(FLAG_PROPFR);
-    }
-    clearSystemFlag(FLAG_FRACT);
+  #define STATE_bc       0b0001  //1
+  #define STATE_abc      0b0011  //3
+  #define STATE_exfr_bc  0b1100  //12
+  #define STATE_exfr_abc 0b1110  //14  
+  #define STATE          ((constantFractions         ? 8:0) +  \
+                         (constantFractionsOn        ? 4:0) +  \
+                         (getSystemFlag(FLAG_PROPFR) ? 2:0) +  \
+                         (getSystemFlag(FLAG_FRACT)  ? 1:0))
+  uint8_t state = STATE;
+  //printf("%u ",state);
+  switch(state) {
+    case STATE_bc       : state = STATE_exfr_abc; break;
+    case STATE_exfr_abc : state = STATE_exfr_bc; break;
+    case STATE_exfr_bc  : state = STATE_abc; break;
+    case STATE_abc      : state = STATE_bc;  break;
+    default             : state = STATE_abc; break;
   }
-  else {
-    if(getSystemFlag(FLAG_FRACT)) {
-      flipSystemFlag(FLAG_PROPFR);
-    }
-    else {
-      setSystemFlag(FLAG_FRACT);
-      setSystemFlag(FLAG_PROPFR);
-    }
-  }
+  constantFractions   = (state & 8) ? true : false;
+  constantFractionsOn = (state & 4) ? true : false;
+  if (((state & 2) == 2) == !getSystemFlag(FLAG_PROPFR)) flipSystemFlag(FLAG_PROPFR);
+  if (((state & 1) == 1) == !getSystemFlag(FLAG_FRACT)) flipSystemFlag(FLAG_FRACT);
+  //printf("--> %u --> %u\n",state, STATE);
 }
 
 
@@ -1003,7 +978,6 @@ void restoreStats(void){
       {0,USER_E47,     "E47: Exp 2 shifts L /x-+ R"                      },
       {0,USER_N47,     "N47: Exp 2 shft L (32 mould) /x-+ R " STD_UP_ARROW STD_DOWN_ARROW " top"  },
       {0,USER_V47,     "V47: Exp Vintage 2 shifts TopR -+x/ L"           },
-      {0,USER_C43,     "C43: Org. classic 1-shift (DM42 mould, discon)"  },
       {0,USER_DM42,    "DM42: Final Compatibility layout"                },
       {0,USER_43S,     "WP 43S Pilot: Final Compatibility layout"        },
       {0,USER_KRESET,  "C47 All USER keys cleaned"                       },
@@ -1087,12 +1061,13 @@ void resetOtherConfigurationStuff(void) {
 
   eRPN = true;
   HOME3 = true;
+  MYM3 = false;
   ShiftTimoutMode = true;
-  SH_BASE_HOME   = false;
+  BASE_HOME   = false;
   Norm_Key_00_VAR  = ITM_SIGMAPLUS;                            //JM NORM MODE SIGMA REPLACEMENT KEY
   Input_Default =  ID_43S;
   jm_G_DOUBLETAP = true;
-  jm_BASE_SCREEN = true;                                       //"MyM" setting, set as part of USER_MRESET
+  BASE_MYM = true;                                             //"MyM" setting, set as part of USER_MRESET
   jm_LARGELI = true;                                           //Large font for long integers on stack
   constantFractions = false;                                   //Extended fractions
   constantFractionsMode = CF_NORMAL;                           //Extended fractions
@@ -1428,7 +1403,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
       mm_MNU_ALPHA      = mm(-MNU_ALPHA);    //printf("####CC> %i \n",mm_MNU_ALPHA);                      //JM
 
       calcModeNormal();
-      if(SH_BASE_HOME) showSoftmenu(mm_MNU_HOME); //JM Reset to BASE MENU HOME;
+      if(BASE_HOME) showSoftmenu(mm_MNU_HOME); //JM Reset to BASE MENU HOME;
     #endif // !TESTSUITE_BUILD
 
     SHOWregis = 9999;                                          //JMSHOW
@@ -1678,15 +1653,6 @@ void fnKeysManagement(uint16_t choice) {
       break;
     #endif //PC_BUILD
 
-
-    //---KEYS PROFILE: C43
-    //------------------------
-    case USER_C43:          //USER
-      fnKeysManagement(USER_KRESET);
-      fnShowVersion(USER_C43);
-      xcopy(kbd_usr, kbd_std_C43, sizeof(kbd_std_C43));
-      fnSetFlag(FLAG_USER);
-      break;
 
 
     //---KEYS PROFILE: C47

@@ -294,12 +294,12 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(HOME3);
     recallFromDtConfigDescriptor(ShiftTimoutMode);
     recallFromDtConfigDescriptor(CPXMULT);
-    recallFromDtConfigDescriptor(SH_BASE_HOME);
+    recallFromDtConfigDescriptor(BASE_HOME);
     recallFromDtConfigDescriptor(compatibility_bool00);   //spare
     recallFromDtConfigDescriptor(Norm_Key_00_VAR);
     recallFromDtConfigDescriptor(Input_Default);
     recallFromDtConfigDescriptor(compatibility_bool0);    //spare
-    recallFromDtConfigDescriptor(jm_BASE_SCREEN);
+    recallFromDtConfigDescriptor(BASE_MYM);
     recallFromDtConfigDescriptor(jm_G_DOUBLETAP);
     recallFromDtConfigDescriptor(compatibility_float1);   //spare
     recallFromDtConfigDescriptor(compatibility_float2);   //spare
@@ -344,6 +344,7 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(exponentLimit);
     recallFromDtConfigDescriptor(exponentHideLimit);
     recallFromDtConfigDescriptor(lastIntegerBase);
+    recallFromDtConfigDescriptor(HOME3);
   }
 
   else {
