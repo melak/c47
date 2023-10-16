@@ -523,7 +523,7 @@ bool_t   cancelFilename = false;
                         #endif // VERBOSE_LEVEL >= 2
                       #endif // VERBOSE_LEVEL >= 1
                       #if(VERBOSE_LEVEL >= 1)
-  /*-DMCP-*/            print_inlinestr("%s",IOMsgs[8].itemName,   true);
+  /*-DMCP-*/            print_inlinestr((char*)(IOMsgs[8].itemName),   true);
                       #endif // VERBOSE_LEVEL >= 1
   /*-DMCP-*/          f_close(&fil);
   /*-DMCP-*/          strcpy(line1, fallback);
@@ -532,7 +532,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/      }
   /*-DMCP-*/      else {
                     #if(VERBOSE_LEVEL >= 1)
-  /*-DMCP-*/          print_inlinestr("%s",IOMsgs[8].itemName,   true);
+  /*-DMCP-*/          print_inlinestr((char*)IOMsgs[8].itemName,   true);
                     #endif
   /*-DMCP-*/        strcpy(line1, fallback);
   /*-DMCP-*/        return 1;
@@ -556,7 +556,7 @@ bool_t   cancelFilename = false;
   /*-DMCP-*/    if(stringByteLength(line1) >= TMP_STR_LENGTH-1) {
   /*-DMCP-*/      strcpy(line1, fallback);
                   #if(VERBOSE_LEVEL >= 1)
-  /*-DMCP-*/        print_inlinestr("%s",IOMsgs[9].itemName, true);
+  /*-DMCP-*/        print_inlinestr((char*)IOMsgs[9].itemName, true);
                   #endif
   /*-DMCP-*/      return 1;
   /*-DMCP-*/    }

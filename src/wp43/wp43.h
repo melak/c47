@@ -93,7 +93,6 @@
   extern const calcKey_t                 kbd_std[37];
   extern const calcKey_t                 kbd_std_WP43[37];
   extern const calcKey_t                 kbd_std_DM42[37];
-  extern const calcKey_t                 kbd_std_C43[37];
   #if defined(PC_BUILD)
     extern const calcKey_t                 kbd_std_D47[37];
     extern const calcKey_t                 kbd_std_V47[37];
@@ -301,12 +300,13 @@
 
   // Variables from jm.h
   extern bool_t                 eRPN;                         //JM eRPN Create a flag to enable or disable eRPN. See bufferize.c
-  extern bool_t                 HOME3;                        //JM HOME Create a flag to enable or disable triple shift HOME3; enable or disable TRIPLE SHIFT TIMER FOR HOME.
+  extern bool_t                 HOME3;                        //JM HOME Create a flag to enable or disable triple shift HOME3; enable or disable TRIPLE SHIFT TIMER.
+  extern bool_t                 MYM3;                         //JM HOME Create a flag to enable or disable triple shift MYM3; enable or disable TRIPLE SHIFT TIMER.
   extern bool_t                 ShiftTimoutMode;              //JM HOME Create a flag to enable or disable SHIFT TIMER CANCEL.
-  extern bool_t                 SH_BASE_HOME;                 //JM BASEHOME Create a flag to enable or disable triple shift
+  extern bool_t                 BASE_HOME;                    //JM BASEHOME Create a flag to enable or disable triple shift
   extern int16_t                Norm_Key_00_VAR;              //JM USER NORMAL
   extern uint8_t                Input_Default;                //JM Input Default
-  extern bool_t                 jm_BASE_SCREEN;               //JM Screen / keyboard operation setup
+  extern bool_t                 BASE_MYM;                     //JM Screen / keyboard operation setup
   extern bool_t                 jm_G_DOUBLETAP;               //JM Screen / keyboard operation setup
   extern float                  graph_xmin;                   //JM Graph
   extern float                  graph_xmax;                   //JM Graph

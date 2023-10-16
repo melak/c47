@@ -91,7 +91,7 @@ TO_QSPI static const char bugScreenItemNotDetermined[] = "In function determineI
       jm_show_comment(tmp);
     #endif // PC_BUILD
 
-    if((menuId==0 && !jm_BASE_SCREEN) ) {
+    if((menuId==0 && !BASE_MYM) ) {
       return item;
     }
 
@@ -1260,6 +1260,7 @@ bool_t allowShiftsToClearError = false;
     switch(key->primary) {                              //JMSHOW vv
       case      ITM_UP1:
       case      ITM_DOWN1: break;                       //JM SHOWregis unchanged
+      case      ITM_RCL: break;
       default:  SHOWregis = 9999; break;
     }                                                   //JMSHOW ^^
 
@@ -1354,7 +1355,7 @@ bool_t allowShiftsToClearError = false;
         updateMatrixHeightCache();
       }
       else {
-        temporaryInformation = TI_NO_INFO;
+          temporaryInformation = TI_NO_INFO;
       }
       if(lastErrorCode != 0) allowShiftsToClearError = true;
       if(programRunStop == PGM_WAITING) {
@@ -1855,7 +1856,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           char tmp[200]; sprintf(tmp,"^^^^btnReleased %d:\'%s\'",item,(char *)data); jm_show_comment(tmp);
         #endif //PC_BUILD
 
-        if(calcMode == CM_NIM && delayCloseNim && item != ITM_ms) {
+        if(calcMode == CM_NIM && delayCloseNim && item != ITM_ms && item != ITM_CC && item != ITM_op_j) {
           delayCloseNim = false;
           closeNim();                 //JM moved here, from bufferize see JMCLOSE, to retain NIM if needed for .ms. Only a problem due to longpress.
           screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
@@ -2015,12 +2016,8 @@ RELEASE_END:
         else {
           //JM No if needed, it does nothing if not in NIM. TO DISPLAY NUMBER KEYPRESS DIRECTLY AFTER PRESS, NOT ONLY UPON RELEASE          break;
           keyActionProcessed = true;   //JM move this to before fnKeyBackspace to allow fnKeyBackspace to cancel it if needed to allow this function via timing out to NOP, and this is incorporated with the CLRDROP
-          if(temporaryInformation == TI_NO_INFO) {
-            fnKeyBackspace(NOPARAM);
-          }
-          else {
-            temporaryInformation = TI_NO_INFO;
-          }
+          fnKeyBackspace(NOPARAM);
+          temporaryInformation = TI_NO_INFO;
         }
         break;
       }
@@ -2134,6 +2131,10 @@ RELEASE_END:
           keyActionProcessed = true;
         }
         else if(tam.mode) {
+
+// To TEST and investigate 2023-10-02
+// User menu name create: ASN + USER 'DDD' has a problem by exiting to MyAlpha 
+
           tamProcessInput(ITM_ENTER);
           keyActionProcessed = true;
         }
@@ -2249,6 +2250,12 @@ RELEASE_END:
             keyActionProcessed = true;
           }
           break;
+        }
+        else if(calcMode == CM_NORMAL && SHOWregis != 9999) {
+          fnRecall(SHOWregis);
+          setSystemFlag(FLAG_ASLIFT);
+          keyActionProcessed = true;
+          temporaryInformation = TI_COPY_FROM_SHOW;
         }
         else if(tam.mode) {
           if(tam.alpha) {
@@ -2703,6 +2710,10 @@ RELEASE_END:
 void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
   doRefreshSoftMenu = true;     //dr
   #if !defined(TESTSUITE_BUILD)
+    if(changeFractionModeOnENTER) {
+      setSystemFlag(FLAG_FRACT);
+      changeFractionModeOnENTER = false;  
+    }
     switch(calcMode) {
       case CM_NORMAL: {
 
@@ -2736,9 +2747,18 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
       }
 
       case CM_AIM: {
+
 //        if(softmenuStack[0].softmenuId == mm_MNU_ALPHA) {     //JMvv
 //          popSoftmenu();
 //        }                                                     //JM^^
+
+          if(softmenuStack[0].softmenuId <= 1 && softmenu[softmenuStack[1].softmenuId].menuItem == -MNU_ALPHA) {
+            popSoftmenu();
+          }
+          if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA) {  //JM
+            softmenuStack[0].softmenuId = 1;                                  //JM
+          }                                                                   //JM
+
 
         calcModeNormal();
         popSoftmenu();
@@ -3633,12 +3653,14 @@ static bool_t activatescroll(void) { //jm
    int16_t menuId = softmenuStack[0].softmenuId; //JM
    return (calcMode == CM_NORMAL) &&
           (temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) &&
-          (softmenu[menuId].menuItem != -MNU_EQN) &&
-          (
-            ((menuId == 0) && !jm_BASE_SCREEN) ||
-            ((menuId == 0) && (softmenu[menuId].numItems<=18)) ||
-            ((menuId >= NUMBER_OF_DYNAMIC_SOFTMENUS) && (softmenu[menuId].numItems<=18))
-          );
+          (softmenu[menuId].menuItem != -MNU_EQN)
+//remove menu interlock completely, since the NEW SHOW takes over the screen and does not respect menu operation
+//    &&    (
+//            ((menuId == 0) && !BASE_MYM) ||
+//            ((menuId == 0) && (softmenu[menuId].numItems<=18)) ||
+//            ((menuId >= NUMBER_OF_DYNAMIC_SOFTMENUS) && (softmenu[menuId].numItems<=18))
+//          )
+          ;
  }
  #endif // !TESTSUITE_BUILD
 

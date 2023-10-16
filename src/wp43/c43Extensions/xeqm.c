@@ -58,7 +58,7 @@ void press_key(void) {
   #endif // DMCP_BUILD
 }
 
-#define XEQ_STR_LENGTH_LONG  3000 // note the limit is the tmpString limit
+#define XEQ_STR_LENGTH_LONG  TMP_STR_LENGTH // 3000 // note the limit is the tmpString limit
 
 void capture_sequence(char *origin, uint16_t item) {
   #if defined(PC_BUILD)
@@ -394,7 +394,7 @@ TO_QSPI const function_t indexOfFunctions[] = {
               {ITM_M124,                      "M124"},
               {ITM_CF,                        "@"},
               {ITM_SF,                        "@"},
-              {ITM_BASE_SCREEN,               "MYM"},
+              {ITM_BASE_MYM,                  "MYM"},
               {ITM_G_DOUBLETAP,               "G2TP"},
               {ITM_HOMEx3,                    "HOMEX3"},
               {ITM_SHTIM,                     "SH4S"},

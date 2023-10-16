@@ -24,9 +24,9 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
-#define VERSION1 "0.108.13.07SNP"     // major release . minor release . tracked build - internal un/tracked subrelease : alpha/beta/rc1
+#define VERSION1 "0.108.14.00"     // major release . minor release . tracked build . internal OR un/tracked OR subrelease : Alpha / Beta / RC1
 
-//2023-09-14-0.108.13.07 Snapshot Stable update
+//2023-10-03-0.108.14.00 Stable
 
   #undef SAVE_SPACE_DM42_0
   #undef SAVE_SPACE_DM42_1
@@ -77,6 +77,7 @@
   #if defined(TWO_FILE_PGM) //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT INTO AVAILABLE FLASH EVEN WHILE USING QSPI
   //  #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
   //  #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
+  //  #define SAVE_SPACE_DM42_12 //047246 bytes: Standard extra 43S math: SLVQ, PRIME, BESSEL, ELLIPTIC, ZETA, BETA, ORTHO_POLY
   //  #define SAVE_SPACE_DM42_15       //           without all distributions, i.e. binomial, cauchy, chi
   //  #define SAVE_SPACE_DM42_16       //           without Norml
   #endif // TWO_FILE_PGM
@@ -197,8 +198,8 @@
 //constantFractionsMode         //JM
 #define CF_OFF                   0
 #define CF_NORMAL                1
-#define CF_COMPLEX1              2
-#define CF_COMPLEX2              3
+#define CF_COMPLEX_1st_Re_or_L   2    //Complex numbers have two passes to the display function, first for Real or Length, then for Im.
+#define CF_COMPLEX_2nd_Im        3
 
 
 //Input mode                    //JM
@@ -290,7 +291,6 @@
 #define USER_MRESET      49
 #define USER_KRESET      50
 #define USER_N47         51
-#define USER_C43         52
 #define USER_MENG        53
 #define USER_MFIN        54
 
@@ -749,7 +749,7 @@ typedef enum {
 #define NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS     10
 
 // Number of constants
-#define NUMBER_OF_CONSTANTS_39                   229
+#define NUMBER_OF_CONSTANTS_39                   230
 #define NUMBER_OF_CONSTANTS_51                    39
 #define NUMBER_OF_CONSTANTS_1071                   1
 #define NUMBER_OF_CONSTANTS_34                    44
@@ -949,7 +949,7 @@ typedef enum {
 #define TI_IQRX_IQRY                              63
 #define TI_RANGEX_RANGEY                          64
 #define TI_PCTILEX_PCTILEY                        65
-#define TI_STR                                    66
+#define TI_CONV_MENU_STR                          66
 #define TI_PERC                                   67
 #define TI_PERCD                                  68
 #define TI_PERCD2                                 69
@@ -975,7 +975,8 @@ typedef enum {
 #define TI_VARIABLES_RESTORED                     89    //DL
 #define TI_SCATTER_SMI                            90
 #define TI_DMCP_ONLY                              91    //DL
-
+#define TI_COPY_FROM_SHOW                         92
+#define TI_DATA_LOSS                              93
 
 // Register browser mode
 #define RBR_GLOBAL                                 0 // Global registers are browsed
@@ -1342,6 +1343,9 @@ typedef enum {
 #define SEPARATOR_LEFT                       (gapChar1Left)
 #define SEPARATOR_RIGHT                      (gapChar1Right)
 
+#define gapItemFrac                          (gapItemLeft == 0 ? 0 : ITM_SPACE_4_PER_EM)          // Fractions only get to have narrow space or nothing
+#define SEPARATOR_FRAC                       (gapItemFrac  == 0 ? (char*) "\1\1\0" : (char*)indexOfItems[gapItemFrac].itemSoftmenuName) // Actual separator character
+
 #define checkHP                              (significantDigits <= 16 && displayStack == 1 && exponentLimit == 99 && Input_Default == ID_DP && (calcMode == CM_NORMAL || calcMode == CM_NIM))
 #define REPLACEFONT                          // Use HP 7-segment font
 #ifdef REPLACEFONT
@@ -1468,7 +1472,7 @@ typedef enum {
 #if defined(DMCP_BUILD)
   #define TMP_STR_LENGTH     2560 //2560 //dr - remove #include <dmcp.h> again - AUX_BUF_SIZE
 #else // !DMCP_BUILD
-  #define TMP_STR_LENGTH     3000 //2560 //JMMAX ORG:2560
+  #define TMP_STR_LENGTH     2560 //2560 //JMMAX ORG:2560, changed back from 3000; 2023-09-26
 #endif // DMCP_BUILD
   #define WRITE_BUFFER_LEN       4096
   #define ERROR_MESSAGE_LENGTH    512 //JMMAX(325) 512          //JMMAX Temporarily reduced - ORG:512.

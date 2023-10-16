@@ -705,9 +705,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case ITM_CUNtoM :
           case ITM_MtoCUN :
           case ITM_ZHANGtoM :
-          case ITM_ZHANGtoMb :
           case ITM_MtoZHANG :
-          case ITM_MtoZHANGb :
           case ITM_FENtoM :
           case ITM_MtoFEN :
           case ITM_MILEtoM :
@@ -838,6 +836,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     uint8_t savedNimNumberPart;
     bool_t done;
     char *strBase;
+    changeFractionModeOnENTER = false;
 
     if(item >= ITM_A && item <= ITM_F && lastIntegerBase == 0) lastIntegerBase = 16;
 //    if(item != ITM_EXIT1) resetKeytimers();  //JM
@@ -1102,16 +1101,40 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           }
 
           case NP_REAL_FLOAT_PART: {
+            bool_t HP32SII = false;
             if(aimBuffer[strlen(aimBuffer) - 1] == '.') {
               strcat(aimBuffer, "0");
+              HP32SII = true; //This is the 123 .. 4 meaning 123/4 shortcut
             }
 
-            for(uint16_t i=0; i<strlen(aimBuffer); i++) {
-              if(aimBuffer[i] == '.') {
-                aimBuffer[i] = ' ';
-                break;
+
+            if(HP32SII) {     //Changed the part below for 123..4 to mean 0 123/4
+              uint16_t i;
+              //printf("%s: %u %u %u %u %u\n",aimBuffer, aimBuffer[0], aimBuffer[1], aimBuffer[2], aimBuffer[3], aimBuffer[4] );
+              for(i=0; i<strlen(aimBuffer); i++) {
+                if(aimBuffer[i] == '.') {
+                  aimBuffer[i] = 0;
+                  break;
+                }
+              }
+              if(aimBuffer[i]==0) { //this is therefore part of the "123.." and is changed to "+0 123/"
+                for(uint16_t i=strlen(aimBuffer); i>0; i--) {
+                  aimBuffer[i+2] = aimBuffer[i];
+                }
+                aimBuffer[1] = '0';
+                aimBuffer[2] = ' ';
               }
             }
+
+            else { //!HP32SII .. situation (standard code)
+              for(uint16_t i=0; i<strlen(aimBuffer); i++) {
+                if(aimBuffer[i] == '.') {
+                  aimBuffer[i] = ' ';
+                  break;
+                }
+              }
+            }
+
             strcat(aimBuffer, "/");
 
             denominatorLocation = strlen(aimBuffer);
@@ -1459,6 +1482,10 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       }
 
       case ITM_EXIT1: {
+        if(changeFractionModeOnENTER) {
+          setSystemFlag(FLAG_FRACT);
+          changeFractionModeOnENTER = false;  
+        }
         addItemToNimBuffer_exit:
         done = true;
         screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
@@ -2000,6 +2027,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
   }
 
 
+  bool_t changeFractionModeOnENTER = false;
   void closeNimWithFraction(real34_t *dest) {
     int16_t i, posSpace, posSlash, lg;
     int32_t integer, numer, denom;
@@ -2007,10 +2035,12 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
 
     // Set Fraction mode
     if(!getSystemFlag(FLAG_FRACT)) {
-      setSystemFlag(FLAG_FRACT);
+      setSystemFlag(FLAG_FRACT);          //1     //NOTE CHANGE HERE TO SWITCH OFF AUTO FRAC MODE AFTER FRACTION INPUT
+      //changeFractionModeOnENTER = true; //2     //USE either //1 or //2
+    } else {
+      changeFractionModeOnENTER = false;
     }
-    constantFractionsOn = false; //JM
-
+    constantFractionsOn = false;
 
     lg = strlen(aimBuffer);
 
@@ -2191,9 +2221,14 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         else if(nimNumberPart == NP_REAL_EXPONENT && aimBuffer[lastChar] == 'e') {
           aimBuffer[lastChar--] = 0;
         }
-
-        if(nimNumberPart == NP_COMPLEX_INT_PART && (aimBuffer[lastChar] == 'i' || aimBuffer[lastChar-1]*256 + aimBuffer[lastChar]*256 == 0xa221)) { // complex i or measured angle
-          aimBuffer[++lastChar] = '0';                    //JM CHANGED FROM "1" to '0'. DEFAULTING TO 0+0xi WHEN ABORTING CC ENTRY.
+        bool_t is_i     = nimNumberPart == NP_COMPLEX_INT_PART && aimBuffer[lastChar] == 'i';
+        bool_t is_theta = nimNumberPart == NP_COMPLEX_INT_PART && aimBuffer[lastChar-1]*256 + aimBuffer[lastChar]*256 == 0xa221;
+        if((is_i || is_theta) && !getSystemFlag(FLAG_POLAR)) { // complex i
+          aimBuffer[++lastChar] = '1';                                                   //JM 2020-06-22 CHANGED FROM "1" to "0". DEFAULTING TO 0+0xi WHEN ABORTING CC ENTRY. #6072aee
+          aimBuffer[lastChar + 1] = 0;                                                   //JM 2023-09-18 reverted partially (for RECT) from "0" to "1", specifically for a blank i
+        } else
+        if((is_i || is_theta) && getSystemFlag(FLAG_POLAR)) { // complex measured angle
+          aimBuffer[++lastChar] = '0';                                                   //JM 2020-06-22 CHANGED FROM "1" to '0'. DEFAULTING TO 0+0xi WHEN ABORTING CC ENTRY. #6072aee
           aimBuffer[lastChar + 1] = 0;
         }
 
