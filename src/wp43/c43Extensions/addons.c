@@ -84,6 +84,7 @@ All the below: because both Last x and savestack does not work due to multiple s
 #include "mathematics/multiplication.h"
 #include "mathematics/round.h"
 #include "mathematics/roundi.h"
+#include "mathematics/toPolar.h"
 #include "plotstat.h"
 #include "c43Extensions/radioButtonCatalog.h"
 #include "c43Extensions/keyboardTweak.h"
@@ -482,6 +483,17 @@ void fn_cnst_op_j(uint16_t unusedButMandatoryParameter) {
   }
   else {
     cpxToStk(const_0, const_1, !forcedLiftTheStack);
+  }
+}
+
+
+void fn_cnst_op_j_pol(uint16_t unusedButMandatoryParameter) {
+  if(calcMode == CM_NIM || calcMode == CM_MIM) {
+    fnKeyCC(ITM_op_j_pol);
+  }
+  else {
+    cpxToStk(const_0, const_1, !forcedLiftTheStack);
+    fnToPolar2(0);
   }
 }
 
