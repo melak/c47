@@ -91,7 +91,7 @@ TO_QSPI static const char bugScreenItemNotDetermined[] = "In function determineI
       jm_show_comment(tmp);
     #endif // PC_BUILD
 
-    if((menuId==0 && !BASE_MYM) ) {
+    if(IS_BASEBLANK_(menuId)) {
       return item;
     }
 
@@ -2070,15 +2070,15 @@ RELEASE_END:
         break;
       }
 
-      case ITM_EXIT1: {
-        fnKeyExit(NOPARAM);
-        if(temporaryInformation != TI_NO_INFO) {
-          refreshScreen();
-        }
-        temporaryInformation = TI_NO_INFO;
-        keyActionProcessed = true;
-        break;
-      }
+//      case ITM_EXIT1: {                         //Removed to force EXIT on the RELEASE cycle to make it do fnKeyExit later to allow NOP
+//        fnKeyExit(NOPARAM);
+  //      if(temporaryInformation != TI_NO_INFO) {
+  //        refreshScreen();
+    //    }
+    //    temporaryInformation = TI_NO_INFO;
+      //  keyActionProcessed = true;
+      //  break;
+      //}
 
       case ITM_op_j:
       case ITM_CC:

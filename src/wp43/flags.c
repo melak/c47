@@ -779,7 +779,7 @@ void SetSetting(uint16_t jmConfig) {
       break;
     }
 
-    case JC_EXFRAC: {
+    case JC_IRFRAC: {
       constantFractions = !constantFractions;
       if(constantFractions) {
         if(getSystemFlag(FLAG_FRACT)) {
@@ -788,7 +788,7 @@ void SetSetting(uint16_t jmConfig) {
         }
       }
       else {
-        if(constantFractionsOn) {
+        if(constantFractionsOn) {              //when switching off IRFRAC, if it was currently displaying, revert back to fractions, not decimal
           setSystemFlag(FLAG_FRACT);
           constantFractionsOn = false;
         }
@@ -879,6 +879,11 @@ void SetSetting(uint16_t jmConfig) {
 
     case DM_ANY: {
       fnFlipFlag(FLAG_DENANY);
+      break;
+    }
+
+    case DM_PROPFR: {
+      fnFlipFlag(FLAG_PROPFR);
       break;
     }
 

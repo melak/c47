@@ -785,7 +785,7 @@ void execTimerApp(uint16_t timerType) {
 
   void FN_handler(void) {                     //JM FN LONGPRESS vv Handler FN Key shift longpress handler
                                               //   Processing cycles here while the key is pressed, that is, after PRESS #1, waiting for RELEASE #2
-    if((FN_state == ST_1_PRESS1) && FN_timeouts_in_progress && (FN_key_pressed != 0) && !(softmenuStack[0].softmenuId == 0 && !BASE_MYM) ) {
+    if((FN_state == ST_1_PRESS1) && FN_timeouts_in_progress && (FN_key_pressed != 0) && !IS_BASEBLANK_(softmenuStack[0].softmenuId) ) {
       if(fnTimerGetStatus(TO_FN_LONG) == TMR_COMPLETED) {
         FN_handle_timed_out_to_EXEC = false;
         if(!shiftF && !shiftG) {                              //From No_Shift State 1
@@ -2677,6 +2677,13 @@ void execTimerApp(uint16_t timerType) {
             _fnShowRecallTI(prefix, &prefixWidth);
           }
 
+          else if(temporaryInformation == TI_V) {                             //JMms vv
+            if(regist == REGISTER_X) {
+              strcpy(prefix, "V" STD_SPACE_FIGURE "=");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
           else if(temporaryInformation == TI_THETA_RADIUS) {
             if(regist == REGISTER_Y) {
               strcpy(prefix, "r =");
@@ -3723,13 +3730,6 @@ void execTimerApp(uint16_t timerType) {
             if(regist == REGISTER_X) {
               memcpy(prefix, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0]);
               strcpy(prefix + allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0], " =");
-              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
-            }
-          }
-
-          else if(temporaryInformation == TI_ms) {                             //JMms vv
-            if(regist == REGISTER_X) {
-              strcpy(prefix, "t (ms)" STD_SPACE_FIGURE "=");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }

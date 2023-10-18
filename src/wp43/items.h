@@ -1379,7 +1379,7 @@
 #define MNU_FIN                     1331
 #define MNU_SINTS                   1332
 #define MNU_FLAGS                   1333
-#define ITM_1334                    1334
+#define ITM_BASEMENU                1334
 #define MNU_1STDERIV                1335
 #define MNU_2NDDERIV                1336
 #define MNU_CONVFP                  1337
@@ -1941,7 +1941,7 @@
 #define ITM_GET_TEST_BS             1885
 #define ITM_SET_TEST_BS             1886
 #define ITM_INP_DEF_DP              1887
-#define MNU_1888                    1888
+#define ITM_PROPFR                  1888
 #define ITM_INP_DEF_CPXDP           1889
 #define ITM_INP_DEF_SI              1890
 #define ITM_INP_DEF_LI              1891
@@ -2109,7 +2109,7 @@
 #define ITM_2053                    2053
 #define ITM_2054                    2054
 #define ITM_2055                    2055
-#define ITM_EXFRAC                  2056
+#define ITM_IRFRAC                  2056
 #define ITM_FGLNOFF                 2057
 #define ITM_FGLNLIM                 2058
 #define ITM_FGLNFUL                 2059

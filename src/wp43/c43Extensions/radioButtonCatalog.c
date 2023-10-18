@@ -99,6 +99,7 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   {ITM_HPBASE,           PR_HPBASE,              CB_JC},  //  --
   {ITM_DENANY,           DM_ANY,                 CB_JC},  //  --fnDenMode
   {ITM_DENFIX,           DM_FIX,                 CB_JC},  //  --fnDenMode
+  {ITM_PROPFR,           DM_PROPFR,              CB_JC},  //  --fnDenMode
 
   {ITM_M_GROW,           ITM_M_GROW,             RB_GW},  // SFL_PRTACT
   {ITM_M_WRAP,           ITM_M_WRAP,             RB_GW},  // SFL_PRTACT
@@ -145,7 +146,7 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   {ITM_NVECT,            JC_NVECT,               CB_JC},  //SetSetting
   {ITM_SCALE,            JC_SCALE,               CB_JC},  //SetSetting
   {ITM_LARGELI,          JC_LARGELI,             CB_JC},  //SetSetting
-  {ITM_EXFRAC,           JC_EXFRAC,              CB_JC},  //SetSetting
+  {ITM_IRFRAC,           JC_IRFRAC,              CB_JC},  //SetSetting
   {ITM_EXTX,             JC_EXTENTX,             CB_JC},  //SetSetting
   {ITM_EXTY,             JC_EXTENTY,             CB_JC},  //SetSetting
 
@@ -333,6 +334,7 @@ int8_t fnCbIsSet(int16_t item) {
             case PR_HPBASE:              cb_param = getSystemFlag(FLAG_HPBASE);                                       break;
             case DM_ANY:                 cb_param = getSystemFlag(FLAG_DENANY);                                       break;
             case DM_FIX:                 cb_param = getSystemFlag(FLAG_DENFIX);                                       break;
+            case DM_PROPFR:              cb_param = getSystemFlag(FLAG_PROPFR);                                       break;
             case PRTACT:                 cb_param = getSystemFlag(FLAG_PRTACT);                                       break;
             case JC_ERPN:                cb_param = eRPN;                                                             break;
             case JC_G_DOUBLETAP:         cb_param = jm_G_DOUBLETAP;                                                   break;
@@ -341,7 +343,7 @@ int8_t fnCbIsSet(int16_t item) {
             case JC_NVECT:               cb_param = PLOT_NVECT;                                                       break;
             case JC_SCALE:               cb_param = PLOT_SCALE;                                                       break;
             case JC_LARGELI:             cb_param = jm_LARGELI;                                                       break;
-            case JC_EXFRAC:              cb_param = constantFractions;                                                break;
+            case JC_IRFRAC:              cb_param = constantFractions;                                                break;
             case JC_EXTENTX:             cb_param = !extentx;                                                         break;
             case JC_EXTENTY:             cb_param = !extenty;                                                         break;
             case JC_PLINE:               cb_param = PLOT_LINE;                                                        break;

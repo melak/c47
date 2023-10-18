@@ -196,7 +196,7 @@ void configCommon(uint16_t idx) {
     clearSystemFlag(FLAG_HPRP);                    // HP.RP off
     clearSystemFlag(FLAG_HPBASE);                  // Clear HP Base
     denMax = 9999;                                 // DMX 9999
-    constantFractions = false; SetSetting(JC_EXFRAC); // EXFRAC ON (also setting the fractions modes appropriately)
+    constantFractions = false; SetSetting(JC_IRFRAC); // IRFRAC ON (also setting the fractions modes appropriately)
     setSystemFlag(FLAG_DENANY);                    // DENANY ON
        setSystemFlag(FLAG_SBbatV );                // SBbatV ON
      clearSystemFlag(FLAG_SBclk  );                // SBclk OFF
@@ -568,6 +568,7 @@ void fnBatteryVoltage(uint16_t unusedButMandatoryParameter) {
     int32ToReal(get_vbat(), &value);
   #endif // DMCP_BUILD
 
+  temporaryInformation = TI_V;
   realDivide(&value, const_1000, &value, &ctxtReal39);
   convertRealToReal34ResultRegister(&value, REGISTER_X);
 }

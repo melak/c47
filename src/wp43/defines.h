@@ -959,7 +959,7 @@ typedef enum {
 #define TI_012                                    73    //JM EE
 #define TI_SHOW_REGISTER_BIG                      74    //JM_SHOW
 #define TI_SHOW_REGISTER_SMALL                    75
-#define TI_ms                                     76    //JMms
+#define TI_V                                      76
 #define TI_FROM_DMS                               77
 #define TI_FROM_MS_TIME                           78
 #define TI_FROM_MS_DEG                            79
@@ -1387,6 +1387,8 @@ typedef enum {
                                                (softmenu[menu].menuItem == -MNU_M_EDIT   && y == 0 && (x == 0 || x == 1 || x == 4 || x == 5)) || \
                                                (softmenu[menu].menuItem == -MNU_EQ_EDIT  && y == 0 && (x == 4 || x == 5)) \
                                              )
+
+#define IS_BASEBLANK_(menuId)                (menuId==0 && !BASE_MYM)
 
 #define clearScreen()                        {lcd_fill_rect(0, 0, SCREEN_WIDTH, 240, LCD_SET_VALUE); clear_ul();}
 #define currentReturnProgramNumber           (currentSubroutineLevelData[0].returnProgramNumber)
