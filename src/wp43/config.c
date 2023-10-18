@@ -181,6 +181,9 @@ void configCommon(uint16_t idx) {
 
     itemToBeAssigned = -MNU_EE;
     _assignItem(&userMenuItems[6]); //fF1
+    itemToBeAssigned = ITM_op_j_pol;
+    _assignItem(&userMenuItems[11]); //fF6
+
     cachedDynamicMenu = 0;
 
     temporaryInformation = TI_NO_INFO;
@@ -984,8 +987,9 @@ void restoreStats(void){
       {0,USER_KRESET,  "C47 All USER keys cleaned"                       },
       {0,USER_MRESET,  "MyMenu menu cleaned"                             },
       {0,USER_ARESET,  "My" STD_alpha " menu cleaned"                    },
-      {0,USER_MENG,    "MyMenu primary F-key engineering layout"         },
-      {0,USER_MFIN,    "MyMenu primary F-key financial layout"           },
+      {0,USER_MENG,    "MyMenu primary F-key engineering ribbon"         },
+      {0,USER_MFIN,    "MyMenu primary F-key financial ribbon"           },
+      {0,USER_MCPX,    "MyMenu primary F-key complex ribbon"             },
       {0,100,"Error List"}
     };
 
@@ -1711,6 +1715,14 @@ void fnKeysManagement(uint16_t choice) {
     case USER_MFIN:
       fnRESET_MyM(USER_MFIN);
       fnShowVersion(USER_MFIN);
+      #if !defined(TESTSUITE_BUILD)
+        showSoftmenu(-MNU_MyMenu);
+      #endif // !TESTSUITE_BUILD
+      break;
+
+    case USER_MCPX:
+      fnRESET_MyM(USER_MCPX);
+      fnShowVersion(USER_MCPX);
       #if !defined(TESTSUITE_BUILD)
         showSoftmenu(-MNU_MyMenu);
       #endif // !TESTSUITE_BUILD
