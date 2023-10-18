@@ -621,7 +621,7 @@ void resetKeytimers(void) {
     //**************JM LONGPRESS ****************************************************
     if((FN_state == ST_1_PRESS1 || FN_state == ST_3_PRESS2) && (!FN_timeouts_in_progress || double_click_detected) && FN_key_pressed != 0) {
       FN_timeouts_in_progress = true;
-      fnTimerStart(TO_FN_LONG, TO_FN_LONG, JM_TO_FN_LONG);    //dr
+      fnTimerStart(TO_FN_LONG, TO_FN_LONG,  FN_state == ST_1_PRESS1 ? TIME_FN_12XX_TO_F : TIME_FN_DOUBLE_G_TO_NOP);    //dr
       FN_timed_out_to_NOP = false;
 
 
@@ -706,7 +706,7 @@ void resetKeytimers(void) {
       else if(!shiftF && shiftG) {
         offset = 12;
       }
-      fnTimerStart(TO_FN_EXEC, FN_key_pressed + offset, JM_FN_DOUBLE_TIMER);
+      fnTimerStart(TO_FN_EXEC, FN_key_pressed + offset, TIME_FN_DOUBLE_RELEASE);
 
       #if defined(VERBOSEKEYS)
         printf(">>>>Z 0050 btnFnReleased_StateMachine ------------------ Start TO_FN_EXEC\n          data=|%s| data[0]=%d (Global) FN_key_pressed=%d +offset=%d\n",(char*)data,((char*)data)[0], FN_key_pressed, offset);
