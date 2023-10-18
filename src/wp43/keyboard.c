@@ -680,11 +680,11 @@ printf(">>>>Z 0010 btnFnPressed SET FN_key_pressed            ; data=|%s| data[0
           case MNU_CHARS:
           case MNU_PROGS:
           case MNU_VARS: {
-            #if(FN_KEY_TIMEOUT_TO_NOP == 1)
-              showFunctionName(item, 1000, "SF:A"); // 1000ms = 1s
-            #else // (FN_KEY_TIMEOUT_TO_NOP != 1)
+//            #if(FN_KEY_TIMEOUT_TO_NOP == 1)
+//              showFunctionName(item, 1000, "SF:A"); // 1000ms = 1s
+//            #else // (FN_KEY_TIMEOUT_TO_NOP != 1)
               showFunctionNameItem = item;
-            #endif // (FN_KEY_TIMEOUT_TO_NOP == 1)
+//            #endif // (FN_KEY_TIMEOUT_TO_NOP == 1)
             break;
         }
         default: {
@@ -2071,12 +2071,15 @@ RELEASE_END:
       }
 
       case ITM_EXIT1: {
-//        fnKeyExit(NOPARAM);
-//        keyActionProcessed = true;            //Removed to force EXIT on the RELEASE cycle to make it do fnKeyExit later to allow NOP
+        if(calcMode == CM_PEM) {
+          fnKeyExit(NOPARAM);
+          keyActionProcessed = true;            //Removed to force EXIT on the RELEASE cycle to make it do fnKeyExit later to allow NOP
+        }
         if(temporaryInformation != TI_NO_INFO) {
+          temporaryInformation = TI_NO_INFO;
+          keyActionProcessed = true;
           refreshScreen();
         }
-        temporaryInformation = TI_NO_INFO;
         break;
       }
 

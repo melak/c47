@@ -1139,6 +1139,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnK100Mtomik               (uint16_t unusedButMandatoryParameter) {}
   void fnBaseMenu                 (uint16_t unusedButMandatoryParameter) {}
                                                                               //JM ^^
+  void fnExecutePlusSkip          (uint16_t unusedButMandatoryParameter) {}   //DL
 #endif // GENERATE_CATALOGS
 
 #ifdef TESTSUITE_BUILD
@@ -2990,7 +2991,7 @@ TO_QSPI const item_t indexOfItems[] = {
 
 
 //Jaymos C43 extensions
-/* 1795 */  { fn_cnst_op_j_pol,              NOPARAM,                     "op_" STD_op_i STD_SUB_SUN,                    STD_op_i STD_SUB_SUN,                          (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },//JM Operator j
+/* 1795 */  { fn_cnst_op_j_pol,             NOPARAM,                     "op_" STD_op_i STD_SUB_SUN,                    STD_op_i STD_SUB_SUN,                          (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },//JM Operator j
 /* 1796 */  { SetSetting,                   JC_BASE_MYM,                 "MyM",                                         "MyM",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM NOBASE MENU SETTING
 /* 1797 */  { SetSetting,                   JC_G_DOUBLETAP,              "g.2Tp",                                       "g.2Tp",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM KEY TAP DOUBLE SETTING
 /* 1798 */  { SetSetting,                   JC_CPXMULT,                  "CPXmul",                                      "CPXmul",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
@@ -3359,7 +3360,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2161 */  { fnMenuGapR,                   MNU_GAP_R,                   "FPART",                                       "FPART",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2162 */  { fnKeysManagement,             USER_MENG,                   "M.ENG",                                       "M.ENG",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2163 */  { fnKeysManagement,             USER_MFIN,                   "M.FIN",                                       "M.FIN",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 2164 */  { itemToBeCoded,                NOPARAM,                     "2164",                                        "2164",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2164 */  { fnKeysManagement,             USER_MCPX,                   "M.CPX",                                       "M.CPX",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2165 */  { addItemToBuffer,              ITM_op_j_SIGN,               "op_" STD_op_i,                                STD_op_i,                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2166 */  { addItemToBuffer,              ITM_poly_SIGN,               "cubic",                                       "cubic",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2167 */  { fnCvtNmiMi,                   multiply,                    "nmi" STD_RIGHT_ARROW "mi.",                   "nmi" STD_RIGHT_ARROW "mi.",                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
@@ -3418,6 +3419,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2220 */  { fnK100Mtomik,                 multiply,                    "E/100mi" STD_RIGHT_ARROW "mi/E",              "kWh/100mi" STD_RIGHT_ARROW,                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 2221 */  { fnK100Mtomik,                 divide,                      "mi/E" STD_RIGHT_ARROW "E/100mi",              "mi/kWh" STD_RIGHT_ARROW,                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 2222 */  { itemToBeCoded,                NOPARAM,                     "Ymmv:",                                       "Ymmv:",                                       (0 << TAM_MAX_BITS) |     0, CAT_MENU | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2223 */  { fnExecutePlusSkip,                TM_LABEL,                    "XEQ.SKP",                                     "XEQ.SKP",                                     (0 << TAM_MAX_BITS) |    99, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_LABEL        },
 
-/* 2223 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
+/* 2224 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
 };
