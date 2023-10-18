@@ -2071,12 +2071,15 @@ RELEASE_END:
       }
 
       case ITM_EXIT1: {
-//        fnKeyExit(NOPARAM);
-//        keyActionProcessed = true;            //Removed to force EXIT on the RELEASE cycle to make it do fnKeyExit later to allow NOP
+        if(calcMode == CM_PEM) {
+          fnKeyExit(NOPARAM);
+          keyActionProcessed = true;            //Removed to force EXIT on the RELEASE cycle to make it do fnKeyExit later to allow NOP
+        }
         if(temporaryInformation != TI_NO_INFO) {
+          temporaryInformation = TI_NO_INFO;
+          keyActionProcessed = true;
           refreshScreen();
         }
-        temporaryInformation = TI_NO_INFO;
         break;
       }
 
