@@ -174,11 +174,11 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   {ITM_2DEC,             10,                     RB_HX},  //fnChangeBaseJM
   {ITM_2HEX,             16,                     RB_HX},  //fnChangeBaseJM
 
-  {ITM_HOMEx3,           JC_HOME_TRIPLE,         RB_x3},  //SetSetting
-  {ITM_MYMx3,            JC_MYM_TRIPLE,          RB_x3},  //SetSetting
+  {ITM_HOMEx3,           JC_HOME_TRIPLE,         CB_JC},  //SetSetting
+  {ITM_MYMx3,            JC_MYM_TRIPLE,          CB_JC},  //SetSetting
 
-  {ITM_BASE_HOME,        BA_BASE_HOME,           RB_BA},  //SetSetting
-  {ITM_BASE_MYM,         BA_BASE_MYM,            RB_BA},  //SetSetting
+  {ITM_BASE_HOME,        JC_BASE_HOME,           CB_JC},  //SetSetting
+  {ITM_BASE_MYM,         JC_BASE_MYM,            CB_JC},  //SetSetting
 
 
   {ITM_GAPDOT_L,         ITM_DOT,                RB_IP},
@@ -300,28 +300,6 @@ int8_t fnCbIsSet(int16_t item) {
                      else                     return result;
                      break;
 
-        case RB_x3:  if(HOME3) {
-                       rb_param = JC_HOME_TRIPLE;
-                       MYM3 = false;
-                     } else
-                     if(MYM3) {
-                       rb_param = JC_MYM_TRIPLE;
-                       HOME3 = false;
-                     }
-                     else return result;
-                     break;
-
-        case RB_BA:  if(BASE_MYM) {
-                       rb_param = BA_BASE_MYM;
-                       BASE_HOME = false;
-                     } else
-                     if(BASE_HOME) {
-                       rb_param = BA_BASE_HOME;
-                       BASE_MYM = false;
-                     }
-                     else return result;
-                     break;
-
         case RB_FP:  rb_param = gapItemRight;
                      break;
 
@@ -381,9 +359,20 @@ int8_t fnCbIsSet(int16_t item) {
             case JC_TOPHEX:              cb_param = topHex;                                                           break;
             case JC_SI_All:              cb_param = SI_All;                                                           break;
             case JC_CPXMULT:             cb_param = CPXMULT;                                                          break;
-
+            case JC_MYM_TRIPLE:          cb_param = MYM3;
+                                         if(MYM3 && HOME3) MYM3 = false;
+                                         break;
+            case JC_HOME_TRIPLE:         cb_param = HOME3;
+                                         if(MYM3 && HOME3) MYM3 = false;
+                                         break;
+            case JC_BASE_HOME:           cb_param = BASE_HOME;
+                                         if(BASE_HOME && BASE_MYM) BASE_HOME = false;
+                                         break;
+            case JC_BASE_MYM:            cb_param = BASE_MYM;
+                                         if(BASE_HOME && BASE_MYM) BASE_HOME = false;
+                                         break;
             #if defined(INLINE_TEST)
-              case JC_ITM_TST:             cb_param = testEnabled;                                                      break;
+              case JC_ITM_TST:           cb_param = testEnabled;                                                      break;
             #endif // INLINE_TEST
 
             default: ;

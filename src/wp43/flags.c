@@ -749,7 +749,7 @@ void SetSetting(uint16_t jmConfig) {
       break;
     }
 
-    case BA_BASE_MYM: {
+    case JC_BASE_MYM: {
       BASE_MYM = !BASE_MYM;
       if(BASE_MYM) {
         BASE_HOME = false;
@@ -758,7 +758,7 @@ void SetSetting(uint16_t jmConfig) {
       break;
     }
 
-    case BA_BASE_HOME: {
+    case JC_BASE_HOME: {
       BASE_HOME = !BASE_HOME;
       if(BASE_HOME) {
         BASE_MYM = false;
