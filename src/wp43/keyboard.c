@@ -1040,6 +1040,17 @@ int16_t lastItem = 0;
             screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
             return;
           }
+          else if(calcMode == CM_PEM && !getSystemFlag(FLAG_ALPHA) && (item == ITM_toINT || item == ITM_HASH_JM)) {
+            if(aimBuffer[0]!=0) {
+              pemAddNumber(ITM_toINT);
+              screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
+              refreshScreen();
+              return;
+            } else {
+              //no action, continue to insert the command
+            }
+          }
+
 
           #if defined(VERBOSEKEYS)
           printf(">>>> R000D                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
