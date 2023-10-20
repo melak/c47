@@ -382,6 +382,7 @@
 `U+2191`,516,516,`UPWARDS ARROW`,`Up arrow`,`↑`,`↑`,`U+2191`
 `U+2192`,512,512,`RIGHTWARDS ARROW`,`Right arrow`,`→`,`→`,`U+2192`
 `U+2193`,520,520,`DOWNWARDS ARROW`,`Down arrow`,`↓`,`↓`,`U+2193`
+`U+2194`,520,520,`LEFT RIGHT ARROW`,`Left right arrow`,`↔`,`↔`,`U+2194`
 `U+21E0`,514,514,`LEFTWARDS ARROW`,`Left arrow`,`⇠`,`⇠`,`U+21E0`
 `U+21E1`,516,516,`UPWARDS ARROW`,`Up arrow`,`⇡`,`⇡`,`U+21E1`
 `U+21E2`,512,512,`RIGHTWARDS ARROW`,`Right arrow`,`⇢`,`⇢`,`U+21E2`
@@ -409,6 +410,7 @@
 `U+220c`,593,603,`DOES NOT CONTAIN AS MEMBER`,`Does not contain as member`,`∌`,`∀`,`U+2200`
 `U+220e`,10,11,`END OF PROOF`,`Binary 0`,`∎`,``,`U+0030`
 `U+220f`,424,425,`N-ARY PRODUCT`,`N-ary product`,`∏`,`Π`,`U+03a0`
+`U+2211`,429,430,`N-ARY SUMMATION`,`N-ary summation`,`∑`,`Σ`,`U+03a3`
 `U+2213`,469,473,`MINUS-OR-PLUS SIGN`,`Minus-plus`,`∓`,`-`,`U+002d`
 `U+2218`,474,477,`RING OPERATOR`,`Ring`,`∘`,`×`,`U+00d7`
 `U+2219`,474,476,`BULLET OPERATOR`,`Bullet`,`∙`,`×`,`U+00d7`

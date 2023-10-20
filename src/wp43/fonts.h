@@ -493,6 +493,7 @@
 #define STD_DOES_NOT_CONTAIN          "\xa2\x0c"
 #define STD_BINARY_ZERO               "\xa2\x0e"
 #define STD_PRODUCT                   "\xa2\x0f"
+#define STD_SUM                       "\xa2\x11"
 #define STD_MINUS_PLUS                "\xa2\x13"
 #define STD_RING                      "\xa2\x18"
 #define STD_BULLET                    "\xa2\x19"

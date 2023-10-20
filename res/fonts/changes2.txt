@@ -1,14 +1,19 @@
 Fixed $21 exclam
 Fixed $22 & $27 quote and doublequote (Straitened)
 Fixed $2018 quoteleft (wrong orientation)
+Fixed $220F naryproduct in STD font.
+Fixed $208F superscript asterisk in NUM
+Fixed %2A asterisk in NUM
+
+
 
 Added $24 Dollar. FreeSans squashed.
 Added $26 Ampersand. FreeSans squashed.
 Added $40 At. FreeSans squashed.
 Added $5C Backslash (copy from /).
-Added %A2 cent. FreeSans squashed.
-Added %A3 pound. FreeSans squashed.
-Added %A5 yen. FreeSans squashed.
+Added %A2 cent. SourceSans3 squashed.
+Added %A3 pound. SourceSans3 squashed.
+Added %A5 yen. SourceSans3 squashed.
 Added %A7 section. FreeSans squashed.
 
 Added %A1 exclamdown. (copy from !)
@@ -17,3 +22,12 @@ Added $D8 Oslash (made from O)
 Added $2205 emptyset (made from o)
 Added $201C quotedblleft (copied and edited)
 Added $201D quotedblright (copied and edited)
+Added $220F naryproduct. Drew fresh.
+
+
+Both fonts: 
+Added $2211 narysummation. Drew it fresh.
+
+STD only:
+Added $2194 leftrightarrow. Drew it fresh. copy arrow heads.
+
