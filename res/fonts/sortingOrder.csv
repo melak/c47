@@ -362,6 +362,7 @@
 `U+2102`,95,107,`DOUBLE-STRUCK CAPITAL C`,`Complec C`,`ℂ`,`C`,`U+0043`
 `U+210e`,160,162,`PLANCK CONSTANT`,`Planck`,`ℎ`,`H`,`U+0048`
 `U+210f`,160,168,`PLANCK CONSTANT OVER TWO PI`,`Planck / 2pi`,`ℏ`,`H`,`U+0048`
+`U+2110`,169,191,`DOUBLE-STRUCK CAPITAL I`,`Irrational I`,`"ℐ"`,`I`,`U+0049`
 `U+2115`,221,233,`DOUBLE-STRUCK CAPITAL N`,`Natural N`,`ℕ`,`N`,`U+004e`
 `U+211a`,265,271,`DOUBLE-STRUCK CAPITAL Q`,`Rational Q`,`ℚ`,`Q`,`U+0051`
 `U+211d`,272,282,`DOUBLE-STRUCK CAPITAL R`,`Real R`,`ℝ`,`R`,`U+0052`
@@ -449,6 +450,8 @@
 `U+2265`,538,549,`GREATER-THAN OR EQUAL TO`,`Greater or equal than`,`≥`,`≪`,`U+226a`
 `U+226a`,538,538,`MUCH LESS-THAN`,`Much less than`,`≪`,`≪`,`U+226a`
 `U+226b`,538,551,`MUCH GREATER-THAN`,`Much greater than`,`≫`,`≪`,`U+226a`
+`U+2282`,582,590,`SUBSET OF`,`Subset of`,`⊂`,`⊂`,`U+2200`
+`U+2284`,582,590,`NOT A SUBSET OF`,`Not a subset of`,`⊄`,`⊄`,`U+2200`
 `U+2295`,572,572,`CIRCLED PLUS`,`Subscript earth`,`⊕`,`⊕`,`U+2295`
 `U+2296`,382,384,`CIRCLED MINUS`,`Subscript alpha`,`⊖`,`Α`,`U+0391`
 `U+2297`,390,392,`CIRCLED TIMES`,`Subscript delta`,`⊗`,`Δ`,`U+0394`
@@ -466,6 +469,7 @@
 `U+230b`,580,581,`RIGHT FLOOR`,`Right floor`,`⌋`,`⌊`,`U+230a`
 `U+231a`,582,584,`WATCH`,`Watch`,`⌚`,`⎙`,`U+2399`
 `U+231b`,582,583,`HOURGLASS`,`Hourglass`,`⌛`,`⎙`,`U+2399`
+`U+2393`,582,590,`DIRECT CURRENT FORM 2`,`d.c. current`,`⎓`,`⎓`,`U+002d`
 `U+2399`,582,582,`PRINT SCREEN SYMBOL`,`Printer`,`⎙`,`⎙`,`U+2399`
 `U+23a1`,451,452,`LEFT SQUARE BRACKET UPPER CORNER`,`Matrix upper left`,`⎡`,`[`,`U+005b`
 `U+23a2`,451,453,`LEFT SQUARE BRACKET EXTENSION`,`Matrix middle left`,`⎢`,`[`,`U+005b`
@@ -473,6 +477,7 @@
 `U+23a4`,451,456,`RIGHT SQUARE BRACKET UPPER CORNER`,`Matrix upper right`,`⎤`,`[`,`U+005b`
 `U+23a5`,451,457,`RIGHT SQUARE BRACKET EXTENSION`,`Matrix middle right`,`⎥`,`[`,`U+005b`
 `U+23a6`,451,458,`RIGHT SQUARE BRACKET LOWER CORNER`,`Matrix lower right`,`⎦`,`[`,`U+005b`
+`U+23e6`,582,590,`AC CURRENT`,`a.c. current`,`⏦`,`⏦`,`U+007e`
 `U+23F1`,582,585,`STOPWATCH`,`Stopwatch`,`⏱`,`⎙`,`U+2399`
 `U+2421`,606,606,`SYMBOL FOR DELETE`,`Oblique 1`,`␡`,`␡`,`U+2421`
 `U+2422`,606,607,`BLANK SYMBOL`,`Oblique 2`,`␢`,`␡`,`U+2421`

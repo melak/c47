@@ -435,7 +435,7 @@ printf(">>>>Z 0070 btnFnClicked data=|%s| data[0]=%d\n",(char*)data, ((char*)dat
           case MNU_STRINGS :
           case MNU_TIMES :
           case MNU_ALPHA_OMEGA :
-          case MNU_ALPHADOT :
+          case MNU_ALPHAMISC :
           case MNU_ALPHA :
           case MNU_CONST : {
             popSoftmenu();
@@ -1153,7 +1153,7 @@ int16_t lastItem = 0;
                       case MNU_ALPHA_OMEGA:
                       case MNU_ALPHAMATH:
                       case MNU_MyAlpha:
-                      case MNU_ALPHADOT:
+                      case MNU_ALPHAMISC:
                       case MNU_alpha_omega:
                       case MNU_ALPHAintl: {
                         popSoftmenu();
@@ -1184,7 +1184,7 @@ int16_t lastItem = 0;
                     case MNU_ALPHA_OMEGA:
                     case MNU_ALPHAMATH:
                     case MNU_MyAlpha:
-                    case MNU_ALPHADOT:
+                    case MNU_ALPHAMISC:
                     case MNU_alpha_omega: {
                     //case MNU_ALPHAintl:
                       while(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQ_EDIT) {
@@ -2649,7 +2649,7 @@ RELEASE_END:
       showAlphaModeonGui(); //dr JM, see keyboardtweaks
       softmenuStack[0].softmenuId--; // Switch to the upper case menu
     }
-    else if((sm == -MNU_ALPHADOT || sm == -MNU_ALPHAMATH || sm == -MNU_ALPHA) && alphaCase == AC_LOWER && arrowCasechange) {  //JMcase
+    else if((sm == -MNU_ALPHAMISC || sm == -MNU_ALPHAMATH || sm == -MNU_ALPHA) && alphaCase == AC_LOWER && arrowCasechange) {  //JMcase
       alphaCase = AC_UPPER;
       showAlphaModeonGui(); //dr JM, see keyboardtweaks
     }
@@ -2683,7 +2683,7 @@ RELEASE_END:
       showAlphaModeonGui(); //dr JM, see keyboardtweaks
       softmenuStack[0].softmenuId++; // Switch to the lower case menu
     }
-    else if((sm == -MNU_ALPHADOT || sm == -MNU_ALPHAMATH || sm == -MNU_ALPHA) && alphaCase == AC_UPPER && arrowCasechange) {  //JMcase
+    else if((sm == -MNU_ALPHAMISC || sm == -MNU_ALPHAMATH || sm == -MNU_ALPHA) && alphaCase == AC_UPPER && arrowCasechange) {  //JMcase
       alphaCase = AC_LOWER;
       showAlphaModeonGui(); //dr JM, see keyboardtweaks
     }

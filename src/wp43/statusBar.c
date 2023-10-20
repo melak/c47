@@ -512,7 +512,7 @@ void drawBattery(uint16_t voltage) {
     void showHideUsbLowBattery(void) {
       if(!(SBARUPD_Battery)) return;
       if(getSystemFlag(FLAG_USB)) {
-        showGlyph(STD_USB, &standardFont, X_BATTERY, 0, vmNormal, true, false); // is 0+9+2 pixel wide
+        showGlyph(STD_USB_SYMBOL, &standardFont, X_BATTERY, 0, vmNormal, true, false); // is 0+9+2 pixel wide
       }
       else {
         if(SBARUPD_BatVoltage) {

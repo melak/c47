@@ -31,3 +31,19 @@ Added $2211 narysummation. Drew it fresh.
 STD only:
 Added $2194 leftrightarrow. Drew it fresh. copy arrow heads.
 
+
+Added STD only:
+`U+2282`,582,590,`SUBSET OF`,`Subset of`,`⊂`,`⊂`,`U+2200`
+`U+2284`,582,590,`NOT A SUBSET OF`,`Not a subset of`,`⊄`,`⊄`,`U+2200`
+
+Added both fonts
+`U+23e6`,582,590,`AC CURRENT`,`a.c. current`,`⏦`,`⏦`,`U+007e`
+`U+2393`,582,590,`DIRECT CURRENT FORM 2`,`d.c. current`,`⎓`,`⎓`,`U+002d`
+
+Fixed the parallel and non-parallel icons to be wider spaced
+Fixed the asterisk (norm+subscript) in NUM font only. STD font has too few pixels.
+Added I to both fonts (ITM_IRRATIONAL_I and STD...)
+Added QRNZ to NUM font
+
+
+

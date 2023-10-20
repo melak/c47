@@ -147,7 +147,7 @@
 #define STD_NOT                       "\x80\xac"
 #define STD_DEGREE                    "\x80\xb0"
 #define STD_PLUS_MINUS                "\x80\xb1"
-#define STD_mu_b                      "\x80\xb5"
+#define STD_MICRO                     "\x80\xb5"
 #define STD_DOT                       "\x80\xb7"
 #define STD_RIGHT_DOUBLE_ANGLE        "\x80\xbb"
 #define STD_ONE_QUARTER               "\x80\xbc"
@@ -387,9 +387,13 @@
 #define STD_case                      "\xa6\x7b"  //JM
 #define STD_num                       "\xa6\x7e"  //JM
 #define STD_RIGHT_TACK                "\xa2\xa2"  //JM
-
 #define STD_MODE_F                    "\x9E\x9D"  //1E9D
 #define STD_MODE_G                    "\x9E\x9F"  //1E9F
+#define STD_CYCLIC                    "\xA6\x7A"
+#define STD_AC                        "\xA3\xE6" //23E6
+#define STD_DC                        "\xA3\x93" //2393
+#define STD_SUBSET_OF                 "\xA2\x82" //2282
+#define STD_NOT_SUBSET_OF             "\xA2\x84" //2284
 
 
 #define STD_HP_PERIOD                    "\xa0\x24"     // 2024
@@ -452,6 +456,7 @@
 #define STD_PLANCK_2PI                "\xa1\x0f"
 #define STD_NATURAL_N                 "\xa1\x15"
 #define STD_RATIONAL_Q                "\xa1\x1a"
+#define STD_IRRATIONAL_I              "\xa1\x10"
 #define STD_REAL_R                    "\xa1\x1d"
 #define STD_INTEGER_Z                 "\xa1\x24"
 #define STD_SUP_0                     "\xa1\x60"
@@ -470,9 +475,10 @@
 #define STD_UP_ARROW                  "\xa1\x91"
 #define STD_RIGHT_ARROW               "\xa1\x92"
 #define STD_DOWN_ARROW                "\xa1\x93"
+#define STD_LEFT_RIGHT_ARROWS         "\xa1\x94"
 #define STD_SERIAL_IO                 "\xa1\x95"
 #define STD_RIGHT_SHORT_ARROW         "\xa1\xc0"
-#define STD_LEFT_RIGHT_ARROWS         "\xa1\xc4"
+#define STD_RIGHT_OVER_LEFT_ARROW     "\xa1\xc4"
 #define STD_BST                       "\xa1\xc9"
 #define STD_SST                       "\xa1\xcb"
 #define STD_HAMBURGER                 "\xa1\xcc"
@@ -575,7 +581,7 @@
 #define STD_GAUSS_WHITE_R             "\xa4\x31"
 #define STD_GAUSS_WHITE_L             "\xa4\x32"
 #define STD_GAUSS_BLACK_R             "\xa4\x33"
-#define STD_USB                       "\xa4\x34"
+#define STD_USB_SYMBOL                "\xa4\x34"
 #define STD_BASE_1                    "\xa4\x60"
 #define STD_BASE_2                    "\xa4\x61"
 #define STD_BASE_3                    "\xa4\x62"
@@ -699,5 +705,4 @@
 #define STD_SUB_Z                     "\xa4\xe9"
 #define STD_CHECK_MARK                "\xa7\x13"
 #define STD_RIGHT_DOUBLE_ARROW        "\xa1\xD2"    //JM
-#define STD_RECYCLE                   "\xa6\x7A"    //JM
 #endif // !FONTS_H
