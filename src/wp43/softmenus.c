@@ -510,11 +510,11 @@ TO_QSPI const int16_t menu_alphaMisc[]    = { ITM_NUMBER_SIGN,          ITM_AT, 
                                              ITM_UP_DASHARROW,          ITM_DOWN_DASHARROW,        ITM_PGM_BEGIN,             ITM_ex,                    ITM_LEFT_DASHARROW,        ITM_RIGHT_DASHARROW,       
                                              ITM_LEFT_DOUBLE_QUOTE,     ITM_RIGHT_DOUBLE_QUOTE,    ITM_RIGHT_SHORT_ARROW,     ITM_RIGHT_DOUBLE_ARROW,    ITM_LEFT_DOUBLE_ANGLE,     ITM_RIGHT_DOUBLE_ANGLE,    
 
-                                             ITM_SECTION,               ITM_CHECK_MARK,            ITM_BULLET,                ITM_ASTERISK,              ITM_TILDE,                 ITM_SPACE,                 
+                                             ITM_SECTION,               ITM_CHECK_MARK,            ITM_BULLET,                ITM_ASTERISK,              ITM_SUP_ASTERISK,          ITM_TILDE,                 
                                              ITM_HOURGLASS,             ITM_WATCH,                 ITM_TIMER_SYMBOL,          ITM_NEG_EXCLAMATION_MARK,  ITM_USER_MODE,             ITM_BATTERY,               
                                              ITM_PRINTER,               ITM_HAMBURGER,             ITM_BST_char,              ITM_SST_char,              ITM_CYCLIC,                ITM_USB_SYMBOL,            
 
-                                             ITM_SUB_SUN,               ITM_SUB_EARTH,             ITM_SUP_ASTERISK,          ITM_NULL,                  ITM_US,                    ITM_UK,                    
+                                             ITM_SUB_SUN,               ITM_SUB_EARTH,             ITM_NULL,                  ITM_NULL,                  ITM_US,                    ITM_UK,                    
                                              ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  
                                              ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL,                  ITM_NULL     };
 

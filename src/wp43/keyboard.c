@@ -2728,13 +2728,12 @@ RELEASE_END:
       showAlphaModeonGui(); //dr JM, see keyboardtweaks
     }
     else {
-      int16_t itemShift = (catalog == CATALOG_NONE ? 18 : 6);
-
+      int16_t itemShift = 18; // (catalog == CATALOG_NONE ? 18 : 6);
       if((softmenuStack[0].firstItem + itemShift) < (menuId < NUMBER_OF_DYNAMIC_SOFTMENUS ? dynamicSoftmenu[menuId].numItems : softmenu[menuId].numItems)) {
         softmenuStack[0].firstItem += itemShift;
       }
       else {
-        softmenuStack[0].firstItem = 0;
+        softmenuStack[0].firstItem = 0 + (softmenuStack[0].firstItem+itemShift) % itemShift;
       }
 
       setCatalogLastPos();
@@ -2765,7 +2764,7 @@ RELEASE_END:
       showAlphaModeonGui(); //dr JM, see keyboardtweaks
     }
     else {
-      int16_t itemShift = (catalog == CATALOG_NONE ? 18 : 6);
+      int16_t itemShift = 18; // (catalog == CATALOG_NONE ? 18 : 6);
 
       if((softmenuStack[0].firstItem - itemShift) >= 0) {
         softmenuStack[0].firstItem -= itemShift;
