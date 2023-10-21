@@ -217,6 +217,11 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 
     indexOfItems[func].func(param);
 
+    #if defined(DMCP_BUILD)
+      updateVbatIntegrated();              //Check the battery directly after a task so that the worst case voltage is recorded
+    #endif
+
+
     switch(func) {
       case ITM_DRAW:       //EQN Draw
 
@@ -2080,7 +2085,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /*  873 */  { itemToBeCoded,                NOPARAM,                     "",                                            STD_SPACE_PUNCTUATION,                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /*  874 */  { itemToBeCoded,                NOPARAM,                     "",                                            STD_SPACE_HAIR,                                (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /*  875 */  { itemToBeCoded,                NOPARAM,                     "",                                            STD_LEFT_SINGLE_QUOTE,                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/*  876 */  { itemToBeCoded,                NOPARAM,                     "",                                            STD_RIGHT_SINGLE_QUOTE,                        (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/*  876 */  { addItemToBuffer,              ITM_RIGHT_SINGLE_QUOTE,      "",                                            STD_RIGHT_SINGLE_QUOTE,                        (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /*  877 */  { itemToBeCoded,                NOPARAM,                     "",                                            STD_SINGLE_LOW_QUOTE,                          (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /*  878 */  { itemToBeCoded,                NOPARAM,                     "",                                            STD_SINGLE_HIGH_QUOTE,                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /*  879 */  { addItemToBuffer,              ITM_LEFT_DOUBLE_QUOTE,       "",                                            STD_LEFT_DOUBLE_QUOTE,                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },

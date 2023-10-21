@@ -463,8 +463,8 @@ TO_QSPI const int16_t menu_ConvYmmv[]       = {
 
 
 TO_QSPI const int16_t menu_alphaFN[]     = { ITM_XtoALPHA,                  ITM_ALPHARL,                ITM_ALPHARR,              ITM_ALPHASL,           ITM_ALPHASR,                 ITM_ALPHAtoX,
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_ALPHALENG,               ITM_ALPHAPOS,
-                                             ITM_FBR,                       ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
+                                             ITM_FBR,                       ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_ALPHALENG,               ITM_ALPHAPOS,
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
 
 /*      Menu name                           <----------------------------------------------------------------------------- 6 functions ---------------------------------------------------------------------------->  */
 /*                                          <---------------------------------------------------------------------- 6 f shifted functions ------------------------------------------------------------------------->  */
@@ -480,7 +480,7 @@ TO_QSPI const int16_t menu_alphaMATH[]   = { ITM_LESS_THAN,             ITM_LESS
                                              ITM_TILDE,                 ITM_ALMOST_EQUAL,          ITM_ASYMPOTICALLY_EQUAL,   ITM_IDENTICAL_TO,          ITM_COLON_EQUALS,          ITM_PLUS_MINUS,            
 
                                              ITM_POLAR_char,            ITM_RIGHT_ANGLE,           ITM_MEASURED_ANGLE,        ITM_ANGLE,                 ITM_AMPERSAND,             ITM_PIPE,                  
-                                             ITM_DEGREE,                ITM_QUOTE,                 ITM_RIGHT_DOUBLE_QUOTE,    ITM_RIGHT_TACK,            ITM_PERPENDICULAR,         ITM_PARALLEL,              
+                                             ITM_DEGREE,                ITM_RIGHT_SINGLE_QUOTE,    ITM_RIGHT_DOUBLE_QUOTE,    ITM_RIGHT_TACK,            ITM_PERPENDICULAR,         ITM_PARALLEL,              
                                              ITM_x_BAR,                 ITM_y_BAR,                 ITM_x_CIRC,                ITM_y_CIRC,                ITM_BULLET,                ITM_RING,                  
 
                                              ITM_EulerE,                ITM_pi,                    ITM_op_i_char,             ITM_op_j_char,             ITM_PLANCK_2PI,            ITM_EEXCHR,                

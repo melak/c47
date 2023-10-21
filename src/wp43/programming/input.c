@@ -56,6 +56,8 @@ void fnVarMnu(uint16_t label) {
 
 void fnPause(uint16_t duration) {
   #if !defined(TESTSUITE_BUILD)
+    #define timeoutBattery (uint16_t)(20*60/0.1) //20 minutes
+    if(duration == 0) duration = (uint16_t)(2*60*60/0.1);    //2 hours
     uint8_t previousProgramRunStop = programRunStop;
     if(tam.mode) {
       tamLeaveMode();
@@ -80,6 +82,9 @@ void fnPause(uint16_t duration) {
           break;
         }
         sys_delay(100);
+        if((usb_powered() != 1) && duration > timeoutBattery) {
+          break;
+        }
       }
     #else // !DMCP_BUILD
       refreshLcd(NULL);
@@ -90,7 +95,9 @@ void fnPause(uint16_t duration) {
         }
         gtk_main_iteration_do(FALSE);
         usleep(100000);
+        printf("Timing %u %u\n", i, duration);
       }
+      printf(" done timing\n");
       if(programRunStop == PGM_WAITING) {
         previousProgramRunStop = PGM_WAITING;
       }

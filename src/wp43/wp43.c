@@ -312,6 +312,7 @@ calcRegister_t         regStatsXY;
 
 bool_t temporaryFlagRect;
 bool_t temporaryFlagPolar;
+int vbatIntegrated = 3000;
 
 
 #if defined(DMCP_BUILD)
