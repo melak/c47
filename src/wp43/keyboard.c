@@ -2762,18 +2762,12 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
       }
 
       case CM_AIM: {
-
-//        if(softmenuStack[0].softmenuId == mm_MNU_ALPHA) {     //JMvv
-//          popSoftmenu();
-//        }                                                     //JM^^
-
-          if(softmenuStack[0].softmenuId <= 1 && softmenu[softmenuStack[1].softmenuId].menuItem == -MNU_ALPHA) {
+          if(softmenuStack[0].softmenuId <= 1 || softmenu[softmenuStack[1].softmenuId].menuItem == -MNU_ALPHA) {
             popSoftmenu();
           }
-          if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA) {  //JM
+          if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA) {  //JM get out of the ALPHA menu and go to MyM fto satisfy the old enter routines
             softmenuStack[0].softmenuId = 1;                                  //JM
           }                                                                   //JM
-
 
         calcModeNormal();
         popSoftmenu();
@@ -3062,7 +3056,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       }
 
       case CM_AIM: {
-        if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA) {  //JM
+        if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA) {  //JM get out of the ALPHA menu and go to MyM fto satisfy the old exit routines
           softmenuStack[0].softmenuId = 1;                                  //JM
         }                                                                   //JM
 
