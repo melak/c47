@@ -1043,7 +1043,7 @@ int16_t lastItem = 0;
             if(aimBuffer[0]!=0) {
               pemAddNumber(ITM_toINT);
               screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
-              refreshScreen();
+              refreshScreen(115);
               return;
             } else {
               //no action, continue to insert the command
