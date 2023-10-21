@@ -2659,7 +2659,7 @@ RELEASE_END:
         softmenuStack[0].firstItem += itemShift;
       }
       else {
-        softmenuStack[0].firstItem = 0 + (softmenuStack[0].firstItem+itemShift) % itemShift;
+        softmenuStack[0].firstItem = 0;
       }
 
       setCatalogLastPos();
