@@ -37,6 +37,7 @@
 #include "softmenus.h"
 #include "timer.h"
 
+#include <string.h>
 #include "wp43.h"
 
 void fnSHIFTf(uint16_t unusedButMandatoryParameter) {
@@ -1350,12 +1351,11 @@ void fnCla(uint16_t unusedButMandatoryParameter) {
 
 void fnCln(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
-    nimNumberPart = NP_EMPTY;
-    calcModeNim(0);
-    last_CM=252;
-    refreshRegisterLine(REGISTER_X);        //JM Execute here, to make sure that the 5/2 line check is done
-    last_CM=253;
-    addItemToNimBuffer(ITM_0);
+   strcpy(aimBuffer,"+0");
+   fnKeyBackspace(0);
+   setSystemFlag(FLAG_ASLIFT);
+   screenUpdatingMode = SCRUPD_AUTO;
+//   refreshScreen();
   #endif // !TESTSUITE_BUILD
 }
 
