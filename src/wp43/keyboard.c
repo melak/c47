@@ -3808,9 +3808,9 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
       }
 
       case CM_ASN_BROWSER: {
-        currentAsnScr--;
-        if(currentAsnScr == 0 || currentAsnScr >= 4) {
-          currentAsnScr = 3;
+        currentAsnScr++;                          //JM removed the 3-x part
+        if(currentAsnScr == 0 ||currentAsnScr >= 7) {
+          currentAsnScr = 1;
         }
         break;
       }
@@ -4020,9 +4020,9 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
       }
 
     case CM_ASN_BROWSER: {
-        currentAsnScr++;                          //JM removed the 3-x part
-        if(currentAsnScr >= 4) {
-          currentAsnScr = 1;
+        currentAsnScr--;
+        if(currentAsnScr == 0 || currentAsnScr >= 7) {
+          currentAsnScr = 6;
         }
         break;
       }

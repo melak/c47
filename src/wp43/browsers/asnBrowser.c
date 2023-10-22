@@ -48,8 +48,11 @@
         showString(fnAsnDisplayUSER ? "(USER KEYS)" : "(STD KEYS)", &standardFont, 280, YOFF, vmNormal, false, false);
         switch(page) {
           case 1:   showString("unshifted keyboard mapping", &standardFont, 30, YOFF, vmNormal, false, false); break;
-          case 3:   showString("f-shift keyboard mapping", &standardFont, 30, YOFF, vmNormal, false, false); break;
-          case 2:   showString("g-shift keyboard mapping", &standardFont, 30, YOFF, vmNormal, false, false); break;
+          case 2:   showString("f-shift keyboard mapping",   &standardFont, 30, YOFF, vmNormal, false, false); break;
+          case 3:   showString("g-shift keyboard mapping",   &standardFont, 30, YOFF, vmNormal, false, false); break;
+          case 4:   showString("alpha keyboard mapping",     &standardFont, 30, YOFF, vmNormal, false, false); break;
+          case 5:   showString("alpha f-shift mapping",      &standardFont, 30, YOFF, vmNormal, false, false); break;
+          case 6:   showString("alpha g-shift mapping",      &standardFont, 30, YOFF, vmNormal, false, false); break;
           default:break;
         }
 
@@ -65,8 +68,11 @@
         if(fnAsnDisplayUSER) {
         switch(page) {
           case 1: kk = kbd_usr[key].primary;  break;
-          case 3: kk = kbd_usr[key].fShifted; break;
-          case 2: kk = kbd_usr[key].gShifted; break;
+          case 2: kk = kbd_usr[key].fShifted; break;
+          case 3: kk = kbd_usr[key].gShifted; break;
+          case 4: kk = kbd_usr[key].primaryAim;  break;
+          case 5: kk = kbd_usr[key].fShiftedAim; break;
+          case 6: kk = kbd_usr[key].gShiftedAim; break;
           default: ;
         }
       }
@@ -78,8 +84,11 @@
               kk = Norm_Key_00_VAR;
             }
             break;
-          case 3: kk = kbd_std[key].fShifted; break;
-          case 2: kk = kbd_std[key].gShifted; break;
+          case 2: kk = kbd_std[key].fShifted; break;
+          case 3: kk = kbd_std[key].gShifted; break;
+          case 4: kk = kbd_std[key].primaryAim; break;
+          case 5: kk = kbd_std[key].fShiftedAim; break;
+          case 6: kk = kbd_std[key].gShiftedAim; break;
           default: ;
         }
       }
@@ -103,9 +112,12 @@
       showKey(Name, xx*pixelsPerSoftKey, xx*pixelsPerSoftKey+pixelsPerSoftKey, YOFF+yy*SOFTMENU_HEIGHT, YOFF+(yy+1)*SOFTMENU_HEIGHT, xx == 5, ((kk > 0 || Name[0] == 0) && tmp3[0]==0) ? vmNormal : vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
 
       if(fnAsnDisplayUSER &&
-          ( ((page == 1) && (kbd_std[key].primary == kbd_usr[key].primary)  ) ||
-            ((page == 3) && (kbd_std[key].fShifted == kbd_usr[key].fShifted)) ||
-            ((page == 2) && (kbd_std[key].gShifted == kbd_usr[key].gShifted))
+          ( ((page == 1) && (kbd_std[key].primary == kbd_usr[key].primary)  )       ||
+            ((page == 2) && (kbd_std[key].fShifted == kbd_usr[key].fShifted))       ||
+            ((page == 3) && (kbd_std[key].gShifted == kbd_usr[key].gShifted))       ||
+            ((page == 4) && (kbd_std[key].primaryAim == kbd_usr[key].primaryAim))   ||
+            ((page == 5) && (kbd_std[key].fShiftedAim == kbd_usr[key].fShiftedAim)) ||
+            ((page == 6) && (kbd_std[key].gShiftedAim == kbd_usr[key].gShiftedAim))
            )
         ) {
         greyOutBox(xx*pixelsPerSoftKey, xx*pixelsPerSoftKey+pixelsPerSoftKey, YOFF+yy*SOFTMENU_HEIGHT, YOFF+(yy+1)*SOFTMENU_HEIGHT);
