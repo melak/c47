@@ -806,7 +806,7 @@
       if(tam.mode == TM_NEWMENU) {
         value = 1;
       }
-      else if(tam.function == ITM_XEQ) {
+      else if((tam.function == ITM_XEQ) || (tam.function == ITM_XEQP1)) {
         value = findNamedLabelWithDuplicate(buffer, dupNum);
         if(value == INVALID_VARIABLE) {
           for(int i = 0; i < LAST_ITEM; ++i) {
@@ -847,7 +847,7 @@
               moreInfoOnError("In function _tamProcessInput:", errorMessage, "ignored since IGN1ER was set", NULL);
             #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
           }
-          else {
+          else if ((calcMode != CM_PEM || tam.function != ITM_GTO)){
             displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
             #if(EXTRA_INFO_ON_CALC_ERROR == 1)
               sprintf(errorMessage, "string '%s' is not a named label", buffer);
