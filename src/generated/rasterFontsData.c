@@ -26,7 +26,7 @@
 
 TO_QSPI const font_t numericFont = {
   .id             = 0,
-  .numberOfGlyphs = 329,
+  .numberOfGlyphs = 354,
   .glyphs = {
 
     // 
@@ -39,23 +39,31 @@ TO_QSPI const font_t numericFont = {
 
     // 
     {.charCode=0x0021, .colsBeforeGlyph= 0, .colsGlyph= 5, .colsAfterGlyph= 3, .rowsAboveGlyph= 2, .rowsGlyph=26, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
-     .data="\x70\x70\x70\x70\x70\x70\x70\x70\x70\x70\x70\x70\x70\x70\x70\x70\x70\x00\x00\x00\x00\x70\xf8\xf8\xf8\x70"},
+     .data="\xf8\xf8\xf8\xf8\xf8\xf8\xf8\xf8\xf0\x70\x70\x70\x70\x70\x70\x70\x70\x00\x00\x00\x00\x70\xf8\xf8\xf8\x70"},
 
     // 
-    {.charCode=0x0022, .colsBeforeGlyph= 2, .colsGlyph=10, .colsAfterGlyph= 4, .rowsAboveGlyph= 0, .rowsGlyph=10, .rowsBelowGlyph=22, .rank1=  0, .rank2=  0,
-     .data="\xe3\x80\xf3\xc0\xf3\xc0\xf3\xc0\x71\xc0\x71\xc0\x71\xc0\xf3\xc0\xe3\x80\xc3\x00"},
+    {.charCode=0x0022, .colsBeforeGlyph= 2, .colsGlyph= 9, .colsAfterGlyph= 5, .rowsAboveGlyph= 0, .rowsGlyph=10, .rowsBelowGlyph=22, .rank1=  0, .rank2=  0,
+     .data="\xe3\x80\xe3\x80\xe3\x80\xe3\x80\xe3\x80\xe3\x80\xe3\x80\xe3\x80\xe3\x80\xc3\x00"},
 
     // 
     {.charCode=0x0023, .colsBeforeGlyph= 0, .colsGlyph=14, .colsAfterGlyph= 2, .rowsAboveGlyph= 9, .rowsGlyph=19, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
      .data="\x0e\x1c\x0e\x1c\x0e\x1c\x1c\x38\x1c\x38\xff\xfc\xff\xfc\xff\xfc\x38\x70\x38\x70\x38\x70\xff\xfc\xff\xfc\xff\xfc\x70\xe0\x70\xe0\xe1\xc0\xe1\xc0\xe1\xc0"},
 
     // 
+    {.charCode=0x0024, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph= 2, .rowsGlyph=30, .rowsBelowGlyph= 0, .rank1=  0, .rank2=  0,
+     .data="\x02\x00\x06\x00\x0f\x80\x3f\xc0\x7e\xe0\x66\x70\x66\x30\xe6\x30\xc6\x00\xe6\x00\x66\x00\x76\x00\x3f\x00\x1f\xc0\x07\xe0\x06\xf0\x06\x30\x06\x38\xc6\x38\xc6\x38\xc6\x30\xe6\x30\x66\x70\x7f\xe0\x3f\xc0\x0f\x00\x06\x00\x06\x00\x06\x00\x00\x00"},
+
+    // 
     {.charCode=0x0025, .colsBeforeGlyph= 0, .colsGlyph=14, .colsAfterGlyph= 2, .rowsAboveGlyph= 2, .rowsGlyph=26, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
      .data="\x7c\x0c\xfe\x1c\xc6\x1c\xc6\x38\xc6\x38\xc6\x70\xc6\x70\xfe\xe0\x7c\xe0\x01\xc0\x01\xc0\x03\x80\x03\x80\x07\x00\x07\x00\x0e\x00\x0e\x00\x1c\xf8\x1d\xfc\x39\x8c\x39\x8c\x71\x8c\x71\x8c\xe1\x8c\xe1\xfc\xc0\xf8"},
 
     // 
-    {.charCode=0x0027, .colsBeforeGlyph= 2, .colsGlyph= 4, .colsAfterGlyph=10, .rowsAboveGlyph= 0, .rowsGlyph=10, .rowsBelowGlyph=22, .rank1=  0, .rank2=  0,
-     .data="\xe0\xf0\xf0\xf0\x70\x70\x70\xf0\xe0\xc0"},
+    {.charCode=0x0026, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph= 2, .rowsGlyph=26, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
+     .data="\x0e\x00\x1f\x00\x3f\x00\x31\x80\x31\x80\x31\x80\x31\x80\x31\x80\x33\x00\x1f\x00\x1e\x00\x1c\x00\x3c\x00\x36\x20\x66\x20\x63\x60\xc3\x60\xc1\xe0\xc1\xc0\xc0\xc0\xc0\xe0\xe1\xe0\x63\xf0\x7f\x30\x3e\x30\x1c\x00"},
+
+    // 
+    {.charCode=0x0027, .colsBeforeGlyph= 2, .colsGlyph= 3, .colsAfterGlyph=11, .rowsAboveGlyph= 0, .rowsGlyph=10, .rowsBelowGlyph=22, .rank1=  0, .rank2=  0,
+     .data="\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xc0"},
 
     // 
     {.charCode=0x0028, .colsBeforeGlyph= 0, .colsGlyph= 6, .colsAfterGlyph= 3, .rowsAboveGlyph= 1, .rowsGlyph=28, .rowsBelowGlyph= 3, .rank1=  0, .rank2=  0,
@@ -66,8 +74,8 @@ TO_QSPI const font_t numericFont = {
      .data="\xe0\xe0\x70\x70\x38\x38\x38\x38\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x38\x38\x38\x38\x70\x70\xe0\xe0"},
 
     // 
-    {.charCode=0x002a, .colsBeforeGlyph= 0, .colsGlyph= 9, .colsAfterGlyph= 3, .rowsAboveGlyph=12, .rowsGlyph= 9, .rowsBelowGlyph=11, .rank1=  0, .rank2=  0,
-     .data="\x08\x00\x49\x00\x2a\x00\x1c\x00\xff\x80\x1c\x00\x2a\x00\x49\x00\x08\x00"},
+    {.charCode=0x002a, .colsBeforeGlyph= 0, .colsGlyph=10, .colsAfterGlyph= 3, .rowsAboveGlyph=11, .rowsGlyph=11, .rowsBelowGlyph=10, .rank1=  0, .rank2=  0,
+     .data="\x00\x00\x0c\x00\x0c\x00\x0c\x00\xff\x80\x7f\x80\x1e\x00\x3e\x00\x33\x00\x23\x00\x00\x00"},
 
     // 
     {.charCode=0x002b, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph=12, .rowsGlyph=13, .rowsBelowGlyph= 7, .rank1=  0, .rank2=  0,
@@ -152,6 +160,10 @@ TO_QSPI const font_t numericFont = {
     // 
     {.charCode=0x003f, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph= 2, .rowsGlyph=26, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
      .data="\x0f\x80\x3f\xe0\x7f\xf0\x70\x70\xe0\x38\xe0\x38\x00\x38\x00\x38\x00\x38\x00\x38\x00\x70\x01\xf0\x03\xe0\x03\x80\x07\x00\x07\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07\x00\x0f\x80\x0f\x80\x0f\x80\x07\x00"},
+
+    // 
+    {.charCode=0x0040, .colsBeforeGlyph= 0, .colsGlyph=17, .colsAfterGlyph= 3, .rowsAboveGlyph= 3, .rowsGlyph=29, .rowsBelowGlyph= 0, .rank1=  0, .rank2=  0,
+     .data="\x01\xe0\x00\x07\xf8\x00\x0f\xfc\x00\x1c\x0e\x00\x18\x06\x00\x30\x07\x00\x30\x03\x00\x60\x03\x00\x61\xf9\x80\x63\xf9\x80\x43\x39\x80\xc6\x31\x80\xc6\x31\x80\xc4\x31\x80\xcc\x31\x80\xcc\x31\x80\xcc\x31\x80\xcc\x33\x00\xce\x73\x00\xc6\xf6\x00\x67\xfe\x00\x63\x9c\x00\x60\x00\x00\x30\x00\x00\x38\x00\x00\x1e\x10\x00\x0f\xf8\x00\x07\xf0\x00\x00\x00\x00"},
 
     // 
     {.charCode=0x0041, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph= 2, .rowsGlyph=26, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
@@ -260,6 +272,10 @@ TO_QSPI const font_t numericFont = {
     // 
     {.charCode=0x005b, .colsBeforeGlyph= 0, .colsGlyph= 6, .colsAfterGlyph= 3, .rowsAboveGlyph= 0, .rowsGlyph=30, .rowsBelowGlyph= 2, .rank1=  0, .rank2=  0,
      .data="\xfc\xfc\xfc\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xfc\xfc\xfc"},
+
+    // 
+    {.charCode=0x005c, .colsBeforeGlyph= 0, .colsGlyph=16, .colsAfterGlyph= 0, .rowsAboveGlyph= 2, .rowsGlyph=28, .rowsBelowGlyph= 2, .rank1=  0, .rank2=  0,
+     .data="\xe0\x00\xe0\x00\x70\x00\x70\x00\x38\x00\x38\x00\x1c\x00\x1c\x00\x0e\x00\x0e\x00\x07\x00\x07\x00\x03\x80\x03\x80\x01\xc0\x01\xc0\x00\xe0\x00\xe0\x00\x70\x00\x70\x00\x38\x00\x38\x00\x1c\x00\x1c\x00\x0e\x00\x0e\x00\x07\x00\x07"},
 
     // 
     {.charCode=0x005d, .colsBeforeGlyph= 1, .colsGlyph= 6, .colsAfterGlyph= 0, .rowsAboveGlyph= 0, .rowsGlyph=30, .rowsBelowGlyph= 2, .rank1=  0, .rank2=  0,
@@ -386,6 +402,26 @@ TO_QSPI const font_t numericFont = {
      .data="\x78\x00\xfe\x30\xff\xf0\xc7\xf0\x01\xe0"},
 
     // 
+    {.charCode=0x80a1, .colsBeforeGlyph= 0, .colsGlyph= 5, .colsAfterGlyph= 3, .rowsAboveGlyph= 2, .rowsGlyph=26, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
+     .data="\x70\xf8\xf8\xf8\x70\x00\x00\x00\x00\x70\x70\x70\x70\x70\x70\x70\x70\xf8\xf8\xf8\xf8\xf8\xf8\xf8\xf8\xf8"},
+
+    // 
+    {.charCode=0x80a2, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph= 9, .rowsGlyph=23, .rowsBelowGlyph= 0, .rank1=  0, .rank2=  0,
+     .data="\x00\x00\x03\x00\x03\x00\x03\x00\x0f\xe0\x1f\xf0\x3f\xf0\x7b\x00\x73\x00\xe3\x00\xe3\x00\xe3\x00\xe3\x00\xe3\x00\x73\x00\x7b\x00\x3f\xf0\x1f\xf0\x07\xc0\x03\x00\x03\x00\x03\x00\x00\x00"},
+
+    // 
+    {.charCode=0x80a3, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph= 2, .rowsGlyph=26, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
+     .data="\x03\xc0\x0f\xe0\x1f\xf0\x1e\x78\x3c\x10\x38\x00\x38\x00\x38\x00\x38\x00\x38\x00\x38\x00\x38\x00\xff\xc0\xff\xc0\xff\xc0\x1c\x00\x1c\x00\x1c\x00\x1c\x00\x1c\x00\x18\x00\x38\x00\x78\x00\xff\xf8\xff\xf8\xff\xf8"},
+
+    // 
+    {.charCode=0x80a5, .colsBeforeGlyph= 0, .colsGlyph=14, .colsAfterGlyph= 2, .rowsAboveGlyph= 2, .rowsGlyph=26, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
+     .data="\xe0\x38\x60\x38\x70\x30\x70\x70\x30\x60\x38\x60\x38\xe0\x18\xc0\x1c\xc0\x0d\xc0\x0d\x80\x0f\x80\x7f\xf0\x7f\xf8\x07\x00\x07\x00\x07\x00\x7f\xf8\x7f\xf8\x07\x00\x07\x00\x07\x00\x07\x00\x07\x00\x07\x00\x00\x00"},
+
+    // 
+    {.charCode=0x80a7, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph= 1, .rowsGlyph=27, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
+     .data="\x00\x00\x0f\x80\x1f\xc0\x38\xe0\x30\x60\x30\x70\x38\x20\x3c\x00\x3e\x00\x77\x80\xe3\xc0\xc1\xe0\xc0\x70\xe0\x38\xf0\x38\x78\x18\x3c\x30\x0f\x70\x07\xe0\x03\xc0\x00\xe0\x60\xe0\x60\x60\x70\xe0\x39\xe0\x3f\xc0\x0f\x00"},
+
+    // 
     {.charCode=0x80b0, .colsBeforeGlyph= 2, .colsGlyph=10, .colsAfterGlyph= 4, .rowsAboveGlyph= 0, .rowsGlyph=10, .rowsBelowGlyph=22, .rank1=  0, .rank2=  0,
      .data="\x3f\x00\x7f\x80\xff\xc0\xe1\xc0\xe1\xc0\xe1\xc0\xe1\xc0\xff\xc0\x7f\x80\x3f\x00"},
 
@@ -402,8 +438,20 @@ TO_QSPI const font_t numericFont = {
      .data="\x70\xf8\xf8\xf8\x70"},
 
     // 
+    {.charCode=0x80bf, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph= 2, .rowsGlyph=26, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
+     .data="\x07\x00\x0f\x80\x0f\x80\x0f\x80\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07\x00\x07\x00\x07\x00\x03\x80\x03\xe0\x01\xf0\x00\x70\x00\x38\x00\x38\x00\x38\x00\x38\xe0\x38\xe0\x38\x70\x70\x7f\xf0\x3f\xe0\x0f\x80"},
+
+    // 
     {.charCode=0x80d7, .colsBeforeGlyph= 0, .colsGlyph=11, .colsAfterGlyph= 4, .rowsAboveGlyph=13, .rowsGlyph=11, .rowsBelowGlyph= 8, .rank1=  0, .rank2=  0,
      .data="\xc0\x60\xe0\xe0\x71\xc0\x3b\x80\x1f\x00\x0e\x00\x1f\x00\x3b\x80\x71\xc0\xe0\xe0\xc0\x60"},
+
+    // 
+    {.charCode=0x80d8, .colsBeforeGlyph= 0, .colsGlyph=15, .colsAfterGlyph= 1, .rowsAboveGlyph= 1, .rowsGlyph=27, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
+     .data="\x00\x00\x0f\xdc\x3f\xfc\x7f\xf8\x78\x78\xf0\x3c\xe0\x7c\xe0\x7c\xe0\xfc\xe0\xdc\xe1\xdc\xe1\x9c\xe3\x9c\xe3\x1c\xe7\x1c\xe6\x1c\xee\x1c\xec\x1c\xfc\x1c\xfc\x1c\xf8\x1c\xf8\x1c\xf0\x3c\x78\x78\x7f\xf8\xff\xf0\xcf\xc0"},
+
+    // 
+    {.charCode=0x80f7, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph=12, .rowsGlyph=13, .rowsBelowGlyph= 7, .rank1=  0, .rank2=  0,
+     .data="\x07\x00\x07\x00\x07\x00\x00\x00\x00\x00\xff\xf8\xff\xf8\xff\xf8\x00\x00\x00\x00\x07\x00\x07\x00\x07\x00"},
 
     // 
     {.charCode=0x8177, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph= 4, .rowsGlyph=28, .rowsBelowGlyph= 0, .rank1=  0, .rank2=  0,
@@ -679,11 +727,19 @@ TO_QSPI const font_t numericFont = {
 
     // 
     {.charCode=0xa018, .colsBeforeGlyph= 2, .colsGlyph= 4, .colsAfterGlyph= 2, .rowsAboveGlyph= 0, .rowsGlyph=10, .rowsBelowGlyph=22, .rank1=  0, .rank2=  0,
-     .data="\x70\xf0\xf0\xf0\xe0\xe0\xe0\xf0\x70\x30"},
+     .data="\x30\x70\xf0\xe0\xe0\xe0\xf0\xf0\xf0\x70"},
 
     // 
-    {.charCode=0xa019, .colsBeforeGlyph= 2, .colsGlyph= 4, .colsAfterGlyph= 2, .rowsAboveGlyph= 0, .rowsGlyph=10, .rowsBelowGlyph=22, .rank1=  0, .rank2=  0,
+    {.charCode=0xa019, .colsBeforeGlyph= 2, .colsGlyph= 4, .colsAfterGlyph=10, .rowsAboveGlyph= 0, .rowsGlyph=10, .rowsBelowGlyph=22, .rank1=  0, .rank2=  0,
      .data="\xe0\xf0\xf0\xf0\x70\x70\x70\xf0\xe0\xc0"},
+
+    // 
+    {.charCode=0xa01c, .colsBeforeGlyph= 2, .colsGlyph=10, .colsAfterGlyph= 4, .rowsAboveGlyph= 0, .rowsGlyph=10, .rowsBelowGlyph=22, .rank1=  0, .rank2=  0,
+     .data="\x30\xc0\x71\xc0\xf3\xc0\xe3\x80\xe3\x80\xe3\x80\xf3\xc0\xf3\xc0\xf3\xc0\x71\xc0"},
+
+    // 
+    {.charCode=0xa01d, .colsBeforeGlyph= 2, .colsGlyph=10, .colsAfterGlyph= 4, .rowsAboveGlyph= 0, .rowsGlyph=10, .rowsBelowGlyph=22, .rank1=  0, .rank2=  0,
+     .data="\xe3\x80\xf3\xc0\xf3\xc0\xf3\xc0\x71\xc0\x71\xc0\x71\xc0\xf3\xc0\xe3\x80\xc3\x00"},
 
     // 
     {.charCode=0xa024, .colsBeforeGlyph= 3, .colsGlyph= 3, .colsAfterGlyph= 7, .rowsAboveGlyph=21, .rowsGlyph= 4, .rowsBelowGlyph= 7, .rank1=  0, .rank2=  0,
@@ -746,8 +802,8 @@ TO_QSPI const font_t numericFont = {
      .data="\xff\xe0\xff\xe0\xff\xe0"},
 
     // 
-    {.charCode=0xa08f, .colsBeforeGlyph= 0, .colsGlyph= 9, .colsAfterGlyph= 4, .rowsAboveGlyph= 0, .rowsGlyph= 9, .rowsBelowGlyph=23, .rank1=  0, .rank2=  0,
-     .data="\x08\x00\x49\x00\x2a\x00\x1c\x00\xff\x80\x1c\x00\x2a\x00\x49\x00\x08\x00"},
+    {.charCode=0xa08f, .colsBeforeGlyph= 0, .colsGlyph=10, .colsAfterGlyph= 3, .rowsAboveGlyph= 0, .rowsGlyph=10, .rowsBelowGlyph=22, .rank1=  0, .rank2=  0,
+     .data="\x0c\x00\x0c\x00\x0c\x00\xff\x80\x7f\x80\x1e\x00\x3e\x00\x33\x00\x23\x00\x00\x00"},
 
     // 
     {.charCode=0xa09e, .colsBeforeGlyph= 0, .colsGlyph=12, .colsAfterGlyph= 1, .rowsAboveGlyph= 1, .rowsGlyph= 8, .rowsBelowGlyph=23, .rank1=  0, .rank2=  0,
@@ -756,6 +812,10 @@ TO_QSPI const font_t numericFont = {
     // 
     {.charCode=0xa09f, .colsBeforeGlyph= 0, .colsGlyph=12, .colsAfterGlyph= 1, .rowsAboveGlyph=23, .rowsGlyph= 8, .rowsBelowGlyph= 1, .rank1=  0, .rank2=  0,
      .data="\x39\xc0\x7f\xe0\xef\x70\xc6\x30\xc6\x30\xef\x70\x7f\xe0\x39\xc0"},
+
+    // 
+    {.charCode=0xa0ac, .colsBeforeGlyph= 0, .colsGlyph=14, .colsAfterGlyph= 2, .rowsAboveGlyph= 2, .rowsGlyph=26, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
+     .data="\x01\xc0\x07\xf0\x0f\xf8\x0e\x38\x1c\x10\x1c\x00\x38\x00\x38\x00\x38\x00\xff\xe0\xff\xe0\xff\xe0\x30\x00\x30\x00\xff\xc0\xff\xc0\xff\xc0\x38\x00\x38\x00\x38\x00\x1c\x00\x1c\x18\x0f\x38\x0f\xf0\x07\xe0\x01\xc0"},
 
     // 
     {.charCode=0xa102, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph= 2, .rowsGlyph=26, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
@@ -768,6 +828,26 @@ TO_QSPI const font_t numericFont = {
     // 
     {.charCode=0xa10f, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph= 5, .rowsGlyph=23, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
      .data="\x38\x00\x38\x00\x38\xe0\x3b\xe0\x3f\xe0\x3f\x80\xfe\x00\xf8\x00\xf9\xc0\x3b\xf0\x3f\xf0\x3e\x78\x3c\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38"},
+
+    // 
+    {.charCode=0xa110, .colsBeforeGlyph= 0, .colsGlyph= 3, .colsAfterGlyph= 3, .rowsAboveGlyph= 2, .rowsGlyph=26, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
+     .data="\xe0\xe0\xe0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xe0\xe0\xe0"},
+
+    // 
+    {.charCode=0xa115, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph= 2, .rowsGlyph=26, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
+     .data="\xc0\x38\xc0\x38\xe0\x38\xe0\x38\xf0\x38\xf0\x38\xf8\x38\xb8\x38\xbc\x38\xbc\x38\xbe\x38\xae\x38\xaf\x38\xa7\x38\xa7\xb8\xa3\xb8\xa3\xf8\xa1\xf8\xa1\xf8\xa0\xf8\xa0\xf8\xa0\x78\xa0\x78\xa0\x38\xa0\x38\xa0\x18"},
+
+    // 
+    {.charCode=0xa11a, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph= 2, .rowsGlyph=26, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
+     .data="\x0f\x80\x3f\xe0\x7f\xf0\x74\x70\xe4\x38\xe4\x38\xe4\x38\xe4\x38\xe4\x38\xe4\x38\xe4\x38\xe4\x38\xe4\x38\xe4\x38\xe4\x38\xe4\x38\xe4\x38\xe4\x38\xe7\x38\xe7\xb8\xe7\xd8\xe7\xe0\x75\xf0\x7e\xf8\x3f\x78\x0f\x38"},
+
+    // 
+    {.charCode=0xa11d, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph= 2, .rowsGlyph=26, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
+     .data="\xff\x80\xff\xe0\xff\xf0\x50\x70\x50\x38\x50\x38\x50\x38\x50\x38\x50\x38\x50\x38\x50\x70\x5f\xf0\x5f\xe0\x5f\x80\x57\x00\x57\x80\x53\x80\x53\xc0\x51\xc0\x51\xe0\x50\xe0\x50\xf0\x50\x70\x50\x78\x50\x38\x50\x38"},
+
+    // 
+    {.charCode=0xa124, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph= 2, .rowsGlyph=26, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
+     .data="\xff\xf8\xff\xf8\xff\xf8\x00\x38\x00\x68\x00\x68\x00\xd0\x00\xd0\x01\xb0\x01\xa0\x03\x60\x03\x40\x06\xc0\x06\x80\x0d\x80\x0d\x00\x1b\x00\x1a\x00\x36\x00\x34\x00\x6c\x00\x68\x00\x58\x00\xdf\xf8\xff\xf8\xff\xf8"},
 
     // 
     {.charCode=0xa147, .colsBeforeGlyph= 0, .colsGlyph=15, .colsAfterGlyph= 3, .rowsAboveGlyph= 9, .rowsGlyph=19, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
@@ -850,6 +930,18 @@ TO_QSPI const font_t numericFont = {
      .data="\x02\x00\x02\x00\x03\x80\x03\x80\x03\xc0\xff\xe0\xff\xe0\xff\xf8\x00\x3c\x00\x3c\xff\xf8\xff\xf0\xff\xe0\x03\xc0\x03\xc0\x03\x80\x02\x00\x02\x00"},
 
     // 
+    {.charCode=0xa205, .colsBeforeGlyph= 0, .colsGlyph=12, .colsAfterGlyph= 3, .rowsAboveGlyph=13, .rowsGlyph=16, .rowsBelowGlyph= 3, .rank1=  0, .rank2=  0,
+     .data="\x1f\xb0\x7f\xe0\x7f\xe0\xf0\xf0\xe1\xf0\xe3\x70\xe7\x70\xe6\x70\xec\x70\xf8\x70\xf8\x70\xf0\xf0\x7f\xe0\xff\xe0\xdf\x80\x00\x00"},
+
+    // 
+    {.charCode=0xa20f, .colsBeforeGlyph= 0, .colsGlyph=16, .colsAfterGlyph= 0, .rowsAboveGlyph= 0, .rowsGlyph=32, .rowsBelowGlyph= 0, .rank1=  0, .rank2=  0,
+     .data="\xff\xff\xff\xff\xff\xff\xff\xff\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e\x70\x0e"},
+
+    // 
+    {.charCode=0xa211, .colsBeforeGlyph= 0, .colsGlyph=15, .colsAfterGlyph= 1, .rowsAboveGlyph= 0, .rowsGlyph=32, .rowsBelowGlyph= 0, .rank1=  0, .rank2=  0,
+     .data="\xff\xfe\xff\xfe\xff\xfe\xff\xfe\xf8\x00\xfc\x00\x7c\x00\x3e\x00\x3f\x00\x1f\x00\x0f\x80\x07\x80\x07\xc0\x03\xe0\x01\xe0\x01\xf0\x01\xf0\x01\xf0\x03\xe0\x07\xc0\x07\xc0\x0f\x80\x1f\x00\x1f\x00\x3e\x00\x7c\x00\xfc\x00\xf8\x00\xff\xfe\xff\xfe\xff\xfe\xff\xfe"},
+
+    // 
     {.charCode=0xa219, .colsBeforeGlyph= 0, .colsGlyph= 7, .colsAfterGlyph= 1, .rowsAboveGlyph=17, .rowsGlyph= 7, .rowsBelowGlyph= 8, .rank1=  0, .rank2=  0,
      .data="\x00\x78\xfc\xfc\xfc\xfc\x78"},
 
@@ -918,6 +1010,10 @@ TO_QSPI const font_t numericFont = {
      .data="\x00\x78\xfc\xfc\xfc\xfc\x78"},
 
     // 
+    {.charCode=0xa393, .colsBeforeGlyph= 0, .colsGlyph=14, .colsAfterGlyph= 2, .rowsAboveGlyph=16, .rowsGlyph= 7, .rowsBelowGlyph= 9, .rank1=  0, .rank2=  0,
+     .data="\x00\x00\xff\xfc\xff\xfc\x00\x00\x00\x00\xcc\xcc\xcc\xcc"},
+
+    // 
     {.charCode=0xa399, .colsBeforeGlyph= 0, .colsGlyph=14, .colsAfterGlyph= 2, .rowsAboveGlyph=11, .rowsGlyph=17, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
      .data="\x3f\xf0\x20\x10\x2f\xd0\x20\x10\x2f\xd0\x20\x10\xef\xdc\xa0\x14\xaf\xd4\xa0\x14\xaf\xd4\xbf\xf4\x80\x04\xff\xfc\xff\xfc\xff\xfc\xff\xfc"},
 
@@ -944,6 +1040,10 @@ TO_QSPI const font_t numericFont = {
     // 
     {.charCode=0xa3a6, .colsBeforeGlyph= 1, .colsGlyph= 6, .colsAfterGlyph= 0, .rowsAboveGlyph= 0, .rowsGlyph=30, .rowsBelowGlyph= 2, .rank1=  0, .rank2=  0,
      .data="\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\x1c\xfc\xfc\xfc"},
+
+    // 
+    {.charCode=0xa3e6, .colsBeforeGlyph= 0, .colsGlyph=16, .colsAfterGlyph= 0, .rowsAboveGlyph=11, .rowsGlyph=17, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
+     .data="\x0c\x00\x3e\x00\x37\x00\x73\x00\x63\x00\x63\x00\x61\x80\x7f\xff\x7f\xff\x01\x83\x01\x83\x01\xc7\x00\xc6\x00\xcc\x00\xfc\x00\x78\x00\x00"},
 
     // 
     {.charCode=0xa427, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph=23, .rowsGlyph= 5, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
@@ -1347,7 +1447,7 @@ TO_QSPI const font_t numericFont = {
 };
 TO_QSPI const font_t standardFont = {
   .id             = 1,
-  .numberOfGlyphs = 636,
+  .numberOfGlyphs = 643,
   .glyphs = {
 
     // uni001D
@@ -2846,6 +2946,10 @@ TO_QSPI const font_t standardFont = {
     {.charCode=0xa10f, .colsBeforeGlyph= 0, .colsGlyph=10, .colsAfterGlyph= 2, .rowsAboveGlyph= 3, .rowsGlyph=13, .rowsBelowGlyph= 4, .rank1=160, .rank2=168,
      .data="\x30\x00\x37\x00\x3f\x00\xfc\x00\xf0\x00\x37\x00\x3f\x80\x39\xc0\x30\xc0\x30\xc0\x30\xc0\x30\xc0\x30\xc0"},
 
+    // uni2110
+    {.charCode=0xa110, .colsBeforeGlyph= 0, .colsGlyph= 3, .colsAfterGlyph= 8, .rowsAboveGlyph= 4, .rowsGlyph=12, .rowsBelowGlyph= 4, .rank1=169, .rank2=191,
+     .data="\xe0\xe0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xe0\xe0"},
+
     // uni2115
     {.charCode=0xa115, .colsBeforeGlyph= 0, .colsGlyph= 9, .colsAfterGlyph= 2, .rowsAboveGlyph= 4, .rowsGlyph=12, .rowsBelowGlyph= 4, .rank1=221, .rank2=233,
      .data="\xe1\x80\xe1\x80\xf1\x80\xf1\x80\xb9\x80\xb9\x80\xad\x80\xad\x80\xa7\x80\xa7\x80\xa3\x80\xa3\x80"},
@@ -2937,6 +3041,10 @@ TO_QSPI const font_t standardFont = {
     // arrowdown
     {.charCode=0xa193, .colsBeforeGlyph= 0, .colsGlyph= 8, .colsAfterGlyph= 2, .rowsAboveGlyph= 4, .rowsGlyph=12, .rowsBelowGlyph= 4, .rank1=520, .rank2=520,
      .data="\x18\x18\x18\x18\xdb\xdb\x7e\x7e\x3c\x3c\x18\x18"},
+
+    // arrowboth
+    {.charCode=0xa194, .colsBeforeGlyph= 0, .colsGlyph=14, .colsAfterGlyph= 0, .rowsAboveGlyph= 6, .rowsGlyph=10, .rowsBelowGlyph= 4, .rank1=520, .rank2=520,
+     .data="\x0c\xc0\x1c\xe0\x38\x70\x70\x38\xff\xfc\xff\xfc\x70\x38\x38\x70\x1c\xe0\x0c\xc0"},
 
     // arrowupdn
     {.charCode=0xa195, .colsBeforeGlyph= 0, .colsGlyph= 8, .colsAfterGlyph= 2, .rowsAboveGlyph= 1, .rowsGlyph=19, .rowsBelowGlyph= 0, .rank1=520, .rank2=524,
@@ -3047,8 +3155,12 @@ TO_QSPI const font_t standardFont = {
      .data="\xe0\xa0\xa0\xa0\xa0\xe0"},
 
     // product
-    {.charCode=0xa20f, .colsBeforeGlyph= 0, .colsGlyph= 9, .colsAfterGlyph= 2, .rowsAboveGlyph= 4, .rowsGlyph=12, .rowsBelowGlyph= 4, .rank1=424, .rank2=425,
-     .data="\xff\x80\xff\x80\x63\x00\x63\x00\x63\x00\x63\x00\x63\x00\x63\x00\x63\x00\x63\x00\x63\x00\x63\x00"},
+    {.charCode=0xa20f, .colsBeforeGlyph= 0, .colsGlyph=10, .colsAfterGlyph= 1, .rowsAboveGlyph= 1, .rowsGlyph=18, .rowsBelowGlyph= 1, .rank1=424, .rank2=425,
+     .data="\xff\xc0\xff\xc0\xff\xc0\x61\x80\x61\x80\x61\x80\x61\x80\x61\x80\x61\x80\x61\x80\x61\x80\x61\x80\x61\x80\x61\x80\x61\x80\x61\x80\x61\x80\x61\x80"},
+
+    // summation
+    {.charCode=0xa211, .colsBeforeGlyph= 0, .colsGlyph=10, .colsAfterGlyph= 1, .rowsAboveGlyph= 1, .rowsGlyph=18, .rowsBelowGlyph= 1, .rank1=429, .rank2=430,
+     .data="\xff\xc0\xff\xc0\xff\xc0\xe0\x00\x70\x00\x38\x00\x1c\x00\x0e\x00\x07\x00\x07\x00\x0e\x00\x1c\x00\x38\x00\x70\x00\xe0\x00\xff\xc0\xff\xc0\xff\xc0"},
 
     // uni2213
     {.charCode=0xa213, .colsBeforeGlyph= 0, .colsGlyph= 8, .colsAfterGlyph= 2, .rowsAboveGlyph= 4, .rowsGlyph=11, .rowsBelowGlyph= 5, .rank1=469, .rank2=473,
@@ -3107,12 +3219,12 @@ TO_QSPI const font_t standardFont = {
      .data="\x30\x30\x30\x30\x30\x30\x30\x34\x3c\x38\x70\xf0\xb0\x30\x30\x30\x30\x30\x30\x30"},
 
     // uni2225
-    {.charCode=0xa225, .colsBeforeGlyph= 0, .colsGlyph= 6, .colsAfterGlyph= 2, .rowsAboveGlyph= 0, .rowsGlyph=20, .rowsBelowGlyph= 0, .rank1=533, .rank2=536,
-     .data="\xcc\xcc\xcc\xcc\xcc\xcc\xcc\xcc\xcc\xcc\xcc\xcc\xcc\xcc\xcc\xcc\xcc\xcc\xcc\xcc"},
+    {.charCode=0xa225, .colsBeforeGlyph= 0, .colsGlyph=10, .colsAfterGlyph= 2, .rowsAboveGlyph= 0, .rowsGlyph=20, .rowsBelowGlyph= 0, .rank1=533, .rank2=536,
+     .data="\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0"},
 
     // uni2226
-    {.charCode=0xa226, .colsBeforeGlyph= 0, .colsGlyph=10, .colsAfterGlyph= 2, .rowsAboveGlyph= 0, .rowsGlyph=20, .rowsBelowGlyph= 0, .rank1=533, .rank2=537,
-     .data="\x33\x00\x33\x00\x33\x00\x33\x00\x33\x00\x33\x40\x33\xc0\x33\x80\x37\x00\x3f\x00\x3b\x00\x73\x00\xf3\x00\xb3\x00\x33\x00\x33\x00\x33\x00\x33\x00\x33\x00\x33\x00"},
+    {.charCode=0xa226, .colsBeforeGlyph= 0, .colsGlyph=12, .colsAfterGlyph= 0, .rowsAboveGlyph= 0, .rowsGlyph=20, .rowsBelowGlyph= 0, .rank1=533, .rank2=537,
+     .data="\x30\xc0\x30\xc0\x30\xc0\x30\xc0\x30\xc0\x30\xd0\x30\xf0\x30\xe0\x31\xc0\x33\xc0\x36\xc0\x3c\xc0\x38\xc0\x70\xc0\xf0\xc0\xb0\xc0\x30\xc0\x30\xc0\x30\xc0\x30\xc0"},
 
     // logicaland
     {.charCode=0xa227, .colsBeforeGlyph= 0, .colsGlyph= 6, .colsAfterGlyph= 2, .rowsAboveGlyph= 7, .rowsGlyph= 9, .rowsBelowGlyph= 4, .rank1=527, .rank2=527,
@@ -3202,6 +3314,14 @@ TO_QSPI const font_t standardFont = {
     {.charCode=0xa26b, .colsBeforeGlyph= 0, .colsGlyph=11, .colsAfterGlyph= 2, .rowsAboveGlyph= 6, .rowsGlyph=10, .rowsBelowGlyph= 4, .rank1=538, .rank2=551,
      .data="\xc6\x00\xe7\x00\x73\x80\x39\xc0\x1c\xe0\x1c\xe0\x39\xc0\x73\x80\xe7\x00\xc6\x00"},
 
+    // propersubset
+    {.charCode=0xa282, .colsBeforeGlyph= 0, .colsGlyph= 9, .colsAfterGlyph= 2, .rowsAboveGlyph= 7, .rowsGlyph= 9, .rowsBelowGlyph= 4, .rank1=582, .rank2=590,
+     .data="\x3f\x80\x7f\x80\xe0\x00\xc0\x00\xc0\x00\xc0\x00\xe0\x00\x7f\x80\x3f\x80"},
+
+    // notsubset
+    {.charCode=0xa284, .colsBeforeGlyph= 0, .colsGlyph= 9, .colsAfterGlyph= 2, .rowsAboveGlyph= 4, .rowsGlyph=14, .rowsBelowGlyph= 2, .rank1=582, .rank2=590,
+     .data="\x00\x00\x03\x00\x03\x00\x3f\x80\x7f\x80\xe6\x00\xc6\x00\xc6\x00\xcc\x00\xec\x00\x7f\x80\x3f\x80\x18\x00\x18\x00"},
+
     // circleplus
     {.charCode=0xa295, .colsBeforeGlyph= 0, .colsGlyph= 9, .colsAfterGlyph= 2, .rowsAboveGlyph=11, .rowsGlyph= 9, .rowsBelowGlyph= 0, .rank1=572, .rank2=572,
      .data="\x3e\x00\x6b\x00\xc9\x80\x88\x80\xff\x80\x88\x80\xc9\x80\x6b\x00\x3e\x00"},
@@ -3278,6 +3398,10 @@ TO_QSPI const font_t standardFont = {
     {.charCode=0xa31b, .colsBeforeGlyph= 0, .colsGlyph=11, .colsAfterGlyph= 2, .rowsAboveGlyph= 1, .rowsGlyph=19, .rowsBelowGlyph= 0, .rank1=582, .rank2=583,
      .data="\xff\xe0\x80\x20\x80\x20\x80\x20\x8e\x20\xdf\x60\x6e\xc0\x35\x80\x1b\x00\x0a\x00\x1b\x00\x31\x80\x60\xc0\xce\x60\xbf\xa0\xff\xe0\xff\xe0\xff\xe0\xff\xe0"},
 
+    // uni2393
+    {.charCode=0xa393, .colsBeforeGlyph= 0, .colsGlyph= 9, .colsAfterGlyph= 3, .rowsAboveGlyph= 9, .rowsGlyph= 5, .rowsBelowGlyph= 6, .rank1=582, .rank2=590,
+     .data="\xff\x80\xff\x80\x00\x00\x94\x80\x00\x00"},
+
     // uni2399
     {.charCode=0xa399, .colsBeforeGlyph= 0, .colsGlyph=12, .colsAfterGlyph= 2, .rowsAboveGlyph= 2, .rowsGlyph=14, .rowsBelowGlyph= 4, .rank1=582, .rank2=582,
      .data="\x3f\xc0\x20\x40\x2f\x40\x20\x40\x2f\x40\x20\x40\xef\x70\xa0\x50\xaf\x50\xbf\xd0\x80\x10\xff\xf0\xff\xf0\xff\xf0"},
@@ -3305,6 +3429,10 @@ TO_QSPI const font_t standardFont = {
     // uni23A6
     {.charCode=0xa3a6, .colsBeforeGlyph= 0, .colsGlyph= 6, .colsAfterGlyph= 1, .rowsAboveGlyph= 0, .rowsGlyph=20, .rowsBelowGlyph= 0, .rank1=451, .rank2=458,
      .data="\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\xfc\xfc"},
+
+    // uni23E6
+    {.charCode=0xa3e6, .colsBeforeGlyph= 0, .colsGlyph=10, .colsAfterGlyph= 2, .rowsAboveGlyph= 7, .rowsGlyph= 9, .rowsBelowGlyph= 4, .rank1=582, .rank2=590,
+     .data="\x00\x00\x3c\x00\x64\x00\x66\x00\x7f\xc0\x04\x40\x06\xc0\x03\x80\x00\x00"},
 
     // uni23F1
     {.charCode=0xa3f1, .colsBeforeGlyph= 0, .colsGlyph=14, .colsAfterGlyph= 0, .rowsAboveGlyph= 1, .rowsGlyph=16, .rowsBelowGlyph= 3, .rank1=582, .rank2=585,

@@ -1495,7 +1495,7 @@ void angle34ToDisplayString2(const real34_t *angle34, uint8_t mode, char *displa
     if(RADIX34_MARK_STRING[1]!=1) {strcpy(tt,RADIX34_MARK_STRING);}
     else {tt[0] = RADIX34_MARK_STRING[0]; tt[1] = 0;}
 
-    sprintf(displayString, "%s%s" STD_DEGREE "%s%" PRIu32 STD_QUOTE "%s%" PRIu32 "%s%02" PRIu32 STD_DOUBLE_QUOTE,
+    sprintf(displayString, "%s%s" STD_DEGREE "%s%" PRIu32 STD_RIGHT_SINGLE_QUOTE "%s%" PRIu32 "%s%02" PRIu32 STD_RIGHT_DOUBLE_QUOTE,
                             sign ? "-" : " ",
                               degStr,         m < 10 ? " " : "",
                                                 m,                   s < 10 ? " " : "",

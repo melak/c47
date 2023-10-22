@@ -618,14 +618,16 @@
         clearSystemFlag(FLAG_USB);
       }
 
-      if(get_vbat() < 2000) {
+      int tmpVbat = updateVbatIntegrated();
+
+      if(tmpVbat < 2000 ) {// || vbatIntegrated < 2000) { //temporary disable shutdown
         if(!getSystemFlag(FLAG_LOWBAT)) {
           setSystemFlag(FLAG_LOWBAT);
           showHideUsbLowBattery();
         }
         SET_ST(STAT_PGM_END);
       }
-      else if(get_vbat() < 2500) {
+      else if(tmpVbat < 2500 || vbatIntegrated < 2500) {
         if(!getSystemFlag(FLAG_LOWBAT)) {
           setSystemFlag(FLAG_LOWBAT);
           showHideUsbLowBattery();
