@@ -165,10 +165,6 @@ void tanReal(void) {
 
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &tan);
 
-    if(xAngularMode == amNone && currentAngularMode == amMultPi) {
-      realMultiply(&tan, const_pi, &tan, &ctxtReal75);
-    }
-
     WP34S_Cvt2RadSinCosTan(&tan, (xAngularMode == amNone ? currentAngularMode : xAngularMode), &sin, &cos, &tan, &ctxtReal75);
     if(realIsZero(&sin)) {
        realSetPositiveSign(&tan);

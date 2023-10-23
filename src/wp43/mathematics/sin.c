@@ -137,10 +137,6 @@ void sinReal(void) {
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
     xAngularMode = getRegisterAngularMode(REGISTER_X);
 
-    if(xAngularMode == amNone && currentAngularMode == amMultPi) {
-      realMultiply(&x, const_pi_75, &x, &ctxtReal75);
-    }
-
     WP34S_Cvt2RadSinCosTan(&x, (xAngularMode == amNone ? currentAngularMode : xAngularMode), &x, NULL, NULL, &ctxtReal75);
     convertRealToReal34ResultRegister(&x, REGISTER_X);
   }
