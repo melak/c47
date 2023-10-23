@@ -749,6 +749,11 @@ void stringToASCII(const char *str, char *ascii) {
         ascii++;
         *ascii = '<'; //to change to ><
       } else
+     if(a1==(uint8_t)(STD_SUP_pir[0]) && a2==(uint8_t)(STD_SUP_pir[1])) {
+        *ascii = 'p'; //to change to ><
+        ascii++;
+        *ascii = 'i'; //to change to ><
+      } else
       //diverse
       if(a1==(uint8_t)(STD_RIGHT_SINGLE_QUOTE[0]) && a2==(uint8_t)(STD_RIGHT_SINGLE_QUOTE[1])) *ascii = '\''; else
       if(a1==(uint8_t)(STD_RIGHT_DOUBLE_QUOTE[0]) && a2==(uint8_t)(STD_RIGHT_DOUBLE_QUOTE[1])) *ascii = '\"'; else

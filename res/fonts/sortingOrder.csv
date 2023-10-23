@@ -627,6 +627,7 @@
 `U+03E0`,448,600,`Greek Letter Sampi Unicode Character`,,`Ϡ`,`Ϡ`,`U+03E0`
 `U+03E1`,448,600,`Greek Small Letter Sampi Unicode Character`,,`ϡ`,`Ϡ`,`U+03E0`
 `U+21D2`,512,512,`Rightwards Double Arrow`,`Convert to XXX`,`⇒`,`⇒`,`U+2192`
+`U+21D4`,512,512,`Left Right Double Arrow`,`LR Double Arrow`,`⇔`,`⇔`,`U+2192`
 `U+267A`,512,512,`Recycling Symbol For Generic Materials`,`Cyclic`,`♺`,`♺`,`U+267A`
 `U+02bc`,367,512,`modifier letter apostrophe`,`Narrow Apostrophe`,`ʼ`,`ʼ`,`U+02bc`
 `U+2788`,9,512,`fullwidth comma`,`wide comma`,`，`,`，`,`U+2788`
@@ -654,5 +655,8 @@
 `U+24FD`,51,51,`Double Circled Digit NINE`,`Digit HP 9`,`⓽`,`9`,`U+0039`
 `U+24FE`,51,51,`Double Circled Digit TEN`,`HP MINUS`,`-`,`-`,`U+002d`
 `U+24FF`,51,51,`Negative Circled Digit Zero`,`HP PLUS`,`+`,`+`,`U+002b`
+`U+2dea`,424,426,`Sub Pi`,`Sub pi`,`π`,`π`,`U+03a0`
+`U+2deb`,424,426,`Sup Pi`,`Sup pi`,`π`,`π`,`U+03a0`
+`U+2dec`,424,426,`pi radians`,`pi r`,`π`,`π`,`U+03a0`
 `U+001D`,1,9,`INFORMATION SEPARATOR THREE`,,,,`U+0020`
 ,,,,,,,

@@ -396,6 +396,11 @@
 #define STD_NOT_SUBSET_OF             "\xA2\x84" //2284
 
 
+#define STD_SUB_pi                    "\xad\xea" //2DEA
+#define STD_SUP_pi                    "\xad\xeb" //2DEB
+#define STD_SUP_pir                   "\xad\xec" //2DEC
+
+
 #define STD_HP_PERIOD                    "\xa0\x24"     // 2024
 #define STD_HP_0                         "\xa4\xea"     // 24ea
 #define STD_HP_1                         "\xa4\xf5"     // 24f5
@@ -705,4 +710,5 @@
 #define STD_SUB_Z                     "\xa4\xe9"
 #define STD_CHECK_MARK                "\xa7\x13"
 #define STD_RIGHT_DOUBLE_ARROW        "\xa1\xD2"    //JM
+#define STD_LEFT_RIGHT_DOUBLE_ARROW   "\xa1\xD4"    //JM
 #endif // !FONTS_H
