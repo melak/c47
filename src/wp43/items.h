@@ -1175,8 +1175,8 @@
 #define ITM_SUB_x                   1139
 #define ITM_SUB_y                   1140
 #define ITM_SUB_z                   1141
-#define ITM_DELITM_PROG             1142
-#define ITM_DELITM_MENU             1143
+#define ITM_SUB_pi                  1142
+#define ITM_SUP_pi                  1143
 #define ITM_LEFT_DARROW             1144
 #define ITM_UP_DARROW               1145
 #define ITM_RIGHT_DARROW            1146
@@ -1618,8 +1618,8 @@
 #define ITM_RESET                   1568
 #define ITM_REtoCX                  1569
 #define ITM_REexIM                  1570
-#define ITM_1571                    1571
-#define ITM_1572                    1572
+#define ITM_DELITM_PROG             1571
+#define ITM_DELITM_MENU             1572
 #define ITM_DSP                     1573
 #define ITM_RNORM                   1574
 #define ITM_EX1                     1575
