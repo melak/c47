@@ -90,7 +90,7 @@
       }
 
       case amMultPi: {
-        showGlyph(STD_pi,                 &standardFont, x, 0, vmNormal, true, false); // pi is 0+9 pixel wide
+        showGlyph(STD_SUP_pir,            &standardFont, x, 0, vmNormal, true, false); // pi is 0+9 pixel wide
         break;
       }
 

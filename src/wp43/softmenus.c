@@ -480,10 +480,10 @@ TO_QSPI const int16_t menu_alphaMATH[]   = { ITM_LESS_THAN,             ITM_LESS
                                              ITM_TILDE,                 ITM_ALMOST_EQUAL,          ITM_ASYMPOTICALLY_EQUAL,   ITM_IDENTICAL_TO,          ITM_COLON_EQUALS,          ITM_PLUS_MINUS,            
 
                                              ITM_POLAR_char,            ITM_RIGHT_ANGLE,           ITM_MEASURED_ANGLE,        ITM_ANGLE,                 ITM_AMPERSAND,             ITM_PIPE,                  
-                                             ITM_DEGREE,                ITM_RIGHT_SINGLE_QUOTE,    ITM_RIGHT_DOUBLE_QUOTE,    ITM_RIGHT_TACK,            ITM_PERPENDICULAR,         ITM_PARALLEL,              
+                                             ITM_DEGREE,                ITM_RIGHT_SINGLE_QUOTE,    ITM_RIGHT_DOUBLE_QUOTE,    ITM_RIGHT_TACK,            ITM_PERPENDICULAR,         ITM_PARALLEL_SIGN,              
                                              ITM_x_BAR,                 ITM_y_BAR,                 ITM_x_CIRC,                ITM_y_CIRC,                ITM_BULLET,                ITM_RING,                  
 
-                                             ITM_EulerE,                ITM_pi,                    ITM_op_i_char,             ITM_op_j_char,             ITM_PLANCK_2PI,            ITM_EEXCHR,                
+                                             ITM_EulerE,                ITM_pi,                    ITM_op_i_char,             ITM_op_j_char,             ITM_PLANCK,                ITM_PLANCK_2PI,                
                                              ITM_SUM_char,              ITM_PRODUCT_char,          ITM_MICRO,                 ITM_OMEGA,                 ITM_DIRECT_CURRENT,        ITM_ALTERN_CURRENT,        
                                              ITM_INTEGRAL_SIGN,         ITM_DOUBLE_INTEGRAL,       ITM_PARTIAL_DIFF,          ITM_INCREMENT,             ITM_NABLA,                 ITM_GAMMA,                 
 
@@ -507,8 +507,8 @@ TO_QSPI const int16_t menu_alphaMisc[]    = { ITM_NUMBER_SIGN,          ITM_AT, 
                                              ITM_PERIOD,                ITM_COMMA,                 ITM_SEMICOLON,             ITM_COLON,                 ITM_EXCLAMATION_MARK,      ITM_QUESTION_MARK,         
 
                                              ITM_UP_ARROW,              ITM_DOWN_ARROW,            ITM_SERIAL_IO,             ITM_LEFT_RIGHT_ARROWS,     ITM_LEFT_ARROW,            ITM_RIGHT_ARROW,           
-                                             ITM_UP_DASHARROW,          ITM_DOWN_DASHARROW,        ITM_PGM_BEGIN,             ITM_ex,                    ITM_LEFT_DASHARROW,        ITM_RIGHT_DASHARROW,       
-                                             ITM_LEFT_DOUBLE_QUOTE,     ITM_RIGHT_DOUBLE_QUOTE,    ITM_RIGHT_SHORT_ARROW,     ITM_RIGHT_DOUBLE_ARROW,    ITM_LEFT_DOUBLE_ANGLE,     ITM_RIGHT_DOUBLE_ANGLE,    
+                                             ITM_UP_DASHARROW,          ITM_DOWN_DASHARROW,        ITM_RIGHT_DOUBLE_ARROW,    ITM_LEFT_RIGHT_DOUBLE_ARROW,ITM_LEFT_DASHARROW,        ITM_RIGHT_DASHARROW,       
+                                             ITM_LEFT_DOUBLE_QUOTE,     ITM_RIGHT_DOUBLE_QUOTE,    ITM_RIGHT_SHORT_ARROW,     ITM_ex,                    ITM_LEFT_DOUBLE_ANGLE,     ITM_RIGHT_DOUBLE_ANGLE,    
 
                                              ITM_SECTION,               ITM_CHECK_MARK,            ITM_BULLET,                ITM_ASTERISK,              ITM_SUP_ASTERISK,          ITM_TILDE,                 
                                              ITM_HOURGLASS,             ITM_WATCH,                 ITM_TIMER_SYMBOL,          ITM_NEG_EXCLAMATION_MARK,  ITM_USER_MODE,             ITM_BATTERY,               

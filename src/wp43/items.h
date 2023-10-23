@@ -1204,7 +1204,7 @@
 #define ITM_SUM_char                1168
 #define ITM_UP_DASHARROW            1169
 #define ITM_USB_SYMBOL              1170
-#define VAR_1171                    1171
+#define ITM_LEFT_RIGHT_DOUBLE_ARROW 1171
 #define VAR_1172                    1172
 #define VAR_1173                    1173
 #define VAR_1174                    1174

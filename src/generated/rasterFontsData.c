@@ -830,8 +830,8 @@ TO_QSPI const font_t numericFont = {
      .data="\x38\x00\x38\x00\x38\xe0\x3b\xe0\x3f\xe0\x3f\x80\xfe\x00\xf8\x00\xf9\xc0\x3b\xf0\x3f\xf0\x3e\x78\x3c\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38\x38"},
 
     // 
-    {.charCode=0xa110, .colsBeforeGlyph= 0, .colsGlyph= 3, .colsAfterGlyph= 3, .rowsAboveGlyph= 2, .rowsGlyph=26, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
-     .data="\xe0\xe0\xe0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xe0\xe0\xe0"},
+    {.charCode=0xa110, .colsBeforeGlyph= 0, .colsGlyph= 4, .colsAfterGlyph= 2, .rowsAboveGlyph= 2, .rowsGlyph=26, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
+     .data="\xf0\xf0\x50\x50\x50\x50\x50\x50\x50\x50\x50\x50\x50\x50\x50\x50\x50\x50\x50\x50\x50\x50\x50\x50\xf0\xf0"},
 
     // 
     {.charCode=0xa115, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph= 2, .rowsGlyph=26, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
@@ -2947,8 +2947,8 @@ TO_QSPI const font_t standardFont = {
      .data="\x30\x00\x37\x00\x3f\x00\xfc\x00\xf0\x00\x37\x00\x3f\x80\x39\xc0\x30\xc0\x30\xc0\x30\xc0\x30\xc0\x30\xc0"},
 
     // uni2110
-    {.charCode=0xa110, .colsBeforeGlyph= 0, .colsGlyph= 3, .colsAfterGlyph= 8, .rowsAboveGlyph= 4, .rowsGlyph=12, .rowsBelowGlyph= 4, .rank1=169, .rank2=191,
-     .data="\xe0\xe0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xe0\xe0"},
+    {.charCode=0xa110, .colsBeforeGlyph= 0, .colsGlyph= 4, .colsAfterGlyph= 7, .rowsAboveGlyph= 4, .rowsGlyph=12, .rowsBelowGlyph= 4, .rank1=169, .rank2=191,
+     .data="\xf0\x50\x50\x50\x50\x50\x50\x50\x50\x50\x50\xf0"},
 
     // uni2115
     {.charCode=0xa115, .colsBeforeGlyph= 0, .colsGlyph= 9, .colsAfterGlyph= 2, .rowsAboveGlyph= 4, .rowsGlyph=12, .rowsBelowGlyph= 4, .rank1=221, .rank2=233,
