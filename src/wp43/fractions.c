@@ -169,7 +169,6 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
       oldC = c;
       oldD = d;
 
-
       mediant = ((double)a+(double)c) / ((double)b+(double)d);
       if(mediant < x) {
         a += c;
