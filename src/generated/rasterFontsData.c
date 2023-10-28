@@ -1463,7 +1463,7 @@ TO_QSPI const font_t numericFont = {
 };
 TO_QSPI const font_t standardFont = {
   .id             = 1,
-  .numberOfGlyphs = 647,
+  .numberOfGlyphs = 648,
   .glyphs = {
 
     // uni001D
@@ -2949,6 +2949,10 @@ TO_QSPI const font_t standardFont = {
     // Euro
     {.charCode=0xa0ac, .colsBeforeGlyph= 0, .colsGlyph=10, .colsAfterGlyph= 2, .rowsAboveGlyph= 5, .rowsGlyph=11, .rowsBelowGlyph= 4, .rank1=552, .rank2=554,
      .data="\x0f\xc0\x1f\xc0\x38\x00\xff\x80\xff\x80\x30\x00\xff\x00\xff\x00\x38\x00\x1f\xc0\x0f\x80"},
+
+    // uni2100
+    {.charCode=0xa100, .colsBeforeGlyph= 0, .colsGlyph= 7, .colsAfterGlyph= 1, .rowsAboveGlyph= 0, .rowsGlyph=20, .rowsBelowGlyph= 0, .rank1=591, .rank2=593,
+     .data="\x18\x38\x78\x18\x18\x18\x18\x18\x18\x00\x00\xfc\xfe\x66\x7c\x7c\x66\x66\xfe\xfc"},
 
     // uni2102
     {.charCode=0xa102, .colsBeforeGlyph= 0, .colsGlyph= 8, .colsAfterGlyph= 2, .rowsAboveGlyph= 4, .rowsGlyph=12, .rowsBelowGlyph= 4, .rank1= 95, .rank2=107,

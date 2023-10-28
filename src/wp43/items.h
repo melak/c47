@@ -987,7 +987,7 @@
 #define ITM_MUCH_LESS                951
 #define ITM_MUCH_GREATER             952
 #define ITM_SUN                      953
-#define ITM_DOWN_TACK                954
+#define ITM_TRANSPOSED               954
 #define ITM_PERPENDICULAR            955
 #define ITM_XOR                      956
 #define ITM_NAND                     957
@@ -1183,7 +1183,7 @@
 #define ITM_DOWN_DARROW             1147
 #define ITM_ALTERN_CURRENT          1148
 #define ITM_ANGLE                   1149
-#define VAR_1150                    1150
+#define ITM_SUP_1_SUB_B             1150
 #define ITM_BST_char                1151
 #define ITM_CYCLIC                  1152
 #define ITM_DIRECT_CURRENT          1153
