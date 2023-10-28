@@ -1154,6 +1154,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 
 #define NPER_   "n" STD_SUB_P STD_SUB_E STD_SUB_R                    //
 #define RANGE_  STD_SUB_R STD_SUB_A STD_SUB_N STD_SUB_G STD_SUB_E    // Strings to maintain table columns below
+#define SUPSUB_ STD_SUP_S STD_SUP_U STD_SUP_P STD_SUB_S STD_SUB_U STD_SUB_B
 
 TO_QSPI const item_t indexOfItems[] = {
 
@@ -3392,7 +3393,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2188 */  { fnCvtFpstokph,                divide,                      "km/h" STD_RIGHT_ARROW "ft/s",                 "km/h" STD_RIGHT_ARROW "ft/s",                 (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 2189 */  { fnCvtFpstomps,                multiply,                    "ft/s" STD_RIGHT_ARROW "m/s",                  "ft/s" STD_RIGHT_ARROW "m/s",                  (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 2190 */  { fnCvtFpstomps,                divide,                      "m/s" STD_RIGHT_ARROW "ft/s",                  "m/s" STD_RIGHT_ARROW "ft/s",                  (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
-/* 2191 */  { SetSetting,                   JC_SS,                       STD_alpha STD_SUP_1_SUB_B,                     STD_alpha STD_SUP_1_SUB_B,                     (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2191 */  { SetSetting,                   JC_SS,                       SUPSUB_,                                       SUPSUB_,                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2192 */  { itemToBeCoded,                NOPARAM,                     "",                                            "SCRNRM",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
 /* 2193 */  { itemToBeCoded,                NOPARAM,                     "",                                            "SCRSUP",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
 /* 2194 */  { itemToBeCoded,                NOPARAM,                     "",                                            "SCRSUB",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
