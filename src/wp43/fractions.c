@@ -156,7 +156,7 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
     #if DOUBLEVERSION == 1
 
     uint32_t a=0, b=1, c=1, d=1, oldA, oldB, oldC, oldD;
-    double mediant, x;
+    double x, y;
 
     //printf("\n\n\n====================================================================================================\n");
     //printf("denMax = %u   sign = %d   intPart = %" PRIu64, denMax, *sign, *intPart);
@@ -169,8 +169,7 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
       oldC = c;
       oldD = d;
 
-      mediant = ((double)a+(double)c) / ((double)b+(double)d);
-      if(mediant < x) {
+      if(((double)a+(double)c) / ((double)b+(double)d) < x) {
         a += c;
         b += d;
       }
@@ -181,9 +180,9 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
       //printf("   %u/%u   %u/%u\n", a, b, c, d);
     }
 
-    mediant = fabs(x - (double)oldC/(double)oldD);
-    x       = fabs(x - (double)oldA/(double)oldB);
-    if(mediant < x) {
+    y = fabs(x - (double)oldC/(double)oldD);
+    x = fabs(x - (double)oldA/(double)oldB);
+    if(y < x) {
       *numer = oldC;
       *denom = oldD;
     }
