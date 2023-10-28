@@ -1646,11 +1646,15 @@ void changeSoftKey(int16_t menuNr, int16_t itemNr, char * itemName, videoMode_t 
                           case NC_NORMAL      : *showValue = NOVAL; break;
                           case NC_SUBSCRIPT   : stringAppend(showText + stringByteLength(showText), alphaCase == AC_LOWER ? STD_SUB_s STD_SUB_u STD_SUB_b : alphaCase == AC_UPPER ? STD_SUB_S STD_SUB_U STD_SUB_B : ""); *showValue = NOVAL; 
                                                 stringAppend(itemName,indexOfItems[itemNr%10000].itemSoftmenuName);
+                                                itemName[0]=STD_alpha[0];
+                                                itemName[1]=STD_alpha[1];
                                                 itemName[2]=0;
                                                 return;
                                                 break;
                           case NC_SUPERSCRIPT : stringAppend(showText + stringByteLength(showText), alphaCase == AC_LOWER ? STD_SUP_s STD_SUP_u STD_SUP_p : alphaCase == AC_UPPER ? STD_SUP_S STD_SUP_U STD_SUP_P : ""); *showValue = NOVAL;
                                                 stringAppend(itemName,indexOfItems[itemNr%10000].itemSoftmenuName);
+                                                itemName[0]=STD_alpha[0];
+                                                itemName[1]=STD_alpha[1];
                                                 itemName[2]=0;
                                                 return;
                                                 break;
