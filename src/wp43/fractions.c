@@ -93,10 +93,9 @@ void fnDenMax(uint16_t D) {
 
 void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t *numer, uint64_t *denom, int16_t *lessEqualGreater) {
   // temp0 = fractional_part(absolute_value(real number))
-  // temp1 = continued fraction calculation --> factional_part(1 / temp1)  initialized with temp0
-  // delta = difference between the best faction and the real number
+  // temp1 = continued fraction calculation --> fractional_part(1 / temp1)  initialized with temp0
+  // delta = difference between the best fraction and the real number
 
-  //printf("0 regist = "); printRegisterToConsole(regist, 0); printf("\n");
   real34_t temp0;
 
   if(getRegisterDataType(regist) == dtReal34) {
@@ -126,7 +125,6 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
     return;
   }
 
-  //printf("1 temp0 = "); printReal34ToConsole(&temp0); printf("\n");
   if(real34IsNegative(&temp0)) {
     *sign = -1;
     real34SetPositiveSign(&temp0);
@@ -137,17 +135,86 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
 
   real34_t delta, temp3;
   realToReal34(const_9999, &delta);
-  //printf("2 delta = "); printReal34ToConsole(&delta); printf("\n");
 
   *intPart = real34ToUInt32(&temp0);
   uInt32ToReal34(*intPart, &temp3);
   real34Subtract(&temp0, &temp3, &temp0);
-  //printf("3 partie_decimale = temp0 = "); printReal34ToConsole(&temp0); printf("\n");
 
   //*******************
   //* Any denominator *
   //*******************
   if(getSystemFlag(FLAG_DENANY)) { // denominator up to D.MAX
+    #define OPTIMAL_FRACTIONS 1
+    #if OPTIMAL_FRACTIONS == 1
+    uint32_t a=0, b=1, c=1, d=1, oldA, oldB, oldC, oldD;
+    real34_t mediant, temp1;
+
+    //printf("\n\n\n====================================================================================================\n");
+    //printf("denMax = %u   sign = %d   intPart = %" PRIu64, denMax, *sign, *intPart);
+    //printReal34ToConsole(&temp0, "   fracPart", "\n");
+    while(b <= denMax && d <= denMax) {
+      oldA = a;
+      oldB = b;
+      oldC = c;
+      oldD = d;
+
+      // mediant = (a+c) / (b+d)
+      int32ToReal34(a + c, &mediant);
+      int32ToReal34(b + d, &temp1);
+      real34Divide(&mediant, &temp1, &mediant);
+
+      if(real34CompareEqual(&temp0, &mediant)) {
+        if(b + d <= denMax) {
+          *numer = a + c;
+          *denom = b + d;
+        }
+        else if(d > b) {
+          *numer = c;
+          *denom = d;
+        }
+        else {
+          *numer = a;
+          *denom = b;
+        }
+        goto theEnd;
+      }
+      else if(real34CompareGreaterThan(&temp0, &mediant)) {
+        a += c;
+        b += d;
+      }
+      else {
+        c += a;
+        d += b;
+      }
+      //printf("   %u/%u   %u/%u\n", a, b, c, d);
+    }
+
+    // mediant = |fracPart - oldC/oldD|
+    int32ToReal34(oldC, &mediant);
+    int32ToReal34(oldD, &temp1);
+    real34Divide(&mediant, &temp1, &mediant);
+    real34Subtract(&temp0, &mediant, &mediant);
+    real34SetPositiveSign(&mediant);
+
+    // delta = |fracPart - oldA/oldB|
+    int32ToReal34(oldA, &delta);
+    int32ToReal34(oldB, &temp1);
+    real34Divide(&delta, &temp1, &delta);
+    real34Subtract(&temp0, &delta, &delta);
+    real34SetPositiveSign(&delta);
+
+    if(real34CompareLessThan(&mediant, &delta)) {
+      *numer = oldC;
+      *denom = oldD;
+    }
+    else {
+      *numer = oldA;
+      *denom = oldB;
+    }
+
+    theEnd:
+
+    #else // OPTIMAL_FRACTIONS != 1  OLD CODE RESULTING IN SUB-OPTIMAL FRACTIONS
     uint64_t iPart[20], ex, bestNumer=0, bestDenom=1;
     uint32_t invalidOperation;
     int16_t i, j;
@@ -160,7 +227,6 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
     iPart[0] = *intPart;
 
     real34Copy(&temp0, &temp1);
-    //printf("4 partie_decimale = temp0 = "); printReal34ToConsole(&temp0); printf("\n");
 
     if(real34CompareAbsLessThan(&temp1, const34_1e_6)) {
       real34Zero(&temp1);
@@ -170,7 +236,6 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
     invalidOperation = 0;
     while(*denom < denMax && !real34IsZero(&temp1) && !invalidOperation) {
       real34Divide(const34_1, &temp1, &temp1);
-      //printf("  5 1/partie_decimale = temp1 = "); printReal34ToConsole(&temp1); printf("\n");
       iPart[++i] = real34ToUInt32(&temp1);
       uInt32ToReal34(iPart[i], &temp3);
       invalidOperation = decContextGetStatus(&ctxtReal34) & DEC_Invalid_operation;
@@ -179,58 +244,34 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
       if(real34CompareAbsLessThan(&temp1, const34_1e_6)) {
         real34Zero(&temp1);
       }
-      //printf("  6 partie_decimale de 1/partie_decimale = temp1 = "); printReal34ToConsole(&temp1); printf("\n");
 
       *numer = 1;
       *denom = iPart[i];
-      //printf("  7 numer=%" PRIu64 " denom=%" PRIu64 "\n", *numer, *denom);
       for(j=i; j>1; j--) {
         *numer += *denom * iPart[j-1];
         ex = *numer; *numer = *denom; *denom = ex;
-        //printf("    8 numer=%" PRIu64 " denom=%" PRIu64 "\n", *numer, *denom);
       }
-      //printf("  9 numer=%" PRIu64 " denom=%" PRIu64 "\n", *numer, *denom);
 
       if(*denom <= denMax) {
         uInt32ToReal34(*numer, &temp3);
-        //printf("A partie_decimale = temp3 = "); printReal34ToConsole(&temp3); printf("\n");
         uInt32ToReal34(*denom, &temp4);
-        //printf("B partie_decimale = temp4 = "); printReal34ToConsole(&temp4); printf("\n");
-
-        //printf("   C temp3 "); printReal34ToConsole(&temp3); printf(" / temp4 "); printReal34ToConsole(&temp4);
         real34Divide(&temp3, &temp4, &temp3);
-        //printf(" = temp3 "); printReal34ToConsole(&temp3); printf("\n");
-
-
-        //printf("   D temp3 "); printReal34ToConsole(&temp3); printf(" - temp0 "); printReal34ToConsole(&temp0);
         real34Subtract(&temp3, &temp0, &temp3);
-        //printf(" = temp3 "); printReal34ToConsole(&temp3); printf("\n");
-
         real34SetPositiveSign(&temp3);
-        //printf("   E temp3 = "); printReal34ToConsole(&temp3); printf("\n");
-
-        //printf("   F temp3 "); printReal34ToConsole(&temp3); printf(" - delta "); printReal34ToConsole(&delta);
         real34Subtract(&temp3, &delta, &temp3);
-        //printf(" = temp3 "); printReal34ToConsole(&temp3); printf("\n");
-
         if(real34IsNegative(&temp3)) {
           real34Add(&temp3, &delta, &delta);
           bestNumer = *numer;
           bestDenom = *denom;
-          //printf("  G bestNumer=%" PRIu64 " BestDenom=%" PRIu64 "\n", bestNumer, bestDenom);
-          //printf("  H delta = "); printReal34ToConsole(&delta); printf("\n");
         }
       }
 
       *numer = 1;
       *denom = iPart[i] + 1;
-      //printf("  I numer=%" PRIu64 " denom=%" PRIu64 "\n", *numer, *denom);
       for(j=i; j>1; j--) {
         *numer += *denom * iPart[j-1];
         ex = *numer; *numer = *denom; *denom = ex;
-        //printf("    J numer=%" PRIu64 " denom=%" PRIu64 "\n", *numer, *denom);
       }
-      //printf("  K numer=%" PRIu64 " denom=%" PRIu64 "\n", *numer, *denom);
 
       if(*denom <= denMax) {
         uInt32ToReal34(*numer, &temp3);
@@ -243,8 +284,6 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
           real34Add(&temp3, &delta, &delta);
           bestNumer = *numer;
           bestDenom = *denom;
-          //printf("  L bestNumer=%" PRIu64 " BestDenom=%" PRIu64 "\n", bestNumer, bestDenom);
-          //printf("  M delta = "); printReal34ToConsole(&delta); printf("\n");
         }
       }
     }
@@ -256,6 +295,7 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
       *numer = 0;
       *intPart += 1;
     }
+    #endif // OPTIMAL_FRACTIONS == 1
   }
 
   //*******************
@@ -272,7 +312,7 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
   //******************************
   //* Factors of max denominator *
   //******************************
-  else { // deniminator is a factor of D.MAX
+  else { // denominator is a factor of D.MAX
     uint64_t bestNumer=0, bestDenom=1;
 
     real34_t temp4;
