@@ -149,6 +149,7 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
     // see: https://math.stackexchange.com/questions/2438510/can-i-find-the-closest-rational-to-any-given-real-if-i-assume-that-the-denomina
     // and https://www.johndcook.com/blog/2010/10/20/best-rational-approximation/#comment-1077474
     uint32_t a=0, b=1, c=1, d=1, oldA, oldB, oldC, oldD;
+    bool_t exactValue = false;
     real34_t mediant, temp1;
 
     //printf("\n\n\n====================================================================================================\n");
@@ -166,6 +167,7 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
       real34Divide(&mediant, &temp1, &mediant);
 
       if(real34CompareEqual(&temp0, &mediant)) {
+        exactValue = true;
         if(b + d <= denMax) {
           *numer = a + c;
           *denom = b + d;
@@ -178,7 +180,7 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
           *numer = a;
           *denom = b;
         }
-        goto theEnd;
+        break;
       }
       else if(real34CompareGreaterThan(&temp0, &mediant)) {
         a += c;
@@ -191,30 +193,30 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
       //printf("   %u/%u   %u/%u\n", a, b, c, d);
     }
 
-    // mediant = |fracPart - oldC/oldD|
-    int32ToReal34(oldC, &mediant);
-    int32ToReal34(oldD, &temp1);
-    real34Divide(&mediant, &temp1, &mediant);
-    real34Subtract(&temp0, &mediant, &mediant);
-    real34SetPositiveSign(&mediant);
+    if(!exactValue) {
+      // mediant = |fracPart - oldC/oldD|
+      int32ToReal34(oldC, &mediant);
+      int32ToReal34(oldD, &temp1);
+      real34Divide(&mediant, &temp1, &mediant);
+      real34Subtract(&temp0, &mediant, &mediant);
+      real34SetPositiveSign(&mediant);
 
-    // delta = |fracPart - oldA/oldB|
-    int32ToReal34(oldA, &delta);
-    int32ToReal34(oldB, &temp1);
-    real34Divide(&delta, &temp1, &delta);
-    real34Subtract(&temp0, &delta, &delta);
-    real34SetPositiveSign(&delta);
+      // delta = |fracPart - oldA/oldB|
+      int32ToReal34(oldA, &delta);
+      int32ToReal34(oldB, &temp1);
+      real34Divide(&delta, &temp1, &delta);
+      real34Subtract(&temp0, &delta, &delta);
+      real34SetPositiveSign(&delta);
 
-    if(real34CompareLessThan(&mediant, &delta)) {
-      *numer = oldC;
-      *denom = oldD;
+      if(real34CompareLessThan(&mediant, &delta)) {
+        *numer = oldC;
+        *denom = oldD;
+      }
+      else {
+        *numer = oldA;
+        *denom = oldB;
+      }
     }
-    else {
-      *numer = oldA;
-      *denom = oldB;
-    }
-
-    theEnd:
 
     #else // OPTIMAL_FRACTIONS != 1  OLD CODE RESULTING IN SUB-OPTIMAL FRACTIONS
     uint64_t iPart[20], ex, bestNumer=0, bestDenom=1;
