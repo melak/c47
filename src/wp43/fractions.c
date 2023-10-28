@@ -14,6 +14,7 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <math.h>
 #include "fractions.h"
 
 #include "constantPointers.h"
@@ -155,7 +156,7 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
     #define DOUBLEVERSION 1
     #if DOUBLEVERSION == 1
 
-    uint32_t a=0, b=1, c=1, d=1, oldA, oldB, oldC, oldD;
+    uint32_t a=0, b=1, c=1, d=1, oldA=0, oldB=0, oldC=0, oldD=0;
     double x, y;
 
     //printf("\n\n\n====================================================================================================\n");
@@ -192,7 +193,7 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
     }
 
     #else // DOUBLEVERSION != 1  DECNUMBER VERSION
-    uint32_t a=0, b=1, c=1, d=1, oldA, oldB, oldC, oldD;
+    uint32_t a=0, b=1, c=1, d=1, oldA=0, oldB=0, oldC=0, oldD=0;
     bool_t exactValue = false;
     real_t mediant, temp1;
 
