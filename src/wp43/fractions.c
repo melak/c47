@@ -146,6 +146,8 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
   if(getSystemFlag(FLAG_DENANY)) { // denominator up to D.MAX
     #define OPTIMAL_FRACTIONS 1
     #if OPTIMAL_FRACTIONS == 1
+    // see: https://math.stackexchange.com/questions/2438510/can-i-find-the-closest-rational-to-any-given-real-if-i-assume-that-the-denomina
+    // and https://www.johndcook.com/blog/2010/10/20/best-rational-approximation/#comment-1077474
     uint32_t a=0, b=1, c=1, d=1, oldA, oldB, oldC, oldD;
     real34_t mediant, temp1;
 
