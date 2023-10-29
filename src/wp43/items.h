@@ -1605,7 +1605,7 @@
 #define ITM_1555                    1555
 #define ITM_PUTK                    1556
 #define ITM_RAD                     1557
-#define ITM_1558                    1558
+#define ITM_GETDMX                  1558
 #define ITM_RAN                     1559
 #define ITM_RBR                     1560
 #define ITM_RCLCFG                  1561
@@ -2092,7 +2092,7 @@
 #define MNU_TRG                     2036
 #define MNU_SETUP                   2037
 #define ITM_SAFERESET               2038
-#define ITM_PRN                     2039
+#define MNU_2039                    2039
 #define ITM_PLOT_STAT               2040
 #define ITM_3x1TOSTK                2041
 #define ITM_PLOTRST                 2042
@@ -2106,9 +2106,9 @@
 #define ITM_SPCRES0                 2050
 #define ITM_PRTACT1                 2051
 #define ITM_PRTACT0                 2052
-#define ITM_2053                    2053
-#define ITM_2054                    2054
-#define ITM_2055                    2055
+#define MNU_2053                    2053
+#define MNU_2054                    2054
+#define MNU_2055                    2055
 #define ITM_IRFRAC                  2056
 #define ITM_FGLNOFF                 2057
 #define ITM_FGLNLIM                 2058
