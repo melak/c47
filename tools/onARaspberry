@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This doesn't work on Raspberry with the 64 bit arch linux distro...
 # There is no Raspberry in the output of cat /proc/cpuinfo

@@ -12,6 +12,8 @@ elif build_machine.system() == 'darwin'
   add_project_arguments('-DOSX',      native : true, language : 'c')
 elif build_machine.system() == 'linux'
   add_project_arguments('-DLINUX',    native : true, language : 'c')
+elif build_machine.system() == 'freebsd'
+  add_project_arguments('-DLINUX',    native : true, language : 'c')
 else
   error('Unsupported platform')
 endif

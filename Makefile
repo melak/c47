@@ -8,13 +8,14 @@ ifeq ($(OS),Windows_NT)
 endif
 
 clean:
-	rm -f wp43$(EXE)
-	rm -f c43$(EXE)
-	rm -f c47$(EXE)
-	rm -rf wp43-windows* wp43-macos* wp43-dm42*
-	rm -rf c43-windows* c43-macos* c43-dm42*
-	rm -rf c47-windows* c47-macos* c47-dm42*
-	rm -rf build build.sim build.dmcp build.rel
+	$(RM) wp43$(EXE)
+	$(RM) c43$(EXE)
+	$(RM) c47$(EXE)
+	$(RM) -r wp43-windows* wp43-macos* wp43-dm42*
+	$(RM) -r c43-windows* c43-macos* c43-dm42*
+	$(RM) -r c47-windows* c47-macos* c47-dm42*
+	$(RM) -r build build.sim build.dmcp build.rel
+	$(RM) c47-*.zip c47-*.tgz
 
 build.sim:
 	meson setup build.sim --buildtype=debug -DRASPBERRY=`tools/onARaspberry`
@@ -55,6 +56,8 @@ ifeq ($(CI_COMMIT_TAG),)
   MAC_DIST_DIR2 = wp47-macos
   DM_DIST_DIR = wp43-dm42
   DM_DIST_DIR2 = c47-dm42
+  LINUX_DIST_DIR = wp43-linux
+  LINUX_DIST_DIR2 = c47-linux
 else
   WIN_DIST_DIR = wp43-windows-$(CI_COMMIT_TAG)
   WIN_DIST_DIR2 = c47-windows-$(CI_COMMIT_TAG)
@@ -62,6 +65,8 @@ else
   MAC_DIST_DIR2 = c47-macos-$(CI_COMMIT_TAG)
   DM_DIST_DIR = wp43-dm42-$(CI_COMMIT_TAG)
   DM_DIST_DIR2 = c47-dm42-$(CI_COMMIT_TAG)
+  LINUX_DIST_DIR = wp43-linux-$(CI_COMMIT_TAG)
+  LINUX_DIST_DIR2 = c47-linux-$(CI_COMMIT_TAG)
 endif
 
 dist_windows: testPgms build.rel/wiki
@@ -79,7 +84,7 @@ dist_windows: testPgms build.rel/wiki
 	cp res/fonts/C47__StandardFont.ttf $(WIN_DIST_DIR2)/
 	cp build.rel/wiki/Installation-on-Windows.md $(WIN_DIST_DIR2)/readme.txt
 	zip -r c47-windows.zip $(WIN_DIST_DIR2)
-	rm -rf $(WIN_DIST_DIR2)
+	$(RM) -r $(WIN_DIST_DIR2)
 
 dist_macos: testPgms build.rel
 	cd build.rel && ninja sim
@@ -90,7 +95,7 @@ dist_macos: testPgms build.rel
 	cp res/dm42l_L1.png $(MAC_DIST_DIR2)/res/
 	cp res/fonts/C47__StandardFont.ttf $(MAC_DIST_DIR2)/
 	zip -r c47-macos.zip $(MAC_DIST_DIR2)
-	rm -rf $(MAC_DIST_DIR2)
+	$(RM) -r $(MAC_DIST_DIR2)
 
 dist_dm42: dmcp testPgms build.rel/wiki
 	mkdir -p $(DM_DIST_DIR2)
@@ -106,5 +111,15 @@ dist_dm42: dmcp testPgms build.rel/wiki
 	cp res/dmcp/original_DM42_keymap.bin res/dmcp/testPgms.bin $(DM_DIST_DIR2)
 	cp build.rel/wiki/Installation-on-a-DM42.md $(DM_DIST_DIR2)/readme.txt
 	zip -r c47-dm42.zip $(DM_DIST_DIR2)
-	rm -rf $(DM_DIST_DIR2)
+	$(RM) -r $(DM_DIST_DIR2)
 
+dist_linux: testPgms build.rel/wiki
+	cd build.rel && ninja sim
+	mkdir -p $(LINUX_DIST_DIR2)/res/dmcp
+	cp build.rel/src/wp43-gtk/wp43 $(LINUX_DIST_DIR2)/
+	cp res/dmcp/testPgms.bin $(LINUX_DIST_DIR2)/res/dmcp/
+	cp res/c47_pre.css $(LINUX_DIST_DIR2)/res/
+	cp res/dm42l_L1.png $(LINUX_DIST_DIR2)/res/
+	cp res/fonts/C47__StandardFont.ttf $(LINUX_DIST_DIR2)/
+	tar czf c47-linux.tgz $(LINUX_DIST_DIR2)
+	$(RM) -r $(LINUX_DIST_DIR2)
