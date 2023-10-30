@@ -618,14 +618,16 @@
         clearSystemFlag(FLAG_USB);
       }
 
-      if(get_vbat() < 2000) {
+      int tmpVbat = updateVbatIntegrated();
+
+      if(tmpVbat < 2000 ) {// || vbatIntegrated < 2000) { //temporary disable shutdown
         if(!getSystemFlag(FLAG_LOWBAT)) {
           setSystemFlag(FLAG_LOWBAT);
           showHideUsbLowBattery();
         }
         SET_ST(STAT_PGM_END);
       }
-      else if(get_vbat() < 2500) {
+      else if(tmpVbat < 2500 || vbatIntegrated < 2500) {
         if(!getSystemFlag(FLAG_LOWBAT)) {
           setSystemFlag(FLAG_LOWBAT);
           showHideUsbLowBattery();
@@ -785,15 +787,15 @@ void execTimerApp(uint16_t timerType) {
 
   void FN_handler(void) {                     //JM FN LONGPRESS vv Handler FN Key shift longpress handler
                                               //   Processing cycles here while the key is pressed, that is, after PRESS #1, waiting for RELEASE #2
-    if((FN_state == ST_1_PRESS1) && FN_timeouts_in_progress && (FN_key_pressed != 0) && !(softmenuStack[0].softmenuId == 0 && !BASE_MYM) ) {
+    if((FN_state == ST_1_PRESS1 || FN_state == ST_3_PRESS2) && FN_timeouts_in_progress && (FN_key_pressed != 0) && !IS_BASEBLANK_(softmenuStack[0].softmenuId) ) {
       if(fnTimerGetStatus(TO_FN_LONG) == TMR_COMPLETED) {
         FN_handle_timed_out_to_EXEC = false;
         if(!shiftF && !shiftG) {                              //From No_Shift State 1
           if(LongPressF == RB_F1234) {
-            FN_handler_StepToF(JM_TO_FN_LONG);                //To F State 2
+            FN_handler_StepToF(TIME_FN_1234_F_TO_G);           //To F State 2
           }
           else if(LongPressF == RB_F124) {
-            FN_handler_StepToF(JM_TO_FN_LONG * 2);            //To F State 2
+            FN_handler_StepToF(TIME_FN_124_F_TO_NOP);            //To F State 2
           }
           else if(LongPressF == RB_F14) {
             FN_handler_StepToNOP();                           //To NOP State 4
@@ -805,7 +807,7 @@ void execTimerApp(uint16_t timerType) {
         }
         else if(shiftF && !shiftG) {                          //From F State 2
           if(LongPressF == RB_F1234) {
-            FN_handler_StepToG(JM_TO_FN_LONG);                //To G State 3
+            FN_handler_StepToG(TIME_FN_1234_G_TO_NOP);            //To G State 3
           }
           else if(LongPressF == RB_F124) {
             FN_handler_StepToNOP();                           //To NOP State 4
@@ -2677,6 +2679,13 @@ void execTimerApp(uint16_t timerType) {
             _fnShowRecallTI(prefix, &prefixWidth);
           }
 
+          else if(temporaryInformation == TI_V) {                             //JMms vv
+            if(regist == REGISTER_X) {
+              strcpy(prefix, "V" STD_SPACE_FIGURE "=");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
           else if(temporaryInformation == TI_THETA_RADIUS) {
             if(regist == REGISTER_Y) {
               strcpy(prefix, "r =");
@@ -3723,13 +3732,6 @@ void execTimerApp(uint16_t timerType) {
             if(regist == REGISTER_X) {
               memcpy(prefix, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0]);
               strcpy(prefix + allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0], " =");
-              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
-            }
-          }
-
-          else if(temporaryInformation == TI_ms) {                             //JMms vv
-            if(regist == REGISTER_X) {
-              strcpy(prefix, "t (ms)" STD_SPACE_FIGURE "=");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }

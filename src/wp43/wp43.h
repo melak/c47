@@ -112,9 +112,6 @@
   extern void                            (*confirmedFunction)(uint16_t);
   extern const softmenu_t                softmenu[];
   extern real51_t                 const *gammaLanczosCoefficients;
-  extern real_t                 const *angle180;
-  extern real_t                 const *angle90;
-  extern real_t                 const *angle45;
 
   // Variables stored in RAM
   extern bool_t                 fnAsnDisplayUSER;
@@ -390,6 +387,8 @@
   extern char                   plotStatMx[8];
 
   extern bool_t                 temporaryFlagRect;
+  extern bool_t                 temporaryFlagPolar;
+  extern int                    vbatIntegrated;
 
 
   #if defined(DMCP_BUILD)

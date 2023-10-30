@@ -91,7 +91,7 @@ TO_QSPI static const char bugScreenItemNotDetermined[] = "In function determineI
       jm_show_comment(tmp);
     #endif // PC_BUILD
 
-    if((menuId==0 && !BASE_MYM) ) {
+    if(IS_BASEBLANK_(menuId)) {
       return item;
     }
 
@@ -435,7 +435,7 @@ printf(">>>>Z 0070 btnFnClicked data=|%s| data[0]=%d\n",(char*)data, ((char*)dat
           case MNU_STRINGS :
           case MNU_TIMES :
           case MNU_ALPHA_OMEGA :
-          case MNU_ALPHADOT :
+          case MNU_ALPHAMISC :
           case MNU_ALPHA :
           case MNU_CONST : {
             popSoftmenu();
@@ -680,11 +680,11 @@ printf(">>>>Z 0010 btnFnPressed SET FN_key_pressed            ; data=|%s| data[0
           case MNU_CHARS:
           case MNU_PROGS:
           case MNU_VARS: {
-            #if(FN_KEY_TIMEOUT_TO_NOP == 1)
-              showFunctionName(item, 1000, "SF:A"); // 1000ms = 1s
-            #else // (FN_KEY_TIMEOUT_TO_NOP != 1)
+//            #if(FN_KEY_TIMEOUT_TO_NOP == 1)
+//              showFunctionName(item, 1000, "SF:A"); // 1000ms = 1s
+//            #else // (FN_KEY_TIMEOUT_TO_NOP != 1)
               showFunctionNameItem = item;
-            #endif // (FN_KEY_TIMEOUT_TO_NOP == 1)
+//            #endif // (FN_KEY_TIMEOUT_TO_NOP == 1)
             break;
         }
         default: {
@@ -1040,6 +1040,17 @@ int16_t lastItem = 0;
             screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
             return;
           }
+          else if(calcMode == CM_PEM && !getSystemFlag(FLAG_ALPHA) && (item == ITM_toINT || item == ITM_HASH_JM)) {
+            if(aimBuffer[0]!=0) {
+              pemAddNumber(ITM_toINT);
+              screenUpdatingMode &= ~SCRUPD_MANUAL_STACK;
+              refreshScreen();
+              return;
+            } else {
+              //no action, continue to insert the command
+            }
+          }
+
 
           #if defined(VERBOSEKEYS)
           printf(">>>> R000D                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
@@ -1086,7 +1097,7 @@ int16_t lastItem = 0;
           else if((calcMode == CM_NIM) && ((item==ITM_DRG || item == ITM_DMS2 || item == ITM_dotD) && !catalog)) {   //JM
             addItemToNimBuffer(item);
           }                                                                                      //JM
-          else if(calcMode == CM_MIM && softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_M_EDIT && (item != ITM_CC && item != ITM_op_j)) { //JM added ITM_CC to let it work in matrix edit
+          else if(calcMode == CM_MIM && softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_M_EDIT && (item != ITM_CC && item != ITM_op_j && item != ITM_op_j_pol)) { //JM added ITM_CC to let it work in matrix edit
             addItemToBuffer(item);
           }
           else if(item > 0) { // function
@@ -1099,7 +1110,7 @@ int16_t lastItem = 0;
               screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
               goto noMoreToDo;
             }
-            if(calcMode == CM_NIM && (item != ITM_CC && item != ITM_op_j) && item!=ITM_HASH_JM && item!=ITM_toHMS && item!=ITM_ms) {  //JMNIM Allow NIM not closed, so that JMNIM can change the bases without ierrors thrown
+            if(calcMode == CM_NIM && (item != ITM_CC && item != ITM_op_j && item != ITM_op_j_pol) && item!=ITM_HASH_JM && item!=ITM_toHMS && item!=ITM_ms) {  //JMNIM Allow NIM not closed, so that JMNIM can change the bases without ierrors thrown
               closeNim();
               if(calcMode != CM_NIM) {
                 if(indexOfItems[item].func == fnConstant) {
@@ -1153,7 +1164,7 @@ int16_t lastItem = 0;
                       case MNU_ALPHA_OMEGA:
                       case MNU_ALPHAMATH:
                       case MNU_MyAlpha:
-                      case MNU_ALPHADOT:
+                      case MNU_ALPHAMISC:
                       case MNU_alpha_omega:
                       case MNU_ALPHAintl: {
                         popSoftmenu();
@@ -1184,7 +1195,7 @@ int16_t lastItem = 0;
                     case MNU_ALPHA_OMEGA:
                     case MNU_ALPHAMATH:
                     case MNU_MyAlpha:
-                    case MNU_ALPHADOT:
+                    case MNU_ALPHAMISC:
                     case MNU_alpha_omega: {
                     //case MNU_ALPHAintl:
                       while(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQ_EDIT) {
@@ -1856,7 +1867,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           char tmp[200]; sprintf(tmp,"^^^^btnReleased %d:\'%s\'",item,(char *)data); jm_show_comment(tmp);
         #endif //PC_BUILD
 
-        if(calcMode == CM_NIM && delayCloseNim && item != ITM_ms && item != ITM_CC && item != ITM_op_j) {
+        if(calcMode == CM_NIM && delayCloseNim && item != ITM_ms && item != ITM_CC && item != ITM_op_j && item != ITM_op_j) {
           delayCloseNim = false;
           closeNim();                 //JM moved here, from bufferize see JMCLOSE, to retain NIM if needed for .ms. Only a problem due to longpress.
           screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
@@ -2071,15 +2082,19 @@ RELEASE_END:
       }
 
       case ITM_EXIT1: {
-        fnKeyExit(NOPARAM);
+        if(calcMode == CM_PEM) {
+          fnKeyExit(NOPARAM);
+          keyActionProcessed = true;            //Removed to force EXIT on the RELEASE cycle to make it do fnKeyExit later to allow NOP
+        }
         if(temporaryInformation != TI_NO_INFO) {
+          temporaryInformation = TI_NO_INFO;
+          keyActionProcessed = true;
           refreshScreen();
         }
-        temporaryInformation = TI_NO_INFO;
-        keyActionProcessed = true;
         break;
       }
 
+      case ITM_op_j_pol:
       case ITM_op_j:
       case ITM_CC:
       case ITM_dotD: {
@@ -2645,13 +2660,12 @@ RELEASE_END:
       showAlphaModeonGui(); //dr JM, see keyboardtweaks
       softmenuStack[0].softmenuId--; // Switch to the upper case menu
     }
-    else if((sm == -MNU_ALPHADOT || sm == -MNU_ALPHAMATH || sm == -MNU_ALPHA) && alphaCase == AC_LOWER && arrowCasechange) {  //JMcase
+    else if((sm == -MNU_ALPHAMISC || sm == -MNU_ALPHAMATH || sm == -MNU_ALPHA) && alphaCase == AC_LOWER && arrowCasechange) {  //JMcase
       alphaCase = AC_UPPER;
       showAlphaModeonGui(); //dr JM, see keyboardtweaks
     }
     else {
       int16_t itemShift = (catalog == CATALOG_NONE ? 18 : 6);
-
       if((softmenuStack[0].firstItem + itemShift) < (menuId < NUMBER_OF_DYNAMIC_SOFTMENUS ? dynamicSoftmenu[menuId].numItems : softmenu[menuId].numItems)) {
         softmenuStack[0].firstItem += itemShift;
       }
@@ -2679,7 +2693,7 @@ RELEASE_END:
       showAlphaModeonGui(); //dr JM, see keyboardtweaks
       softmenuStack[0].softmenuId++; // Switch to the lower case menu
     }
-    else if((sm == -MNU_ALPHADOT || sm == -MNU_ALPHAMATH || sm == -MNU_ALPHA) && alphaCase == AC_UPPER && arrowCasechange) {  //JMcase
+    else if((sm == -MNU_ALPHAMISC || sm == -MNU_ALPHAMATH || sm == -MNU_ALPHA) && alphaCase == AC_UPPER && arrowCasechange) {  //JMcase
       alphaCase = AC_LOWER;
       showAlphaModeonGui(); //dr JM, see keyboardtweaks
     }
@@ -2747,18 +2761,12 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
       }
 
       case CM_AIM: {
-
-//        if(softmenuStack[0].softmenuId == mm_MNU_ALPHA) {     //JMvv
-//          popSoftmenu();
-//        }                                                     //JM^^
-
-          if(softmenuStack[0].softmenuId <= 1 && softmenu[softmenuStack[1].softmenuId].menuItem == -MNU_ALPHA) {
+          if(softmenuStack[0].softmenuId <= 1 || softmenu[softmenuStack[1].softmenuId].menuItem == -MNU_ALPHA) {
             popSoftmenu();
           }
-          if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA) {  //JM
+          if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA) {  //JM get out of the ALPHA menu and go to MyM fto satisfy the old enter routines
             softmenuStack[0].softmenuId = 1;                                  //JM
           }                                                                   //JM
-
 
         calcModeNormal();
         popSoftmenu();
@@ -3005,7 +3013,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
       case CM_NORMAL: {
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -ITM_MENU) {
-          dynamicMenuItem = 20;
+          dynamicMenuItem = NUMBER_OF_DYNAMIC_SOFTMENUS + 1;
           fnProgrammableMenu(NOPARAM);
           return;
         }
@@ -3026,6 +3034,13 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         else {
           if(softmenuStack[0].softmenuId <= 1) { // MyMenu or MyAlpha is displayed
             currentInputVariable = INVALID_VARIABLE;
+            if(BASE_HOME) {
+               showSoftmenu(-MNU_HOME);
+            }
+            else if(BASE_MYM) {
+              BASE_OVERRIDEONCE = true;
+              showSoftmenu(-MNU_MyMenu);
+            }                             //If none selected, do not display any menu, keep the screen blank
           }
           else {                  //jm: this is where 43S cleared an error
             popSoftmenu();
@@ -3040,7 +3055,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       }
 
       case CM_AIM: {
-        if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA) {  //JM
+        if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA) {  //JM get out of the ALPHA menu and go to MyM fto satisfy the old exit routines
           softmenuStack[0].softmenuId = 1;                                  //JM
         }                                                                   //JM
 
@@ -3328,9 +3343,15 @@ void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter
 
     if(complex_Type == ITM_op_j) {
       temporaryFlagRect = true;
+      temporaryFlagPolar = false;
+    }
+    else if(complex_Type == ITM_op_j_pol) {
+      temporaryFlagRect = false;
+      temporaryFlagPolar = true;
     }
     else {
       temporaryFlagRect = false;
+      temporaryFlagPolar = false;
     }
 
     switch(calcMode) {                     //JM
@@ -3703,7 +3724,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
     }
 
     if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && softmenu[softmenuStack[0].softmenuId].menuItem == -ITM_MENU) {
-      dynamicMenuItem = 18;
+      dynamicMenuItem = NUMBER_OF_DYNAMIC_SOFTMENUS + 1;
       fnProgrammableMenu(NOPARAM);
       return;
     }
@@ -3787,9 +3808,9 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
       }
 
       case CM_ASN_BROWSER: {
-        currentAsnScr--;
-        if(currentAsnScr == 0 || currentAsnScr >= 4) {
-          currentAsnScr = 3;
+        currentAsnScr++;                          //JM removed the 3-x part
+        if(currentAsnScr == 0 ||currentAsnScr >= 7) {
+          currentAsnScr = 1;
         }
         break;
       }
@@ -3915,7 +3936,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
     }
 
     if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && softmenu[softmenuStack[0].softmenuId].menuItem == -ITM_MENU) {
-      dynamicMenuItem = 19;
+      dynamicMenuItem = NUMBER_OF_DYNAMIC_SOFTMENUS + 1;
       fnProgrammableMenu(NOPARAM);
       return;
     }
@@ -3999,9 +4020,9 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
       }
 
     case CM_ASN_BROWSER: {
-        currentAsnScr++;                          //JM removed the 3-x part
-        if(currentAsnScr >= 4) {
-          currentAsnScr = 1;
+        currentAsnScr--;
+        if(currentAsnScr == 0 || currentAsnScr >= 7) {
+          currentAsnScr = 6;
         }
         break;
       }

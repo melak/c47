@@ -102,7 +102,7 @@
       }
 
       case amMultPi: {
-        showGlyph(STD_pi,                 &standardFont, x, 0, vmNormal, true, false); // pi is 0+9 pixel wide
+        showGlyph(STD_SUP_pir,            &standardFont, x, 0, vmNormal, true, false); // pi is 0+9 pixel wide
         break;
       }
 
@@ -208,37 +208,43 @@ void showFracMode(void) {
     compressString = 1;             //^JM
 
 
-    if(getSystemFlag(FLAG_DENANY) && denMax == MAX_DENMAX) {
-      sprintf(statusMessage,"%smax",divStr);
+    if(constantFractions && constantFractionsOn && !getSystemFlag(FLAG_FRACT)) {
+      sprintf(statusMessage,"%s",divStr);
       x = showString(statusMessage, &standardFont, x, 0, vmNormal, true, true);
-    }
-    else {
-      if((getSystemFlag(FLAG_DENANY) && denMax != MAX_DENMAX) || !getSystemFlag(FLAG_DENANY)) {
-        sprintf(statusMessage, "%s%" PRIu32, divStr,denMax);
+      raiseString = 4;
+      sprintf(statusMessage,STD_SUB_c);
+      x = showString(statusMessage, &standardFont, x-2, 0, vmNormal, true, true);
+
+      strcpy(divStr,STD_DOT);
+      raiseString = 2;
+      x = showString(divStr, &standardFont, x+1, 0, vmNormal, true, true);
+      strcpy(divStr,"I");
+      raiseString = 2;
+      showString(divStr, &standardFont, x, 0, vmNormal, true, true);
+      raiseString = 2;
+      x = showString(divStr, &standardFont, x+1, 0, vmNormal, true, true);
+      x -= 5;
+      for(uint16_t yy = 4; yy<=11; yy++) {
+        setWhitePixel(x, yy); 
+      }
+    } else {
+
+      if(getSystemFlag(FLAG_DENANY) && denMax == MAX_DENMAX) {
+        sprintf(statusMessage,"%smax",divStr);
         x = showString(statusMessage, &standardFont, x, 0, vmNormal, true, true);
       }
-
-      if(constantFractions && constantFractionsOn && !getSystemFlag(FLAG_FRACT)) {
-        strcpy(divStr,STD_DOT);
-        raiseString = 2;
-        x = showString(divStr, &standardFont, x+1, 0, vmNormal, true, true);
-        strcpy(divStr,"I");
-        raiseString = 2;
-        showString(divStr, &standardFont, x, 0, vmNormal, true, true);
-        raiseString = 2;
-        x = showString(divStr, &standardFont, x+1, 0, vmNormal, true, true);
-        x -= 5;
-        for(uint16_t yy = 4; yy<=11; yy++) {
-          setWhitePixel(x, yy); 
-        }
-      }
       else {
+        if((getSystemFlag(FLAG_DENANY) && denMax != MAX_DENMAX) || !getSystemFlag(FLAG_DENANY)) {
+          sprintf(statusMessage, "%s%" PRIu32, divStr,denMax);
+          x = showString(statusMessage, &standardFont, x, 0, vmNormal, true, true);
+        }
+
         if(!getSystemFlag(FLAG_DENANY)) {
           if(getSystemFlag(FLAG_DENFIX)) {
-            showGlyphCode('f',  &standardFont, x, 0, vmNormal, true, false); // f is 0+7+3 pixel wide
+            x = showGlyphCode('f',  &standardFont, x, 0, vmNormal, true, false); // f is 0+7+3 pixel wide
           }
           else {
-            showString(PRODUCT_SIGN, &standardFont, x, 0, vmNormal, true, false); // STD_DOT is 0+3+2 pixel wide and STD_CROSS is 0+7+2 pixel wide
+            x = showString(PRODUCT_SIGN, &standardFont, x, 0, vmNormal, true, false); // STD_DOT is 0+3+2 pixel wide and STD_CROSS is 0+7+2 pixel wide
           }
         }
       }
@@ -492,7 +498,13 @@ void showHideUserMode(void) {
 
 void drawBattery(uint16_t voltage) {
   uint16_t vv = (uint16_t)(min(max(voltage - 2000,0),3100) / (float)(((float)3100 - 2000.0f)/(float)(DY_BATTERY))); //draw a battery, full at 3.1V empty at 2V
-  for(uint16_t ii = 0; ii <= min(vv,DY_BATTERY-1); ii++) {
+  for(uint16_t ii = min(vv-1,DY_BATTERY-1); ii <= DY_BATTERY-1; ii++) {
+    if(ii%2 == 0) { //draw outline
+      setBlackPixel(ii < DY_BATTERY-3 ?  X_BATTERY + 0 : X_BATTERY + 2                           ,(DY_BATTERY-1)-ii);
+      setBlackPixel(ii < DY_BATTERY-3 ?  X_BATTERY + DX_BATTERY + 0 : X_BATTERY + DX_BATTERY - 2 ,(DY_BATTERY-1)-ii);
+    }
+  }
+  for(uint16_t ii = 0; ii <= min(vv,DY_BATTERY-1); ii++) { //draw voltage
     for(uint16_t jj = 0; jj <= DX_BATTERY; jj++) {
       if(min(vv,DY_BATTERY)-ii > (voltage > 2750 ? 2 : 1) || (jj>1 && jj<DX_BATTERY-1)) {
         setBlackPixel(X_BATTERY + jj, (DY_BATTERY-1)-ii);
@@ -503,14 +515,27 @@ void drawBattery(uint16_t voltage) {
 
 
   #if defined(DMCP_BUILD)
+
+    int updateVbatIntegrated(void) {
+      int tmpVbat = get_vbat();
+      if(tmpVbat > 1500 && tmpVbat < 3100 && tmpVbat < vbatIntegrated) {
+        vbatIntegrated = tmpVbat;
+      } else if(tmpVbat > 1500 && tmpVbat < 3100 && tmpVbat > vbatIntegrated) {
+        vbatIntegrated = vbatIntegrated + ((tmpVbat - vbatIntegrated) >> 4);
+        if(tmpVbat > 2900) vbatIntegrated = tmpVbat; 
+        if(vbatIntegrated > 3100) vbatIntegrated = 3100;
+      }
+      return tmpVbat;
+    }
+
     void showHideUsbLowBattery(void) {
       if(!(SBARUPD_Battery)) return;
       if(getSystemFlag(FLAG_USB)) {
-        showGlyph(STD_USB, &standardFont, X_BATTERY, 0, vmNormal, true, false); // is 0+9+2 pixel wide
+        showGlyph(STD_USB_SYMBOL, &standardFont, X_BATTERY, 0, vmNormal, true, false); // is 0+9+2 pixel wide
       }
       else {
         if(SBARUPD_BatVoltage) {
-          drawBattery(get_vbat());
+          drawBattery(min(get_vbat(), vbatIntegrated));
         } 
         else if(getSystemFlag(FLAG_LOWBAT)) {
           showGlyph(STD_BATTERY, &standardFont, X_BATTERY, 0, vmNormal, true, false); // is 0+10+1 pixel wide

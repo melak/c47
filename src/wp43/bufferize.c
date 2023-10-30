@@ -34,6 +34,7 @@
 #include "mathematics/comparisonReals.h"
 #include "mathematics/matrix.h"
 #include "mathematics/toRect.h"
+#include "mathematics/toPolar.h"
 #include "mathematics/wp34s.h"
 #include "programming/manage.h"
 #include "c43Extensions/radioButtonCatalog.h"
@@ -83,6 +84,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         case ITM_alpha    :return ITM_SUB_alpha;
         case ITM_delta    :return ITM_SUB_delta;
         case ITM_mu       :return ITM_SUB_mu;
+        case ITM_pi       :return ITM_SUB_pi;
         case ITM_SUN      :return ITM_SUB_SUN;
         case ITM_INFINITY :return ITM_SUB_INFINITY;
         case ITM_PLUS     :return ITM_SUB_PLUS;
@@ -99,6 +101,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         case ITM_INFINITY :return ITM_SUP_INFINITY;
         case ITM_PLUS     :return ITM_SUP_PLUS;
         case ITM_MINUS    :return ITM_SUP_MINUS;
+        case ITM_pi       :return ITM_SUP_pi;
         default           :return item;
       }
     }
@@ -1285,9 +1288,10 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       }
 
 
+        case ITM_op_j_pol :
         case ITM_op_j :                         //JM HP35s compatible, in NIM
         case ITM_CC: {
-        if(item == ITM_op_j) {
+        if(item == ITM_op_j || item == ITM_op_j_pol) {
           resetShiftState();    //JM HP35s compatible, in NIM
         }
         lastChar = strlen(aimBuffer) - 1;
@@ -1763,15 +1767,14 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           }
 
           nimNumberPart = savedNimNumberPart;
-
           // Complex "separator"
-          if(getSystemFlag(FLAG_POLAR) && !temporaryFlagRect) { // polar mode
+          if((getSystemFlag(FLAG_POLAR) && !temporaryFlagRect) || temporaryFlagPolar) { // polar mode
             strcat(nimBufferDisplay, STD_SPACE_4_PER_EM STD_MEASURED_ANGLE STD_SPACE_4_PER_EM);
             if(aimBuffer[imaginaryMantissaSignLocation] == '-') {
               strcat(nimBufferDisplay, "-");
             }
           }
-          else { // rectangular mode
+          else if((!getSystemFlag(FLAG_POLAR) && !temporaryFlagPolar) || temporaryFlagRect) { // rectangular mode
             if(strncmp(nimBufferDisplay + stringByteLength(nimBufferDisplay) - 2, STD_SPACE_HAIR, 2) != 0) {
               strcat(nimBufferDisplay, STD_SPACE_HAIR);
             }
@@ -1857,6 +1860,9 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     }
 
     else {
+      #if defined (PC_BUILD)
+        printf("delayCloseNim=%u\n",delayCloseNim);
+      #endif
       if(!delayCloseNim) {      //delayCloseNim can only be activaed by ITM.ms in bufferize
         switch(item) {          //JMCLOSE remove auto closenim directly after KEY PRESSED for these functions only.
           case ITM_HASH_JM:     //closeNim simply not needed because we need to type the base while NIM remains open
@@ -2143,7 +2149,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       real34SetNegativeSign(dest_i);
     }
 
-    if(getSystemFlag(FLAG_POLAR) && !temporaryFlagRect) { // polar mode
+    if((getSystemFlag(FLAG_POLAR) && !temporaryFlagRect) || temporaryFlagPolar) { // polar mode
       if(real34CompareEqual(dest_r, const34_0)) {
         real34Zero(dest_i);
       }
@@ -2162,8 +2168,10 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         realToReal34(&magnitude, dest_r);
         realToReal34(&theta,     dest_i);
       }
+      if(temporaryFlagPolar) fnToPolar2(0);
     }
     temporaryFlagRect = false;
+    temporaryFlagPolar = false;
     fnSetFlag(FLAG_CPXRES);
   }
 
