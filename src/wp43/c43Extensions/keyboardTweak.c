@@ -37,6 +37,7 @@
 #include "softmenus.h"
 #include "timer.h"
 
+#include <string.h>
 #include "wp43.h"
 
 void fnSHIFTf(uint16_t unusedButMandatoryParameter) {
@@ -235,15 +236,16 @@ void resetKeytimers(void) {
               }
               else {
                 if(calcMode == CM_AIM || calcMode == CM_EIM) {                    //JM shifts
-                  processKeyAction(CHR_num);
+                  showSoftmenu(-MNU_MyAlpha);
                 }
                 else {                                                            //JM SHIFTS
                   if(HOME3) {
                     showSoftmenu(-MNU_HOME);
                   }
                   else if(MYM3) {
+                    BASE_OVERRIDEONCE = true;
                     showSoftmenu(-MNU_MyMenu);
-                  }
+                  }                             //If none selected, do not display any menu, keep the screen blank
                 }                                                                 //JM shifts
               }                                                                   //JM shifts
               showSoftmenuCurrentPart();
@@ -326,97 +328,106 @@ void resetKeytimers(void) {
     char *funcParam = (char *)getNthString((uint8_t *)userKeyLabel, key_no); //keyCode * 6 + g ? 2 : f ? 1 : 0);
     //printf("\n\n >>>> ## result=%i key_no=%i *funcParam=%s  [0]=%u\n", *result, key_no, (char*)funcParam, ((char*)funcParam)[0]);
 
-    if(calcMode == CM_NORMAL) {                                         //longpress special keys
-      switch(*result) {
+    switch(calcMode) {
+      case CM_ASSIGN :
+      case CM_NORMAL : {                                         //longpress special keys
+        switch(*result) {
 
-        case ITM_XEQ:
-          if(tam.mode == 0 && (getSystemFlag(FLAG_USER) ? kbd_usr[key_no].primary == kbd_std[key_no].primary : true)) { //If XEQ (always primary) is not the standard position, then do not inject it into the long press cycle
-            longpressDelayedkey2 = longpressDelayedkey1;
-            longpressDelayedkey1 = -MNU_XXEQ;    //XEQ longpress to XEQMENU
-          }
-          break;
-        case ITM_BACKSPACE:
-          if(tam.mode == 0) {
-            longpressDelayedkey2 = longpressDelayedkey1;
-            longpressDelayedkey1 = ITM_CLSTK;    //backspace longpress to CLSTK
-          }
-          break;
-        case ITM_EXIT1:
-          longpressDelayedkey2 = ITM_CLRMOD;     //EXIT longpress DOES CLRMOD
-          longpressDelayedkey1 = -MNU_MyMenu;
-          break;
-        default:;
-      }
-    }
-    else if(calcMode == CM_NIM) {
-      switch(*result) {
-        case ITM_XEQ:
-          if(tam.mode == 0 && ((char*)funcParam)[0] == 0) { //If XEQ has a parameter, then do not inject it into the long press cycle
-            longpressDelayedkey2 = longpressDelayedkey1;
-            longpressDelayedkey1 = -MNU_XXEQ;    //XEQ longpress to XEQMENU
-          }
-          break;
-        case ITM_BACKSPACE:
-          if(tam.mode == 0) {
-            longpressDelayedkey1 = ITM_CLN;      //BACKSPACE longpress clears input buffer
-          }
-          break;
-        case ITM_EXIT1:
-            longpressDelayedkey2 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
-            longpressDelayedkey1 =-MNU_MyMenu;
+          case ITM_XEQ:
+            if(tam.mode == 0 && (getSystemFlag(FLAG_USER) ? kbd_usr[key_no].primary == kbd_std[key_no].primary : true)) { //If XEQ (always primary) is not the standard position, then do not inject it into the long press cycle
+              longpressDelayedkey2 = longpressDelayedkey1;
+              longpressDelayedkey1 = -MNU_XXEQ;    //XEQ longpress to XEQMENU
+            }
             break;
-        default:;
+          case ITM_BACKSPACE:
+            if(tam.mode == 0) {
+              longpressDelayedkey2 = longpressDelayedkey1;
+              longpressDelayedkey1 = ITM_CLSTK;    //backspace longpress to CLSTK
+            }
+            break;
+          case ITM_EXIT1:
+            longpressDelayedkey2 = ITM_CLRMOD;     //EXIT longpress DOES CLRMOD
+            longpressDelayedkey1 = ITM_BASEMENU;
+            break;
+          default:;
+        }
+        break;
       }
-      if( (*result == ITM_ms || longpressDelayedkey1 == ITM_ms || longpressDelayedkey2 == ITM_ms || longpressDelayedkey3 == ITM_ms ) || //.ms needs NIM mode to be open if the user intends it to be open. 
-          (*result == ITM_CC || longpressDelayedkey1 == ITM_CC || longpressDelayedkey2 == ITM_CC || longpressDelayedkey3 == ITM_CC ) ||
-          (*result == ITM_op_j || longpressDelayedkey1 == ITM_op_j || longpressDelayedkey2 == ITM_op_j || longpressDelayedkey3 == ITM_op_j )) {
-        delayCloseNim = true;
-      }  
-    }
-    else if(calcMode == CM_AIM) {
-      switch(*result) {
-        case ITM_BACKSPACE:
-          if(tam.mode == 0) {
+      case CM_NIM : {
+        switch(*result) {
+          case ITM_XEQ:
+            if(tam.mode == 0 && ((char*)funcParam)[0] == 0) { //If XEQ has a parameter, then do not inject it into the long press cycle
+              longpressDelayedkey2 = longpressDelayedkey1;
+              longpressDelayedkey1 = -MNU_XXEQ;    //XEQ longpress to XEQMENU
+            }
+            break;
+          case ITM_BACKSPACE:
+            if(tam.mode == 0) {
+              longpressDelayedkey1 = ITM_CLN;      //BACKSPACE longpress clears input buffer
+            }
+            break;
+          case ITM_EXIT1:
+              longpressDelayedkey2 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
+              longpressDelayedkey1 = ITM_BASEMENU;
+              break;
+          default:;
+        }
+        if( (*result == ITM_ms || longpressDelayedkey1 == ITM_ms || longpressDelayedkey2 == ITM_ms || longpressDelayedkey3 == ITM_ms ) || //.ms needs NIM mode to be open if the user intends it to be open. 
+            (*result == ITM_CC || longpressDelayedkey1 == ITM_CC || longpressDelayedkey2 == ITM_CC || longpressDelayedkey3 == ITM_CC ) ||
+            (*result == ITM_op_j || longpressDelayedkey1 == ITM_op_j || longpressDelayedkey2 == ITM_op_j || longpressDelayedkey3 == ITM_op_j ) ||
+            (*result == ITM_op_j_pol || longpressDelayedkey1 == ITM_op_j_pol || longpressDelayedkey2 == ITM_op_j_pol || longpressDelayedkey3 == ITM_op_j_pol )) {
+          delayCloseNim = true;
+        }  
+        break;
+      }
+      case CM_AIM : {
+        switch(*result) {
+          case ITM_BACKSPACE:
+            if(tam.mode == 0) {
+                longpressDelayedkey1 = ITM_CLA;      //BACKSPACE longpress clears input buffer
+              }
+            break;
+          case ITM_EXIT1:
+            longpressDelayedkey2 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
+            longpressDelayedkey1 =-MNU_MyAlpha;
+            break;
+          case ITM_ENTER:
+            if(tam.mode == 0) {
+              longpressDelayedkey1 = ITM_XSWAP;
+              // longpressDelayedkey2 = ITM_XPARSE; //not yet implemented
+            }
+            break;
+          default:;
+        }
+        break;
+      }
+      case CM_EIM : {
+        switch(*result) {
+          case ITM_BACKSPACE:
+            if(tam.mode == 0) {
               longpressDelayedkey1 = ITM_CLA;      //BACKSPACE longpress clears input buffer
             }
-          break;
-        case ITM_EXIT1:
-          longpressDelayedkey2 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
-          longpressDelayedkey1 =-MNU_MyAlpha;
-          break;
-        case ITM_ENTER:
-          if(tam.mode == 0) {
-            longpressDelayedkey1 = ITM_XSWAP;
-            // longpressDelayedkey2 = ITM_XPARSE; //not yet implemented
-          }
-          break;
-        default:;
+            break;
+          case ITM_EXIT1:
+            longpressDelayedkey1 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
+            break;
+          case ITM_ENTER:
+            if(tam.mode == 0) {
+              longpressDelayedkey1 = ITM_XSWAP;
+            }
+            break;
+          default:;
+        }
+        break;
       }
-    }
-    else if(calcMode == CM_EIM) {
-      switch(*result) {
-        case ITM_BACKSPACE:
-          if(tam.mode == 0) {
-            longpressDelayedkey1 = ITM_CLA;      //BACKSPACE longpress clears input buffer
-          }
-          break;
-        case ITM_EXIT1:
-          longpressDelayedkey1 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
-          break;
-        case ITM_ENTER:
-          if(tam.mode == 0) {
-            longpressDelayedkey1 = ITM_XSWAP;
-          }
-          break;
-        default:;
-      }
-    }
-    else {
-      switch(*result) {
-        case ITM_EXIT1    :
-          longpressDelayedkey1 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
-          break;
-        default:;
+      default : {
+        switch(*result) {
+          case ITM_EXIT1    :
+            longpressDelayedkey1 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
+            break;
+          default:;
+        }
+        break;
       }
     }
 
@@ -611,7 +622,7 @@ void resetKeytimers(void) {
     //**************JM LONGPRESS ****************************************************
     if((FN_state == ST_1_PRESS1 || FN_state == ST_3_PRESS2) && (!FN_timeouts_in_progress || double_click_detected) && FN_key_pressed != 0) {
       FN_timeouts_in_progress = true;
-      fnTimerStart(TO_FN_LONG, TO_FN_LONG, JM_TO_FN_LONG);    //dr
+      fnTimerStart(TO_FN_LONG, TO_FN_LONG,  FN_state == ST_1_PRESS1 ? TIME_FN_12XX_TO_F : TIME_FN_DOUBLE_G_TO_NOP);    //dr
       FN_timed_out_to_NOP = false;
 
 
@@ -696,7 +707,7 @@ void resetKeytimers(void) {
       else if(!shiftF && shiftG) {
         offset = 12;
       }
-      fnTimerStart(TO_FN_EXEC, FN_key_pressed + offset, JM_FN_DOUBLE_TIMER);
+      fnTimerStart(TO_FN_EXEC, FN_key_pressed + offset, TIME_FN_DOUBLE_RELEASE);
 
       #if defined(VERBOSEKEYS)
         printf(">>>>Z 0050 btnFnReleased_StateMachine ------------------ Start TO_FN_EXEC\n          data=|%s| data[0]=%d (Global) FN_key_pressed=%d +offset=%d\n",(char*)data,((char*)data)[0], FN_key_pressed, offset);
@@ -1340,12 +1351,11 @@ void fnCla(uint16_t unusedButMandatoryParameter) {
 
 void fnCln(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
-    nimNumberPart = NP_EMPTY;
-    calcModeNim(0);
-    last_CM=252;
-    refreshRegisterLine(REGISTER_X);        //JM Execute here, to make sure that the 5/2 line check is done
-    last_CM=253;
-    addItemToNimBuffer(ITM_0);
+   strcpy(aimBuffer,"+0");
+   fnKeyBackspace(0);
+   setSystemFlag(FLAG_ASLIFT);
+   screenUpdatingMode = SCRUPD_AUTO;
+//   refreshScreen();
   #endif // !TESTSUITE_BUILD
 }
 

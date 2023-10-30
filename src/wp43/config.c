@@ -177,10 +177,14 @@ void configCommon(uint16_t idx) {
     setSystemFlag  (FLAG_SBbatV);            // Set battery voltage indicator
     fnDisplayFormatSigFig(3);                // SIG 3
     roundingMode = RM_HALF_UP;    
-    fnKeysManagement(USER_MENG);
+    fnKeysManagement(USER_MCPX);
+    setSystemFlag(FLAG_FRCSRN);              // Display 
 
     itemToBeAssigned = -MNU_EE;
     _assignItem(&userMenuItems[6]); //fF1
+    itemToBeAssigned = ITM_op_j_pol;
+    _assignItem(&userMenuItems[11]); //fF6
+
     cachedDynamicMenu = 0;
 
     temporaryInformation = TI_NO_INFO;
@@ -196,7 +200,7 @@ void configCommon(uint16_t idx) {
     clearSystemFlag(FLAG_HPRP);                    // HP.RP off
     clearSystemFlag(FLAG_HPBASE);                  // Clear HP Base
     denMax = 9999;                                 // DMX 9999
-    constantFractions = false; SetSetting(JC_EXFRAC); // EXFRAC ON (also setting the fractions modes appropriately)
+    constantFractions = false; SetSetting(JC_IRFRAC); // IRFRAC ON (also setting the fractions modes appropriately)
     setSystemFlag(FLAG_DENANY);                    // DENANY ON
        setSystemFlag(FLAG_SBbatV );                // SBbatV ON
      clearSystemFlag(FLAG_SBclk  );                // SBclk OFF
@@ -284,6 +288,9 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
       strcpy(aimBuffer, "+");
       fnKeyBackspace(0);
       //printf("|%s|\n", aimBuffer);
+    }
+    if(calcMode == CM_ASSIGN) {
+      fnKeyExit(0);
     }
     lastIntegerBase = 0;
     fnExitAllMenus(0);
@@ -454,6 +461,17 @@ void fnFreeMemory(uint16_t unusedButMandatoryParameter) {
 }
 
 
+void fnGetDmx(uint16_t unusedButMandatoryParameter) {
+  longInteger_t dmx;
+
+  liftStack();
+
+  longIntegerInit(dmx);
+  uIntToLongInteger(denMax, dmx);
+  convertLongIntegerToLongIntegerRegister(dmx, REGISTER_X);
+  longIntegerFree(dmx);
+}
+
 
 void fnGetRoundingMode(uint16_t unusedButMandatoryParameter) {
   longInteger_t rounding;
@@ -568,6 +586,7 @@ void fnBatteryVoltage(uint16_t unusedButMandatoryParameter) {
     int32ToReal(get_vbat(), &value);
   #endif // DMCP_BUILD
 
+  temporaryInformation = TI_V;
   realDivide(&value, const_1000, &value, &ctxtReal39);
   convertRealToReal34ResultRegister(&value, REGISTER_X);
 }
@@ -983,8 +1002,9 @@ void restoreStats(void){
       {0,USER_KRESET,  "C47 All USER keys cleaned"                       },
       {0,USER_MRESET,  "MyMenu menu cleaned"                             },
       {0,USER_ARESET,  "My" STD_alpha " menu cleaned"                    },
-      {0,USER_MENG,    "MyMenu primary F-key engineering layout"         },
-      {0,USER_MFIN,    "MyMenu primary F-key financial layout"           },
+      {0,USER_MENG,    "MyMenu primary F-key engineering ribbon"         },
+      {0,USER_MFIN,    "MyMenu primary F-key financial ribbon"           },
+      {0,USER_MCPX,    "MyMenu primary F-key complex ribbon"             },
       {0,100,"Error List"}
     };
 
@@ -1349,9 +1369,6 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     lastErrorCode = 0;
 
     gammaLanczosCoefficients = (real51_t *)const_gammaC01;
-    angle180 = (real_t *)const_pi_75;
-    angle90  = (real_t *)const_piOn2_75;
-    angle45  = (real_t *)const_piOn4_75;
 
     #if !defined(TESTSUITE_BUILD)
       resetAlphaSelectionBuffer();
@@ -1710,6 +1727,14 @@ void fnKeysManagement(uint16_t choice) {
     case USER_MFIN:
       fnRESET_MyM(USER_MFIN);
       fnShowVersion(USER_MFIN);
+      #if !defined(TESTSUITE_BUILD)
+        showSoftmenu(-MNU_MyMenu);
+      #endif // !TESTSUITE_BUILD
+      break;
+
+    case USER_MCPX:
+      fnRESET_MyM(USER_MCPX);
+      fnShowVersion(USER_MCPX);
       #if !defined(TESTSUITE_BUILD)
         showSoftmenu(-MNU_MyMenu);
       #endif // !TESTSUITE_BUILD

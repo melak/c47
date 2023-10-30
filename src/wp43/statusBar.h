@@ -19,6 +19,10 @@
  * Status bar management.
  */
 #if !defined(STATUSBAR_H)
+
+#include "wp43.h"
+
+
 #define STATUSBAR_H
 
   #if !defined(TESTSUITE_BUILD)
@@ -116,6 +120,7 @@
     /**
      * Shows or hides the USB or low battery icon in the status bar.
      */
+    int updateVbatIntegrated(void);
     void showHideUsbLowBattery(void);
   #else // !DMCP_BUILD
     /**

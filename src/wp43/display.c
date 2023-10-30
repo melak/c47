@@ -1263,7 +1263,7 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
     if(CPXMULT) {                  // i x 1.0
       strcat(displayString, COMPLEX_UNIT);
       real34CopyAbs(&imag34, &absimag34);
-//      if(!real34CompareEqual(&absimag34, const34_1)) {     //JM force a |imag|=1 not to display. Maybe make it part of Exfrac.
+//      if(!real34CompareEqual(&absimag34, const34_1)) {     //JM force a |imag|=1 not to display. Maybe make it part of IRFRAC.
         strcat(displayString, PRODUCT_SIGN);
         xcopy(strchr(displayString, '\0'), displayString + i, strlen(displayString + i) + 1);
 //      }
@@ -1271,7 +1271,7 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
 
     if(!CPXMULT) {                   // 1.0 i
       real34CopyAbs(&imag34, &absimag34);
-//      if(!real34CompareEqual(&absimag34, const34_1)) {     //JM force a |imag|=1 not to display.  Maybe make it part of Exfrac.
+//      if(!real34CompareEqual(&absimag34, const34_1)) {     //JM force a |imag|=1 not to display.  Maybe make it part of IRFRAC.
         xcopy(strchr(displayString, '\0'), displayString + i, strlen(displayString + i) + 1);
 //      }
       strcat(displayString, STD_SPACE_HAIR);
@@ -1495,7 +1495,7 @@ void angle34ToDisplayString2(const real34_t *angle34, uint8_t mode, char *displa
     if(RADIX34_MARK_STRING[1]!=1) {strcpy(tt,RADIX34_MARK_STRING);}
     else {tt[0] = RADIX34_MARK_STRING[0]; tt[1] = 0;}
 
-    sprintf(displayString, "%s%s" STD_DEGREE "%s%" PRIu32 STD_QUOTE "%s%" PRIu32 "%s%02" PRIu32 STD_DOUBLE_QUOTE,
+    sprintf(displayString, "%s%s" STD_DEGREE "%s%" PRIu32 STD_RIGHT_SINGLE_QUOTE "%s%" PRIu32 "%s%02" PRIu32 STD_RIGHT_DOUBLE_QUOTE,
                             sign ? "-" : " ",
                               degStr,         m < 10 ? " " : "",
                                                 m,                   s < 10 ? " " : "",
@@ -1503,15 +1503,9 @@ void angle34ToDisplayString2(const real34_t *angle34, uint8_t mode, char *displa
                                                                                     fs);
   }
   else if(mode == amMultPi) {
-    real34_t multPi34;
-    real_t multPi;
-
-    real34ToReal(angle34, &multPi);
-    realDivide(&multPi, const_pi, &multPi, &ctxtReal39);
-    realToReal34(&multPi, &multPi34);
     constantFractionsMode = CF_OFF;        //JM
-    real34ToDisplayString2(&multPi34, displayString, displayHasNDigits, limitExponent, mode == amSecond, frontSpace);
-    strcat(displayString, STD_pi);
+    real34ToDisplayString2(angle34, displayString, displayHasNDigits, limitExponent, mode == amSecond, frontSpace);
+    strcat(displayString, STD_SUP_pir);
   }
   else {
     real34ToDisplayString2(angle34, displayString, displayHasNDigits, limitExponent, mode == amSecond, frontSpace);

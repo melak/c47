@@ -359,9 +359,11 @@
 `U+209e`,561,562,`not defined by unicode`,`Superscript infinity`,`₞`,`∞`,`U+221e`
 `U+209f`,561,563,`not defined by unicode`,`Subscript infinity`,`₟`,`∞`,`U+221e`
 `U+20ac`,552,554,`EURO SIGN`,`Euro`,`€`,`%`,`U+0025`
-`U+2102`,95,107,`DOUBLE-STRUCK CAPITAL C`,`Complec C`,`ℂ`,`C`,`U+0043`
+`U+2100`,591,593,`ACCOUNT OF`,`1 on B`,`℀`,`1`,`U+2100`
+`U+2102`,95,107,`DOUBLE-STRUCK CAPITAL C`,`Complex C`,`ℂ`,`C`,`U+0043`
 `U+210e`,160,162,`PLANCK CONSTANT`,`Planck`,`ℎ`,`H`,`U+0048`
 `U+210f`,160,168,`PLANCK CONSTANT OVER TWO PI`,`Planck / 2pi`,`ℏ`,`H`,`U+0048`
+`U+2110`,169,191,`DOUBLE-STRUCK CAPITAL I`,`Irrational I`,`"ℐ"`,`I`,`U+0049`
 `U+2115`,221,233,`DOUBLE-STRUCK CAPITAL N`,`Natural N`,`ℕ`,`N`,`U+004e`
 `U+211a`,265,271,`DOUBLE-STRUCK CAPITAL Q`,`Rational Q`,`ℚ`,`Q`,`U+0051`
 `U+211d`,272,282,`DOUBLE-STRUCK CAPITAL R`,`Real R`,`ℝ`,`R`,`U+0052`
@@ -382,6 +384,7 @@
 `U+2191`,516,516,`UPWARDS ARROW`,`Up arrow`,`↑`,`↑`,`U+2191`
 `U+2192`,512,512,`RIGHTWARDS ARROW`,`Right arrow`,`→`,`→`,`U+2192`
 `U+2193`,520,520,`DOWNWARDS ARROW`,`Down arrow`,`↓`,`↓`,`U+2193`
+`U+2194`,520,520,`LEFT RIGHT ARROW`,`Left right arrow`,`↔`,`↔`,`U+2194`
 `U+21E0`,514,514,`LEFTWARDS ARROW`,`Left arrow`,`⇠`,`⇠`,`U+21E0`
 `U+21E1`,516,516,`UPWARDS ARROW`,`Up arrow`,`⇡`,`⇡`,`U+21E1`
 `U+21E2`,512,512,`RIGHTWARDS ARROW`,`Right arrow`,`⇢`,`⇢`,`U+21E2`
@@ -409,6 +412,7 @@
 `U+220c`,593,603,`DOES NOT CONTAIN AS MEMBER`,`Does not contain as member`,`∌`,`∀`,`U+2200`
 `U+220e`,10,11,`END OF PROOF`,`Binary 0`,`∎`,``,`U+0030`
 `U+220f`,424,425,`N-ARY PRODUCT`,`N-ary product`,`∏`,`Π`,`U+03a0`
+`U+2211`,429,430,`N-ARY SUMMATION`,`N-ary summation`,`∑`,`Σ`,`U+03a3`
 `U+2213`,469,473,`MINUS-OR-PLUS SIGN`,`Minus-plus`,`∓`,`-`,`U+002d`
 `U+2218`,474,477,`RING OPERATOR`,`Ring`,`∘`,`×`,`U+00d7`
 `U+2219`,474,476,`BULLET OPERATOR`,`Bullet`,`∙`,`×`,`U+00d7`
@@ -447,6 +451,8 @@
 `U+2265`,538,549,`GREATER-THAN OR EQUAL TO`,`Greater or equal than`,`≥`,`≪`,`U+226a`
 `U+226a`,538,538,`MUCH LESS-THAN`,`Much less than`,`≪`,`≪`,`U+226a`
 `U+226b`,538,551,`MUCH GREATER-THAN`,`Much greater than`,`≫`,`≪`,`U+226a`
+`U+2282`,582,590,`SUBSET OF`,`Subset of`,`⊂`,`⊂`,`U+2200`
+`U+2284`,582,590,`NOT A SUBSET OF`,`Not a subset of`,`⊄`,`⊄`,`U+2200`
 `U+2295`,572,572,`CIRCLED PLUS`,`Subscript earth`,`⊕`,`⊕`,`U+2295`
 `U+2296`,382,384,`CIRCLED MINUS`,`Subscript alpha`,`⊖`,`Α`,`U+0391`
 `U+2297`,390,392,`CIRCLED TIMES`,`Subscript delta`,`⊗`,`Δ`,`U+0394`
@@ -464,6 +470,7 @@
 `U+230b`,580,581,`RIGHT FLOOR`,`Right floor`,`⌋`,`⌊`,`U+230a`
 `U+231a`,582,584,`WATCH`,`Watch`,`⌚`,`⎙`,`U+2399`
 `U+231b`,582,583,`HOURGLASS`,`Hourglass`,`⌛`,`⎙`,`U+2399`
+`U+2393`,582,590,`DIRECT CURRENT FORM 2`,`d.c. current`,`⎓`,`⎓`,`U+002d`
 `U+2399`,582,582,`PRINT SCREEN SYMBOL`,`Printer`,`⎙`,`⎙`,`U+2399`
 `U+23a1`,451,452,`LEFT SQUARE BRACKET UPPER CORNER`,`Matrix upper left`,`⎡`,`[`,`U+005b`
 `U+23a2`,451,453,`LEFT SQUARE BRACKET EXTENSION`,`Matrix middle left`,`⎢`,`[`,`U+005b`
@@ -471,6 +478,7 @@
 `U+23a4`,451,456,`RIGHT SQUARE BRACKET UPPER CORNER`,`Matrix upper right`,`⎤`,`[`,`U+005b`
 `U+23a5`,451,457,`RIGHT SQUARE BRACKET EXTENSION`,`Matrix middle right`,`⎥`,`[`,`U+005b`
 `U+23a6`,451,458,`RIGHT SQUARE BRACKET LOWER CORNER`,`Matrix lower right`,`⎦`,`[`,`U+005b`
+`U+23e6`,582,590,`AC CURRENT`,`a.c. current`,`⏦`,`⏦`,`U+007e`
 `U+23F1`,582,585,`STOPWATCH`,`Stopwatch`,`⏱`,`⎙`,`U+2399`
 `U+2421`,606,606,`SYMBOL FOR DELETE`,`Oblique 1`,`␡`,`␡`,`U+2421`
 `U+2422`,606,607,`BLANK SYMBOL`,`Oblique 2`,`␢`,`␡`,`U+2421`
@@ -620,6 +628,7 @@
 `U+03E0`,448,600,`Greek Letter Sampi Unicode Character`,,`Ϡ`,`Ϡ`,`U+03E0`
 `U+03E1`,448,600,`Greek Small Letter Sampi Unicode Character`,,`ϡ`,`Ϡ`,`U+03E0`
 `U+21D2`,512,512,`Rightwards Double Arrow`,`Convert to XXX`,`⇒`,`⇒`,`U+2192`
+`U+21D4`,512,512,`Left Right Double Arrow`,`LR Double Arrow`,`⇔`,`⇔`,`U+2192`
 `U+267A`,512,512,`Recycling Symbol For Generic Materials`,`Cyclic`,`♺`,`♺`,`U+267A`
 `U+02bc`,367,512,`modifier letter apostrophe`,`Narrow Apostrophe`,`ʼ`,`ʼ`,`U+02bc`
 `U+2788`,9,512,`fullwidth comma`,`wide comma`,`，`,`，`,`U+2788`
@@ -647,5 +656,8 @@
 `U+24FD`,51,51,`Double Circled Digit NINE`,`Digit HP 9`,`⓽`,`9`,`U+0039`
 `U+24FE`,51,51,`Double Circled Digit TEN`,`HP MINUS`,`-`,`-`,`U+002d`
 `U+24FF`,51,51,`Negative Circled Digit Zero`,`HP PLUS`,`+`,`+`,`U+002b`
+`U+2dea`,424,426,`Sub Pi`,`Sub pi`,`π`,`π`,`U+03a0`
+`U+2deb`,424,426,`Sup Pi`,`Sup pi`,`π`,`π`,`U+03a0`
+`U+2dec`,424,426,`pi radians`,`pi r`,`π`,`π`,`U+03a0`
 `U+001D`,1,9,`INFORMATION SEPARATOR THREE`,,,,`U+0020`
 ,,,,,,,

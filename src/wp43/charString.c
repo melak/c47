@@ -308,7 +308,7 @@ int16_t posinc = 0;
 
   if(str[pos] & 0x80) {
     posinc = 2;
-    if(str[pos+1] == 0 || str[pos+2] == 0) return pos+1;
+    if(str[pos+2] == 0) return pos+2;
   }
   else {
     posinc = 1;
@@ -629,6 +629,8 @@ TO_QSPI const function_t2 indexOfStrings2[] = {
               {STD_lambda,                    "lambda"},
               {STD_mu,                        "mu"},
               {STD_pi,                        "pi"},
+              {STD_SUB_pi,                    "pi"},
+              {STD_SUP_pi,                    "pi"},
               {STD_sigma,                     "sigma"},
               {STD_phi,                       "phi"},
               {STD_chi,                       "chi"},
@@ -749,7 +751,14 @@ void stringToASCII(const char *str, char *ascii) {
         ascii++;
         *ascii = '<'; //to change to ><
       } else
+     if(a1==(uint8_t)(STD_SUP_pir[0]) && a2==(uint8_t)(STD_SUP_pir[1])) {
+        *ascii = 'p'; //to change to ><
+        ascii++;
+        *ascii = 'i'; //to change to ><
+      } else
       //diverse
+      if(a1==(uint8_t)(STD_RIGHT_SINGLE_QUOTE[0]) && a2==(uint8_t)(STD_RIGHT_SINGLE_QUOTE[1])) *ascii = '\''; else
+      if(a1==(uint8_t)(STD_RIGHT_DOUBLE_QUOTE[0]) && a2==(uint8_t)(STD_RIGHT_DOUBLE_QUOTE[1])) *ascii = '\"'; else
       if(a1==(uint8_t)(STD_op_i              [0]) && a2==(uint8_t)(STD_op_i              [1])) *ascii = 'i'; else
       if(a1==(uint8_t)(STD_op_j              [0]) && a2==(uint8_t)(STD_op_j              [1])) *ascii = 'j'; else
       if(a1==(uint8_t)(STD_BINARY_ONE        [0]) && a2==(uint8_t)(STD_BINARY_ONE        [1])) *ascii = '1'; else

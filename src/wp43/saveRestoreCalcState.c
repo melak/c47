@@ -794,6 +794,7 @@ static uint32_t restore(void *buffer, uint32_t size) {
           calcModeNormalGui();
         }
         else if(calcMode == CM_AIM) {
+          calcModeNormalGui();
           calcModeAimGui();
           cursorEnabled = true;
         }

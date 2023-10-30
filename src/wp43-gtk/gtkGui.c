@@ -303,7 +303,7 @@ gboolean keyPressed(GtkWidget *w, GdkEventKey *event, gpointer data) {
                                   softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PROG ||
                                   softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA_OMEGA ||
                                   softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_alpha_omega ||
-                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHADOT ||
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAMISC ||
                                   softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAMATH ||
                                   softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAINTL ||
                                   softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAintl );
@@ -1989,8 +1989,13 @@ void labelCaptionNormal(const calcKey_t *key, GtkWidget *button, GtkWidget *lblF
   gtk_label_set_label(GTK_LABEL(lblF), (gchar *)lbl);
   if(key->fShifted < 0) gtk_widget_set_name(lblF, "fShiftedUnderline"); else  gtk_widget_set_name(lblF, "fShifted");
 
-  if(key->gShifted == ITM_op_j) strcpy((char *)lbl, getSystemFlag(FLAG_CPXj)   ? "j"  : "i");
-  else stringToUtf8(indexOfItems[max(key->gShifted, -key->gShifted)].itemSoftmenuName, lbl);
+//  if(key->gShifted == ITM_op_j) strcpy((char *)lbl, getSystemFlag(FLAG_CPXj)   ? "j"  : "i");
+//  else 
+  char sstmp[16];
+  strcpy(sstmp, indexOfItems[max(key->gShifted, -key->gShifted)].itemSoftmenuName);
+  if((key->gShifted == ITM_op_j || key->gShifted == ITM_op_j_pol) && getSystemFlag(FLAG_CPXj)) sstmp[1]++;
+  if(key->gShifted == ITM_EE_EXP_TH && getSystemFlag(FLAG_CPXj)) sstmp[3]++;
+  stringToUtf8(sstmp, lbl);
 
   if(key->gShifted == 0) {
     lbl[0] = 0;

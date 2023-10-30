@@ -23,14 +23,15 @@
   #include "typeDefinitions.h"
   #include <stdint.h>
 
-  void    fnGoto        (uint16_t label);
-  void    fnGotoDot     (uint16_t globalStepNumber);
-  void    fnExecute     (uint16_t label);
-  void    fnReturn      (uint16_t skip);
-  void    fnRunProgram  (uint16_t unusedButMandatoryParameter);
-  void    fnStopProgram (uint16_t unusedButMandatoryParameter);
-  void    fnCheckLabel  (uint16_t label);
-  void    fnIsTopRoutine(uint16_t unusedButMandatoryParameter);
+  void    fnGoto            (uint16_t label);
+  void    fnGotoDot         (uint16_t globalStepNumber);
+  void    fnExecute         (uint16_t label);
+  void    fnExecutePlusSkip (uint16_t label);
+  void    fnReturn          (uint16_t skip);
+  void    fnRunProgram      (uint16_t unusedButMandatoryParameter);
+  void    fnStopProgram     (uint16_t unusedButMandatoryParameter);
+  void    fnCheckLabel      (uint16_t label);
+  void    fnIsTopRoutine    (uint16_t unusedButMandatoryParameter);
 
   /**
    * Executes one step
@@ -41,10 +42,10 @@
    *                    1 if the routine continues,
    *                    > 1 if the next step shall be skipped
    */
-  int16_t executeOneStep(uint8_t *step);
-  void    runProgram    (bool_t singleStep, uint16_t menuLabel);
-  void    execProgram   (uint16_t label);
+  int16_t executeOneStep    (uint8_t *step);
+  void    runProgram        (bool_t singleStep, uint16_t menuLabel);
+  void    execProgram       (uint16_t label);
 
-  void    goToGlobalStep(int32_t step);
-  void    goToPgmStep   (uint16_t program, uint16_t step);
+  void    goToGlobalStep    (int32_t step);
+  void    goToPgmStep       (uint16_t program, uint16_t step);
 #endif // !LBLGTOXEQ_H

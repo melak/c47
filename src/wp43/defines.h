@@ -24,9 +24,9 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
-#define VERSION1 "0.108.14.00"     // major release . minor release . tracked build . internal OR un/tracked OR subrelease : Alpha / Beta / RC1
+#define VERSION1 "0.108.15.01"     // major release . minor release . tracked build . internal OR un/tracked OR subrelease : Alpha / Beta / RC1
 
-//2023-10-03-0.108.14.00 Stable
+//2023-10-22-0.108.15.01 Stable non-master
 
   #undef SAVE_SPACE_DM42_0
   #undef SAVE_SPACE_DM42_1
@@ -166,8 +166,20 @@
 #define JM_SHIFT_TIMER     4000  //ms TO_FG_TIMR
 #define JM_TO_FG_LONG      580   //ms TO_FG_LONG
 
-#define JM_FN_DOUBLE_TIMER 150   //ms TO_FN_EXEC
-#define JM_TO_FN_LONG      400   //ms TO_FN_LONG  //  450 on 2020-03-13
+
+//FUNCTION KEYS
+//Old timer constants FN
+#define JM_FN_DOUBLE_TIMER 150.0   //ms TO_FN_EXEC
+#define JM_TO_FN_LONG      400.0                                 * 0.7        //ms TO_FN_LONG  //  450 on 2020-03-13 //temporary factor set JM 2023-10-14
+//New timer constants for FN key double press and longpress
+#define TIME_FN_124_F_TO_NOP     ((uint32_t)(JM_TO_FN_LONG * 2.0 ))
+#define TIME_FN_1234_F_TO_G      ((uint32_t)(JM_TO_FN_LONG       * 2.0))      //temporary factor set JM 2023-10-14
+#define TIME_FN_1234_G_TO_NOP    ((uint32_t)(JM_TO_FN_LONG       * 1.8))      //temporary factor set JM 2023-10-14
+#define TIME_FN_12XX_TO_F        ((uint32_t)(JM_TO_FN_LONG       * 1.7))      //temporary factor set JM 2023-10-14
+#define TIME_FN_DOUBLE_G_TO_NOP  ((uint32_t)(JM_TO_FN_LONG       * 1.6))      //temporary factor set JM 2023-10-14
+#define TIME_FN_DOUBLE_RELEASE   ((uint32_t)(JM_FN_DOUBLE_TIMER))
+
+
 
 #if defined(DMCP_BUILD)
   #define JM_CLRDROP_TIMER 900   //ms TO_CL_DROP   //DROP
@@ -221,7 +233,7 @@
 #define DEBUG_REGISTER_L                 0 //1 JM Showing register L content on the PC GUI
 #define SHOW_MEMORY_STATUS               0 //1 JM Showing the memory status on the PC GUI
 #define MMHG_PA_133_3224                 0 //1 JM mmHg to Pa conversion coefficient is 133.3224 an not 133.322387415
-#define FN_KEY_TIMEOUT_TO_NOP            0 // Set to 1 if you want the 6 function keys to timeout
+//#define FN_KEY_TIMEOUT_TO_NOP            0 // Set to 1 if you want the 6 function keys to timeout
 #define MAX_LONG_INTEGER_SIZE_IN_BITS    3328 //JMMAX 9965   // 43S:3328 //JMMAX // 1001 decimal digits: 3328 ≃ log2(10^1001)
 #define MAX_FACTORIAL                    450  //JMMAX 1142   // 43S: 450 //JMMAX
 
@@ -293,6 +305,7 @@
 #define USER_N47         51
 #define USER_MENG        53
 #define USER_MFIN        54
+#define USER_MCPX        55
 
 
 //*************************
@@ -959,7 +972,7 @@ typedef enum {
 #define TI_012                                    73    //JM EE
 #define TI_SHOW_REGISTER_BIG                      74    //JM_SHOW
 #define TI_SHOW_REGISTER_SMALL                    75
-#define TI_ms                                     76    //JMms
+#define TI_V                                      76
 #define TI_FROM_DMS                               77
 #define TI_FROM_MS_TIME                           78
 #define TI_FROM_MS_DEG                            79
@@ -1387,6 +1400,8 @@ typedef enum {
                                                (softmenu[menu].menuItem == -MNU_M_EDIT   && y == 0 && (x == 0 || x == 1 || x == 4 || x == 5)) || \
                                                (softmenu[menu].menuItem == -MNU_EQ_EDIT  && y == 0 && (x == 4 || x == 5)) \
                                              )
+
+#define IS_BASEBLANK_(menuId)                (menuId==0 && !BASE_MYM && !BASE_HOME)
 
 #define clearScreen()                        {lcd_fill_rect(0, 0, SCREEN_WIDTH, 240, LCD_SET_VALUE); clear_ul();}
 #define currentReturnProgramNumber           (currentSubroutineLevelData[0].returnProgramNumber)

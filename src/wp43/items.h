@@ -881,7 +881,7 @@
 #define ITM_NOT                      845
 #define ITM_DEGREE                   846
 #define ITM_PLUS_MINUS               847
-#define ITM_mu_b                     848
+#define ITM_MICRO                    848
 #define ITM_DOT                      849
 #define ITM_RIGHT_DOUBLE_ANGLE       850
 #define ITM_ONE_HALF                 851
@@ -959,7 +959,7 @@
 #define ITM_PROPORTIONAL             923
 #define ITM_INFINITY                 924
 #define ITM_RIGHT_ANGLE              925
-#define VAR_0926                     926
+#define ITM_IRRATIONAL_I             926
 #define ITM_MEASURED_ANGLE           927
 #define ITM_DIVIDES                  928
 #define ITM_DOES_NOT_DIVIDE          929
@@ -987,7 +987,7 @@
 #define ITM_MUCH_LESS                951
 #define ITM_MUCH_GREATER             952
 #define ITM_SUN                      953
-#define ITM_DOWN_TACK                954
+#define ITM_TRANSPOSED               954
 #define ITM_PERPENDICULAR            955
 #define ITM_XOR                      956
 #define ITM_NAND                     957
@@ -1175,36 +1175,36 @@
 #define ITM_SUB_x                   1139
 #define ITM_SUB_y                   1140
 #define ITM_SUB_z                   1141
-#define ITM_DELITM_PROG             1142
-#define ITM_DELITM_MENU             1143
+#define ITM_SUB_pi                  1142
+#define ITM_SUP_pi                  1143
 #define ITM_LEFT_DARROW             1144
 #define ITM_UP_DARROW               1145
 #define ITM_RIGHT_DARROW            1146
 #define ITM_DOWN_DARROW             1147
-#define VAR_1148                    1148
-#define VAR_1149                    1149
-#define VAR_1150                    1150
-#define VAR_1151                    1151
-#define VAR_1152                    1152
-#define VAR_1153                    1153
-#define VAR_1154                    1154
-#define VAR_1155                    1155
-#define VAR_1156                    1156
-#define VAR_1157                    1157
-#define VAR_1158                    1158
-#define VAR_1159                    1159
-#define VAR_1160                    1160
-#define VAR_1161                    1161
-#define VAR_1162                    1162
-#define VAR_1163                    1163
-#define VAR_1164                    1164
-#define VAR_1165                    1165
-#define VAR_1166                    1166
-#define VAR_1167                    1167
-#define VAR_1168                    1168
-#define VAR_1169                    1169
-#define VAR_1170                    1170
-#define VAR_1171                    1171
+#define ITM_ALTERN_CURRENT          1148
+#define ITM_ANGLE                   1149
+#define ITM_SUP_1_SUB_B             1150
+#define ITM_BST_char                1151
+#define ITM_CYCLIC                  1152
+#define ITM_DIRECT_CURRENT          1153
+#define ITM_DOWN_DASHARROW          1154
+#define ITM_EulerE                  1155
+#define ITM_INTEGER_Z               1156
+#define ITM_LEFT_DASHARROW          1157
+#define ITM_NOT_SUBSET_OF           1158
+#define ITM_op_i_char               1159
+#define ITM_op_j_char               1160
+#define ITM_POLAR_char              1161
+#define ITM_PRODUCT_char            1162
+#define ITM_RIGHT_DASHARROW         1163
+#define ITM_RIGHT_DOUBLE_ARROW      1164
+#define ITM_RIGHT_TACK              1165
+#define ITM_SST_char                1166
+#define ITM_SUBSET_OF               1167
+#define ITM_SUM_char                1168
+#define ITM_UP_DASHARROW            1169
+#define ITM_USB_SYMBOL              1170
+#define ITM_LEFT_RIGHT_DOUBLE_ARROW 1171
 #define VAR_1172                    1172
 #define VAR_1173                    1173
 #define VAR_1174                    1174
@@ -1379,7 +1379,7 @@
 #define MNU_FIN                     1331
 #define MNU_SINTS                   1332
 #define MNU_FLAGS                   1333
-#define ITM_1334                    1334
+#define ITM_BASEMENU                1334
 #define MNU_1STDERIV                1335
 #define MNU_2NDDERIV                1336
 #define MNU_CONVFP                  1337
@@ -1423,7 +1423,7 @@
 #define MNU_ALPHAMATH               1375
 #define MNU_ALPHAFN                 1376
 #define MNU_ALPHA_OMEGA             1377
-#define MNU_ALPHADOT                1378
+#define MNU_ALPHAMISC               1378
 #define MNU_SYSFL                   1379
 #define MNU_Sf                      1380
 #define MNU_Sfdx                    1381
@@ -1605,7 +1605,7 @@
 #define ITM_1555                    1555
 #define ITM_PUTK                    1556
 #define ITM_RAD                     1557
-#define ITM_1558                    1558
+#define ITM_GETDMX                  1558
 #define ITM_RAN                     1559
 #define ITM_RBR                     1560
 #define ITM_RCLCFG                  1561
@@ -1618,8 +1618,8 @@
 #define ITM_RESET                   1568
 #define ITM_REtoCX                  1569
 #define ITM_REexIM                  1570
-#define ITM_1571                    1571
-#define ITM_1572                    1572
+#define ITM_DELITM_PROG             1571
+#define ITM_DELITM_MENU             1572
 #define ITM_DSP                     1573
 #define ITM_RNORM                   1574
 #define ITM_EX1                     1575
@@ -1848,7 +1848,7 @@
 
 
 //Jaymos C43 extensions
-#define MNU_1795                    1795
+#define ITM_op_j_pol                1795
 #define ITM_BASE_MYM                1796
 #define ITM_G_DOUBLETAP             1797
 #define ITM_CPXMULT                 1798
@@ -1941,7 +1941,7 @@
 #define ITM_GET_TEST_BS             1885
 #define ITM_SET_TEST_BS             1886
 #define ITM_INP_DEF_DP              1887
-#define MNU_1888                    1888
+#define ITM_PROPFR                  1888
 #define ITM_INP_DEF_CPXDP           1889
 #define ITM_INP_DEF_SI              1890
 #define ITM_INP_DEF_LI              1891
@@ -2092,7 +2092,7 @@
 #define MNU_TRG                     2036
 #define MNU_SETUP                   2037
 #define ITM_SAFERESET               2038
-#define ITM_PRN                     2039
+#define MNU_2039                    2039
 #define ITM_PLOT_STAT               2040
 #define ITM_3x1TOSTK                2041
 #define ITM_PLOTRST                 2042
@@ -2106,10 +2106,10 @@
 #define ITM_SPCRES0                 2050
 #define ITM_PRTACT1                 2051
 #define ITM_PRTACT0                 2052
-#define ITM_2053                    2053
-#define ITM_2054                    2054
-#define ITM_2055                    2055
-#define ITM_EXFRAC                  2056
+#define MNU_2053                    2053
+#define MNU_2054                    2054
+#define MNU_2055                    2055
+#define ITM_IRFRAC                  2056
 #define ITM_FGLNOFF                 2057
 #define ITM_FGLNLIM                 2058
 #define ITM_FGLNFUL                 2059
@@ -2217,7 +2217,7 @@
 #define ITM_GAP_R                   2161
 #define ITM_BASE_ENG                2162
 #define ITM_BASE_FIN                2163
-#define ITM_2164                    2164
+#define ITM_BASE_CPX                2164
 #define ITM_op_j_SIGN               2165
 #define ITM_poly_SIGN               2166
 #define ITM_NMItoMI                 2167
@@ -2276,8 +2276,9 @@
 #define ITM_K100MtoMIK              2220
 #define ITM_MIKtoK100M              2221
 #define MNU_CONVYMMV                2222
+#define ITM_XEQP1                   2223
 
-#define LAST_ITEM                   2223
+#define LAST_ITEM                   2224
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
